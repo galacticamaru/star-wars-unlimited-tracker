@@ -29,7 +29,17 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. The database contains the full set of Star Wars Unlimited card definitions and printings, populated from the swu-db.com API
   3. A sync job (Vercel Cron or equivalent) runs and upserts new cards when new sets are released — no manual intervention needed
   4. Token cards are excluded from the synced catalog (filtered by collector number convention)
-**Plans**: TBD
+**Plans**: 4
+- **Wave 1** — 01-01: Project scaffold (Next.js 16, Drizzle config, Vitest, env)
+- **Wave 2** *(blocked on Wave 1 completion)* — 01-02: Neon setup + Drizzle schema + db:push
+- **Wave 3** *(blocked on Wave 2 completion)* — 01-03: Sync logic TDD (upsertCards, syncAllCards, token filtering)
+- **Wave 4** *(blocked on Wave 3 completion)* — 01-04: Seed script + Vercel Cron route + deploy
+
+**Cross-cutting constraints:**
+- `npm run dev` starts without errors (all waves)
+- swu-db.com API is never called in the user request path (Waves 3-4)
+- Token cards filtered from all catalog queries (Wave 3)
+
 **UI hint**: yes
 
 ### Phase 2: Card Catalog
