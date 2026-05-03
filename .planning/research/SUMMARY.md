@@ -90,3 +90,4 @@ These need validation at implementation time:
 - **Token card filtering** — confirm that the API returns a card type or `T`-prefixed collector number that reliably identifies tokens
 - **Dual-faced cards** — API documents `?face=back` parameter; data model needs `back_image_url` column and deck builder must handle double-sided display
 - **SWUBase competitor depth** — returned 403 during research; may have collection-deck integration that makes it a closer competitor than assumed
+- **Community spreadsheet multi-sheet structure** — the Reddit community tracker (COLLECT-04) may have one sheet per set; import must handle either a single exported CSV or detect/merge multi-sheet exports
