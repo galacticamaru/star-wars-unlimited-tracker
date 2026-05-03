@@ -59,22 +59,20 @@
 
 ## Traceability
 
-*Filled by roadmap agent.*
-
-| REQ-ID | Phase |
-|--------|-------|
-| CATALOG-01 | — |
-| CATALOG-02 | — |
-| CATALOG-03 | — |
-| CATALOG-04 | — |
-| COLLECT-01 | — |
-| COLLECT-02 | — |
-| COLLECT-03 | — |
-| COLLECT-04 | — |
-| DECK-01 | — |
-| DECK-02 | — |
-| DECK-03 | — |
-| DECK-04 | — |
-| DECK-05 | — |
-| WANT-01 | — |
-| WANT-02 | — |
+| REQ-ID | Phase | Status |
+|--------|-------|--------|
+| CATALOG-01 | Phase 2 | Pending |
+| CATALOG-02 | Phase 2 | Pending |
+| CATALOG-03 | Phase 2 | Pending |
+| CATALOG-04 | Phase 1 | Pending |
+| COLLECT-01 | Phase 3 | Pending |
+| COLLECT-02 | Phase 3 | Pending |
+| COLLECT-03 | Phase 3 | Pending |
+| COLLECT-04 | Phase 3 | Pending |
+| DECK-01 | Phase 4 | Pending |
+| DECK-02 | Phase 4 | Pending |
+| DECK-03 | Phase 4 | Pending |
+| DECK-04 | Phase 4 | Pending |
+| DECK-05 | Phase 4 | Pending |
+| WANT-01 | Phase 5 | Pending |
+| WANT-02 | Phase 5 | Pending |
