@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-05-03)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 2 — Card Catalog
 
 ## Current Position
 
-Phase: 1 of 5 (Foundation) — COMPLETE
-Plan: 4 of 4 complete
-Status: Phase 1 complete — ready to begin Phase 2 (Card Catalog)
-Last activity: 2026-05-04 — Plan 01-04 all 4 tasks complete; 1806 card_definitions seeded in Neon; Vercel deployment live with cron job registered
+Phase: 2 of 5 (Card Catalog) — Ready to execute
+Plan: 0 of 3 complete
+Status: Phase 2 planned — 3 plans in 3 waves, ready for /gsd-execute-phase 2
+Last activity: 2026-05-04 — Phase 2 plans created (02-01, 02-02, 02-03); research, validation strategy, pattern map complete
 
 Progress: [██████░░░░] 25%
 
