@@ -154,20 +154,24 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
   for (const card of variantCards) {
     const collectorNumber = `${card.Set}-${card.Number}`;
 
-    // Look up existing card_definitions by name + subtitle
+    // Look up existing card_definitions by name + subtitle, scoped to the current set
+    // to avoid matching reprints with identical names from other sets
     const query = db
       .select({ id: cardDefinitions.id })
       .from(cardDefinitions)
       .where(
-        card.Subtitle
-          ? and(
-              eq(cardDefinitions.name, card.Name),
-              eq(cardDefinitions.subtitle, card.Subtitle)
-            )
-          : and(
-              eq(cardDefinitions.name, card.Name),
-              isNull(cardDefinitions.subtitle)
-            )
+        and(
+          sql`${cardDefinitions.swudbId} LIKE ${card.Set + '-%'}`,
+          card.Subtitle
+            ? and(
+                eq(cardDefinitions.name, card.Name),
+                eq(cardDefinitions.subtitle, card.Subtitle)
+              )
+            : and(
+                eq(cardDefinitions.name, card.Name),
+                isNull(cardDefinitions.subtitle)
+              )
+        )
       );
 
     const [existing] = await query;
