@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 ## Current Position
 
 Phase: 1 of 5 (Foundation)
-Plan: 2 of 4 in current phase
+Plan: 3 of 4 in current phase
 Status: Executing
-Last activity: 2026-05-04 — Plan 01-02 complete (Drizzle schema + Neon database setup)
+Last activity: 2026-05-04 — Plan 01-03 complete (Shared card sync library — TDD, upsertCards + syncAllCards)
 
-Progress: [███░░░░░░░] 10%
+Progress: [████░░░░░░] 15%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: ~10 minutes
-- Total execution time: ~0.33 hours
+- Total plans completed: 3
+- Average duration: ~7 minutes
+- Total execution time: ~0.35 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation | 2 | ~20 min | ~10 min |
+| 1. Foundation | 3 | ~22 min | ~7 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01, 01-02
+- Last 5 plans: 01-01, 01-02, 01-03
 - Trend: On track
 
 *Updated after each plan completion*
@@ -49,6 +49,8 @@ Recent decisions affecting current work:
 - .env.example tracked via !.env.example gitignore negation — .env* wildcard requires explicit opt-in for example files
 - neon-http driver (not WebSocket) for Drizzle client — correct choice for Next.js serverless on Vercel
 - integer columns for cost/power/hp in card_definitions — stored as integer not text for proper numeric sort in Phase 2
+- two-pass variant strategy: Normal cards anchor card_definitions (swudb_id = Set-Number), non-Normal variants look up definitions by name+subtitle before inserting card_printings only
+- parseIntOrNull helper: parses Cost/Power/HP string fields to integer, returns null for undefined/empty/NaN
 
 ### Pending Todos
 
@@ -73,5 +75,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Plan 01-02 complete — Drizzle schema created, pushed to Neon. card_definitions and card_printings tables live. Ready for 01-03 (sync logic TDD).
-Resume file: .planning/phases/01-foundation/01-02-SUMMARY.md
+Stopped at: Plan 01-03 complete — shared card sync library (upsertCards + syncAllCards) implemented with TDD (7/7 tests green). cron-route.test.ts written as contract for Plan 04. Ready for 01-04 (seed script + cron route + deploy).
+Resume file: .planning/phases/01-foundation/01-03-SUMMARY.md
