@@ -221,6 +221,8 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
             rarity: sql`excluded.rarity`,
             variantType: sql`excluded.variant_type`,
             frontArtUrl: sql`excluded.front_art_url`,
+            backArtUrl: sql`excluded.back_art_url`,
+            artist: sql`excluded.artist`,
             updatedAt: new Date(),
           },
         });
@@ -245,6 +247,8 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
             rarity: sql`excluded.rarity`,
             variantType: sql`excluded.variant_type`,
             frontArtUrl: sql`excluded.front_art_url`,
+            backArtUrl: sql`excluded.back_art_url`,
+            artist: sql`excluded.artist`,
             updatedAt: new Date(),
           },
         });
