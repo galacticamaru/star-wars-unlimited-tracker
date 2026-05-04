@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 
 // Mock the sync function — tests should not hit Neon or swu-db.com
 vi.mock('@/lib/sync/upsert-cards', () => ({
-  syncAllCards: vi.fn().mockResolvedValue({ setsProcessed: 5, cardsUpserted: 100 }),
+  syncAllCards: vi.fn().mockResolvedValue({ setsTotal: 5, setsProcessed: 5, cardsUpserted: 100 }),
 }));
 
 describe('GET /api/cron/sync-cards', () => {
@@ -11,10 +11,14 @@ describe('GET /api/cron/sync-cards', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    vi.resetModules();
-    // Re-import after mocks are set
+    // Re-import the route handler each time so handler always reflects current mock state.
+    // vi.resetModules() is NOT used here — vi.clearAllMocks() is sufficient for mock state,
+    // and resetModules() can cause the hoisted vi.mock() at the top to not apply on re-import.
     const mod = await import('../src/app/api/cron/sync-cards/route');
     handler = mod.GET;
+    // Guard: ensure syncAllCards is still the mock function after re-import
+    const { syncAllCards } = await import('@/lib/sync/upsert-cards');
+    expect(vi.isMockFunction(syncAllCards)).toBe(true);
   });
 
   it('returns 401 when Authorization header is missing', async () => {
