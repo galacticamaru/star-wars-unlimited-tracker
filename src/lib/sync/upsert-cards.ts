@@ -36,7 +36,8 @@ export interface SWUSet {
 }
 
 interface SyncResult {
-  setsProcessed: number;
+  setsTotal: number;
+  setsProcessed: number; // successfully processed sets
   cardsUpserted: number;
 }
 
@@ -281,6 +282,7 @@ export async function syncAllCards(): Promise<SyncResult> {
   const nonTokenSets = sets.filter((s) => !s.setId.startsWith('T'));
 
   let totalUpserted = 0;
+  let setsSucceeded = 0;
 
   for (const set of nonTokenSets) {
     const cardsResponse = await fetch(`https://api.swu-db.com/cards/${set.setId}`);
@@ -291,7 +293,8 @@ export async function syncAllCards(): Promise<SyncResult> {
     const { data: cards }: { data: SWUCard[] } = await cardsResponse.json();
     const count = await upsertCards(set.setId, cards);
     totalUpserted += count;
+    setsSucceeded = setsSucceeded + 1;
   }
 
-  return { setsProcessed: nonTokenSets.length, cardsUpserted: totalUpserted };
+  return { setsTotal: nonTokenSets.length, setsProcessed: setsSucceeded, cardsUpserted: totalUpserted };
 }
