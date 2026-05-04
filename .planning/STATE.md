@@ -81,5 +81,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Phase 1 complete — Plan 01-04 all tasks done. 1806 card_definitions seeded in Neon. Vercel production deployment live at https://star-wars-unlimited-tracker-is6sivehn-galacticamarus-projects.vercel.app with daily cron job registered. 11/11 tests pass. Ready for Phase 2 (Card Catalog).
-Resume file: None — begin Phase 2 planning
+Stopped at: Phase 2 context gathered — image grid, top-bar search/filter, /cards/[set]/[number] detail page
+Resume file: .planning/phases/02-card-catalog/02-CONTEXT.md
