@@ -1,8 +1,5 @@
-// dotenv must be loaded BEFORE any app module imports
-// This loads .env.local which contains DATABASE_URL
-import { config } from 'dotenv';
-config({ path: '.env.local' });
-
+// DATABASE_URL is loaded by tsx --env-file=.env.local (see db:seed script in package.json)
+// ESM import hoisting means dotenv config() runs too late; --env-file loads before any module code
 import { syncAllCards } from '../src/lib/sync/upsert-cards';
 
 async function seed() {
