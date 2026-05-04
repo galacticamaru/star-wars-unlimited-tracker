@@ -52,7 +52,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can type a card name into a search field and see matching results update in real time
   3. User can filter the catalog by set, card type, and aspect — filters can be combined
   4. Browsing, searching, and filtering all query the local PostgreSQL cache, not the upstream API
-**Plans**: TBD
+**Plans**: 3
+- **Wave 1** — 02-01-PLAN.md — next.config.ts remotePatterns + DB query layer (getAllCards, getFilterOptions, getCardByPrinting) + filterCards pure function + Wave 0 test stubs
+- **Wave 2** — 02-02-PLAN.md — catalog UI: shadcn components, catalog-client, card-item, card-grid, top-bar, filter-dropdown, empty-state, page.tsx replacement + browser test stubs + human verify checkpoint
+- **Wave 3** — 02-03-PLAN.md — card detail page /cards/[set-code]/[card-number] + human verify checkpoint
 **UI hint**: yes
 
 ### Phase 3: Collection
@@ -99,7 +102,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/4 | COMPLETE | 2026-05-04 |
-| 2. Card Catalog | 0/? | Not started | - |
+| 2. Card Catalog | 0/3 | Not started | - |
 | 3. Collection | 0/? | Not started | - |
 | 4. Deck Builder | 0/? | Not started | - |
 | 5. Want List | 0/? | Not started | - |
