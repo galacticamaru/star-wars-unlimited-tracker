@@ -5,8 +5,12 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
-    environment: 'jsdom',
+    environment: 'node',
     globals: true,
     passWithNoTests: true,
+    environmentMatchGlobs: [
+      // Use jsdom only for UI/browser tests — server-side tests use the node default
+      ['**/*.browser.test.{ts,tsx}', 'jsdom'],
+    ],
   },
 });
