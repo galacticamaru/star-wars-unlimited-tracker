@@ -103,7 +103,12 @@ describe('upsertCards', () => {
     const { db } = await import('@/db');
 
     mockReturning = vi.fn().mockResolvedValue([{ id: 1 }]);
-    mockOnConflict = vi.fn().mockReturnValue({ returning: mockReturning });
+    mockOnConflict = vi.fn().mockReturnValue({
+      returning: mockReturning,
+      // Also make it thenable for code paths that await .onConflictDoUpdate() directly
+      // without calling .returning() (e.g., card_printings inserts in Pass 2 existing branch)
+      then: (resolve: (v: unknown) => void) => resolve([]),
+    });
     mockValues = vi.fn().mockReturnValue({ onConflictDoUpdate: mockOnConflict });
     mockInsert = vi.fn().mockReturnValue({ values: mockValues });
     (db.insert as ReturnType<typeof vi.fn>).mockImplementation(mockInsert);
