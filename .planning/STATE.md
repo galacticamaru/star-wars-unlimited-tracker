@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 ## Current Position
 
 Phase: 1 of 5 (Foundation)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: Executing
-Last activity: 2026-05-04 — Plan 01-01 complete (scaffold + tooling)
+Last activity: 2026-05-04 — Plan 01-02 complete (Drizzle schema + Neon database setup)
 
-Progress: [██░░░░░░░░] 5%
+Progress: [███░░░░░░░] 10%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: ~15 minutes
-- Total execution time: ~0.25 hours
+- Total plans completed: 2
+- Average duration: ~10 minutes
+- Total execution time: ~0.33 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation | 1 | ~15 min | ~15 min |
+| 1. Foundation | 2 | ~20 min | ~10 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01
+- Last 5 plans: 01-01, 01-02
 - Trend: On track
 
 *Updated after each plan completion*
@@ -47,6 +47,8 @@ Recent decisions affecting current work:
 - v1 is single-user (no auth); Better Auth deferred to v2
 - vitest passWithNoTests: true — vitest@4.x exits code 1 with no test files; config option ensures zero-file runs exit 0
 - .env.example tracked via !.env.example gitignore negation — .env* wildcard requires explicit opt-in for example files
+- neon-http driver (not WebSocket) for Drizzle client — correct choice for Next.js serverless on Vercel
+- integer columns for cost/power/hp in card_definitions — stored as integer not text for proper numeric sort in Phase 2
 
 ### Pending Todos
 
@@ -71,5 +73,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Plan 01-01 complete — Next.js scaffold, tooling installed. Ready for 01-02 (Neon setup + schema).
-Resume file: .planning/phases/01-foundation/01-01-SUMMARY.md
+Stopped at: Plan 01-02 complete — Drizzle schema created, pushed to Neon. card_definitions and card_printings tables live. Ready for 01-03 (sync logic TDD).
+Resume file: .planning/phases/01-foundation/01-02-SUMMARY.md
