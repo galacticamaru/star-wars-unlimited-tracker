@@ -9,28 +9,28 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 
 ## Current Position
 
-Phase: 1 of 5 (Foundation)
-Plan: 4 of 4 in current phase
-Status: Awaiting human action (Tasks 3-4 of Plan 01-04)
-Last activity: 2026-05-04 — Plan 01-04 Tasks 1-2 complete (cron route + seed script + vercel.json); Tasks 3-4 require human action
+Phase: 1 of 5 (Foundation) — COMPLETE
+Plan: 4 of 4 complete
+Status: Phase 1 complete — ready to begin Phase 2 (Card Catalog)
+Last activity: 2026-05-04 — Plan 01-04 all 4 tasks complete; 1806 card_definitions seeded in Neon; Vercel deployment live with cron job registered
 
-Progress: [████░░░░░░] 18%
+Progress: [██████░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: ~7 minutes
-- Total execution time: ~0.35 hours
+- Total plans completed: 4
+- Average duration: ~8 minutes
+- Total execution time: ~0.5 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation | 3+partial | ~24 min | ~6 min |
+| 1. Foundation | 4/4 COMPLETE | ~32 min | ~8 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01, 01-02, 01-03, 01-04 (partial)
+- Last 5 plans: 01-01, 01-02, 01-03, 01-04 (all complete)
 - Trend: On track
 
 *Updated after each plan completion*
@@ -52,9 +52,11 @@ Recent decisions affecting current work:
 - two-pass variant strategy: Normal cards anchor card_definitions (swudb_id = Set-Number), non-Normal variants look up definitions by name+subtitle before inserting card_printings only
 - parseIntOrNull helper: parses Cost/Power/HP string fields to integer, returns null for undefined/empty/NaN
 - CRON_SECRET guard checks !cronSecret first to prevent empty-string bypass (Pitfall 4 from RESEARCH.md)
-- dotenv config() must be called before any app module imports in seed scripts
+- dotenv config() must be called before any app module imports in seed scripts (but ESM hoisting makes this unreliable — prefer tsx --env-file=.env.local instead)
+- tsx --env-file=.env.local is the correct ESM-safe approach for seed scripts — avoids dotenv hoisting after Drizzle init
 - vercel.json cron: 0 6 * * * (daily at 06:00 UTC) — within Hobby tier one-per-day limit
 - .next cache must be cleared before npm run build if Turbopack dev mode was run (stale validator.ts)
+- process.exit(0) required in seed scripts — tsx hangs on open Neon pooled HTTP connection otherwise
 
 ### Pending Todos
 
@@ -79,5 +81,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Plan 01-04 Tasks 1-2 complete — cron route (route.ts, CRON_SECRET guard), seed script (scripts/seed.ts), and vercel.json created and committed. 11/11 tests pass. Awaiting human action: Task 3 (npm run db:seed against live Neon DB) and Task 4 (Vercel deployment + cron job verification).
-Resume file: .planning/phases/01-foundation/01-04-SUMMARY.md
+Stopped at: Phase 1 complete — Plan 01-04 all tasks done. 1806 card_definitions seeded in Neon. Vercel production deployment live at https://star-wars-unlimited-tracker-is6sivehn-galacticamarus-projects.vercel.app with daily cron job registered. 11/11 tests pass. Ready for Phase 2 (Card Catalog).
+Resume file: None — begin Phase 2 planning

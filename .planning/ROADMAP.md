@@ -12,7 +12,7 @@ The build proceeds in strict dependency order: cards must exist in the database 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Project scaffolding, database schema, and card catalog sync from swu-db.com
+- [x] **Phase 1: Foundation** - Project scaffolding, database schema, and card catalog sync from swu-db.com
 - [ ] **Phase 2: Card Catalog** - Browse, search, and filter the full card catalog with images
 - [ ] **Phase 3: Collection** - Track owned card counts and import from CSV formats
 - [ ] **Phase 4: Deck Builder** - Build legal decks with ownership overlay and missing-card highlights
@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - **Wave 1** — 01-01: Project scaffold (Next.js 16, Drizzle config, Vitest, env) — COMPLETE (2026-05-04)
 - **Wave 2** — 01-02: Neon setup + Drizzle schema + db:push — COMPLETE (2026-05-04)
 - **Wave 3** — 01-03: Sync logic TDD (upsertCards, syncAllCards, token filtering) — COMPLETE (2026-05-04)
-- **Wave 4** — 01-04: Seed script + Vercel Cron route + deploy — Tasks 1-2 COMPLETE (awaiting human: db:seed + Vercel deploy)
+- **Wave 4** — 01-04: Seed script + Vercel Cron route + deploy — COMPLETE (2026-05-04)
 
 
 **Cross-cutting constraints:**
@@ -98,7 +98,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 3/4 + partial | In Progress (checkpoint) | - |
+| 1. Foundation | 4/4 | COMPLETE | 2026-05-04 |
 | 2. Card Catalog | 0/? | Not started | - |
 | 3. Collection | 0/? | Not started | - |
 | 4. Deck Builder | 0/? | Not started | - |
