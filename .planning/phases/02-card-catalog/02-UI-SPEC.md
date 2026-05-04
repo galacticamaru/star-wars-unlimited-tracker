@@ -1,7 +1,7 @@
 ---
 phase: 2
 slug: card-catalog
-status: draft
+status: approved
 shadcn_initialized: true
 preset: b5oIaPwai8
 created: 2026-05-04
@@ -52,7 +52,9 @@ Exceptions: Touch targets (filter dropdown triggers, search clear button) minimu
 | Body | 14px | 400 (regular) | 1.5 | Nunito Sans | Filter labels, metadata values on detail page |
 | Label | 12px | 600 (semibold) | 1.4 | Nunito Sans | Filter category headers, result count badge |
 | Heading | 20px | 600 (semibold) | 1.2 | Oxanium | Card name on detail page |
-| Display | 28px | 700 (bold) | 1.1 | Oxanium | Page title (if shown); not used in grid view |
+| Display | 28px | 600 (semibold) | 1.1 | Oxanium | Page title (if shown); not used in grid view |
+
+Weights declared: 400 (Body) and 600 (Label, Heading, Display). Maximum 2 weights enforced.
 
 Note: The card image grid shows NO text labels under cards (D-01). Typography is used only in: top bar, detail page metadata panel, empty/error states.
 
@@ -79,6 +81,8 @@ Dark mode: All surfaces flip automatically via the `.dark` class applied to `<ht
 ## Layout Contracts
 
 ### Catalog Page (`/` or `/catalog`)
+
+Primary visual anchor: the card image grid (full viewport minus 56px top bar).
 
 **Top Bar** (D-03): full-width sticky bar, height 56px, `bg-background/80 backdrop-blur-sm`, `border-b border-border`.
 
@@ -146,7 +150,7 @@ On mobile (< 768px): stack vertically — image full width, metadata below.
 - Input type: `text`, controlled, `'use client'` component
 - Debounce: none — filter on every keystroke (`onChange`). 1,806 cards × simple string match is <5ms.
 - Match strategy: case-insensitive substring match on `card_definitions.name`
-- Clear button: appears when input has value. X icon (`lucide: X`), `variant="ghost"` icon-only button, 36px square, inside the input trailing slot.
+- Clear button: appears when input has value. X icon (`lucide: X`), `variant="ghost"` icon-only button, 36px square, inside the input trailing slot. `aria-label="Clear search"`.
 
 ### Filters (D-03, D-05)
 
@@ -196,7 +200,7 @@ The resolved CDN hostname is `cdn.swu-db.com` (confirmed from `front_art_url` va
 | Primary CTA | "View card" (screen-reader label on card link; not visible in UI) |
 | Result count (full) | "1,806 cards" |
 | Result count (filtered) | "{N} cards" |
-| Empty state heading | "No cards found" |
+| Empty state heading | "No matching cards" |
 | Empty state body | "Try adjusting your search or clearing a filter." |
 | Error state (image load fail) | No text — grey placeholder only (D-02) |
 | Error state (page load fail) | "Could not load cards. Refresh the page to try again." |
@@ -219,11 +223,11 @@ No third-party registries declared for Phase 2.
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-05-04
