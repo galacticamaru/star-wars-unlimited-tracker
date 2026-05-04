@@ -58,7 +58,10 @@ function parseIntOrNull(value: string | undefined | null): number | null {
  * then Foil/Hyperspace variants (look up existing card_definitions by name+subtitle).
  */
 export async function upsertCards(setId: string, cards: SWUCard[]): Promise<number> {
-  // Primary token set filter — skip entire token sets
+  // Canonical token set filter — callers do not need to pre-filter token sets.
+  // syncAllCards also filters token sets before calling upsertCards, but this guard
+  // is the authoritative location so upsertCards is safe to call independently
+  // (e.g., from scripts or tests) without requiring the caller to pre-filter.
   if (setId.startsWith('T')) return 0;
 
   // Secondary filter — skip token card types
@@ -278,7 +281,9 @@ export async function syncAllCards(): Promise<SyncResult> {
   }
   const sets: SWUSet[] = await setsResponse.json();
 
-  // Filter out token sets (setId starts with "T", e.g., TSOR, TSHD)
+  // Pre-filter token sets here to avoid unnecessary API calls — upsertCards also
+  // guards against token sets (that is the canonical location), but fetching cards
+  // for token sets only to discard them is wasteful.
   const nonTokenSets = sets.filter((s) => !s.setId.startsWith('T'));
 
   let totalUpserted = 0;
