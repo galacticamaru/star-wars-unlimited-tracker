@@ -1,117 +1,153 @@
 ---
 phase: 01-foundation
 plan: 04
-subsystem: sync
-tags: [vercel-cron, seed-script, cron-route, deployment, cron-secret]
+subsystem: infra
+tags: [vercel-cron, seed-script, cron-route, deployment, cron-secret, neon, drizzle, tsx]
+
 dependency_graph:
   requires: [01-03]
-  provides: [cron-route, seed-script, vercel-cron-config]
-  affects: [phase-2-catalog]
-tech_stack:
-  added: []
-  patterns: [vercel-cron-secret-guard, dotenv-before-app-imports, daily-cron-schedule]
-key_files:
+  provides: [cron-route, seed-script, vercel-cron-config, vercel-production-deployment, seeded-neon-database]
+  affects: [phase-2-catalog, phase-3-collection, phase-4-deck-builder, phase-5-want-list]
+
+tech-stack:
+  added: [vercel-cron, vercel-deploy]
+  patterns:
+    - CRON_SECRET guard — check !cronSecret before string comparison to prevent empty-string bypass
+    - tsx --env-file=.env.local for seed scripts avoids ESM dotenv hoisting issues
+    - Cron route returns 401 without auth, 200 JSON on success, 500 on sync error
+    - process.exit(0) in seed.ts prevents tsx from hanging on open Neon connection
+
+key-files:
   created:
     - src/app/api/cron/sync-cards/route.ts
     - scripts/seed.ts
     - vercel.json
   modified:
-    - .env.local (created — CRON_SECRET + DATABASE_URL; gitignored)
-    - .env (updated — added CRON_SECRET; gitignored)
-decisions:
-  - CRON_SECRET guard checks !cronSecret first to prevent empty-string bypass
-  - dotenv config() called before any app module import in seed.ts
-  - Daily cron at 0 6 * * * — within Vercel Hobby tier one-per-day limit (D-10)
-  - Build validated by clearing .next cache first — stale Turbopack dev types caused false failure
+    - package.json (db:seed updated to tsx --env-file=.env.local)
+    - .env.local (CRON_SECRET added; gitignored)
+    - .env (CRON_SECRET added; gitignored)
+
+key-decisions:
+  - "tsx --env-file=.env.local in db:seed instead of dotenv config() import — ESM hoisting causes dotenv to run after Drizzle init; --env-file flag is the correct ESM-safe approach"
+  - "CRON_SECRET guard checks !cronSecret before comparing — prevents empty-string bypass (Pitfall 4 from RESEARCH.md)"
+  - "Vercel Hobby tier cron schedule 0 6 * * * — one invocation per day at 06:00 UTC"
+  - "process.exit(0) in seed.ts so tsx does not hang on open Neon pooled HTTP connection"
+
+patterns-established:
+  - "Cron route: check !secret || header !== Bearer secret → 401, try syncAllCards() → 200 JSON, catch → 500"
+  - "Seed scripts: use tsx --env-file=.env.local instead of runtime dotenv import to avoid ESM hoisting"
+
+requirements-completed: [CATALOG-04]
+
 metrics:
-  duration: ~2 minutes (automated tasks only; Tasks 3-4 are human checkpoints)
+  duration: ~30min (including human-executed Tasks 3-4)
   completed: 2026-05-04
-  tasks_completed: 2
-  tasks_pending_human: 2
+  tasks_completed: 4
   files_created: 3
-  files_modified: 0
+  files_modified: 2
 ---
 
-# Phase 1 Plan 4: Seed Script, Cron Route, Vercel Deployment Summary
+# Phase 1 Plan 04: Seed Script, Cron Route, Vercel Deployment Summary
 
-Vercel Cron route with CRON_SECRET bearer-token guard, dotenv-first seed script, and daily vercel.json schedule — 11 unit tests green, build passing, human action required to seed DB and deploy.
+**Vercel Cron-powered daily card sync with CRON_SECRET auth guard, 1806 card_definitions seeded into Neon, and app live in production — Phase 1 Foundation complete**
 
-## What Was Built
+## Performance
 
-### src/app/api/cron/sync-cards/route.ts
+- **Duration:** ~30 min (including human-executed seed and Vercel deploy)
+- **Started:** 2026-05-04
+- **Completed:** 2026-05-04
+- **Tasks:** 4 (Tasks 1-2 by executor, Tasks 3-4 by user)
+- **Files modified:** 5
 
-GET handler for the Vercel Cron endpoint. Guards access with `Authorization: Bearer {CRON_SECRET}`. Returns `{ success: true, setsProcessed: N, cardsUpserted: N }` on success, 401 without valid auth, 500 on sync error.
+## Accomplishments
 
-Key guard pattern (from RESEARCH.md Pattern 4):
-```typescript
-if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-  return new Response('Unauthorized', { status: 401 });
-}
-```
+- Cron route handler created with CRON_SECRET Bearer guard — returns 401 without auth, 200 JSON on success, 500 on sync error
+- Seed script created and executed successfully — 1806 rows inserted into card_definitions in the Neon dev database
+- vercel.json configured with daily cron at 06:00 UTC pointing to /api/cron/sync-cards
+- App deployed to Vercel production with DATABASE_URL and CRON_SECRET set as environment variables; cron job confirmed in Project Settings
+- All 11 unit tests pass (cron-route.test.ts + upsert-cards.test.ts)
+- ESM dotenv hoisting issue discovered and fixed — db:seed now uses tsx --env-file=.env.local
 
-Checking `!cronSecret` first prevents empty-string bypass (Pitfall 4).
+## Task Commits
 
-### scripts/seed.ts
+1. **Task 1: Create seed script and cron route handler** - `f6a8dad` (feat)
+2. **Task 2: Create vercel.json and generate CRON_SECRET** - `1169acc` (chore)
+3. **ESM dotenv fix (deviation)** - `3e2abbc` (fix — updated db:seed to tsx --env-file=.env.local, removed dotenv import from seed.ts)
+4. **Task 3: npm run db:seed smoke test** - completed by user (no code commit — live database operation)
+5. **Task 4: Vercel deployment + cron verification** - completed by user (no code commit — platform setup)
 
-One-time seeding script for populating the Neon database. Loads `.env.local` via dotenv before any app module imports so `DATABASE_URL` is available when the Drizzle client initializes. Calls `syncAllCards()` and logs the result.
+## Deployment Details
 
-### vercel.json
-
-Daily cron schedule at `0 6 * * *` (06:00 UTC) targeting `/api/cron/sync-cards`. Stays within Vercel Hobby tier (one invocation per day). Vercel automatically sends `Authorization: Bearer {CRON_SECRET}` when invoking.
+- **Vercel URL:** https://star-wars-unlimited-tracker-is6sivehn-galacticamarus-projects.vercel.app
+- **card_definitions row count:** 1806
+- **card_printings row count:** > 1806 (variants per printing included; exact count not captured)
+- **Token cards excluded:** 0 rows with type ILIKE '%token%' (filtered by Plan 03 collector number convention)
+- **Cron job:** /api/cron/sync-cards — schedule: 0 6 * * * — confirmed in Vercel Project Settings → Cron Jobs
 
 ## Test Results
 
 ```
 Test Files  2 passed (2)
      Tests  11 passed (11)
-  Duration  1.34s
+  Duration  ~1.3s
+
+npm test -- --run exits 0, 0 failures
 ```
 
 4 cron-route tests + 7 upsert-cards tests. All GREEN.
 
-## Checkpoints Pending
+## Files Created/Modified
 
-### Task 3: db:seed smoke test (human-action required)
+- `src/app/api/cron/sync-cards/route.ts` — GET handler with CRON_SECRET Bearer guard; calls syncAllCards(); returns 401/200/500
+- `scripts/seed.ts` — One-time seeder: calls syncAllCards(), logs result, exits 0
+- `vercel.json` — Cron config: path=/api/cron/sync-cards, schedule=0 6 * * *, $schema
+- `package.json` — db:seed updated: `tsx --env-file=.env.local scripts/seed.ts`
+- `.env.local` / `.env` — CRON_SECRET set (gitignored; stored as Vercel env var for production)
 
-Run `npm run db:seed` against the live Neon dev database. Expected output:
-```
-Starting card catalog seed from swu-db.com...
-Seed complete: N sets processed, N cards upserted
-```
+## Decisions Made
 
-Verify in Neon Console → Tables that `card_definitions` and `card_printings` have rows.
-
-### Task 4: Vercel deployment (human-action required)
-
-Deploy to Vercel with `DATABASE_URL` and `CRON_SECRET` set as environment variables. Confirm cron job appears in Project Settings → Cron Jobs.
-
-The `CRON_SECRET` for this deployment is stored in `.env.local` (gitignored, local only).
+- **tsx --env-file instead of dotenv import:** ESM top-level await in tsx causes dotenv config() to be hoisted after app module imports, meaning DATABASE_URL is not set when Drizzle initialises. Using tsx's --env-file flag loads the file before any JS executes.
+- **process.exit(0) in seed.ts:** Required so tsx does not hang waiting on the open Neon pooled HTTP connection after sync completes.
 
 ## Deviations from Plan
 
+### Auto-fixed Issues (prior executor — Tasks 1-2)
+
 **1. [Rule 1 - Bug] Stale .next cache caused false TypeScript build failure**
-- **Found during:** Task 2 (npm run build verification)
-- **Issue:** `.next/dev/types/validator.ts` (generated by Turbopack dev mode) referenced stale page types causing TypeScript error: "Cannot find module '../../../app/page.js'"
-- **Fix:** Cleared `.next` directory with `rm -rf .next` before running `npm run build`. Build passed cleanly (TypeScript: Finished in 2.2s).
-- **Files modified:** None (cache directory deleted, not committed)
-- **Commit:** N/A (no code change needed)
+- **Found during:** Task 2
+- **Issue:** Turbopack dev-mode generated `.next/dev/types/validator.ts` referenced stale types
+- **Fix:** Cleared `.next` directory before `npm run build`; no code change
+- **Verification:** Build passed (TypeScript: Finished in 2.2s)
+- **Committed in:** N/A (cache dir, not committed)
 
 **2. [Rule 2 - Missing file] .env.local was missing**
 - **Found during:** Task 2
-- **Issue:** `.env.local` did not exist — only `.env.local.env` (mis-named file from Plan 02). The seed script loads `config({ path: '.env.local' })` so it would fail to find DATABASE_URL without this file.
-- **Fix:** Created `.env.local` with `DATABASE_URL` and newly generated `CRON_SECRET`.
-- **Files modified:** `.env.local` (created), `.env` (updated with CRON_SECRET)
-- **Commit:** Not committed (both files are gitignored)
+- **Issue:** `.env.local` did not exist — seed script would fail to find DATABASE_URL
+- **Fix:** Created `.env.local` with DATABASE_URL and newly generated CRON_SECRET
+- **Committed in:** N/A (gitignored)
+
+### Auto-fixed Issues (this continuation — Tasks 3-4)
+
+**3. [Rule 1 - Bug] ESM dotenv hoisting breaks DATABASE_URL in seed script**
+- **Found during:** Task 3 (npm run db:seed smoke test)
+- **Issue:** `import { config } from 'dotenv'; config({ path: '.env.local' })` in ESM context runs after Drizzle initialises — DATABASE_URL undefined at connection time
+- **Fix:** Removed dotenv import from `scripts/seed.ts`; updated `db:seed` in `package.json` to use `tsx --env-file=.env.local scripts/seed.ts` — env file loaded by tsx before any JS executes
+- **Files modified:** `scripts/seed.ts`, `package.json`
+- **Verification:** npm run db:seed exits 0; 1806 rows inserted in card_definitions
+- **Committed in:** `3e2abbc`
+
+---
+
+**Total deviations:** 3 auto-fixed (1 Rule 1 build cache, 1 Rule 2 missing file, 1 Rule 1 ESM dotenv)
+**Impact on plan:** All fixes necessary for correctness. No scope creep.
 
 ## Threat Surface Scan
 
-T-04-01 (Elevation of Privilege): `if (!cronSecret || authHeader !== \`Bearer ${cronSecret}\`)` guard — CONFIRMED in route.ts line 12. Tested by 4 cron-route unit tests (missing header → 401, wrong secret → 401, unset env var → 401, correct secret → 200).
+T-04-01 (Elevation of Privilege): `if (!cronSecret || authHeader !== \`Bearer ${cronSecret}\`)` guard confirmed in route.ts. Tested by 4 unit tests (missing header → 401, wrong secret → 401, unset env var → 401, correct secret → 200). MITIGATED.
 
-T-04-02 (Information Disclosure — CRON_SECRET): Secret stored in `.env.local` and `.env` (both gitignored). Not in source. Vercel env vars for production.
+T-04-02/03 (Information Disclosure — secrets): CRON_SECRET and DATABASE_URL in .env.local and .env (both gitignored). Stored as Vercel project environment variables for production — never in source. MITIGATED.
 
-T-04-03 (Information Disclosure — DATABASE_URL): Same as T-04-02.
-
-T-04-04 (Denial of Service — cron during outage): Accepted per plan. Error logged to console, next daily run succeeds. Low impact.
+T-04-04 (DoS — cron during swu-db.com outage): Accepted per plan — no retry, error logged to Vercel runtime logs, next daily run will succeed. Low impact: card data is not user-blocking. ACCEPTED.
 
 No new threat surface introduced beyond the plan's threat model.
 
@@ -119,31 +155,32 @@ No new threat surface introduced beyond the plan's threat model.
 
 None — no UI rendering in this plan.
 
-## Current State
+## Issues Encountered
 
-Tasks 1 and 2 complete. Tasks 3 (db:seed) and 4 (Vercel deploy) require human action.
+- ESM dotenv hoisting: documented above under deviations. Resolved by switching to tsx --env-file flag. See commit 3e2abbc.
 
-- src/app/api/cron/sync-cards/route.ts: COMPLETE, committed f6a8dad
-- scripts/seed.ts: COMPLETE, committed f6a8dad
-- vercel.json: COMPLETE, committed 1169acc
-- db:seed smoke test: PENDING (human must run npm run db:seed)
-- Vercel deployment: PENDING (human must deploy and set env vars)
+## User Setup Completed
 
-## Self-Check: PASSED
+The following were completed by the user as part of Tasks 3-4:
 
-- src/app/api/cron/sync-cards/route.ts exists: FOUND
-- scripts/seed.ts exists: FOUND
-- vercel.json exists: FOUND
-- route.ts contains export async function GET: CONFIRMED
-- route.ts contains authorization guard (!cronSecret check): CONFIRMED
-- route.ts contains syncAllCards import from @/lib/sync/upsert-cards: CONFIRMED
-- seed.ts contains config({ path: '.env.local' }) before app imports: CONFIRMED
-- seed.ts contains process.exit(0): CONFIRMED
-- vercel.json contains /api/cron/sync-cards: CONFIRMED
-- vercel.json contains 0 6 * * *: CONFIRMED
-- vercel.json contains $schema openapi.vercel.sh: CONFIRMED
-- .env.local contains CRON_SECRET with non-empty value: CONFIRMED
-- npm test -- --run exits 0 (11/11 pass): CONFIRMED
-- npm run build exits 0 (after clearing .next cache): CONFIRMED
-- Task 1 commit f6a8dad exists: CONFIRMED
-- Task 2 commit 1169acc exists: CONFIRMED
+- Generated CRON_SECRET and stored in .env.local and .env (gitignored)
+- Added DATABASE_URL and CRON_SECRET to Vercel Project environment variables (Settings → Environment Variables)
+- Created Vercel project from GitHub repo, deployed (Next.js build), and verified cron job in Settings → Cron Jobs
+- Ran `npm run db:seed` against live Neon dev database — 1806 rows in card_definitions, seed exited 0
+
+## Next Phase Readiness
+
+Phase 1 Foundation is complete. All success criteria are satisfied:
+
+- `npm run dev` starts without errors
+- Neon database contains 1806 card_definitions and corresponding card_printings from swu-db.com
+- Vercel Cron runs daily at 06:00 UTC — no manual intervention needed when new card sets release
+- Token cards excluded from catalog (0 rows matching '%token%' type)
+- Vercel production deployment live with DATABASE_URL and CRON_SECRET configured
+
+Phase 2 (Card Catalog) can begin. Open pre-condition for Phase 2:
+- swu-db.com image CDN hostname must be inspected (follow ?format=image redirect) to configure Next.js remotePatterns — tracked in STATE.md blockers
+
+---
+*Phase: 01-foundation*
+*Completed: 2026-05-04*
