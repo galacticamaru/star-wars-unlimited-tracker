@@ -93,7 +93,7 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
         epicAction: card.EpicAction ?? null,
         doubleSided: card.DoubleSided,
         unique: card.Unique,
-        updatedAt: new Date(),
+        updatedAt: sql`now()`,
       })
       .onConflictDoUpdate({
         target: cardDefinitions.swudbId,
@@ -113,7 +113,7 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
           epicAction: sql`excluded.epic_action`,
           doubleSided: sql`excluded.double_sided`,
           unique: sql`excluded.unique`,
-          updatedAt: new Date(),
+          updatedAt: sql`now()`,
         },
       })
       .returning({ id: cardDefinitions.id });
@@ -130,7 +130,7 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
         frontArtUrl: card.FrontArt ?? null,
         backArtUrl: card.BackArt ?? null,
         artist: card.Artist ?? null,
-        updatedAt: new Date(),
+        updatedAt: sql`now()`,
       })
       .onConflictDoUpdate({
         target: [cardPrintings.setCode, cardPrintings.collectorNumber],
@@ -140,7 +140,7 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
           frontArtUrl: sql`excluded.front_art_url`,
           backArtUrl: sql`excluded.back_art_url`,
           artist: sql`excluded.artist`,
-          updatedAt: new Date(),
+          updatedAt: sql`now()`,
         },
       });
 
@@ -198,11 +198,11 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
           epicAction: card.EpicAction ?? null,
           doubleSided: card.DoubleSided,
           unique: card.Unique,
-          updatedAt: new Date(),
+          updatedAt: sql`now()`,
         })
         .onConflictDoUpdate({
           target: cardDefinitions.swudbId,
-          set: { updatedAt: new Date() },
+          set: { updatedAt: sql`now()` },
         })
         .returning({ id: cardDefinitions.id });
 
@@ -217,7 +217,7 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
           frontArtUrl: card.FrontArt ?? null,
           backArtUrl: card.BackArt ?? null,
           artist: card.Artist ?? null,
-          updatedAt: new Date(),
+          updatedAt: sql`now()`,
         })
         .onConflictDoUpdate({
           target: [cardPrintings.setCode, cardPrintings.collectorNumber],
@@ -227,7 +227,7 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
             frontArtUrl: sql`excluded.front_art_url`,
             backArtUrl: sql`excluded.back_art_url`,
             artist: sql`excluded.artist`,
-            updatedAt: new Date(),
+            updatedAt: sql`now()`,
           },
         });
     } else {
@@ -243,7 +243,7 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
           frontArtUrl: card.FrontArt ?? null,
           backArtUrl: card.BackArt ?? null,
           artist: card.Artist ?? null,
-          updatedAt: new Date(),
+          updatedAt: sql`now()`,
         })
         .onConflictDoUpdate({
           target: [cardPrintings.setCode, cardPrintings.collectorNumber],
@@ -253,7 +253,7 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
             frontArtUrl: sql`excluded.front_art_url`,
             backArtUrl: sql`excluded.back_art_url`,
             artist: sql`excluded.artist`,
-            updatedAt: new Date(),
+            updatedAt: sql`now()`,
           },
         });
     }
