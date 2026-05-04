@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - **Wave 1** — 01-01: Project scaffold (Next.js 16, Drizzle config, Vitest, env) — COMPLETE (2026-05-04)
 - **Wave 2** — 01-02: Neon setup + Drizzle schema + db:push — COMPLETE (2026-05-04)
 - **Wave 3** — 01-03: Sync logic TDD (upsertCards, syncAllCards, token filtering) — COMPLETE (2026-05-04)
-- **Wave 4** *(blocked on Wave 3 completion)* — 01-04: Seed script + Vercel Cron route + deploy
+- **Wave 4** — 01-04: Seed script + Vercel Cron route + deploy — Tasks 1-2 COMPLETE (awaiting human: db:seed + Vercel deploy)
 
 
 **Cross-cutting constraints:**
@@ -98,7 +98,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 3/4 | In Progress | - |
+| 1. Foundation | 3/4 + partial | In Progress (checkpoint) | - |
 | 2. Card Catalog | 0/? | Not started | - |
 | 3. Collection | 0/? | Not started | - |
 | 4. Deck Builder | 0/? | Not started | - |

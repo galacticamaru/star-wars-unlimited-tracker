@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 ## Current Position
 
 Phase: 1 of 5 (Foundation)
-Plan: 3 of 4 in current phase
-Status: Executing
-Last activity: 2026-05-04 — Plan 01-03 complete (Shared card sync library — TDD, upsertCards + syncAllCards)
+Plan: 4 of 4 in current phase
+Status: Awaiting human action (Tasks 3-4 of Plan 01-04)
+Last activity: 2026-05-04 — Plan 01-04 Tasks 1-2 complete (cron route + seed script + vercel.json); Tasks 3-4 require human action
 
-Progress: [████░░░░░░] 15%
+Progress: [████░░░░░░] 18%
 
 ## Performance Metrics
 
@@ -27,10 +27,10 @@ Progress: [████░░░░░░] 15%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation | 3 | ~22 min | ~7 min |
+| 1. Foundation | 3+partial | ~24 min | ~6 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01, 01-02, 01-03
+- Last 5 plans: 01-01, 01-02, 01-03, 01-04 (partial)
 - Trend: On track
 
 *Updated after each plan completion*
@@ -51,6 +51,10 @@ Recent decisions affecting current work:
 - integer columns for cost/power/hp in card_definitions — stored as integer not text for proper numeric sort in Phase 2
 - two-pass variant strategy: Normal cards anchor card_definitions (swudb_id = Set-Number), non-Normal variants look up definitions by name+subtitle before inserting card_printings only
 - parseIntOrNull helper: parses Cost/Power/HP string fields to integer, returns null for undefined/empty/NaN
+- CRON_SECRET guard checks !cronSecret first to prevent empty-string bypass (Pitfall 4 from RESEARCH.md)
+- dotenv config() must be called before any app module imports in seed scripts
+- vercel.json cron: 0 6 * * * (daily at 06:00 UTC) — within Hobby tier one-per-day limit
+- .next cache must be cleared before npm run build if Turbopack dev mode was run (stale validator.ts)
 
 ### Pending Todos
 
@@ -75,5 +79,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Plan 01-03 complete — shared card sync library (upsertCards + syncAllCards) implemented with TDD (7/7 tests green). cron-route.test.ts written as contract for Plan 04. Ready for 01-04 (seed script + cron route + deploy).
-Resume file: .planning/phases/01-foundation/01-03-SUMMARY.md
+Stopped at: Plan 01-04 Tasks 1-2 complete — cron route (route.ts, CRON_SECRET guard), seed script (scripts/seed.ts), and vercel.json created and committed. 11/11 tests pass. Awaiting human action: Task 3 (npm run db:seed against live Neon DB) and Task 4 (Vercel deployment + cron job verification).
+Resume file: .planning/phases/01-foundation/01-04-SUMMARY.md
