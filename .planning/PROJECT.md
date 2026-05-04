@@ -12,7 +12,7 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Card catalog stays current as new sets release (API-driven, no manual updates) — Validated in Phase 1: Foundation (CATALOG-04)
 
 ### Active
 
@@ -77,4 +77,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-03 after initialization*
+*Last updated: 2026-05-04 after Phase 1 completion*
