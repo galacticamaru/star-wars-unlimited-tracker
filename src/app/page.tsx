@@ -1,6 +1,8 @@
 import { getAllCards, getFilterOptions } from '@/db/queries/catalog';
 import { CatalogClient } from '@/components/catalog/catalog-client';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CatalogPage() {
   const [cards, filterOptions] = await Promise.all([
     getAllCards(),
