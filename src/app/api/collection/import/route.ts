@@ -32,35 +32,31 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 2. Transactional upsert
+    // 2. Bulk upsert (neon-http driver does not support transactions)
     const userId = 1; // D-04: Hardcoded for v1
     let processedCount = 0;
 
-    await db.transaction(async (tx) => {
-      // Note: We're doing individual upserts in a transaction for simplicity.
-      // A bulk insert with onConflictUpdate would be faster if supported/constructed correctly.
-      for (const [collectorNumber, count] of Object.entries(normalizedCounts)) {
-        const cardDefinitionId = mapping[collectorNumber];
-        if (!cardDefinitionId) continue;
+    for (const [collectorNumber, count] of Object.entries(normalizedCounts)) {
+      const cardDefinitionId = mapping[collectorNumber];
+      if (!cardDefinitionId) continue;
 
-        await tx
-          .insert(userCollections)
-          .values({
-            userId,
-            cardDefinitionId,
+      await db
+        .insert(userCollections)
+        .values({
+          userId,
+          cardDefinitionId,
+          count,
+        })
+        .onConflictDoUpdate({
+          target: [userCollections.userId, userCollections.cardDefinitionId],
+          set: {
             count,
-          })
-          .onConflictDoUpdate({
-            target: [userCollections.userId, userCollections.cardDefinitionId],
-            set: { 
-              count,
-              updatedAt: new Date(),
-            },
-          });
-        
-        processedCount++;
-      }
-    });
+            updatedAt: new Date(),
+          },
+        });
+
+      processedCount++;
+    }
 
     return Response.json({ success: true, count: processedCount });
   } catch (error) {

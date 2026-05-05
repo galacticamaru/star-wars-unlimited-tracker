@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 import { normalizeRedditCsv } from '@/lib/collection/normalize';
 import { Button } from '@/components/ui/button';
@@ -11,17 +11,38 @@ import Link from 'next/link';
 export default function CollectionPage() {
   const [status, setStatus] = useState<'idle' | 'parsing' | 'uploading' | 'success' | 'error'>('idle');
   const [result, setResult] = useState<{ count: number } | null>(null);
+  const [sets, setSets] = useState<string[]>([]);
+  const [selectedSet, setSelectedSet] = useState<string>('');
+
+  useEffect(() => {
+    // Fetch available sets to populate the selection dropdown
+    fetch('/api/collection/sets')
+      .then(res => res.json())
+      .then(data => {
+        setSets(data);
+        if (data.length > 0) setSelectedSet(data[0]);
+      })
+      .catch(err => console.error('Failed to load sets:', err));
+  }, []);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !selectedSet) return;
 
     setStatus('parsing');
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
+      transformHeader: (h) => h.trim(),
+      beforeFirstChunk: (chunk) => {
+        // The Reddit spreadsheet has a blank/title row before the real header row.
+        // Find the first line containing 'Card #' and strip everything before it.
+        const lines = chunk.split('\n');
+        const idx = lines.findIndex(line => line.includes('Card #'));
+        return idx > 0 ? lines.slice(idx).join('\n') : chunk;
+      },
       complete: async (results) => {
-        const normalized = normalizeRedditCsv(results.data);
+        const normalized = normalizeRedditCsv(results.data, selectedSet);
         
         setStatus('uploading');
         try {
@@ -62,21 +83,48 @@ export default function CollectionPage() {
           <Upload className="size-8 text-primary" />
         </div>
         
-        <div>
+        <div className="max-w-md">
           <h2 className="text-xl font-semibold mb-2">Bulk Import from CSV</h2>
-          <p className="text-sm text-muted-foreground max-w-md">
-            Upload your community Reddit spreadsheet. We'll automatically sum your Normal, Foil, and Hyperspace variants into a single count per card.
+          <p className="text-sm text-muted-foreground mb-4">
+            Upload a single set tab from your community Reddit spreadsheet. We'll automatically sum your <strong>Non-Foil</strong>, <strong>Foil</strong>, <strong>Hyperspace</strong>, and <strong>F-Hyperspace</strong> variants into a single count per card.
           </p>
+          <div className="text-xs bg-muted p-3 rounded text-left border border-border text-muted-foreground">
+            <p className="font-bold mb-1 uppercase">Required Columns:</p>
+            <ul className="list-disc list-inside">
+              <li>Card #</li>
+              <li>Non-Foil</li>
+              <li>Foil</li>
+              <li>Hyperspace</li>
+              <li>F-Hyperspace</li>
+            </ul>
+          </div>
         </div>
 
-        <div className="w-full max-w-sm">
-          <Input 
-            type="file" 
-            accept=".csv" 
-            onChange={handleFileUpload}
-            disabled={status === 'parsing' || status === 'uploading'}
-            className="cursor-pointer file:cursor-pointer"
-          />
+        <div className="w-full max-w-sm flex flex-col gap-4">
+          <div className="flex flex-col items-start gap-1.5">
+            <label htmlFor="set-select" className="text-xs font-bold uppercase text-muted-foreground">Select Set</label>
+            <select 
+              id="set-select"
+              value={selectedSet}
+              onChange={(e) => setSelectedSet(e.target.value)}
+              className="w-full h-10 px-3 py-2 bg-background border border-input rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {sets.map(s => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col items-start gap-1.5">
+            <label className="text-xs font-bold uppercase text-muted-foreground">Choose CSV File</label>
+            <Input 
+              type="file" 
+              accept=".csv" 
+              onChange={handleFileUpload}
+              disabled={status === 'parsing' || status === 'uploading' || !selectedSet}
+              className="cursor-pointer file:cursor-pointer"
+            />
+          </div>
         </div>
 
         {status === 'parsing' && <p className="text-sm font-medium animate-pulse">Parsing CSV...</p>}
@@ -85,14 +133,14 @@ export default function CollectionPage() {
         {status === 'success' && (
           <div className="flex items-center gap-2 text-green-600 font-semibold bg-green-50 px-4 py-2 rounded-lg">
             <CheckCircle2 className="size-5" />
-            Successfully imported {result?.count} cards!
+            Successfully imported {result?.count} cards for {selectedSet}!
           </div>
         )}
 
         {status === 'error' && (
           <div className="flex items-center gap-2 text-destructive font-semibold bg-destructive/10 px-4 py-2 rounded-lg">
             <AlertCircle className="size-5" />
-            Something went wrong. Please check your CSV format.
+            Something went wrong. Please check your CSV format and columns.
           </div>
         )}
       </div>
