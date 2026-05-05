@@ -67,6 +67,8 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can search for a card, click it, and set the quantity owned — the count updates immediately
   3. User can upload a generic CSV file and have their collection populated from it, with partial failures wrapped in a transaction (all-or-nothing per import)
   4. User can upload the community Reddit SWU tracking spreadsheet CSV (Card # + Standard/Hyperspace/F-Hyperspace columns) and have variant counts summed into total owned per card
+  5. User can filter the catalog by Arena, Trait, Rarity, Keyword, and cost (multi-select, values 0–9+) in addition to existing filters
+  6. When returning to the catalog from a card detail page, any active search query and filters are preserved
 **Plans**: TBD
 **UI hint**: yes
 
@@ -80,6 +82,8 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. While building a deck, every card in the catalog shows the user's owned copy count inline
   4. Cards where the user does not own enough copies to cover the deck quantity are visually highlighted
   5. The deck builder enforces SWU Premier legality: 1 Leader, 1 Base, 50-card main deck, maximum 3 copies of any non-unique card, Heroism/Villainy aspect exclusivity — an invalid deck cannot be saved
+  6. User can export any saved deck in Melee format and raw JSON format for use in Karabast or other deck builders
+  7. While viewing or building a deck, user can see ground/space unit counts, aspect breakdown, and a card cost curve
 **Plans**: TBD
 **UI hint**: yes
 

@@ -40,6 +40,7 @@ In practice this looks like two separate assistants:
 1. An assistant while deck building
 - An assisstant that calculates the likelihood of a turn 1 play. With a recommendation to add more 1 or 2 costed cards if the likelihood is low.
 - Displaying the card cost curve - if the curve is poor recommend potential cards to fill the curve
+- Suggests cards with a strong synergy with cards the user has already selected, or cards with a high winrate for the leader/base combo the user has selected.
 
 2. An assistant the creates a deck for you
 - A natural language assistant that takes a prompt like "create an aggro deck". This assistant will consider the current performing decks, the users' collection, and creates a premiere legal deck with a quick guide on the game plan for the deck.
