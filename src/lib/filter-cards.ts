@@ -31,10 +31,12 @@ export function filterCards(cards: CardForFilter[], filters: FilterState): CardF
     const matchesType = selectedTypes.length === 0 ||
       selectedTypes.includes(card.type);
 
-    // Aspect: OR within category — card qualifies if it has ANY selected aspect
-    // CRITICAL (Pitfall 6): use .some(), NOT .every() — do NOT require all aspects
+    // Aspect: subset match — every aspect on the card must be within the selected set.
+    // Selecting [Cunning, Heroism] shows cards like [Cunning], [Heroism], [Cunning+Heroism]
+    // but hides [Command+Heroism] (Command is outside the selection).
+    // Neutral cards (empty aspects array) always pass — every() on [] is true.
     const matchesAspect = selectedAspects.length === 0 ||
-      card.aspects.some(a => selectedAspects.includes(a));
+      card.aspects.every(a => selectedAspects.includes(a));
 
     // AND across categories (D-05)
     return matchesSearch && matchesSet && matchesType && matchesAspect;

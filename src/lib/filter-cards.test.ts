@@ -52,15 +52,24 @@ describe('filterCards', () => {
     expect(filterCards(cards, { ...emptyFilters, selectedTypes: ['Event'] })).toHaveLength(1);
   });
 
-  it('filters by aspect (OR within category — card.aspects.some())', () => {
+  it('filters by aspect (subset match — all card aspects must be within selection)', () => {
     const cards = [
       makeCard({ aspects: ['Heroism'] }),
       makeCard({ id: 2, aspects: ['Villainy'] }),
       makeCard({ id: 3, aspects: ['Command'] }),
+      makeCard({ id: 4, aspects: ['Heroism', 'Villainy'] }),
+      makeCard({ id: 5, aspects: ['Command', 'Heroism'] }), // has out-of-selection aspect
     ];
     const result = filterCards(cards, { ...emptyFilters, selectedAspects: ['Heroism', 'Villainy'] });
-    expect(result).toHaveLength(2);
-    expect(result.map(c => c.id)).not.toContain(3);
+    expect(result).toHaveLength(3); // Heroism, Villainy, Heroism+Villainy
+    expect(result.map(c => c.id)).not.toContain(3); // Command-only hidden
+    expect(result.map(c => c.id)).not.toContain(5); // Command+Heroism hidden
+  });
+
+  it('aspect filter passes neutral cards (empty aspects array)', () => {
+    const neutral = makeCard({ id: 9, aspects: [] });
+    const result = filterCards([neutral], { ...emptyFilters, selectedAspects: ['Heroism'] });
+    expect(result).toHaveLength(1);
   });
 
   it('applies AND logic across categories', () => {
