@@ -5,21 +5,5 @@
       "path": "/api/cron/sync-cards",
       "schedule": "0 6 * * *"
     }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    {
-      "source": "/api/cron/sync-cards",
-      "destination": "/api/cron/sync-cards"
-    },
-    {
-      "source": "/cards/:path*",
-      "destination": "/cards/:path*"
-    },
-    {
-      "source": "/",
-      "destination": "/"
-    }
   ]
 }
