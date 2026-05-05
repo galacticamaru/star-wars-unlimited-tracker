@@ -23,12 +23,13 @@ export default async function CardDetailPage({
   return (
     // UI-SPEC.md §Card Detail Page: max-w-5xl mx-auto px-md py-2xl
     <div className="max-w-5xl mx-auto px-4 py-12">
-      {/* Back button — ghost variant, ChevronLeft icon, label "Back to catalog"
-          base-ui Button doesn't support asChild — apply buttonVariants to Link directly
-          (same pattern established in Wave 2 filter-dropdown.tsx Rule 1 fix) */}
+      {/* Back button — top-left, ghost variant, ChevronLeft icon, label "Back to catalog" */}
       <Link
         href="/"
-        className={cn(buttonVariants({ variant: 'ghost' }), 'mb-6 -ml-2 inline-flex')}
+        className={cn(
+          buttonVariants({ variant: 'ghost' }),
+          'mb-6 -ml-2'
+        )}
       >
         <ChevronLeft className="mr-1 size-4" />
         Back to catalog
@@ -44,14 +45,14 @@ export default async function CardDetailPage({
               src={card.frontArtUrl}
               alt={card.name}
               fill
-              // Server Component — no onLoad/onError (function props require 'use client')
-              // preload replaces deprecated priority in Next.js 16 (RESEARCH.md §State of the Art)
+              // No onLoad/onError — this is a Server Component; function props not allowed
+              // No priority (deprecated Next.js 16) — use preload for LCP candidate
               preload
               sizes="(max-width: 768px) 100vw, 320px"
               className="object-cover"
             />
           ) : (
-            // Fallback: grey box when no art URL (D-02 placeholder style)
+            // Fallback: grey box when no art URL (same as D-02 placeholder color)
             <div className="w-full h-full bg-muted" />
           )}
         </div>
@@ -71,10 +72,10 @@ export default async function CardDetailPage({
           {/* 3. Type / Arenas / Aspects — Label row (12px semibold, flex-wrap) */}
           <div className="flex flex-wrap gap-1.5 text-xs font-semibold">
             <span className="bg-muted rounded px-2 py-0.5">{card.type}</span>
-            {card.arenas.map((arena) => (
+            {card.arenas.map(arena => (
               <span key={arena} className="bg-muted rounded px-2 py-0.5">{arena}</span>
             ))}
-            {card.aspects.map((aspect) => (
+            {card.aspects.map(aspect => (
               <span key={aspect} className="bg-primary/10 text-primary rounded px-2 py-0.5">{aspect}</span>
             ))}
           </div>
@@ -83,16 +84,10 @@ export default async function CardDetailPage({
           {(card.traits.length > 0 || card.keywords.length > 0) && (
             <div className="text-sm text-muted-foreground">
               {card.traits.length > 0 && (
-                <p>
-                  <span className="font-semibold text-foreground">Traits: </span>
-                  {card.traits.join(', ')}
-                </p>
+                <p><span className="font-semibold text-foreground">Traits: </span>{card.traits.join(', ')}</p>
               )}
               {card.keywords.length > 0 && (
-                <p>
-                  <span className="font-semibold text-foreground">Keywords: </span>
-                  {card.keywords.join(', ')}
-                </p>
+                <p><span className="font-semibold text-foreground">Keywords: </span>{card.keywords.join(', ')}</p>
               )}
             </div>
           )}
