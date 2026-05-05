@@ -62,7 +62,10 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
   // syncAllCards also filters token sets before calling upsertCards, but this guard
   // is the authoritative location so upsertCards is safe to call independently
   // (e.g., from scripts or tests) without requiring the caller to pre-filter.
-  if (setId.startsWith('T')) return 0;
+  // Token sets follow the pattern T + real set code (e.g. TSOR, TSHD), making them
+  // 4+ characters. Real set codes are 3 characters (SOR, SHD, TWI), so this check
+  // avoids incorrectly dropping real sets whose code happens to start with T.
+  if (setId.startsWith('T') && setId.length > 3) return 0;
 
   // Secondary filter — skip token card types
   const nonTokenCards = cards.filter(
@@ -284,7 +287,7 @@ export async function syncAllCards(): Promise<SyncResult> {
   // Pre-filter token sets here to avoid unnecessary API calls — upsertCards also
   // guards against token sets (that is the canonical location), but fetching cards
   // for token sets only to discard them is wasteful.
-  const nonTokenSets = sets.filter((s) => !s.setId.startsWith('T'));
+  const nonTokenSets = sets.filter((s) => !(s.setId.startsWith('T') && s.setId.length > 3));
 
   let totalUpserted = 0;
   let setsSucceeded = 0;
