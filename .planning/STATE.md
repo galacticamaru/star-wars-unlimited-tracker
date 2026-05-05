@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-05-03)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus:** Phase 3 — Collection
+**Current focus:** Phase 4 — Deck Builder
 
 ## Current Position
 
-Phase: 3 of 5 (Collection) — Not started
-Plan: 7 of 7 complete
-Status: Phase 2 COMPLETE — Proceeding to Phase 3 planning
-Last activity: 2026-05-05 — Phase 2 execution completed
+Phase: 4 of 5 (Deck Builder) — Not started
+Plan: 11 of 11 complete
+Status: Phase 3 COMPLETE — Proceeding to Phase 4 planning
+Last activity: 2026-05-05 — Phase 3 execution completed
 
-Progress: [█████░░░░░] 50%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 11
 - Average duration: ~10 minutes
-- Total execution time: ~1.2 hours
+- Total execution time: ~1.8 hours
 
 **By Phase:**
 
@@ -29,9 +29,10 @@ Progress: [█████░░░░░] 50%
 |-------|-------|-------|----------|
 | 1. Foundation | 4/4 COMPLETE | ~32 min | ~8 min |
 | 2. Card Catalog | 3/3 COMPLETE | ~40 min | ~13 min |
+| 3. Collection | 4/4 COMPLETE | ~35 min | ~9 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-04, 02-01, 02-02, 02-03
+- Last 5 plans: 02-03, 03-01, 03-02, 03-03, 03-04
 - Trend: On track
 
 *Updated after each plan completion*
@@ -60,6 +61,11 @@ Recent decisions affecting current work:
 - process.exit(0) required in seed scripts — tsx hangs on open Neon pooled HTTP connection otherwise
 - shadcn + base-ui: DropdownMenuTrigger (from Base UI) does not support asChild; use buttonVariants on the trigger directly
 - Next.js 16 async params: dynamic route params must be awaited before destructuring (e.g. await params)
+- nuqs for URL-synced search and filters: provides snappy client-side state with sharable URLs
+- Multi-line TopBar: necessary to accommodate 5 new advanced filters (Arena, Trait, Rarity, Keyword, Cost)
+- Hover overlay collection controls: Plus/Minus buttons with optimistic updates for responsive catalog management
+- user_collections table: composite PK [userId, cardDefinitionId], userId default 1 for v1
+- Bulk CSV import: supports Reddit community spreadsheet, sums variants into single count, uses transactional API
 
 ### Pending Todos
 

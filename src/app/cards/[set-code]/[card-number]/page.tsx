@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { getCardByPrinting } from '@/db/queries/card-detail';
+import { getUserCollection } from '@/db/queries/collection';
+import { CollectionControls } from '@/components/catalog/collection-controls';
 import { buttonVariants } from '@/components/ui/button';
 import { CardImageSection } from '@/components/catalog/card-image-section';
 import { cn } from '@/lib/utils';
@@ -16,10 +18,15 @@ export default async function CardDetailPage({
 }) {
   const { 'set-code': setCode, 'card-number': cardNumber } = await params;
 
-  const card = await getCardByPrinting(setCode, cardNumber);
+  const [card, collection] = await Promise.all([
+    getCardByPrinting(setCode, cardNumber),
+    getUserCollection(1),
+  ]);
 
   // Return Next.js 404 page for unknown cards — do NOT throw, use notFound()
   if (!card) notFound();
+
+  const ownedCount = collection.find(c => c.cardDefinitionId === card.id)?.count || 0;
 
   return (
     // UI-SPEC.md §Card Detail Page: max-w-5xl mx-auto px-md py-2xl
@@ -40,12 +47,19 @@ export default async function CardDetailPage({
       <div className="flex flex-col gap-8 md:flex-row md:gap-12">
 
         {/* Image column — handles toggle for Leaders and correct aspect ratios */}
-        <CardImageSection 
-          name={card.name}
-          type={card.type}
-          frontArtUrl={card.frontArtUrl}
-          backArtUrl={card.backArtUrl}
-        />
+        <div className="flex flex-col gap-6">
+          <CardImageSection 
+            name={card.name}
+            type={card.type}
+            frontArtUrl={card.frontArtUrl}
+            backArtUrl={card.backArtUrl}
+          />
+
+          <CollectionControls 
+            cardDefinitionId={card.id}
+            initialCount={ownedCount}
+          />
+        </div>
 
         {/* Metadata column — flex-1 */}
         <div className="flex-1 flex flex-col gap-4">

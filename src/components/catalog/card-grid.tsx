@@ -1,7 +1,13 @@
 import { CardItem } from './card-item';
 import type { CardForFilter } from '@/lib/filter-cards';
 
-export function CardGrid({ cards }: { cards: CardForFilter[] }) {
+interface CardGridProps {
+  cards: CardForFilter[];
+  collection: Record<number, number>;
+  onUpdateCount: (id: number, count: number) => void;
+}
+
+export function CardGrid({ cards, collection, onUpdateCount }: CardGridProps) {
   return (
     <div
       className={[
@@ -13,12 +19,15 @@ export function CardGrid({ cards }: { cards: CardForFilter[] }) {
       {cards.map(card => (
         <CardItem
           key={card.id}
+          id={card.id}
           name={card.name}
           type={card.type}
           setCode={card.setCode}
           collectorNumber={card.collectorNumber}
           frontArtUrl={card.frontArtUrl}
           backArtUrl={card.backArtUrl}
+          ownedCount={collection[card.id] || 0}
+          onUpdateCount={onUpdateCount}
         />
       ))}
     </div>

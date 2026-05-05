@@ -14,18 +14,28 @@ interface FilterDropdownProps {
   options: string[];
   selected: string[];
   onChange: (next: string[]) => void;
+  singleSelect?: boolean;
 }
 
-export function FilterDropdown({ label, options, selected, onChange }: FilterDropdownProps) {
+export function FilterDropdown({ label, options, selected, onChange, singleSelect }: FilterDropdownProps) {
+  // Ensure selected is an array
+  const safeSelected = selected || [];
+  
   // UI-SPEC.md §Copywriting: trigger shows "Set" or "Set (2)" when active
-  const triggerLabel = selected.length > 0 ? `${label} (${selected.length})` : label;
+  const triggerLabel = safeSelected.length > 0 
+    ? (singleSelect ? safeSelected[0] : `${label} (${safeSelected.length})`) 
+    : label;
 
   const toggle = (option: string) => {
-    onChange(
-      selected.includes(option)
-        ? selected.filter(s => s !== option)
-        : [...selected, option]
-    );
+    if (singleSelect) {
+      onChange(safeSelected.includes(option) ? [] : [option]);
+    } else {
+      onChange(
+        safeSelected.includes(option)
+          ? safeSelected.filter(s => s !== option)
+          : [...safeSelected, option]
+      );
+    }
   };
 
   return (
@@ -33,7 +43,7 @@ export function FilterDropdown({ label, options, selected, onChange }: FilterDro
       <DropdownMenuTrigger
         className={cn(
           buttonVariants({
-            variant: selected.length > 0 ? 'outline' : 'ghost',
+            variant: safeSelected.length > 0 ? 'outline' : 'ghost',
             size: 'default',
           }),
           'w-[120px] justify-between'
@@ -45,7 +55,7 @@ export function FilterDropdown({ label, options, selected, onChange }: FilterDro
         {options.map(option => (
           <DropdownMenuCheckboxItem
             key={option}
-            checked={selected.includes(option)}
+            checked={safeSelected.includes(option)}
             onCheckedChange={() => toggle(option)}
           >
             {option}

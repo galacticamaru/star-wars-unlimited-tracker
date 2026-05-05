@@ -7,9 +7,15 @@ const makeCard = (overrides: Partial<CardForFilter> = {}): CardForFilter => ({
   name: 'Luke Skywalker',
   type: 'Unit',
   aspects: ['Heroism'],
+  arenas: ['Ground'],
+  traits: ['REBEL'],
+  keywords: [],
+  cost: 3,
+  rarity: 'Common',
   setCode: 'SOR',
   collectorNumber: 'SOR-001',
   frontArtUrl: 'https://cdn.swu-db.com/images/cards/SOR/001.webp',
+  backArtUrl: null,
   ...overrides,
 });
 
@@ -18,6 +24,11 @@ const emptyFilters: FilterState = {
   selectedSets: [],
   selectedTypes: [],
   selectedAspects: [],
+  selectedArenas: [],
+  selectedTraits: [],
+  selectedRarities: [],
+  selectedKeywords: [],
+  selectedCosts: [],
 };
 
 describe('filterCards', () => {
@@ -66,10 +77,42 @@ describe('filterCards', () => {
     expect(result.map(c => c.id)).not.toContain(5); // Command+Heroism hidden
   });
 
-  it('aspect filter passes neutral cards (empty aspects array)', () => {
-    const neutral = makeCard({ id: 9, aspects: [] });
-    const result = filterCards([neutral], { ...emptyFilters, selectedAspects: ['Heroism'] });
-    expect(result).toHaveLength(1);
+  it('filters by arena (OR match)', () => {
+    const cards = [
+      makeCard({ arenas: ['Ground'] }),
+      makeCard({ id: 2, arenas: ['Space'] }),
+    ];
+    expect(filterCards(cards, { ...emptyFilters, selectedArenas: ['Ground'] })).toHaveLength(1);
+    expect(filterCards(cards, { ...emptyFilters, selectedArenas: ['Ground', 'Space'] })).toHaveLength(2);
+  });
+
+  it('filters by trait (OR match)', () => {
+    const cards = [
+      makeCard({ traits: ['REBEL'] }),
+      makeCard({ id: 2, traits: ['IMPERIAL'] }),
+      makeCard({ id: 3, traits: ['REBEL', 'TROOPER'] }),
+    ];
+    const result = filterCards(cards, { ...emptyFilters, selectedTraits: ['REBEL'] });
+    expect(result).toHaveLength(2);
+    expect(result.map(c => c.id)).toContain(1);
+    expect(result.map(c => c.id)).toContain(3);
+  });
+
+  it('rarity filter is bypassed (returns all cards as requested)', () => {
+    const cards = [makeCard({ rarity: 'Common' }), makeCard({ id: 2, rarity: 'Rare' })];
+    expect(filterCards(cards, { ...emptyFilters, selectedRarities: ['Common'] })).toHaveLength(2);
+  });
+
+  it('filters by cost (with 9+ handling)', () => {
+    const cards = [
+      makeCard({ cost: 3 }),
+      makeCard({ id: 2, cost: 9 }),
+      makeCard({ id: 3, cost: 10 }),
+      makeCard({ id: 4, cost: null }), // Base
+    ];
+    expect(filterCards(cards, { ...emptyFilters, selectedCosts: ['3'] })).toHaveLength(1);
+    expect(filterCards(cards, { ...emptyFilters, selectedCosts: ['9+'] })).toHaveLength(2); // 9 and 10
+    expect(filterCards(cards, { ...emptyFilters, selectedCosts: ['3', '9+'] })).toHaveLength(3);
   });
 
   it('applies AND logic across categories', () => {

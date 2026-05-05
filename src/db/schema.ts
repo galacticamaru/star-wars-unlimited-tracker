@@ -6,6 +6,7 @@ import {
   integer,
   timestamp,
   unique,
+  primaryKey,
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
@@ -55,5 +56,21 @@ export const cardPrintings = pgTable(
   (t) => [
     // Composite unique: ensures one row per physical printing variant
     unique().on(t.setCode, t.collectorNumber),
+  ]
+);
+
+export const userCollections = pgTable(
+  'user_collections',
+  {
+    userId: integer('user_id').notNull().default(1),
+    cardDefinitionId: integer('card_definition_id')
+      .notNull()
+      .references(() => cardDefinitions.id),
+    count: integer('count').notNull().default(0),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.cardDefinitionId] }),
   ]
 );
