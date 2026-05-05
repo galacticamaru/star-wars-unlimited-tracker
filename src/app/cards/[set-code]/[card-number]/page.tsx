@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { getCardByPrinting } from '@/db/queries/card-detail';
 import { buttonVariants } from '@/components/ui/button';
+import { CardImageSection } from '@/components/catalog/card-image-section';
 import { cn } from '@/lib/utils';
 
 // CRITICAL: params is a Promise in Next.js 16 — MUST await before destructuring (Pitfall 1)
@@ -38,24 +39,13 @@ export default async function CardDetailPage({
       {/* Side-by-side layout: stacks vertically on mobile, side-by-side on md+ */}
       <div className="flex flex-col gap-8 md:flex-row md:gap-12">
 
-        {/* Image column — 320px fixed width on md+, full width on mobile */}
-        <div className="relative aspect-[2/3] w-full rounded-lg overflow-hidden md:w-[320px] md:flex-shrink-0">
-          {card.frontArtUrl ? (
-            <Image
-              src={card.frontArtUrl}
-              alt={card.name}
-              fill
-              // No onLoad/onError — this is a Server Component; function props not allowed
-              // No priority (deprecated Next.js 16) — use preload for LCP candidate
-              preload
-              sizes="(max-width: 768px) 100vw, 320px"
-              className="object-cover"
-            />
-          ) : (
-            // Fallback: grey box when no art URL (same as D-02 placeholder color)
-            <div className="w-full h-full bg-muted" />
-          )}
-        </div>
+        {/* Image column — handles toggle for Leaders and correct aspect ratios */}
+        <CardImageSection 
+          name={card.name}
+          type={card.type}
+          frontArtUrl={card.frontArtUrl}
+          backArtUrl={card.backArtUrl}
+        />
 
         {/* Metadata column — flex-1 */}
         <div className="flex-1 flex flex-col gap-4">

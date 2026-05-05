@@ -13,7 +13,7 @@ The build proceeds in strict dependency order: cards must exist in the database 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project scaffolding, database schema, and card catalog sync from swu-db.com
-- [ ] **Phase 2: Card Catalog** - Browse, search, and filter the full card catalog with images
+- [x] **Phase 2: Card Catalog** - Browse, search, and filter the full card catalog with images
 - [ ] **Phase 3: Collection** - Track owned card counts and import from CSV formats
 - [ ] **Phase 4: Deck Builder** - Build legal decks with ownership overlay and missing-card highlights
 - [ ] **Phase 5: Want List** - See missing cards per deck and combined across all decks
@@ -102,7 +102,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/4 | COMPLETE | 2026-05-04 |
-| 2. Card Catalog | 0/3 | Not started | - |
+| 2. Card Catalog | 3/3 | COMPLETE | 2026-05-05 |
 | 3. Collection | 0/? | Not started | - |
 | 4. Deck Builder | 0/? | Not started | - |
 | 5. Want List | 0/? | Not started | - |

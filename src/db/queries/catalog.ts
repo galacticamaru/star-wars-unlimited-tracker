@@ -12,6 +12,7 @@ export async function getAllCards() {
       setCode: cardPrintings.setCode,
       collectorNumber: cardPrintings.collectorNumber,
       frontArtUrl: cardPrintings.frontArtUrl,
+      backArtUrl: cardPrintings.backArtUrl,
       rarity: cardPrintings.rarity,
     })
     .from(cardDefinitions)
@@ -24,7 +25,8 @@ export async function getAllCards() {
         notIlike(cardDefinitions.type, '%token%'),
         eq(cardPrintings.variantType, 'Normal')
       )
-    );
+    )
+    .orderBy(asc(cardPrintings.setCode), asc(cardPrintings.collectorNumber));
 }
 
 export async function getFilterOptions() {

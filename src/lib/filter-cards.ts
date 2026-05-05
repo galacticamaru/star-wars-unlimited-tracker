@@ -13,6 +13,7 @@ export interface CardForFilter {
   setCode: string;
   collectorNumber: string;
   frontArtUrl: string | null;
+  backArtUrl: string | null;
 }
 
 export function filterCards(cards: CardForFilter[], filters: FilterState): CardForFilter[] {

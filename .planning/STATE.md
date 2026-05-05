@@ -9,28 +9,29 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 
 ## Current Position
 
-Phase: 2 of 5 (Card Catalog) — Ready to execute
-Plan: 0 of 3 complete
-Status: Phase 2 executing — Wave 1 in progress (02-01)
-Last activity: 2026-05-05 — Phase 2 execution started
+Phase: 3 of 5 (Collection) — Not started
+Plan: 7 of 7 complete
+Status: Phase 2 COMPLETE — Proceeding to Phase 3 planning
+Last activity: 2026-05-05 — Phase 2 execution completed
 
-Progress: [██████░░░░] 25%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: ~8 minutes
-- Total execution time: ~0.5 hours
+- Total plans completed: 7
+- Average duration: ~10 minutes
+- Total execution time: ~1.2 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 4/4 COMPLETE | ~32 min | ~8 min |
+| 2. Card Catalog | 3/3 COMPLETE | ~40 min | ~13 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01, 01-02, 01-03, 01-04 (all complete)
+- Last 5 plans: 01-04, 02-01, 02-02, 02-03
 - Trend: On track
 
 *Updated after each plan completion*
@@ -57,6 +58,8 @@ Recent decisions affecting current work:
 - vercel.json cron: 0 6 * * * (daily at 06:00 UTC) — within Hobby tier one-per-day limit
 - .next cache must be cleared before npm run build if Turbopack dev mode was run (stale validator.ts)
 - process.exit(0) required in seed scripts — tsx hangs on open Neon pooled HTTP connection otherwise
+- shadcn + base-ui: DropdownMenuTrigger (from Base UI) does not support asChild; use buttonVariants on the trigger directly
+- Next.js 16 async params: dynamic route params must be awaited before destructuring (e.g. await params)
 
 ### Pending Todos
 

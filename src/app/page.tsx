@@ -18,6 +18,7 @@ export default async function CatalogPage() {
     setCode: c.setCode,
     collectorNumber: c.collectorNumber,
     frontArtUrl: c.frontArtUrl,
+    backArtUrl: c.backArtUrl,
   }));
 
   return (

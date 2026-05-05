@@ -30,14 +30,13 @@ export function FilterDropdown({ label, options, selected, onChange }: FilterDro
 
   return (
     <DropdownMenu>
-      {/* UI-SPEC.md: fixed width 120px. outline variant when active (has selections).
-          base-ui Trigger doesn't support asChild — apply button variant classes directly. */}
       <DropdownMenuTrigger
         className={cn(
           buttonVariants({
             variant: selected.length > 0 ? 'outline' : 'ghost',
+            size: 'default',
           }),
-          'w-[120px] justify-between',
+          'w-[120px] justify-between'
         )}
       >
         {triggerLabel}

@@ -14,9 +14,11 @@ export function CardGrid({ cards }: { cards: CardForFilter[] }) {
         <CardItem
           key={card.id}
           name={card.name}
+          type={card.type}
           setCode={card.setCode}
           collectorNumber={card.collectorNumber}
           frontArtUrl={card.frontArtUrl}
+          backArtUrl={card.backArtUrl}
         />
       ))}
     </div>
