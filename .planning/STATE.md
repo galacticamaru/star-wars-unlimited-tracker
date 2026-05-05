@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-05-03)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus:** Phase 2 — Card Catalog
+**Current focus:** Phase 3 — Collection
 
 ## Current Position
 
@@ -68,7 +68,6 @@ None yet.
 ### Blockers/Concerns
 
 - SWUDB CSV column headers not publicly documented — must export a real SWUDB collection before building the Phase 3 importer (COLLECT-04)
-- swu-db.com image CDN hostname unknown — must inspect redirect from `?format=image` to configure Next.js `remotePatterns` in Phase 2
 - Community spreadsheet multi-sheet structure unclear — may need to handle one sheet per set in Phase 3 (COLLECT-04)
 
 ## Deferred Items
@@ -83,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-04
-Stopped at: Phase 2 context gathered — image grid, top-bar search/filter, /cards/[set]/[number] detail page
-Resume file: .planning/phases/02-card-catalog/02-CONTEXT.md
+Last session: 2026-05-05
+Stopped at: Phase 3 planned — 4 plans created (schema+API, URL-sync+filters, UI controls, CSV import)
+Resume file: .planning/phases/03-collection/03-CONTEXT.md

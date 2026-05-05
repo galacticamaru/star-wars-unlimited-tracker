@@ -69,7 +69,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. User can upload the community Reddit SWU tracking spreadsheet CSV (Card # + Standard/Hyperspace/F-Hyperspace columns) and have variant counts summed into total owned per card
   5. User can filter the catalog by Arena, Trait, Rarity, Keyword, and cost (multi-select, values 0–9+) in addition to existing filters
   6. When returning to the catalog from a card detail page, any active search query and filters are preserved
-**Plans**: TBD
+**Plans**: 4
+- **Wave 1** — 03-01-PLAN.md — user_collections schema + migration + GET/POST /api/collection endpoint
+- **Wave 2** — 03-02-PLAN.md — URL-synced filters with nuqs + advanced filter expansion (Arena, Trait, Rarity, Keyword, Cost)
+- **Wave 3** — 03-03-PLAN.md — card grid hover overlay controls + detail page count controls + human verify
+- **Wave 4** — 03-04-PLAN.md — CSV import page + normalization logic + transactional /api/collection/import endpoint
 **UI hint**: yes
 
 ### Phase 4: Deck Builder
@@ -107,6 +111,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/4 | COMPLETE | 2026-05-04 |
 | 2. Card Catalog | 3/3 | COMPLETE | 2026-05-05 |
-| 3. Collection | 0/? | Not started | - |
+| 3. Collection | 0/4 | Not started | - |
 | 4. Deck Builder | 0/? | Not started | - |
 | 5. Want List | 0/? | Not started | - |

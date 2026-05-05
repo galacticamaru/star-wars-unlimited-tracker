@@ -4,10 +4,10 @@
 
 ### Card Catalog
 
-- [ ] **CATALOG-01**: User can browse all Star Wars: Unlimited cards with card images, name, type, set, and aspect
-- [ ] **CATALOG-02**: User can search the card catalog by card name
-- [ ] **CATALOG-03**: User can filter the card catalog by set, card type, and aspect
-- [ ] **CATALOG-04**: Card catalog automatically syncs new card sets from the swu-db.com API without manual intervention
+- [x] **CATALOG-01**: User can browse all Star Wars: Unlimited cards with card images, name, type, set, and aspect
+- [x] **CATALOG-02**: User can search the card catalog by card name
+- [x] **CATALOG-03**: User can filter the card catalog by set, card type, and aspect
+- [x] **CATALOG-04**: Card catalog automatically syncs new card sets from the swu-db.com API without manual intervention
 
 ### Collection
 
@@ -61,10 +61,10 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| CATALOG-01 | Phase 2 | Pending |
-| CATALOG-02 | Phase 2 | Pending |
-| CATALOG-03 | Phase 2 | Pending |
-| CATALOG-04 | Phase 1 | Pending |
+| CATALOG-01 | Phase 2 | Complete |
+| CATALOG-02 | Phase 2 | Complete |
+| CATALOG-03 | Phase 2 | Complete |
+| CATALOG-04 | Phase 1 | Complete |
 | COLLECT-01 | Phase 3 | Pending |
 | COLLECT-02 | Phase 3 | Pending |
 | COLLECT-03 | Phase 3 | Pending |
