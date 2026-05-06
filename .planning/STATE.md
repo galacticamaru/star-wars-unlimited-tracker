@@ -9,10 +9,10 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 
 ## Current Position
 
-Phase: 5 of 5 (Want List) — Not started
-Plan: 0 of ? planned
-Status: Phase 4 UAT complete (7/7 passed). Ready for Phase 5 (Want List).
-Last activity: 2026-05-06 — Phase 4 UAT complete. Export and dirty state warning fixed and verified.
+Phase: 5 of 5 (Want List) — Ready to execute
+Plan: 0 of 4 complete
+Status: Phase 5 planned (4 plans, 3 waves). Ready for execution.
+Last activity: 2026-05-06 — Phase 5 planning complete. 4 plans in 3 waves created and verified.
 
 Progress: [██████████] 100% (Phase 4)
 
