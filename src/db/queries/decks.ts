@@ -163,3 +163,39 @@ export async function getDeckForExport(deckId: number) {
     cards,
   };
 }
+
+export async function getDeckCardsForUser(userId: number = 1) {
+  // Step 1: Get all deck IDs for this user
+  const userDecks = await db
+    .select({ id: decks.id })
+    .from(decks)
+    .where(eq(decks.userId, userId));
+
+  if (userDecks.length === 0) return [];
+
+  const deckIds = userDecks.map(d => d.id);
+
+  // Step 2: Fetch all deck cards with card definition + Normal printing details
+  return db
+    .select({
+      deckId: deckCards.deckId,
+      cardDefinitionId: deckCards.cardDefinitionId,
+      quantity: deckCards.quantity,
+      isSideboard: deckCards.isSideboard,
+      name: cardDefinitions.name,
+      type: cardDefinitions.type,
+      setCode: cardPrintings.setCode,
+      collectorNumber: cardPrintings.collectorNumber,
+      frontArtUrl: cardPrintings.frontArtUrl,
+      backArtUrl: cardPrintings.backArtUrl,
+    })
+    .from(deckCards)
+    .innerJoin(cardDefinitions, eq(deckCards.cardDefinitionId, cardDefinitions.id))
+    .innerJoin(cardPrintings, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
+    .where(
+      and(
+        inArray(deckCards.deckId, deckIds),
+        eq(cardPrintings.variantType, 'Normal')
+      )
+    );
+}
