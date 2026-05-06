@@ -24,6 +24,9 @@ export interface CardForFilter {
   frontArtUrl: string | null;
   backArtUrl: string | null;
   rarity: string;
+  frontText: string | null;
+  backText: string | null;
+  epicAction: string | null;
 }
 
 export function filterCards(cards: CardForFilter[], filters: FilterState): CardForFilter[] {
@@ -40,9 +43,12 @@ export function filterCards(cards: CardForFilter[], filters: FilterState): CardF
   } = filters;
 
   return cards.filter(card => {
-    // Search: case-insensitive substring on name (D-04)
+    const q = search.toLowerCase();
     const matchesSearch = search === '' ||
-      card.name.toLowerCase().includes(search.toLowerCase());
+      card.name.toLowerCase().includes(q) ||
+      (card.frontText ?? '').toLowerCase().includes(q) ||
+      (card.backText ?? '').toLowerCase().includes(q) ||
+      (card.epicAction ?? '').toLowerCase().includes(q);
 
     // Set: OR within category (D-05 — AND is across categories)
     const matchesSet = (selectedSets?.length ?? 0) === 0 ||

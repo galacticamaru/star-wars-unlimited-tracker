@@ -16,6 +16,9 @@ const makeCard = (overrides: Partial<CardForFilter> = {}): CardForFilter => ({
   collectorNumber: 'SOR-001',
   frontArtUrl: 'https://cdn.swu-db.com/images/cards/SOR/001.webp',
   backArtUrl: null,
+  frontText: null,
+  backText: null,
+  epicAction: null,
   ...overrides,
 });
 

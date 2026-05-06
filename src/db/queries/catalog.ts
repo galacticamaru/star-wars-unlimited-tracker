@@ -18,6 +18,9 @@ export async function getAllCards() {
       frontArtUrl: cardPrintings.frontArtUrl,
       backArtUrl: cardPrintings.backArtUrl,
       rarity: cardPrintings.rarity,
+      frontText: cardDefinitions.frontText,
+      backText: cardDefinitions.backText,
+      epicAction: cardDefinitions.epicAction,
     })
     .from(cardDefinitions)
     .innerJoin(

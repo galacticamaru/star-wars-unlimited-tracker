@@ -26,6 +26,9 @@ export default async function CatalogPage() {
     collectorNumber: c.collectorNumber,
     frontArtUrl: c.frontArtUrl,
     backArtUrl: c.backArtUrl,
+    frontText: c.frontText,
+    backText: c.backText,
+    epicAction: c.epicAction,
   }));
 
   return (
