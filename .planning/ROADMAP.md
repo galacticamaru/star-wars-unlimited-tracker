@@ -79,11 +79,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   6. User can export any saved deck in Melee format and raw JSON format for use in Karabast or other deck builders
   7. While viewing or building a deck, user can see ground/space unit counts, aspect breakdown, and a card cost curve
 **Plans**: 5
-- [ ] **Wave 1** — 04-01-PLAN.md — Database schema (decks, deck_cards) & CRUD API routes
-- [ ] **Wave 2** — 04-02-PLAN.md — Deck validation logic & stats calculation (TDD)
-- [ ] **Wave 3** — 04-03-PLAN.md — Deck builder core UI: main container, useReducer state, and sidebar
-- [ ] **Wave 3** — 04-04-PLAN.md — Catalog integration: Add buttons, owned count overlay, and missing card highlights
-- [ ] **Wave 4** — 04-05-PLAN.md — Deck management dashboard & Melee/JSON export
+- [x] **Wave 1** — 04-01-PLAN.md — Database schema (decks, deck_cards) & CRUD API routes
+- [x] **Wave 2** — 04-02-PLAN.md — Deck validation logic & stats calculation (TDD)
+- [x] **Wave 3** — 04-03-PLAN.md — Deck builder core UI: Dashboard, shell with useReducer, and stats sidebar
+- [x] **Wave 4** — 04-04-PLAN.md — Catalog integration: Selector mode, Add buttons, and shortfall highlights
+- [x] **Wave 5** — 04-05-PLAN.md — Export (Melee/JSON) and final polish
 
 ### Phase 5: Want List
 **Goal**: A user can immediately see which cards each deck is missing and view a single aggregated list of everything they need to acquire across all their decks
@@ -105,5 +105,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation | 4/4 | COMPLETE | 2026-05-04 |
 | 2. Card Catalog | 3/3 | COMPLETE | 2026-05-05 |
 | 3. Collection | 4/4 | COMPLETE | 2026-05-05 |
-| 4. Deck Builder | 0/5 | Not started | - |
+| 4. Deck Builder | 5/5 | COMPLETE | 2026-05-06 |
 | 5. Want List | 0/? | Not started | - |

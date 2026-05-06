@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-05-03)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus:** Phase 4 — Deck Builder
+**Current focus:** Phase 5 — Want List
 
 ## Current Position
 
-Phase: 4 of 5 (Deck Builder) — Not started
-Plan: 11 of 11 complete
-Status: Phase 3 COMPLETE — Proceeding to Phase 4 planning
-Last activity: 2026-05-05 — Phase 3 execution completed
+Phase: 5 of 5 (Want List) — Not started
+Plan: 0 of ? planned
+Status: Phase 4 UAT complete (7/7 passed). Ready for Phase 5 (Want List).
+Last activity: 2026-05-06 — Phase 4 UAT complete. Export and dirty state warning fixed and verified.
 
-Progress: [████████░░] 80%
+Progress: [██████████] 100% (Phase 4)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 16
 - Average duration: ~10 minutes
-- Total execution time: ~1.8 hours
+- Total execution time: ~2.5 hours
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: [████████░░] 80%
 | 1. Foundation | 4/4 COMPLETE | ~32 min | ~8 min |
 | 2. Card Catalog | 3/3 COMPLETE | ~40 min | ~13 min |
 | 3. Collection | 4/4 COMPLETE | ~35 min | ~9 min |
+| 4. Deck Builder | 5/5 COMPLETE | ~55 min | ~11 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03, 03-01, 03-02, 03-03, 03-04
+- Last 5 plans: 04-01, 04-02, 04-03, 04-04, 04-05
 - Trend: On track
 
 *Updated after each plan completion*
@@ -45,7 +46,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - Two-table card model (card_definitions + card_printings) is non-negotiable from Phase 1 — changing this later causes a rewrite
-- Local PostgreSQL card cache only — never proxy swu-db.com per user request; sync on a schedule
+- Local PostgreSQL card cache only — never proxy swu-db.com per user request; sync on a schedule      
 - v1 is single-user (no auth); Better Auth deferred to v2
 - vitest passWithNoTests: true — vitest@4.x exits code 1 with no test files; config option ensures zero-file runs exit 0
 - .env.example tracked via !.env.example gitignore negation — .env* wildcard requires explicit opt-in for example files
@@ -57,8 +58,8 @@ Recent decisions affecting current work:
 - dotenv config() must be called before any app module imports in seed scripts (but ESM hoisting makes this unreliable — prefer tsx --env-file=.env.local instead)
 - tsx --env-file=.env.local is the correct ESM-safe approach for seed scripts — avoids dotenv hoisting after Drizzle init
 - vercel.json cron: 0 6 * * * (daily at 06:00 UTC) — within Hobby tier one-per-day limit
-- .next cache must be cleared before npm run build if Turbopack dev mode was run (stale validator.ts)
-- process.exit(0) required in seed scripts — tsx hangs on open Neon pooled HTTP connection otherwise
+- .next cache must be cleared before npm run build if Turbopack dev mode was run (stale validator.ts)   
+- process.exit(0) required in seed scripts — tsx hangs on open Neon pooled HTTP connection otherwise  
 - shadcn + base-ui: DropdownMenuTrigger (from Base UI) does not support asChild; use buttonVariants on the trigger directly
 - Next.js 16 async params: dynamic route params must be awaited before destructuring (e.g. await params)
 - nuqs for URL-synced search and filters: provides snappy client-side state with sharable URLs
@@ -66,6 +67,8 @@ Recent decisions affecting current work:
 - Hover overlay collection controls: Plus/Minus buttons with optimistic updates for responsive catalog management
 - user_collections table: composite PK [userId, cardDefinitionId], userId default 1 for v1
 - Bulk CSV import: supports Reddit community spreadsheet, sums variants into single count, uses transactional API
+- **Phase 4 Naming**: Standardize on `cardDefinitionId` or `definitionId` across all components and API routes to avoid confusion with printings.
+- **Deck Draft Support**: `is_draft` boolean column in `decks` table allows saving invalid states; `is_draft: false` triggers strict server-side validation.
 
 ### Pending Todos
 
@@ -73,8 +76,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- SWUDB CSV column headers not publicly documented — must export a real SWUDB collection before building the Phase 3 importer (COLLECT-04)
-- Community spreadsheet multi-sheet structure unclear — may need to handle one sheet per set in Phase 3 (COLLECT-04)
+- None currently identified.
 
 ## Deferred Items
 
@@ -89,5 +91,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-05-05
-Stopped at: Phase 3 planned — 4 plans created (schema+API, URL-sync+filters, UI controls, CSV import)
-Resume file: .planning/phases/03-collection/03-CONTEXT.md
+Stopped at: Phase 4 planning revised and finalized.
+Resume file: .planning/phases/04-deck-builder/04-01-PLAN.md
