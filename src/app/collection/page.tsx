@@ -86,13 +86,13 @@ export default function CollectionPage() {
         <div className="max-w-md">
           <h2 className="text-xl font-semibold mb-2">Bulk Import from CSV</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Upload a single set tab from your community Reddit spreadsheet. We'll automatically sum your <strong>Non-Foil</strong>, <strong>Foil</strong>, <strong>Hyperspace</strong>, and <strong>F-Hyperspace</strong> variants into a single count per card.
+            Upload a single set tab from your community Reddit spreadsheet. We'll automatically sum your <strong>Standard</strong> (or <strong>Non-Foil</strong>), <strong>Foil</strong>, <strong>Hyperspace</strong>, and <strong>F-Hyperspace</strong> variants into a single count per card.
           </p>
           <div className="text-xs bg-muted p-3 rounded text-left border border-border text-muted-foreground">
             <p className="font-bold mb-1 uppercase">Required Columns:</p>
             <ul className="list-disc list-inside">
               <li>Card #</li>
-              <li>Non-Foil</li>
+              <li>Standard <em>or</em> Non-Foil</li>
               <li>Foil</li>
               <li>Hyperspace</li>
               <li>F-Hyperspace</li>

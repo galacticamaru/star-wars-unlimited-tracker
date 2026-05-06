@@ -2,25 +2,33 @@
 import { describe, it, expect } from 'vitest';
 import { filterCards, type CardForFilter, type FilterState } from './filter-cards';
 
-const makeCard = (overrides: Partial<CardForFilter> = {}): CardForFilter => ({
-  id: 1,
-  name: 'Luke Skywalker',
-  type: 'Unit',
-  aspects: ['Heroism'],
-  arenas: ['Ground'],
-  traits: ['REBEL'],
-  keywords: [],
-  cost: 3,
-  rarity: 'Common',
-  setCode: 'SOR',
-  collectorNumber: 'SOR-001',
-  frontArtUrl: 'https://cdn.swu-db.com/images/cards/SOR/001.webp',
-  backArtUrl: null,
-  frontText: null,
-  backText: null,
-  epicAction: null,
-  ...overrides,
-});
+const makeCard = (overrides: Partial<CardForFilter> = {}): CardForFilter => {
+  const defaults: CardForFilter = {
+    id: 1,
+    swudbId: 'SOR-001',
+    name: 'Luke Skywalker',
+    subtitle: null,
+    type: 'Unit',
+    aspects: ['Heroism'],
+    arenas: ['Ground'],
+    traits: ['REBEL'],
+    keywords: [],
+    cost: 3,
+    power: null,
+    hp: null,
+    rarity: 'Common',
+    setCode: 'SOR',
+    collectorNumber: 'SOR-001',
+    frontArtUrl: 'https://cdn.swu.db.com/images/cards/SOR/001.webp',
+    backArtUrl: null,
+    frontText: null,
+    backText: null,
+    epicAction: null,
+    doubleSided: false,
+    unique: false,
+  };
+  return { ...defaults, ...overrides };
+};
 
 const emptyFilters: FilterState = {
   search: '',
