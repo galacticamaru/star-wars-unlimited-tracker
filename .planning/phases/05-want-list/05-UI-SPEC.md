@@ -1,10 +1,11 @@
 ---
 phase: 5
 slug: want-list
-status: draft
+status: approved
 shadcn_initialized: true
 preset: b5oIaPwai8
 created: 2026-05-06
+reviewed_at: 2026-05-06
 ---
 
 # Phase 5 — UI Design Contract
@@ -61,6 +62,8 @@ Inherited from Phase 2 — no changes. New Phase 5 elements map to existing role
 | Display | 28px | 600 (semibold) | 1.1 | Oxanium | Page title "My Decks" (already in use on /decks; no change) |
 
 Weights declared: 400 and 600 only. Maximum 2 weights enforced.
+
+> **Micro-badge exception:** Stat chip labels inside `WantListCardItem` use `text-[9px]` for NEED / OWN / SHORT. This is not a named type scale role — it is scoped to this single micro-chip component and does not represent a fifth scale step.
 
 ---
 
@@ -283,11 +286,11 @@ These are precise contracts, not suggestions.
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS — FLAG: micro-badge `text-[9px]` noted as exception above
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-05-06
