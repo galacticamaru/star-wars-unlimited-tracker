@@ -1,5 +1,9 @@
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import ws from 'ws';
+
+// Required for neon-serverless to work in Node.js environments (local, build, and serverless functions)
+neonConfig.webSocketConstructor = ws;
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
@@ -8,5 +12,6 @@ if (!databaseUrl) {
     'Add it to .env.local for local dev or to Vercel environment variables for deployment.'
   );
 }
-const sql = neon(databaseUrl);
-export const db = drizzle({ client: sql });
+
+const pool = new Pool({ connectionString: databaseUrl });
+export const db = drizzle({ client: pool });

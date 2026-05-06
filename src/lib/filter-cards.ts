@@ -12,13 +12,17 @@ export interface FilterState {
 
 export interface CardForFilter {
   id: number;
+  swudbId: string;
   name: string;
+  subtitle: string | null;
   type: string;
   aspects: string[];
   arenas: string[];
   traits: string[];
   keywords: string[];
   cost: number | null;
+  power: number | null;
+  hp: number | null;
   setCode: string;
   collectorNumber: string;
   frontArtUrl: string | null;
@@ -27,6 +31,8 @@ export interface CardForFilter {
   frontText: string | null;
   backText: string | null;
   epicAction: string | null;
+  doubleSided: boolean;
+  unique: boolean;
 }
 
 export function filterCards(cards: CardForFilter[], filters: FilterState): CardForFilter[] {

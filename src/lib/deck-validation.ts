@@ -1,6 +1,43 @@
-import { Card, DeckCard, ValidationResult, ValidationStats } from './deck-validation';
+export interface Card {
+  id: number;
+  swudbId: string;
+  name: string;
+  subtitle: string | null;
+  type: string;
+  aspects: string[];
+  arenas: string[];
+  traits: string[];
+  keywords: string[];
+  cost: number | null;
+  power: number | null;
+  hp: number | null;
+  frontText: string | null;
+  backText: string | null;
+  epicAction: string | null;
+  doubleSided: boolean;
+  unique: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-export type { Card, DeckCard, ValidationResult, ValidationStats };
+export interface DeckCard {
+  card: Card;
+  quantity: number;
+}
+
+export interface ValidationStats {
+  costCurve: Record<number, number>;
+  typeCounts: Record<string, number>;
+  aspectCounts: Record<string, number>;
+  arenaCounts: Record<string, number>;
+}
+
+export interface ValidationResult {
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+  stats: ValidationStats;
+}
 
 /**
  * Validates a deck based on SWU Premier rules.

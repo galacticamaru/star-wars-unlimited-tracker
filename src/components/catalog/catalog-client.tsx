@@ -15,6 +15,9 @@ interface FilterOptions {
 interface CatalogClientProps {
   cards: CardForFilter[];
   filterOptions: FilterOptions;
+  mode?: 'catalog' | 'selector';
+  deckCounts?: Record<number, number>;
+  onDeckUpdate?: (cardDefinitionId: number, count: number) => void;
 }
 
 const RARITY_OPTIONS = ['(C) Common', '(U) Uncommon', '(R) Rare', '(L) Legendary'];
@@ -38,7 +41,13 @@ const TRAIT_OPTIONS = [
   'UNDERWORLD', 'VEHICLE', 'WALKER', 'WEAPON', 'WOOKIEE'
 ];
 
-export function CatalogClient({ cards, filterOptions }: CatalogClientProps) {
+export function CatalogClient({ 
+  cards, 
+  filterOptions, 
+  mode = 'catalog', 
+  deckCounts, 
+  onDeckUpdate 
+}: CatalogClientProps) {
   const [collection, setCollection] = useState<Record<number, number>>({});
 
   useEffect(() => {
@@ -144,6 +153,9 @@ export function CatalogClient({ cards, filterOptions }: CatalogClientProps) {
           cards={filtered} 
           collection={collection}
           onUpdateCount={handleUpdateCount}
+          mode={mode}
+          deckCounts={deckCounts}
+          onDeckUpdate={onDeckUpdate}
         />
       )}
     </div>

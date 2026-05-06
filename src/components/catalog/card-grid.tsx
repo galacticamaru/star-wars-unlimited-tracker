@@ -5,9 +5,19 @@ interface CardGridProps {
   cards: CardForFilter[];
   collection: Record<number, number>;
   onUpdateCount: (id: number, count: number) => void;
+  mode?: 'catalog' | 'selector';
+  deckCounts?: Record<number, number>;
+  onDeckUpdate?: (cardDefinitionId: number, count: number) => void;
 }
 
-export function CardGrid({ cards, collection, onUpdateCount }: CardGridProps) {
+export function CardGrid({ 
+  cards, 
+  collection, 
+  onUpdateCount,
+  mode = 'catalog',
+  deckCounts = {},
+  onDeckUpdate
+}: CardGridProps) {
   return (
     <div
       className={[
@@ -28,6 +38,9 @@ export function CardGrid({ cards, collection, onUpdateCount }: CardGridProps) {
           backArtUrl={card.backArtUrl}
           ownedCount={collection[card.id] || 0}
           onUpdateCount={onUpdateCount}
+          mode={mode}
+          deckCount={deckCounts[card.id] || 0}
+          onDeckUpdate={onDeckUpdate}
         />
       ))}
     </div>

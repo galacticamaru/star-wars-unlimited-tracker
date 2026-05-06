@@ -116,6 +116,7 @@ export async function getDeckForExport(deckId: number) {
     const [result] = await db
       .select({
         name: cardDefinitions.name,
+        subtitle: cardDefinitions.subtitle,
         setCode: cardPrintings.setCode,
         collectorNumber: cardPrintings.collectorNumber,
         type: cardDefinitions.type,
@@ -138,6 +139,7 @@ export async function getDeckForExport(deckId: number) {
   const cards = await db
     .select({
       name: cardDefinitions.name,
+      subtitle: cardDefinitions.subtitle,
       quantity: deckCards.quantity,
       setCode: cardPrintings.setCode,
       collectorNumber: cardPrintings.collectorNumber,

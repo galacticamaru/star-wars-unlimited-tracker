@@ -74,3 +74,31 @@ export const userCollections = pgTable(
     primaryKey({ columns: [t.userId, t.cardDefinitionId] }),
   ]
 );
+
+export const decks = pgTable('decks', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().default(1),
+  name: text('name').notNull(),
+  leaderCardDefinitionId: integer('leader_card_definition_id').references(() => cardDefinitions.id),
+  baseCardDefinitionId: integer('base_card_definition_id').references(() => cardDefinitions.id),
+  isDraft: boolean('is_draft').notNull().default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const deckCards = pgTable(
+  'deck_cards',
+  {
+    deckId: integer('deck_id')
+      .notNull()
+      .references(() => decks.id, { onDelete: 'cascade' }),
+    cardDefinitionId: integer('card_definition_id')
+      .notNull()
+      .references(() => cardDefinitions.id),
+    quantity: integer('quantity').notNull().default(1),
+    isSideboard: boolean('is_sideboard').notNull().default(false),
+  },
+  (t) => [
+    primaryKey({ columns: [t.deckId, t.cardDefinitionId, t.isSideboard] }),
+  ]
+);

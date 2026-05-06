@@ -14,13 +14,17 @@ export default async function CatalogPage() {
   // across the Server→Client boundary. Select only needed columns (done in getAllCards).
   const plainCards = cards.map(c => ({
     id: c.id,
+    swudbId: c.swudbId,
     name: c.name,
+    subtitle: c.subtitle,
     type: c.type,
     aspects: c.aspects ?? [],
     arenas: c.arenas ?? [],
     traits: c.traits ?? [],
     keywords: c.keywords ?? [],
     cost: c.cost,
+    power: c.power,
+    hp: c.hp,
     rarity: c.rarity,
     setCode: c.setCode,
     collectorNumber: c.collectorNumber,
@@ -29,6 +33,8 @@ export default async function CatalogPage() {
     frontText: c.frontText,
     backText: c.backText,
     epicAction: c.epicAction,
+    doubleSided: c.doubleSided,
+    unique: c.unique,
   }));
 
   return (

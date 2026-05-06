@@ -6,13 +6,17 @@ export async function getAllCards() {
   return db
     .select({
       id: cardDefinitions.id,
+      swudbId: cardDefinitions.swudbId,
       name: cardDefinitions.name,
+      subtitle: cardDefinitions.subtitle,
       type: cardDefinitions.type,
       aspects: cardDefinitions.aspects,
       arenas: cardDefinitions.arenas,
       traits: cardDefinitions.traits,
       keywords: cardDefinitions.keywords,
       cost: cardDefinitions.cost,
+      power: cardDefinitions.power,
+      hp: cardDefinitions.hp,
       setCode: cardPrintings.setCode,
       collectorNumber: cardPrintings.collectorNumber,
       frontArtUrl: cardPrintings.frontArtUrl,
@@ -21,6 +25,8 @@ export async function getAllCards() {
       frontText: cardDefinitions.frontText,
       backText: cardDefinitions.backText,
       epicAction: cardDefinitions.epicAction,
+      doubleSided: cardDefinitions.doubleSided,
+      unique: cardDefinitions.unique,
     })
     .from(cardDefinitions)
     .innerJoin(

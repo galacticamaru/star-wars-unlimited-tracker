@@ -16,10 +16,24 @@ interface CardItemProps {
   backArtUrl: string | null;
   ownedCount: number;
   onUpdateCount: (id: number, count: number) => void;
+  mode?: 'catalog' | 'selector';
+  deckCount?: number;
+  onDeckUpdate?: (id: number, count: number) => void;
 }
 
 export function CardItem({ 
-  id, name, type, setCode, collectorNumber, frontArtUrl, backArtUrl, ownedCount, onUpdateCount 
+  id, 
+  name, 
+  type, 
+  setCode, 
+  collectorNumber, 
+  frontArtUrl, 
+  backArtUrl, 
+  ownedCount, 
+  onUpdateCount,
+  mode = 'catalog',
+  deckCount = 0,
+  onDeckUpdate
 }: CardItemProps) {
   const [loaded, setLoaded] = useState(false);
   // Use indexOf for robustness over edge-case multi-hyphen collector numbers
@@ -36,6 +50,9 @@ export function CardItem({
   // Leaders/Bases are horizontal (3:2) in the catalog. Others are vertical (2:3).
   const isHorizontal = isLeader || isBase;
 
+  const isSelector = mode === 'selector';
+  const hasShortfall = isSelector && deckCount > ownedCount;
+
   return (
     <div className="group relative">
       <Link
@@ -46,9 +63,10 @@ export function CardItem({
         {/* relative + aspect-[X/Y] + overflow-hidden ALL required (Pitfall 2) */}
         <div
           className={cn(
-            'relative rounded-md overflow-hidden bg-muted transition-all',
+            'relative rounded-md overflow-hidden bg-muted transition-all border-2',
             isHorizontal ? 'aspect-[3/2]' : 'aspect-[2/3]',
             !loaded && 'animate-pulse',
+            hasShortfall ? 'border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'border-transparent'
           )}
         >
           {displayUrl && (
@@ -70,40 +88,96 @@ export function CardItem({
           <div 
             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex flex-col items-center justify-center gap-2 z-10"
           >
-            <div 
-              className="flex items-center gap-3 bg-background/90 rounded-full px-3 py-1 shadow-lg"
-              onClick={(e) => {
-                // Prevent navigation when clicking the control bar itself
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
-              <button
-                type="button"
+            {isSelector ? (
+              <div className="flex flex-col items-center gap-2 w-full px-2">
+                <div 
+                  className="flex items-center gap-3 bg-background/90 rounded-full px-3 py-1 shadow-lg"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onDeckUpdate?.(id, Math.max(0, deckCount - 1));
+                    }}
+                    className="p-1 hover:bg-muted rounded-full transition-colors"
+                    aria-label="Decrease deck count"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <div className="flex flex-col items-center leading-none">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold">In Deck</span>
+                    <span className="font-bold min-w-[1ch] text-center text-sm">{deckCount}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      // Max 3 for non-leader/base cards (usually, but reducer handles logic)
+                      onDeckUpdate?.(id, deckCount + 1);
+                    }}
+                    className="p-1 hover:bg-muted rounded-full transition-colors"
+                    aria-label="Increase deck count"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+                
+                {(isLeader || isBase) && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onDeckUpdate?.(id, 1);
+                    }}
+                    className="bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-full shadow-lg hover:bg-primary/90 transition-colors uppercase"
+                  >
+                    Set as {isLeader ? 'Leader' : 'Base'}
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div 
+                className="flex items-center gap-3 bg-background/90 rounded-full px-3 py-1 shadow-lg"
                 onClick={(e) => {
+                  // Prevent navigation when clicking the control bar itself
                   e.preventDefault();
                   e.stopPropagation();
-                  onUpdateCount(id, Math.max(0, ownedCount - 1));
                 }}
-                className="p-1 hover:bg-muted rounded-full transition-colors"
-                aria-label="Decrease owned count"
               >
-                <Minus className="w-4 h-4" />
-              </button>
-              <span className="font-bold min-w-[1ch] text-center text-sm">{ownedCount}</span>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onUpdateCount(id, ownedCount + 1);
-                }}
-                className="p-1 hover:bg-muted rounded-full transition-colors"
-                aria-label="Increase owned count"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-            </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onUpdateCount(id, Math.max(0, ownedCount - 1));
+                  }}
+                  className="p-1 hover:bg-muted rounded-full transition-colors"
+                  aria-label="Decrease owned count"
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="font-bold min-w-[1ch] text-center text-sm">{ownedCount}</span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onUpdateCount(id, ownedCount + 1);
+                  }}
+                  className="p-1 hover:bg-muted rounded-full transition-colors"
+                  aria-label="Increase owned count"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Focus/Hover Ring — ensures ring is on top of the fill image */}
@@ -112,10 +186,34 @@ export function CardItem({
       </Link>
       
       {/* Badge for owned count (visible even when not hovering if count > 0) */}
-      {ownedCount > 0 && (
+      {ownedCount > 0 && !isSelector && (
         <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md z-20 pointer-events-none">
           {ownedCount}
         </div>
+      )}
+
+      {/* Selector Mode Badges */}
+      {isSelector && (
+        <>
+          {/* Owned badge (smaller, secondary) */}
+          <div className="absolute -top-2 -left-2 bg-muted-foreground/80 text-white text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-sm z-20 pointer-events-none">
+            OWNED: {ownedCount}
+          </div>
+          
+          {/* Deck count badge (primary) */}
+          {deckCount > 0 && (
+            <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md z-20 pointer-events-none">
+              {deckCount}
+            </div>
+          )}
+
+          {/* Shortfall badge */}
+          {hasShortfall && (
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold shadow-lg z-20 pointer-events-none whitespace-nowrap uppercase tracking-wider">
+              Missing {deckCount - ownedCount}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

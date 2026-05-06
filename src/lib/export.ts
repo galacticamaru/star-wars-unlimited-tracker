@@ -1,5 +1,6 @@
 export interface ExportCard {
   name: string;
+  subtitle?: string | null;
   quantity: number;
   setCode: string;
   collectorNumber: string;
@@ -15,13 +16,19 @@ export interface ExportDeck {
 }
 
 function formatMeleeLine(card: ExportCard): string {
-  // collectorNumber is "SOR-051", we want "51"
-  const number = card.collectorNumber.split('-')[1] || card.collectorNumber;
-  return `${card.quantity} ${card.name} [${card.setCode}] [${number}]`;
+  const fullName = card.subtitle && card.type !== 'Base' ? `${card.name} | ${card.subtitle}` : card.name;
+  return `${card.quantity} ${fullName}`;
 }
 
 export function toMeleeFormat(deck: ExportDeck): string {
   const lines: string[] = [];
+
+  const mainDeck = deck.cards.filter((c) => !c.isSideboard);
+  if (mainDeck.length > 0) {
+    lines.push('MainDeck');
+    mainDeck.forEach((c) => lines.push(formatMeleeLine(c)));
+    lines.push('');
+  }
 
   if (deck.leader) {
     lines.push('Leader');
@@ -32,13 +39,6 @@ export function toMeleeFormat(deck: ExportDeck): string {
   if (deck.base) {
     lines.push('Base');
     lines.push(formatMeleeLine(deck.base));
-    lines.push('');
-  }
-
-  const mainDeck = deck.cards.filter((c) => !c.isSideboard);
-  if (mainDeck.length > 0) {
-    lines.push('Main Deck');
-    mainDeck.forEach((c) => lines.push(formatMeleeLine(c)));
     lines.push('');
   }
 
