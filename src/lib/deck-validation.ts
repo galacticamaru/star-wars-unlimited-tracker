@@ -16,8 +16,6 @@ export interface Card {
   epicAction: string | null;
   doubleSided: boolean;
   unique: boolean;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface DeckCard {
