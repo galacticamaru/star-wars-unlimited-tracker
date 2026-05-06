@@ -11,6 +11,11 @@ export interface Card {
   cost: number | null;
   power: number | null;
   hp: number | null;
+  setCode: string;
+  collectorNumber: string;
+  frontArtUrl: string | null;
+  backArtUrl: string | null;
+  rarity: string;
   frontText: string | null;
   backText: string | null;
   epicAction: string | null;
