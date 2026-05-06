@@ -93,7 +93,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. On any saved deck's page, the user can see a list of cards the deck requires that they do not own enough copies of, with the exact shortfall quantity shown
   2. User can view a combined want list that aggregates missing cards across all their decks, deduplicating by card and summing shortfall quantities
   3. Both want list views derive from a live query against collection and deck data — no separate sync or store needed
-**Plans**: TBD
+**Plans**: 4
+- [ ] **Wave 1** — 05-01-PLAN.md — NavBar component + root layout mount
+- [ ] **Wave 1** — 05-02-PLAN.md — getDeckCardsForUser DB query + GET /api/want-list route
+- [ ] **Wave 2** — 05-03-PLAN.md — CardItem want-list mode + WantListTab + deck builder third tab
+- [ ] **Wave 3** — 05-04-PLAN.md — Combined want list section on /decks dashboard
 
 ## Progress
 
@@ -106,4 +110,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Card Catalog | 3/3 | COMPLETE | 2026-05-05 |
 | 3. Collection | 4/4 | COMPLETE | 2026-05-05 |
 | 4. Deck Builder | 5/5 | COMPLETE | 2026-05-06 |
-| 5. Want List | 0/? | Not started | - |
+| 5. Want List | 0/4 | Not started | - |
