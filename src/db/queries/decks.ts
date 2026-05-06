@@ -1,9 +1,8 @@
 import { db } from '@/db';
-import { decks, deckCards, cardDefinitions } from '@/db/schema';
-import { eq, desc, inArray } from 'drizzle-orm';
+import { decks, deckCards, cardDefinitions, cardPrintings } from '@/db/schema';
+import { eq, desc, inArray, and } from 'drizzle-orm';
 
 export async function getDecks(userId: number = 1) {
-// ... (omitted for brevity in replace call, but I must provide context)
   return db
     .select()
     .from(decks)
@@ -98,4 +97,67 @@ export async function getCardsByDefinitionIds(ids: number[]) {
     .select()
     .from(cardDefinitions)
     .where(inArray(cardDefinitions.id, ids));
+}
+
+export async function getDeckForExport(deckId: number) {
+  const [deck] = await db
+    .select()
+    .from(decks)
+    .where(eq(decks.id, deckId));
+
+  if (!deck) return null;
+
+  // Fetch leader and base printings
+  const leaderId = deck.leaderCardDefinitionId;
+  const baseId = deck.baseCardDefinitionId;
+
+  const printingDetails = async (defId: number | null) => {
+    if (!defId) return null;
+    const [result] = await db
+      .select({
+        name: cardDefinitions.name,
+        setCode: cardPrintings.setCode,
+        collectorNumber: cardPrintings.collectorNumber,
+        type: cardDefinitions.type,
+      })
+      .from(cardDefinitions)
+      .innerJoin(cardPrintings, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
+      .where(
+        and(
+          eq(cardDefinitions.id, defId),
+          eq(cardPrintings.variantType, 'Normal')
+        )
+      )
+      .limit(1);
+    return result;
+  };
+
+  const leader = await printingDetails(leaderId);
+  const base = await printingDetails(baseId);
+
+  const cards = await db
+    .select({
+      name: cardDefinitions.name,
+      quantity: deckCards.quantity,
+      setCode: cardPrintings.setCode,
+      collectorNumber: cardPrintings.collectorNumber,
+      isSideboard: deckCards.isSideboard,
+      type: cardDefinitions.type,
+    })
+    .from(deckCards)
+    .innerJoin(cardDefinitions, eq(deckCards.cardDefinitionId, cardDefinitions.id))
+    .innerJoin(cardPrintings, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
+    .where(
+      and(
+        eq(deckCards.deckId, deckId),
+        eq(cardPrintings.variantType, 'Normal')
+      )
+    );
+
+  return {
+    name: deck.name,
+    leader: leader ? { ...leader, quantity: 1, isSideboard: false } : null,
+    base: base ? { ...base, quantity: 1, isSideboard: false } : null,
+    cards,
+  };
 }
