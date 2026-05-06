@@ -16,8 +16,10 @@ interface CardItemProps {
   backArtUrl: string | null;
   ownedCount: number;
   onUpdateCount: (id: number, count: number) => void;
-  mode?: 'catalog' | 'selector';
+  mode?: 'catalog' | 'selector' | 'want-list';
   deckCount?: number;
+  deckQuantity?: number;   // quantity needed by deck (used when mode='want-list')
+  shortfall?: number;      // deckQuantity - ownedCount (used when mode='want-list')
   onDeckUpdate?: (id: number, count: number) => void;
 }
 
@@ -33,6 +35,8 @@ export function CardItem({
   onUpdateCount,
   mode = 'catalog',
   deckCount = 0,
+  deckQuantity = 0,
+  shortfall = 0,
   onDeckUpdate
 }: CardItemProps) {
   const [loaded, setLoaded] = useState(false);
@@ -51,10 +55,14 @@ export function CardItem({
   const isHorizontal = isLeader || isBase;
 
   const isSelector = mode === 'selector';
-  const hasShortfall = isSelector && deckCount > ownedCount;
+  const isWantList = mode === 'want-list';
+  const hasShortfall = (isSelector && deckCount > ownedCount) || isWantList;
 
   return (
-    <div className="group relative">
+    <div 
+      className="group relative"
+      aria-label={isWantList ? `${name} — need ${deckQuantity}, own ${ownedCount}, short ${shortfall}` : undefined}
+    >
       <Link
         href={`/cards/${setCode}/${cardNumber}`}
         aria-label={`View card: ${name}`}
@@ -88,7 +96,12 @@ export function CardItem({
           <div 
             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex flex-col items-center justify-center gap-2 z-10"
           >
-            {isSelector ? (
+            {isWantList ? (
+              // Read-only overlay: show card name only (accessibility on small tiles)
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex items-center justify-center z-10 px-1">
+                <span className="text-white text-xs font-semibold text-center leading-tight">{name}</span>
+              </div>
+            ) : isSelector ? (
               <div className="flex flex-col items-center gap-2 w-full px-2">
                 <div 
                   className="flex items-center gap-3 bg-background/90 rounded-full px-3 py-1 shadow-lg"
@@ -214,6 +227,21 @@ export function CardItem({
             </div>
           )}
         </>
+      )}
+
+      {/* Want List mode: NEED / OWN / SHORT chips — always visible below tile */}
+      {isWantList && (
+        <div className="flex gap-1 justify-center mt-1">
+          <span className="bg-muted text-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-sm">
+            NEED {deckQuantity}
+          </span>
+          <span className="bg-muted text-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-sm">
+            OWN {ownedCount}
+          </span>
+          <span className="bg-destructive text-destructive-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-sm">
+            SHORT {shortfall}
+          </span>
+        </div>
       )}
     </div>
   );
