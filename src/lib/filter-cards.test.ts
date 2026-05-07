@@ -109,9 +109,23 @@ describe('filterCards', () => {
     expect(result.map(c => c.id)).toContain(3);
   });
 
-  it('rarity filter is bypassed (returns all cards as requested)', () => {
-    const cards = [makeCard({ rarity: 'Common' }), makeCard({ id: 2, rarity: 'Rare' })];
-    expect(filterCards(cards, { ...emptyFilters, selectedRarities: ['Common'] })).toHaveLength(2);
+  it('filters by rarity (handles simple and UI-prefixed values)', () => {
+    const cards = [
+      makeCard({ rarity: 'Common' }),
+      makeCard({ id: 2, rarity: 'Uncommon' }),
+      makeCard({ id: 3, rarity: 'Rare' }),
+    ];
+    
+    // Simple match
+    expect(filterCards(cards, { ...emptyFilters, selectedRarities: ['Common'] })).toHaveLength(1);
+    
+    // UI-prefixed match (D-05: '(C) Common' -> 'Common')
+    expect(filterCards(cards, { ...emptyFilters, selectedRarities: ['(C) Common'] })).toHaveLength(1);
+    expect(filterCards(cards, { ...emptyFilters, selectedRarities: ['(C) Common'] })[0].rarity).toBe('Common');
+    
+    // Multiple selection (OR)
+    expect(filterCards(cards, { ...emptyFilters, selectedRarities: ['Common', 'Rare'] })).toHaveLength(2);
+    expect(filterCards(cards, { ...emptyFilters, selectedRarities: ['(C) Common', '(R) Rare'] })).toHaveLength(2);
   });
 
   it('filters by cost (with 9+ handling)', () => {
