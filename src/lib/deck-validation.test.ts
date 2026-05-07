@@ -64,6 +64,36 @@ describe('validateDeck', () => {
     expect(result.errors).toContain('Exceeded 3 copies of Test Card');
   });
 
+  it('should allow up to 15 copies of Swarming Vulture Droid (JTL-256)', () => {
+    const vultureDroid = createCard({
+      name: 'Swarming Vulture Droid',
+      setCode: 'JTL',
+      collectorNumber: '256',
+      swudbId: 'JTL-256'
+    });
+    const mainDeck = [{ card: vultureDroid, quantity: 15 }];
+    
+    // We need 50 cards total for validity, but we only care about the copies error here
+    const result = validateDeck(mockLeader, mockBase, mainDeck, []);
+    
+    const copiesError = result.errors.find(e => e.includes('Exceeded'));
+    expect(copiesError).toBeUndefined();
+  });
+
+  it('should return error if Swarming Vulture Droid (JTL-256) has more than 15 copies', () => {
+    const vultureDroid = createCard({
+      name: 'Swarming Vulture Droid',
+      setCode: 'JTL',
+      collectorNumber: '256',
+      swudbId: 'JTL-256'
+    });
+    const mainDeck = [{ card: vultureDroid, quantity: 16 }];
+    
+    const result = validateDeck(mockLeader, mockBase, mainDeck, []);
+    
+    expect(result.errors).toContain('Exceeded 15 copies of Swarming Vulture Droid');
+  });
+
   it('should return warnings for off-aspect cards', () => {
     const leader = createCard({ type: 'Leader', aspects: ['Vigilance'] });
     const base = createCard({ type: 'Base', aspects: ['Vigilance'] });

@@ -82,13 +82,16 @@ export function validateDeck(
     base.aspects.forEach((a) => combinedAspects.add(a));
   }
 
-  const cardQuantities = new Map<string, { name: string; quantity: number }>();
+  const cardQuantities = new Map<string, { name: string; quantity: number; maxAllowed: number }>();
 
   const processCard = (item: DeckCard, isMain: boolean) => {
     const { card, quantity } = item;
     
     // Track quantities for 3-copy limit
-    const existing = cardQuantities.get(card.swudbId) || { name: card.name, quantity: 0 };
+    const isSwarmingVultureDroid = card.setCode === 'JTL' && card.collectorNumber === '256';
+    const maxAllowed = isSwarmingVultureDroid ? 15 : 3;
+
+    const existing = cardQuantities.get(card.swudbId) || { name: card.name, quantity: 0, maxAllowed };
     existing.quantity += quantity;
     cardQuantities.set(card.swudbId, existing);
 
@@ -124,8 +127,8 @@ export function validateDeck(
 
   // 3. Final error checks
   for (const [swudbId, data] of cardQuantities.entries()) {
-    if (data.quantity > 3) {
-      errors.push(`Exceeded 3 copies of ${data.name}`);
+    if (data.quantity > data.maxAllowed) {
+      errors.push(`Exceeded ${data.maxAllowed} copies of ${data.name}`);
     }
   }
 
