@@ -68,7 +68,7 @@ describe('validateDeck', () => {
     const vultureDroid = createCard({
       name: 'Swarming Vulture Droid',
       setCode: 'JTL',
-      collectorNumber: '256',
+      collectorNumber: 'JTL-256',
       swudbId: 'JTL-256'
     });
     const mainDeck = [{ card: vultureDroid, quantity: 15 }];
@@ -84,7 +84,7 @@ describe('validateDeck', () => {
     const vultureDroid = createCard({
       name: 'Swarming Vulture Droid',
       setCode: 'JTL',
-      collectorNumber: '256',
+      collectorNumber: 'JTL-256',
       swudbId: 'JTL-256'
     });
     const mainDeck = [{ card: vultureDroid, quantity: 16 }];

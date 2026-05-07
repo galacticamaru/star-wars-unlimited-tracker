@@ -2,8 +2,8 @@
 
 ## Milestones
 
-- ✅ **v1 MVP** — Phases 1–5.2 (shipped 2026-05-07) · [Archive](.planning/milestones/v1-ROADMAP.md)
-- 📋 **v2** — Planned (auth, multi-user, export features)
+- ✅ **v1 MVP** — Phases 1–5.2 (shipped 2026-05-07) · [Archive](milestones/v1-ROADMAP.md)
+- 📋 **v2** — Phases 6–10 (auth, multi-user, market pricing, deck of the day, sideboard, trade binder)
 
 ## Phases
 
@@ -20,12 +20,76 @@
 
 </details>
 
-### 📋 v2 (Planned)
+### 📋 v2 Multi-User, Market, Decks & Trading (Phases 6–10)
 
-*Requirements to be defined via `/gsd-new-milestone`*
+- [ ] **Phase 6: Auth & Multi-User** — Per-user accounts with Better Auth; migrate v1 single-user data to first account
+- [ ] **Phase 7: Market Pricing** — Card prices (EUR + USD) from pokemon-api.com; deck cost totals; daily cache refresh
+- [ ] **Phase 8: Deck of the Day** — Daily featured tournament deck with ownership overlay and copy-to-library
+- [ ] **Phase 9: Sideboard** — Sideboard support in deck builder with rules enforcement and distinct cost curve display
+- [ ] **Phase 10: Trade Binder** — Public trade binder at /binder/[username] with catalog filters and want section
 
-- [ ] Phase 6: Authentication (Better Auth — per-user accounts)
-- [ ] Phase 7+: TBD after requirements definition
+## Phase Details
+
+### Phase 6: Auth & Multi-User
+**Goal**: Users can create accounts and log in; all data is isolated per user; v1 hardcoded userId=1 is fully removed
+**Depends on**: Nothing (first v2 phase; all other v2 phases require real userId)
+**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, AUTH-07
+**Success Criteria** (what must be TRUE):
+  1. User can register with email and password and receive a working account
+  2. User can log in with email or Google OAuth or Discord OAuth and remain logged in across browser restarts
+  3. User can log out from any page and is returned to the login screen
+  4. All collection data and decks are visible only to the owning user — a second registered account sees a clean slate
+  5. v1 data (cards, decks) is associated with the first registered account after migration
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 7: Market Pricing
+**Goal**: Users can see card prices (EUR and USD) on card detail pages, in the deck builder as a total cost, and on the want list as an estimated completion cost
+**Depends on**: Phase 6
+**Requirements**: MARKET-01, MARKET-02, MARKET-03, MARKET-04
+**Success Criteria** (what must be TRUE):
+  1. User can open a card detail page and see its current EUR and USD price
+  2. User can view the deck builder and see a total deck cost in EUR and USD
+  3. User can view their want list and see an estimated cost to acquire all missing cards
+  4. Prices are never fetched live — they come from the database cache and update once per day via cron
+**Plans**: TBD
+
+### Phase 8: Deck of the Day
+**Goal**: Users can view a daily featured tournament deck, see which cards they own vs are missing, and copy it into their personal library
+**Depends on**: Phase 6 (copy-to-library needs real userId); Phase 7 (cost summary on featured deck)
+**Requirements**: DOTD-01, DOTD-02, DOTD-03, DOTD-04
+**Success Criteria** (what must be TRUE):
+  1. User can navigate to a Deck of the Day page showing a featured PQ-or-higher tournament deck
+  2. Each card in the featured deck shows the user's owned count and highlights shortfalls — same visual as the deck builder
+  3. User can click one button to copy the Deck of the Day into their personal deck library
+  4. The featured deck changes daily without any manual action — a new deck is fetched automatically via cron
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 9: Sideboard
+**Goal**: Users can add a sideboard to any deck, with rules enforcement and distinct visual separation from the main deck
+**Depends on**: Phase 6
+**Requirements**: SIDE-01, SIDE-02, SIDE-03, SIDE-04
+**Success Criteria** (what must be TRUE):
+  1. User can mark cards in the deck builder as sideboard cards, distinct from main deck slots
+  2. The deck builder prevents adding more than 10 sideboard cards and surfaces a validation message when the limit is reached
+  3. The cost curve chart shows sideboard cards in a distinct color from main deck cards
+  4. The deck view displays sideboard cards in a separate section below the main deck
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 10: Trade Binder
+**Goal**: Users can curate a public trade binder from their collection, and anyone can browse it at a shareable URL without logging in
+**Depends on**: Phase 6
+**Requirements**: TRADE-01, TRADE-02, TRADE-03, TRADE-04, TRADE-05
+**Success Criteria** (what must be TRUE):
+  1. User can add cards from their collection to their trade binder and set a quantity they are offering
+  2. User can update or remove cards from their trade binder at any time
+  3. Any visitor can browse the trade binder at /binder/[username] without creating an account
+  4. The public binder page supports catalog-style filters (set, type, aspect, arena, rarity) to narrow results
+  5. User can list cards they are looking for in a want section alongside their offerings on the same binder page
+**Plans**: TBD
+**UI hint**: yes
 
 ## Progress
 
@@ -38,4 +102,8 @@
 | 5. Want List | v1 | 4/4 | ✅ Complete | 2026-05-06 |
 | 5.1. Want List Gap Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
 | 5.2. Rarity Filter Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
-| 6. Authentication | v2 | 0/? | Not started | — |
+| 6. Auth & Multi-User | v2 | 0/? | Not started | — |
+| 7. Market Pricing | v2 | 0/? | Not started | — |
+| 8. Deck of the Day | v2 | 0/? | Not started | — |
+| 9. Sideboard | v2 | 0/? | Not started | — |
+| 10. Trade Binder | v2 | 0/? | Not started | — |

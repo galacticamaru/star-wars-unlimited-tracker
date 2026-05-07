@@ -49,7 +49,7 @@ Expand from single-user personal tool to multi-user platform with card pricing, 
 
 ---
 
-## Future Requirements (Deferred from v1 — not in v2 scope)
+## Future Requirements (Deferred to v3)
 
 - **WANT-03**: User can export or share their want list — defer to v3
 - **DECK-06**: User can filter the deck builder to show only cards they own — defer to v3
@@ -71,12 +71,29 @@ Expand from single-user personal tool to multi-user platform with card pricing, 
 
 ## Traceability
 
-*Filled by roadmapper after roadmap creation.*
-
-| REQ-ID | Phase |
-|--------|-------|
-| AUTH-01 through AUTH-07 | Phase 6 |
-| MARKET-01 through MARKET-04 | Phase 7 |
-| DOTD-01 through DOTD-04 | Phase 8 |
-| SIDE-01 through SIDE-04 | Phase 8 or 9 |
-| TRADE-01 through TRADE-05 | Phase 9 or 10 |
+| REQ-ID | Phase | Status |
+|--------|-------|--------|
+| AUTH-01 | Phase 6 | Pending |
+| AUTH-02 | Phase 6 | Pending |
+| AUTH-03 | Phase 6 | Pending |
+| AUTH-04 | Phase 6 | Pending |
+| AUTH-05 | Phase 6 | Pending |
+| AUTH-06 | Phase 6 | Pending |
+| AUTH-07 | Phase 6 | Pending |
+| MARKET-01 | Phase 7 | Pending |
+| MARKET-02 | Phase 7 | Pending |
+| MARKET-03 | Phase 7 | Pending |
+| MARKET-04 | Phase 7 | Pending |
+| DOTD-01 | Phase 8 | Pending |
+| DOTD-02 | Phase 8 | Pending |
+| DOTD-03 | Phase 8 | Pending |
+| DOTD-04 | Phase 8 | Pending |
+| SIDE-01 | Phase 9 | Pending |
+| SIDE-02 | Phase 9 | Pending |
+| SIDE-03 | Phase 9 | Pending |
+| SIDE-04 | Phase 9 | Pending |
+| TRADE-01 | Phase 10 | Pending |
+| TRADE-02 | Phase 10 | Pending |
+| TRADE-03 | Phase 10 | Pending |
+| TRADE-04 | Phase 10 | Pending |
+| TRADE-05 | Phase 10 | Pending |

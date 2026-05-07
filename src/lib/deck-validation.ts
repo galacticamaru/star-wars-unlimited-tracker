@@ -88,7 +88,7 @@ export function validateDeck(
     const { card, quantity } = item;
     
     // Track quantities for 3-copy limit
-    const isSwarmingVultureDroid = card.setCode === 'JTL' && card.collectorNumber === '256';
+    const isSwarmingVultureDroid = card.swudbId === 'JTL-256';
     const maxAllowed = isSwarmingVultureDroid ? 15 : 3;
 
     const existing = cardQuantities.get(card.swudbId) || { name: card.name, quantity: 0, maxAllowed };

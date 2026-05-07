@@ -94,9 +94,38 @@ export async function deleteDeck(deckId: number) {
 export async function getCardsByDefinitionIds(ids: number[]) {
   if (ids.length === 0) return [];
   return db
-    .select()
+    .select({
+      id: cardDefinitions.id,
+      swudbId: cardDefinitions.swudbId,
+      name: cardDefinitions.name,
+      subtitle: cardDefinitions.subtitle,
+      type: cardDefinitions.type,
+      aspects: cardDefinitions.aspects,
+      arenas: cardDefinitions.arenas,
+      traits: cardDefinitions.traits,
+      keywords: cardDefinitions.keywords,
+      cost: cardDefinitions.cost,
+      power: cardDefinitions.power,
+      hp: cardDefinitions.hp,
+      frontText: cardDefinitions.frontText,
+      backText: cardDefinitions.backText,
+      epicAction: cardDefinitions.epicAction,
+      doubleSided: cardDefinitions.doubleSided,
+      unique: cardDefinitions.unique,
+      setCode: cardPrintings.setCode,
+      collectorNumber: cardPrintings.collectorNumber,
+      frontArtUrl: cardPrintings.frontArtUrl,
+      backArtUrl: cardPrintings.backArtUrl,
+      rarity: cardPrintings.rarity,
+    })
     .from(cardDefinitions)
-    .where(inArray(cardDefinitions.id, ids));
+    .innerJoin(cardPrintings, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
+    .where(
+      and(
+        inArray(cardDefinitions.id, ids),
+        eq(cardPrintings.variantType, 'Normal')
+      )
+    );
 }
 
 export async function getDeckForExport(deckId: number) {
