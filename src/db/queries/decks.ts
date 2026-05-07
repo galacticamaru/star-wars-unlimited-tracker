@@ -165,9 +165,13 @@ export async function getDeckForExport(deckId: number) {
 }
 
 export async function getDeckCardsForUser(userId: number = 1) {
-  // Step 1: Get all deck IDs for this user
+  // Step 1: Get all deck IDs for this user, including leader/base FK columns
   const userDecks = await db
-    .select({ id: decks.id })
+    .select({
+      id: decks.id,
+      leaderCardDefinitionId: decks.leaderCardDefinitionId,
+      baseCardDefinitionId: decks.baseCardDefinitionId,
+    })
     .from(decks)
     .where(eq(decks.userId, userId));
 
@@ -176,7 +180,7 @@ export async function getDeckCardsForUser(userId: number = 1) {
   const deckIds = userDecks.map(d => d.id);
 
   // Step 2: Fetch all deck cards with card definition + Normal printing details
-  return db
+  const deckCardRows = await db
     .select({
       deckId: deckCards.deckId,
       cardDefinitionId: deckCards.cardDefinitionId,
@@ -198,4 +202,53 @@ export async function getDeckCardsForUser(userId: number = 1) {
         eq(cardPrintings.variantType, 'Normal')
       )
     );
+
+  // Step 3: Resolve printing details for a leader/base card definition ID
+  const resolvePrinting = async (defId: number | null) => {
+    if (!defId) return null;
+    const [result] = await db
+      .select({
+        name: cardDefinitions.name,
+        type: cardDefinitions.type,
+        setCode: cardPrintings.setCode,
+        collectorNumber: cardPrintings.collectorNumber,
+        frontArtUrl: cardPrintings.frontArtUrl,
+        backArtUrl: cardPrintings.backArtUrl,
+      })
+      .from(cardDefinitions)
+      .innerJoin(cardPrintings, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
+      .where(
+        and(
+          eq(cardDefinitions.id, defId),
+          eq(cardPrintings.variantType, 'Normal')
+        )
+      )
+      .limit(1);
+    return result ?? null;
+  };
+
+  // Step 4: Emit synthetic rows for each non-null leader/base on every deck (D-01/D-02/D-08)
+  const syntheticRows: typeof deckCardRows = [];
+
+  for (const deck of userDecks) {
+    for (const defId of [deck.leaderCardDefinitionId, deck.baseCardDefinitionId]) {
+      if (!defId) continue;
+      const printing = await resolvePrinting(defId);
+      if (!printing) continue;
+      syntheticRows.push({
+        deckId: deck.id,
+        cardDefinitionId: defId,
+        quantity: 1,
+        isSideboard: false,
+        name: printing.name,
+        type: printing.type,
+        setCode: printing.setCode,
+        collectorNumber: printing.collectorNumber,
+        frontArtUrl: printing.frontArtUrl,
+        backArtUrl: printing.backArtUrl,
+      });
+    }
+  }
+
+  return [...deckCardRows, ...syntheticRows];
 }
