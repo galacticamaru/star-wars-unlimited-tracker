@@ -63,9 +63,10 @@ skipped: 0
 ## Gaps
 
 - truth: "Each card tile in want-list mode shows NEED/OWN/SHORT chips below the card image with no overlap"
-  status: failed
+  status: fixed
   reason: "User reported: yes but the styling is very small and cards and chips overlap on each other when there are multiple cards"
   severity: major
   test: 4
-  artifacts: []
-  missing: []
+  root_cause: "Grid used up to 9 columns inside the Deck Builder panel — too dense for chips to fit below each card without overlapping"
+  fix: "Reduced max columns (3→6 in WantListTab, 3→8 on /decks), added flex-wrap + whitespace-nowrap to chips, bumped chip font from 9px to 10px"
+  fix_commit: "c926500"
