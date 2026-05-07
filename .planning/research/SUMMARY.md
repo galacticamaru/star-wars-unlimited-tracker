@@ -1,93 +1,62 @@
-# Research Summary — Star Wars: Unlimited Tracker
+# Research Summary — v2 Features (Star Wars Unlimited Tracker)
 
-## Recommended Stack
+**Researched:** 2026-05-07
 
-| Layer | Choice | Version | Rationale |
-|-------|--------|---------|-----------|
-| Framework | Next.js (App Router) | 16.x | Full-stack, RSC ideal for read-heavy card catalog, single repo |
-| Language | TypeScript | 5.x | Type-safe card/deck data model |
-| Database | PostgreSQL (Neon) | — | Relational model fits cards/collections/decks; Neon free tier sufficient for dev |
-| ORM | Drizzle | 0.45.x | ~7 KB vs Prisma's ~1.6 MB — critical for Vercel cold start; TS-native schema |
-| Auth | Better Auth | 1.6.9 | Auth.js team now recommends Better Auth for all new projects; DB sessions (not JWT); zero per-MAU cost |
-| Card Data API | swu-db.com API | — | `https://api.swu-db.com` — public, no auth required; bulk `/export/all` endpoint for seeding |
-| Deployment | Vercel | — | Native Next.js integration; Vercel Cron for catalog sync job |
-| Testing | Vitest | — | Deck legality validation should be pure TS business logic tested independently |
+---
 
-**Not recommended:** Prisma (bundle size), NextAuth/Auth.js (superseded by Better Auth), external search service (PostgreSQL tsvector/GIN is sufficient at SWU catalog scale).
+## Stack Additions
 
-## Table Stakes Features
+| Area | Package / Service | Version | Notes |
+|------|-----------------|---------|-------|
+| Auth | `better-auth` | ^1.6.x | Next.js 16: use proxy.ts (not middleware.ts) |
+| Auth adapter | `@better-auth/drizzle-adapter` | latest | Works with existing neon-http Drizzle setup |
+| Pricing | pokemon-api.com API | REST | Cardmarket EUR + TCGPlayer USD; SWU supported; 100 req/day free |
+| Tournament decklists | swuapi.com API | REST | API key required for tournament/decklist endpoints |
 
-Users will expect these — missing any of them causes churn:
+**No new client libraries needed** for trade binder — built on existing auth + collection stack.
 
-- **Card catalog browser** — searchable, filterable, with card images
-- **Collection management** — track owned copies per card; add via search & click
-- **Collection import** — SWUDB CSV import and generic spreadsheet CSV (critical migration path)
-- **Deck builder** — create and save named decks with a Leader + Base + 50-card main deck
-- **Collection overlay in deck builder** — each card shows owned count; missing cards visually distinct
-- **Deck legality validation** — enforce SWU Premier rules (1 Leader, 1 Base, 50 cards, max 3 copies, Heroism/Villainy exclusivity)
-- **Want list** — missing cards highlighted per deck; combined exportable/shareable want list across all decks
-- **User accounts** — per-user collections and decks (authentication is not optional)
-- **Catalog freshness** — new sets reflected automatically (API-driven, no manual updates)
+---
 
-## Key Architecture Decisions
+## Key Research Findings
 
-**1. Two-table card model (definition + printing) is non-negotiable.**
-SWU has 6+ variant types (Standard, Foil, Hyperspace, Hyperspace Foil, Showcase, Prestige). Modeling variants as a boolean `is_foil` causes a rewrite. Decision: `card_definitions` (game identity) + `card_printings` (physical variant). For deck legality, only `card_definition` copies count.
+### swubase.com
+No public API. Web UI only. **Cannot use as data source.** Use swuapi.com instead (has full tournament + decklist API, API key required).
 
-**2. Local PostgreSQL card cache — never proxy the API per user request.**
-swu-db.com rate limits are undocumented. Sync card catalog to local DB on a schedule (Vercel Cron). All user-facing card queries hit the local cache. Resilient to upstream outages.
+### Australian Pricing
+No AU-native SWU price API exists. Best proxy: pokemon-api.com which returns both Cardmarket EUR and TCGPlayer USD. EU prices are closest to AU secondary market reality. Show both currencies with labels.
 
-**3. Collection overlay = LEFT JOIN, not a second query.**
-Every card catalog fetch for an authenticated user LEFT JOINs `user_collections` to return `owned_count` inline. No browser round-trip for ownership data.
+### Better Auth + Next.js 16
+Fully compatible. One breaking change vs v15: rename `middleware.ts` → `proxy.ts`, export `proxy` function (not `middleware`). Auth.js/NextAuth is deprecated — Better Auth is the successor.
 
-**4. Full-text search in PostgreSQL (tsvector + GIN index).**
-No external search service needed at SWU's card count (~1,820+ cards). `GENERATED ALWAYS AS ... STORED` tsvector column covers name/subtitle/trait search.
+---
 
-**5. Want list is a computed SQL query, not a stored table.**
-Derive missing cards from deck contents minus user collection at query time. No sync required.
+## Feature Table Stakes
 
-**6. CSV import is client-side parse + server upsert.**
-PapaParse in the browser (dynamic import, `ssr: false`) handles SWUDB format detection and generic column mapping. Only normalized JSON POSTed to server. Must handle BOM stripping, encoding detection, and wrap in a transaction for partial-failure safety.
+| Feature | Must-Have |
+|---------|-----------|
+| Auth | Email/password login, session persistence, per-user data isolation |
+| Pricing | Price per card (catalog + deck builder), total deck cost, daily cache refresh |
+| Deck of the Day | Featured deck from PQ+ tournament, missing-card overlay, copy to library |
+| Trade Binder | Quantity-based offering from collection, public URL, catalog-style filters |
 
-**7. Database sessions (not JWT) for auth.**
-JWT sessions cannot be invalidated without a blocklist. Better Auth database sessions are the safe default for a multi-user app.
+---
 
-## Top Pitfalls to Avoid
+## Watch Out For
 
-| # | Pitfall | Prevention |
-|---|---------|-----------|
-| 1 | Modeling variants as `is_foil` boolean | Use `card_definitions` + `card_printings` two-table split from day 1 |
-| 2 | Proxying the SWU API on user requests | Cache everything locally; sync on a schedule |
-| 3 | Tokens appearing in card browser / deck builder | Filter by `collector_number NOT LIKE 'T%'` (token convention) |
-| 4 | JWT auth sessions that can't be invalidated | Use Better Auth with database sessions |
-| 5 | Silent CSV import failures | Wrap import in a DB transaction; validate all rows before committing |
-| 6 | "Available copies" query (cards not already in other decks) | Ship total-owned count in v1; available-across-decks is a designed v2 feature |
-| 7 | Building deck builder before collection is stable | Collection schema must be locked before deck builder begins |
-| 8 | Missing SWUDB CSV column names | Validate against a real export before building importer; use defensive matching (set_code + collector_number, fallback to name) |
+1. **userId=1 migration** — Audit every DB query; replace all hardcodes before shipping auth
+2. **proxy.ts naming** — Next.js 16 renamed middleware to proxy; wrong filename = silently unprotected routes
+3. **Live price fetch** — Never fetch pokemon-api.com per-request; cache in DB, refresh daily
+4. **swuapi.com API key** — Server-side only (`SWUAPI_KEY`, no NEXT_PUBLIC_ prefix)
+5. **Cron slot** — 1 cron/day (Hobby tier); run catalog sync → price refresh → deck fetch sequentially
+6. **Trade binder integrity** — Clamp offering quantity when collection count decreases
 
-## Recommended Build Order
+---
 
-Research confirms this dependency chain — each phase unblocks the next:
+## Suggested Build Order
 
-| Phase | Focus | Why this order |
-|-------|-------|---------------|
-| 1 | Foundation: card catalog sync + auth + browse | Everything depends on cards in the DB and a userId |
-| 2 | Collection tracking | Deck builder needs collection data to show ownership overlay |
-| 3 | Deck builder | The core value prop — only possible once collection is stable |
-| 4 | Want list | Derived from collection + decks; natural capstone of the core loop |
-| 5 | CSV import (SWUDB + spreadsheet) | Migration feature; valuable for onboarding but not blocking core loop |
-| 6 | Polish, search improvements, export/share | Retention features once the core loop is proven |
-
-**Note from Features research:** Collection and deck builder value is only visible when both exist. Phase 3 is the first phase where the core value prop is fully demonstrable.
-
-## Open Questions
-
-These need validation at implementation time:
-
-- **SWUDB CSV column headers** — exact schema not publicly documented; must export a real SWUDB collection to confirm before building the importer
-- **swu-db.com image CDN domain** — `?format=image` issues a redirect; final CDN hostname must be inspected to configure Next.js `remotePatterns`
-- **swu-db.com rate limits** — undocumented; sync job must implement exponential backoff
-- **Token card filtering** — confirm that the API returns a card type or `T`-prefixed collector number that reliably identifies tokens
-- **Dual-faced cards** — API documents `?face=back` parameter; data model needs `back_image_url` column and deck builder must handle double-sided display
-- **SWUBase competitor depth** — returned 403 during research; may have collection-deck integration that makes it a closer competitor than assumed
-- **Community spreadsheet multi-sheet structure** — the Reddit community tracker (COLLECT-04) may have one sheet per set; import must handle either a single exported CSV or detect/merge multi-sheet exports
+```
+Phase 6: Auth          → Must be first; all other phases need real userId
+Phase 7: Market Pricing → Independent once auth is done
+Phase 8: Deck of the Day → Needs auth (copy-to-library) + pricing (cost summary)
+Phase 9: Trade Binder  → Needs auth; independent of pricing and deck-of-day
+```
