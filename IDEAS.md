@@ -50,14 +50,14 @@ Implemented: PENDING
 Add a new filter for each of; Arenas, Traits, Rarity and Keywords.
 
 Add a new filter component for cost filters: Users can select multiple costs [0],[1],[2] etc. For each cost up to [9+]. [9+] filters cards to cards with a cost of 9 or higher.
-Implemented: PENDING
+Implemented: 05/05/26
 -----
 ### Deck building stats:
 Create a section of content that display useful stats about the deck that a user could use to inform their deck building:
 - Number of ground units / space units / events / upgrades
 - Card aspect breakdown
 - Card curve graph
-Implemented: PENDING
+Implemented: 06/05/26
 -----
 ### Card Market Tracking
 Unsure how to implement - but displaying a price for a card and a deck price would be helpful. I've noticed that most market trackers use TCGPlayer, which is great, but TCGPlayer isn't supported in Australia where I play. Offering TCGPlayer and another market tracker that is used in Australia would be ideal. 
@@ -67,4 +67,4 @@ Implemented: PENDING
 -----
 ### Navigation Improvement
 When returning to the catalog from a card details page, we should maintain and card filters or searches the user had.
-Implemented: PENDING
+Implemented: 05/05/26
