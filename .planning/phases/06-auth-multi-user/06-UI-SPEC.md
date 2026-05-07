@@ -1,7 +1,8 @@
 ---
 phase: 6
 slug: auth-multi-user
-status: draft
+status: approved
+reviewed_at: 2026-05-08
 shadcn_initialized: true
 preset: base-nova
 created: 2026-05-08
@@ -56,12 +57,12 @@ All values drawn from existing codebase patterns (globals.css + nav-bar.tsx + em
 |------|------|--------|-------------|------|--------|
 | Body / form labels | 14px (text-sm) | 400 regular | 1.5 | Nunito Sans | Existing `md:text-sm` on Input |
 | Form input text | 16px (text-base) → 14px on md | 400 regular | 1.5 | Nunito Sans | input.tsx `text-base md:text-sm` |
-| Button / action label | 14px (text-sm) | 500 medium | — | Nunito Sans | button.tsx `text-sm font-medium` |
+| Button / action label | 14px (text-sm) | 600 semibold | — | Nunito Sans | button.tsx `text-sm font-semibold` |
 | Page heading | 20px (text-xl) | 600 semibold | 1.2 | Oxanium | Default — consistent with nav brand at `text-base font-semibold font-heading` |
 
 Exact declarations:
-- Body: 14px, weight 400, line-height 1.5, Nunito Sans
-- Heading: 20px, weight 600, line-height 1.2, Oxanium (`font-heading font-semibold`)
+- Weight 400 (regular): body text, form labels, form input text — `font-normal`
+- Weight 600 (semibold): page headings, button/action labels, avatar initials, active tab labels — `font-semibold`
 
 ---
 
