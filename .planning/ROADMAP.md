@@ -109,7 +109,8 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. The per-deck want list includes the Leader and Base if the user does not own the required copy     
   2. The combined want list aggregates Leader and Base shortfalls across all decks alongside main deck shortfalls
   3. Existing want list behaviour for main deck cards is unchanged
-**Plans**: 0
+**Plans**: 1
+- [ ] **Wave 1** — 05.1-01-PLAN.md — Extend getDeckCardsForUser() + inject leader/base into WantListTab prop
 
 ### Phase 5.2 (INSERTED): Rarity Filter Fix
 **Goal**: The rarity dropdown in the card catalog actually filters results — `filterCards()` evaluates `selectedRarities` instead of the hardcoded `true` bypass, closing a Phase 3 success criterion gap     
@@ -134,5 +135,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 5.1 → 5.2
 | 3. Collection | 4/4 | COMPLETE | 2026-05-05 |
 | 4. Deck Builder | 5/5 | COMPLETE | 2026-05-06 |
 | 5. Want List | 4/4 | COMPLETE | 2026-05-06 |
-| 5.1. Want List Gap Fix | 0/0 | PENDING | — |
+| 5.1. Want List Gap Fix | 0/1 | PENDING | — |
 | 5.2. Rarity Filter Fix | 0/1 | PENDING | — |
