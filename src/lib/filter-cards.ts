@@ -76,8 +76,13 @@ export function filterCards(cards: CardForFilter[], filters: FilterState): CardF
     const matchesTrait = (selectedTraits?.length ?? 0) === 0 ||
       (card.traits || []).some(t => selectedTraits.includes(t));
 
-    // Rarity: OR within category (BYPASSED: selecting rarities does nothing for now)
-    const matchesRarity = true;
+    // Rarity: OR within category
+    const matchesRarity = (selectedRarities?.length ?? 0) === 0 ||
+      selectedRarities.some(r => {
+        // UI uses "(C) Common", DB uses "Common"
+        const normalizedRarity = r.includes(' ') ? r.split(' ')[1] : r;
+        return card.rarity === normalizedRarity;
+      });
 
     // Keyword: OR within category
     const matchesKeyword = (selectedKeywords?.length ?? 0) === 0 ||
