@@ -4,7 +4,18 @@
 
 A single-user web app for Star Wars: Unlimited TCG players. Players track their card collection and build decks in one place — so they always know what they own while building decks and exactly what cards they still need to acquire. Replaces the fragmented workflow of a spreadsheet for collection tracking plus a separate deck-building tool (like SWUDB) that has no awareness of what you own.
 
-> **v1 shipped 2026-05-07.** Single-user personal tool (no auth). Full core loop delivered. v2 will add multi-user auth.
+> **v1 shipped 2026-05-07.** Single-user personal tool (no auth). Full core loop delivered.
+> **v2 in progress.** Auth + multi-user, card market pricing, Deck of the Day, trade binder.
+
+## Current Milestone: v2.0 Multi-User, Market, Decks & Trading
+
+**Goal:** Expand from single-user personal tool to multi-user platform with card pricing, curated tournament decks, and community trade binders.
+
+**Target features:**
+- Auth + multi-user accounts (Better Auth) with per-user collection and deck isolation
+- Card market pricing — price per card and total deck cost; TCGPlayer + Australian-compatible source
+- Deck of the Day — daily curated deck from PQ+ tournament winners; missing-card overlay; copy to library
+- Trade binder — quantity-based trade offers from collection; publicly viewable without login; catalog-style filters
 
 ## Core Value
 
@@ -25,7 +36,10 @@ See exactly which cards you own while building decks, and know instantly what yo
 ### Active (v2)
 
 - [ ] User can create an account and log in (AUTH-01, AUTH-02, AUTH-03)
-- [ ] Per-user collections and decks (requires auth)
+- [ ] Per-user collections and decks isolated by account (requires auth)
+- [ ] Card prices displayed per card and as total deck cost — TCGPlayer + AU-compatible source (MARKET-01, MARKET-02, MARKET-03)
+- [ ] Deck of the Day — daily curated deck from PQ+ tournament winners with missing-card overlay and copy-to-library (DOTD-01, DOTD-02, DOTD-03)
+- [ ] Trade binder — quantity-based trade offers from collection; publicly shareable without login (TRADE-01, TRADE-02, TRADE-03)
 - [ ] User can export or share their want list (WANT-03)
 - [ ] User can filter the deck builder to show only cards they own (DECK-06)
 - [ ] User can import collection from SWUDB-specific CSV export (COLLECT-05 v2)
@@ -97,4 +111,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-07 after v1 milestone*
+*Last updated: 2026-05-07 — v2 milestone started*

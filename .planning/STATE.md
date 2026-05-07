@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-05-07)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus:** v1 SHIPPED — planning v2 (auth + multi-user)
+**Current focus:** v2 — auth + multi-user, market pricing, Deck of the Day, trade binder
 
 ## Current Position
 
-Phase: v1 MILESTONE COMPLETE
-Plan: 22 of 22 complete
-Status: v1 archived — all 7 phases shipped, PR #2 merged, git tag v1 pending
-Last activity: 2026-05-07 — v1 milestone close
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-07 — Milestone v2.0 started
 
-Progress: [██████████] 100% (v1 complete)
+Progress: [__________] 0% (v2 planning)
 
 ## Performance Metrics
 
