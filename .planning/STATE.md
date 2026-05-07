@@ -9,10 +9,10 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 
 ## Current Position
 
-Phase: 5 of 5 (Want List) — COMPLETE
-Plan: 4 of 4 complete
-Status: Phase 5 complete. Core project functionality finalized.
-Last activity: 2026-05-07 — Phase 5 shipped — PR #1
+Phase: 5.1 (Want List Gap Fix) — PLANNED, ready to execute
+Plan: 0 of 1 complete
+Status: Phase 5.1 planned. 1 plan in 1 wave.
+Last activity: 2026-05-07 — Phase 5.1 planned
 
 Progress: [██████████] 100% (Phase 5)
 
