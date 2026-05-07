@@ -17,8 +17,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Collection** - Track owned card counts and import from CSV formats
 - [x] **Phase 4: Deck Builder** - Build legal decks with ownership overlay and missing-card highlights  
 - [x] **Phase 5: Want List** - See missing cards per deck and combined across all decks
-- [ ] **Phase 5.1 (INSERTED): Want List Gap Fix** - Include leader and base in want list computation (WANT-01 + WANT-02)
-- [ ] **Phase 5.2 (INSERTED): Rarity Filter Fix** - Implement rarity predicate in filterCards() so the rarity dropdown actually filters the catalog
+- [x] **Phase 5.1 (INSERTED): Want List Gap Fix** - Include leader and base in want list computation (WANT-01 + WANT-02)
+- [x] **Phase 5.2 (INSERTED): Rarity Filter Fix** - Implement rarity predicate in filterCards() so the rarity dropdown actually filters the catalog
 
 ## Phase Details
 
@@ -110,7 +110,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. The combined want list aggregates Leader and Base shortfalls across all decks alongside main deck shortfalls
   3. Existing want list behaviour for main deck cards is unchanged
 **Plans**: 1
-- [ ] **Wave 1** — 05.1-01-PLAN.md — Extend getDeckCardsForUser() + inject leader/base into WantListTab prop
+- [x] **Wave 1** — 05.1-01-PLAN.md — Extend getDeckCardsForUser() + inject leader/base into WantListTab prop
 
 ### Phase 5.2 (INSERTED): Rarity Filter Fix
 **Goal**: The rarity dropdown in the card catalog actually filters results — `filterCards()` evaluates `selectedRarities` instead of the hardcoded `true` bypass, closing a Phase 3 success criterion gap     
@@ -121,7 +121,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Selecting no rarities (cleared filter) shows all cards regardless of rarity
   3. Rarity filter composes correctly with all other active filters (set, type, aspect, arena, trait, keyword, cost)
 **Plans**: 1
-- [ ] 05.2-01-PLAN.md — Implement rarity filtering with UI label mapping
+- [x] 05.2-01-PLAN.md — Implement rarity filtering with UI label mapping
 
 ## Progress
 
@@ -135,5 +135,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 5.1 → 5.2
 | 3. Collection | 4/4 | COMPLETE | 2026-05-05 |
 | 4. Deck Builder | 5/5 | COMPLETE | 2026-05-06 |
 | 5. Want List | 4/4 | COMPLETE | 2026-05-06 |
-| 5.1. Want List Gap Fix | 0/1 | PENDING | — |
-| 5.2. Rarity Filter Fix | 0/1 | PENDING | — |
+| 5.1. Want List Gap Fix | 1/1 | COMPLETE | 2026-05-07 |
+| 5.2. Rarity Filter Fix | 1/1 | COMPLETE | 2026-05-07 |
