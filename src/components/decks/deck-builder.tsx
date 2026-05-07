@@ -341,7 +341,12 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
             </div>
           ) : (
             <WantListTab
-              deckCards={state.cards.filter(c => !c.isSideboard).map(c => ({ cardDefinitionId: c.cardDefinitionId, quantity: c.quantity }))}
+              deckCards={[
+                ...state.cards.filter(c => !c.isSideboard)
+                  .map(c => ({ cardDefinitionId: c.cardDefinitionId, quantity: c.quantity })),
+                ...(state.leaderCardDefinitionId ? [{ cardDefinitionId: state.leaderCardDefinitionId, quantity: 1 }] : []),
+                ...(state.baseCardDefinitionId   ? [{ cardDefinitionId: state.baseCardDefinitionId,   quantity: 1 }] : []),
+              ]}
               allCards={allCards}
             />
           )}
