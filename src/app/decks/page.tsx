@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { CardItem } from '@/components/catalog/card-item';
 
 interface Deck {
   id: number;
@@ -11,15 +12,61 @@ interface Deck {
   updatedAt: string;
 }
 
+interface WantListEntry {
+  cardDefinitionId: number;
+  name: string;
+  type: string;
+  setCode: string;
+  collectorNumber: string;
+  frontArtUrl: string | null;
+  backArtUrl: string | null;
+  maxQuantity: number;
+  owned: number;
+  shortfall: number;
+}
+
+const TYPE_ORDER = ['Leader', 'Base', 'Unit', 'Event', 'Upgrade'];
+
 export default function DecksPage() {
   const [decks, setDecks] = useState<Deck[]>([]);
   const [loading, setLoading] = useState(true);
   const [newDeckName, setNewDeckName] = useState('');
+  const [wantList, setWantList] = useState<WantListEntry[]>([]);
+  const [wantListLoading, setWantListLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     fetchDecks();
   }, []);
+
+  useEffect(() => {
+    fetch('/api/want-list')
+      .then(res => res.json())
+      .then(data => {
+        setWantList(data);
+        setWantListLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch want list', err);
+        setWantListLoading(false);
+      });
+  }, []);
+
+  const groupedWantList = useMemo(() => {
+    const map = new Map<string, WantListEntry[]>();
+    for (const entry of wantList) {
+      if (!map.has(entry.type)) map.set(entry.type, []);
+      map.get(entry.type)!.push(entry);
+    }
+    return [...map.entries()].sort(([a], [b]) => {
+      const ai = TYPE_ORDER.indexOf(a);
+      const bi = TYPE_ORDER.indexOf(b);
+      if (ai === -1 && bi === -1) return a.localeCompare(b);
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+      return ai - bi;
+    });
+  }, [wantList]);
 
   async function fetchDecks() {
     try {
@@ -123,6 +170,52 @@ export default function DecksPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Combined Want List — "What I Need to Buy" (D-05, D-07, D-08) */}
+      {decks.length > 0 && (wantListLoading || wantList.length > 0) && (
+        <div className="mt-12">
+          <h2 className="text-xl font-heading font-semibold mb-2">What I Need to Buy</h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            {wantListLoading
+              ? 'Calculating...'
+              : `${wantList.length} cards needed, ${wantList.reduce((s, c) => s + c.shortfall, 0)} total copies short`}
+          </p>
+          {wantListLoading ? (
+            <div className="grid gap-3 grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="aspect-[2/3] bg-muted animate-pulse rounded-md" />
+              ))}
+            </div>
+          ) : (
+            groupedWantList.map(([typeName, entries]) => (
+              <div key={typeName} className="mb-6">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider border-b border-muted pb-1 mb-2">
+                  {typeName}
+                </h3>
+                <div className="grid gap-3 grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
+                  {entries.map(entry => (
+                    <CardItem
+                      key={entry.cardDefinitionId}
+                      id={entry.cardDefinitionId}
+                      name={entry.name}
+                      type={entry.type}
+                      setCode={entry.setCode}
+                      collectorNumber={entry.collectorNumber}
+                      frontArtUrl={entry.frontArtUrl}
+                      backArtUrl={entry.backArtUrl}
+                      ownedCount={entry.owned}
+                      onUpdateCount={() => {}}
+                      mode="want-list"
+                      deckQuantity={entry.maxQuantity}
+                      shortfall={entry.shortfall}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>

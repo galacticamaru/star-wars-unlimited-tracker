@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 
 ## Current Position
 
-Phase: 5 of 5 (Want List) — Ready to execute
-Plan: 0 of 4 complete
-Status: Phase 5 planned (4 plans, 3 waves). Ready for execution.
-Last activity: 2026-05-06 — Phase 5 planning complete. 4 plans in 3 waves created and verified.
+Phase: 5 of 5 (Want List) — COMPLETE
+Plan: 4 of 4 complete
+Status: Phase 5 complete. Core project functionality finalized.
+Last activity: 2026-05-07 — Phase 5 shipped — PR #1
 
-Progress: [██████████] 100% (Phase 4)
+Progress: [██████████] 100% (Phase 5)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
+- Total plans completed: 20
 - Average duration: ~10 minutes
-- Total execution time: ~2.5 hours
+- Total execution time: ~3.3 hours
 
 **By Phase:**
 
@@ -31,9 +31,10 @@ Progress: [██████████] 100% (Phase 4)
 | 2. Card Catalog | 3/3 COMPLETE | ~40 min | ~13 min |
 | 3. Collection | 4/4 COMPLETE | ~35 min | ~9 min |
 | 4. Deck Builder | 5/5 COMPLETE | ~55 min | ~11 min |
+| 5. Want List | 4/4 COMPLETE | ~40 min | ~10 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01, 04-02, 04-03, 04-04, 04-05
+- Last 5 plans: 05-01, 05-02, 05-03, 05-04
 - Trend: On track
 
 *Updated after each plan completion*
@@ -69,6 +70,7 @@ Recent decisions affecting current work:
 - Bulk CSV import: supports Reddit community spreadsheet, sums variants into single count, uses transactional API
 - **Phase 4 Naming**: Standardize on `cardDefinitionId` or `definitionId` across all components and API routes to avoid confusion with printings.
 - **Deck Draft Support**: `is_draft` boolean column in `decks` table allows saving invalid states; `is_draft: false` triggers strict server-side validation.
+- **Want List Visibility**: The combined want list section on `/decks` is hidden if all cards are owned or no decks exist, maintaining a clean dashboard for established collections.
 
 ### Pending Todos
 
@@ -90,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-05
-Stopped at: Phase 4 planning revised and finalized.
-Resume file: .planning/phases/04-deck-builder/04-01-PLAN.md
+Last session: 2026-05-06
+Stopped at: Phase 5 complete.
+Resume file: None (Project complete)

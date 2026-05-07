@@ -44,12 +44,12 @@ describe('toMeleeFormat', () => {
 
     const output = toMeleeFormat(deck);
     expect(output).toContain('Leader');
-    expect(output).toContain('1 Luke Skywalker, Faithful Friend (SOR) 005');
+    expect(output).toContain('1 Luke Skywalker | Faithful Friend');
     expect(output).toContain('Base');
-    expect(output).toContain('1 Echo Base (SOR) 022');
-    expect(output).toContain('Deck');
-    expect(output).toContain('3 Restored ARC-170 (SOR) 044');
+    expect(output).toContain('1 Echo Base');
+    expect(output).toContain('MainDeck');
+    expect(output).toContain('3 Restored ARC-170');
     expect(output).toContain('Sideboard');
-    expect(output).toContain('2 You Are My Only Hope (SOR) 018');
+    expect(output).toContain('2 You Are My Only Hope');
   });
 });

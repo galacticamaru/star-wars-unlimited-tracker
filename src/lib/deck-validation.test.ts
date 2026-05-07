@@ -15,13 +15,16 @@ const createCard = (overrides: Partial<Card>): Card => ({
   cost: 1,
   power: 1,
   hp: 1,
+  setCode: 'SOR',
+  collectorNumber: '001',
+  rarity: 'Common',
+  frontArtUrl: null,
+  backArtUrl: null,
   frontText: null,
   backText: null,
   epicAction: null,
   doubleSided: false,
   unique: false,
-  createdAt: new Date(),
-  updatedAt: new Date(),
   ...overrides,
 });
 

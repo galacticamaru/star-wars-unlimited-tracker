@@ -15,8 +15,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Project scaffolding, database schema, and card catalog sync from swu-db.com
 - [x] **Phase 2: Card Catalog** - Browse, search, and filter the full card catalog with images
 - [x] **Phase 3: Collection** - Track owned card counts and import from CSV formats
-- [ ] **Phase 4: Deck Builder** - Build legal decks with ownership overlay and missing-card highlights
-- [ ] **Phase 5: Want List** - See missing cards per deck and combined across all decks
+- [x] **Phase 4: Deck Builder** - Build legal decks with ownership overlay and missing-card highlights
+- [x] **Phase 5: Want List** - See missing cards per deck and combined across all decks
 
 ## Phase Details
 
@@ -94,10 +94,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can view a combined want list that aggregates missing cards across all their decks, deduplicating by card and summing shortfall quantities
   3. Both want list views derive from a live query against collection and deck data — no separate sync or store needed
 **Plans**: 4
-- [ ] **Wave 1** — 05-01-PLAN.md — NavBar component + root layout mount
-- [ ] **Wave 1** — 05-02-PLAN.md — getDeckCardsForUser DB query + GET /api/want-list route
-- [ ] **Wave 2** — 05-03-PLAN.md — CardItem want-list mode + WantListTab + deck builder third tab
-- [ ] **Wave 3** — 05-04-PLAN.md — Combined want list section on /decks dashboard
+- [x] **Wave 1** — 05-01-PLAN.md — NavBar component + root layout mount
+- [x] **Wave 1** — 05-02-PLAN.md — getDeckCardsForUser DB query + GET /api/want-list route
+- [x] **Wave 2** — 05-03-PLAN.md — CardItem want-list mode + WantListTab + deck builder third tab
+- [x] **Wave 3** — 05-04-PLAN.md — Combined want list section on /decks dashboard
 
 ## Progress
 
@@ -110,4 +110,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Card Catalog | 3/3 | COMPLETE | 2026-05-05 |
 | 3. Collection | 4/4 | COMPLETE | 2026-05-05 |
 | 4. Deck Builder | 5/5 | COMPLETE | 2026-05-06 |
-| 5. Want List | 0/4 | Not started | - |
+| 5. Want List | 4/4 | COMPLETE | 2026-05-06 |

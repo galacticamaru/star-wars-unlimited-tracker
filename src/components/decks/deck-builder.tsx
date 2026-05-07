@@ -6,6 +6,7 @@ import { DeckSidebar } from './deck-sidebar';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { CatalogClient } from '@/components/catalog/catalog-client';
+import { WantListTab } from './want-list-tab';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -77,7 +78,7 @@ interface DeckBuilderProps {
 export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilderProps) {
   const [state, dispatch] = useReducer(deckReducer, initialDeck);
   const [isSaving, setIsSaving] = useState(false);
-  const [view, setView] = useState<'editor' | 'catalog'>('catalog');
+  const [view, setView] = useState<'editor' | 'catalog' | 'want-list'>('catalog');
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const router = useRouter();
   const cleanStateRef = useRef(initialDeck);
@@ -202,7 +203,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   };
 
   return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden">
+    <div className="flex h-[calc(100svh-56px)] overflow-hidden">
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Toolbar */}
         <div className="border-b bg-white p-4 flex justify-between items-center shadow-sm z-10">
@@ -229,6 +230,14 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                     className={view === 'editor' ? 'bg-white shadow-sm' : ''}
                 >
                     Deck List
+                </Button>
+                <Button
+                    variant={view === 'want-list' ? 'secondary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setView('want-list')}
+                    className={view === 'want-list' ? 'bg-white shadow-sm' : ''}
+                >
+                    Want List
                 </Button>
             </div>
           </div>
@@ -263,7 +272,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 deckCounts={deckCounts}
                 onDeckUpdate={handleDeckUpdate}
               />
-          ) : (
+          ) : view === 'editor' ? (
             <div className="max-w-4xl mx-auto space-y-8 p-6 pb-20">
                 {/* Leader & Base Slot */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -329,6 +338,11 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 </div>
                 </div>
             </div>
+          ) : (
+            <WantListTab
+              deckCards={state.cards.filter(c => !c.isSideboard).map(c => ({ cardDefinitionId: c.cardDefinitionId, quantity: c.quantity }))}
+              allCards={allCards}
+            />
           )}
         </div>
       </div>

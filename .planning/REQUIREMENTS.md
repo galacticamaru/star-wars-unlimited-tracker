@@ -11,23 +11,23 @@
 
 ### Collection
 
-- [ ] **COLLECT-01**: User can view their collection showing the owned copy count for each card
-- [ ] **COLLECT-02**: User can set the quantity owned for any card by searching and clicking
-- [ ] **COLLECT-03**: User can import their collection from a CSV spreadsheet file (generic column mapping)
-- [ ] **COLLECT-04**: User can import their collection from the community Reddit SWU tracking spreadsheet format (Card # + Standard/Hyperspace/F-Hyperspace variant columns; variant counts summed into total owned per card)
+- [x] **COLLECT-01**: User can view their collection showing the owned copy count for each card
+- [x] **COLLECT-02**: User can set the quantity owned for any card by searching and clicking
+- [x] **COLLECT-03**: User can import their collection from a CSV spreadsheet file (generic column mapping)
+- [x] **COLLECT-04**: User can import their collection from the community Reddit SWU tracking spreadsheet format (Card # + Standard/Hyperspace/F-Hyperspace variant columns; variant counts summed into total owned per card)
 
 ### Deck Builder
 
-- [ ] **DECK-01**: User can create a named deck composed of exactly 1 Leader card, 1 Base card, and a 50-card main deck
-- [ ] **DECK-02**: User can save, view, and delete multiple decks
-- [ ] **DECK-03**: Deck builder shows owned copy count for each card inline while the user builds a deck
-- [ ] **DECK-04**: Deck builder visually highlights cards the user does not own enough copies of
-- [ ] **DECK-05**: App validates deck legality against SWU Premier rules: 1 Leader, 1 Base, 50-card main deck, maximum 3 copies of any non-unique card, Heroism/Villainy aspect exclusivity
+- [x] **DECK-01**: User can create a named deck composed of exactly 1 Leader card, 1 Base card, and a 50-card main deck
+- [x] **DECK-02**: User can save, view, and delete multiple decks
+- [x] **DECK-03**: Deck builder shows owned copy count for each card inline while the user builds a deck
+- [x] **DECK-04**: Deck builder visually highlights cards the user does not own enough copies of
+- [x] **DECK-05**: App validates deck legality against SWU Premier rules: 1 Leader, 1 Base, 50-card main deck, maximum 3 copies of any non-unique card, Heroism/Villainy aspect exclusivity
 
 ### Want List
 
-- [ ] **WANT-01**: User can see which cards each individual deck is missing, based on their owned collection
-- [ ] **WANT-02**: User can view a combined want list that aggregates missing cards across all their decks
+- [x] **WANT-01**: User can see which cards each individual deck is missing, based on their owned collection
+- [x] **WANT-02**: User can view a combined want list that aggregates missing cards across all their decks
 
 ---
 
@@ -65,14 +65,14 @@
 | CATALOG-02 | Phase 2 | Complete |
 | CATALOG-03 | Phase 2 | Complete |
 | CATALOG-04 | Phase 1 | Complete |
-| COLLECT-01 | Phase 3 | Pending |
-| COLLECT-02 | Phase 3 | Pending |
-| COLLECT-03 | Phase 3 | Pending |
-| COLLECT-04 | Phase 3 | Pending |
-| DECK-01 | Phase 4 | Pending |
-| DECK-02 | Phase 4 | Pending |
-| DECK-03 | Phase 4 | Pending |
-| DECK-04 | Phase 4 | Pending |
-| DECK-05 | Phase 4 | Pending |
-| WANT-01 | Phase 5 | Pending |
-| WANT-02 | Phase 5 | Pending |
+| COLLECT-01 | Phase 3 | Complete |
+| COLLECT-02 | Phase 3 | Complete |
+| COLLECT-03 | Phase 3 | Complete |
+| COLLECT-04 | Phase 3 | Complete |
+| DECK-01 | Phase 4 | Complete |
+| DECK-02 | Phase 4 | Complete |
+| DECK-03 | Phase 4 | Complete |
+| DECK-04 | Phase 4 | Complete |
+| DECK-05 | Phase 4 | Complete |
+| WANT-01 | Phase 5 | Complete |
+| WANT-02 | Phase 5 | Complete |

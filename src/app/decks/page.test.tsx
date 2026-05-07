@@ -27,6 +27,10 @@ describe('DecksPage', () => {
       ok: true,
       json: async () => [],
     });
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [],
+    });
 
     render(<DecksPage />);
     expect(screen.getByText(/Loading decks.../i)).toBeDefined();
@@ -42,6 +46,10 @@ describe('DecksPage', () => {
       ok: true,
       json: async () => mockDecks,
     });
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [],
+    });
 
     render(<DecksPage />);
 
@@ -52,6 +60,10 @@ describe('DecksPage', () => {
   });
 
   it('handles deck creation', async () => {
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [],
+    });
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
       json: async () => [],
@@ -88,6 +100,10 @@ describe('DecksPage', () => {
     (global.fetch as any).mockResolvedValueOnce({
       ok: true,
       json: async () => mockDecks,
+    });
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [],
     });
 
     // Mock window.confirm
