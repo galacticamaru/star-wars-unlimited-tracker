@@ -271,6 +271,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 mode="selector" 
                 deckCounts={deckCounts}
                 onDeckUpdate={handleDeckUpdate}
+                topOffset="top-0"
               />
           ) : view === 'editor' ? (
             <div className="max-w-4xl mx-auto space-y-8 p-6 pb-20">

@@ -33,6 +33,7 @@ interface TopBarProps {
   onRaritiesChange: (v: string[]) => void;
   onKeywordsChange: (v: string[]) => void;
   onCostsChange: (v: string[]) => void;
+  topOffset?: string; // e.g. "top-0" or "top-14"
 }
 
 export function TopBar({
@@ -40,15 +41,17 @@ export function TopBar({
   sets, types, aspects, arenas, traits, rarities, keywords, costs,
   selectedSets, selectedTypes, selectedAspects, selectedArenas, selectedTraits, selectedRarities, selectedKeywords, selectedCosts,
   onSetsChange, onTypesChange, onAspectsChange, onArenasChange, onTraitsChange, onRaritiesChange, onKeywordsChange, onCostsChange,
+  topOffset = 'top-14',
 }: TopBarProps) {
   return (
     <div
       className={cn(
         // UI-SPEC.md: sticky top bar, bg-background/80 backdrop-blur-sm, border-b border-border
         // Multi-line layout (D-06)
-        'sticky top-0 z-10 flex flex-col gap-2',
+        'sticky z-40 flex flex-col gap-2',
         'px-4 lg:px-8 py-2',
         'bg-background/80 backdrop-blur-sm border-b border-border',
+        topOffset
       )}
     >
       <div className="flex items-center gap-2 flex-wrap">
