@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-03)
+See: .planning/PROJECT.md (updated 2026-05-07)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus:** Phase 5 — Want List
+**Current focus:** v1 SHIPPED — planning v2 (auth + multi-user)
 
 ## Current Position
 
-Phase: 5.2 (Rarity Filter Fix) — COMPLETE & VERIFIED & SHIPPED
-Plan: 1 of 1 complete
-Status: Phase 5.1 + 5.2 shipped — PR #2
-Last activity: 2026-05-07 — Shipped PR #2 (shipping-phase-5.1-5.2 → main)
+Phase: v1 MILESTONE COMPLETE
+Plan: 22 of 22 complete
+Status: v1 archived — all 7 phases shipped, PR #2 merged, git tag v1 pending
+Last activity: 2026-05-07 — v1 milestone close
 
-Progress: [██████████] 100% (Phase 5.2)
+Progress: [██████████] 100% (v1 complete)
 
 ## Performance Metrics
 
@@ -95,5 +95,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-05-07
-Stopped at: Phase 5.2 complete. Rarity filtering fixed and verified. Phase 5.1 also completed.
+Stopped at: v1 milestone complete. All phases shipped. Run /gsd-new-milestone to start v2.
 Resume file: None

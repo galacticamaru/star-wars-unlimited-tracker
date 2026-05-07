@@ -1,139 +1,41 @@
 # Roadmap: Star Wars Unlimited Tracker
 
-## Overview
+## Milestones
 
-The build proceeds in strict dependency order: cards must exist in the database before the catalog can be browsed, the collection must be stable before the deck builder begins, and the want list is only computable once both collection and decks exist. Five phases deliver the complete core loop — from a blank database to a user who knows exactly what cards they're missing for every deck they own.
+- ✅ **v1 MVP** — Phases 1–5.2 (shipped 2026-05-07) · [Archive](.planning/milestones/v1-ROADMAP.md)
+- 📋 **v2** — Planned (auth, multi-user, export features)
 
 ## Phases
 
-**Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+<details>
+<summary>✅ v1 MVP (Phases 1–5.2) — SHIPPED 2026-05-07</summary>
 
-Decimal phases appear between their surrounding integers in numeric order.
+- [x] **Phase 1: Foundation** — Project scaffolding, database schema, card catalog sync (4/4 plans) — completed 2026-05-04
+- [x] **Phase 2: Card Catalog** — Browse, search, and filter the full card catalog with images (3/3 plans) — completed 2026-05-05
+- [x] **Phase 3: Collection** — Track owned card counts and import from CSV formats (4/4 plans + 1 fix) — completed 2026-05-05
+- [x] **Phase 4: Deck Builder** — Build legal decks with ownership overlay and missing-card highlights (5/5 plans) — completed 2026-05-06
+- [x] **Phase 5: Want List** — See missing cards per deck and combined across all decks (4/4 plans) — completed 2026-05-06
+- [x] **Phase 5.1 (INSERTED): Want List Gap Fix** — Include leader and base in want list computation (1/1 plans) — completed 2026-05-07
+- [x] **Phase 5.2 (INSERTED): Rarity Filter Fix** — Implement rarity predicate in filterCards() (1/1 plans) — completed 2026-05-07
 
-- [x] **Phase 1: Foundation** - Project scaffolding, database schema, and card catalog sync from swu-db.com
-- [x] **Phase 2: Card Catalog** - Browse, search, and filter the full card catalog with images
-- [x] **Phase 3: Collection** - Track owned card counts and import from CSV formats
-- [x] **Phase 4: Deck Builder** - Build legal decks with ownership overlay and missing-card highlights  
-- [x] **Phase 5: Want List** - See missing cards per deck and combined across all decks
-- [x] **Phase 5.1 (INSERTED): Want List Gap Fix** - Include leader and base in want list computation (WANT-01 + WANT-02)
-- [x] **Phase 5.2 (INSERTED): Rarity Filter Fix** - Implement rarity predicate in filterCards() so the rarity dropdown actually filters the catalog
+</details>
 
-## Phase Details
+### 📋 v2 (Planned)
 
-### Phase 1: Foundation
-**Goal**: The project runs locally, the database schema is in place, and the full card catalog is seeded from the swu-db.com API and kept current via a sync job
-**Depends on**: Nothing (first phase)
-**Requirements**: CATALOG-04
-**Success Criteria** (what must be TRUE):
-  1. Running `npm run dev` starts the Next.js app without errors
-  2. The database contains the full set of Star Wars Unlimited card definitions and printings, populated from the swu-db.com API
-  3. A sync job (Vercel Cron or equivalent) runs and upserts new cards when new sets are released — no manual intervention needed
-  4. Token cards are excluded from the synced catalog (filtered by collector number convention)
-**Plans**: 4
-- **Wave 1** — 01-01: Project scaffold (Next.js 16, Drizzle config, Vitest, env) — COMPLETE
-- **Wave 2** — 01-02: Neon setup + Drizzle schema + db:push — COMPLETE
-- **Wave 3** — 01-03: Sync logic TDD (upsertCards, syncAllCards, token filtering) — COMPLETE        
-- **Wave 4** — 01-04: Seed script + Vercel Cron route + deploy — COMPLETE
+*Requirements to be defined via `/gsd-new-milestone`*
 
-### Phase 2: Card Catalog
-**Goal**: A user can open the app and browse, search, and filter every Star Wars Unlimited card with its image and metadata
-**Depends on**: Phase 1
-**Requirements**: CATALOG-01, CATALOG-02, CATALOG-03
-**Success Criteria** (what must be TRUE):
-  1. User can open the catalog page and see all cards with card images, name, type, set, and aspect displayed
-  2. User can type a card name into a search field and see matching results update in real time
-  3. User can filter the catalog by set, card type, and aspect — filters can be combined
-  4. Browsing, searching, and filtering all query the local PostgreSQL cache, not the upstream API      
-**Plans**: 3
-- **Wave 1** — 02-01: DB query layer & filter logic — COMPLETE
-- **Wave 2** — 02-02: Catalog UI (shadcn, nuqs, browser tests) — COMPLETE
-- **Wave 3** — 02-03: Card detail page — COMPLETE
-
-### Phase 3: Collection
-**Goal**: A user can see their owned card counts and update them by searching and clicking; they can also bulk-import an existing collection from a CSV file
-**Depends on**: Phase 2
-**Requirements**: COLLECT-01, COLLECT-02, COLLECT-03, COLLECT-04
-**Success Criteria** (what must be TRUE):
-  1. User can open the collection view and see every card with its current owned copy count (including zero)
-  2. User can search for a card, click it, and set the quantity owned — the count updates immediately 
-  3. User can upload a generic CSV file and have their collection populated from it, with partial failures wrapped in a transaction (all-or-nothing per import)
-  4. User can upload the community Reddit SWU tracking spreadsheet CSV (Card # + Standard/Hyperspace/F-Hyperspace columns) and have variant counts summed into total owned per card
-  5. User can filter the catalog by Arena, Trait, Rarity, Keyword, and cost (multi-select, values 0–9+) in addition to existing filters
-  6. When returning to the catalog from a card detail page, any active search query and filters are preserved
-**Plans**: 4
-- **Wave 1** — 03-01: user_collections schema & API — COMPLETE
-- **Wave 2** — 03-02: URL-synced advanced filters (nuqs) — COMPLETE
-- **Wave 3** — 03-03: Catalog & detail page collection controls — COMPLETE
-- **Wave 4** — 03-04: CSV import (generic & community formats) — COMPLETE
-
-### Phase 4: Deck Builder
-**Goal**: A user can create and save named decks composed of a Leader, a Base, and a 50-card main deck, with owned counts shown on every card and legality enforced
-**Depends on**: Phase 3
-**Requirements**: DECK-01, DECK-02, DECK-03, DECK-04, DECK-05
-**Success Criteria** (what must be TRUE):
-  1. User can create a named deck, assign exactly 1 Leader card, 1 Base card, and up to 50 main deck cards, then save it
-  2. User can view a list of all saved decks and delete any deck from the list
-  3. While building a deck, every card in the catalog shows the user's owned copy count inline
-  4. Cards where the user does not own enough copies to cover the deck quantity are visually highlighted
-  5. The deck builder enforces SWU Premier legality: 1 Leader, 1 Base, 50-card main deck, maximum 3 copies of any non-unique card, Heroism/Villainy aspect exclusivity — an invalid deck cannot be saved      
-  6. User can export any saved deck in Melee format and raw JSON format for use in Karabast or other deck builders
-  7. While viewing or building a deck, user can see ground/space unit counts, aspect breakdown, and a card cost curve
-**Plans**: 5
-- [x] **Wave 1** — 04-01-PLAN.md — Database schema (decks, deck_cards) & CRUD API routes
-- [x] **Wave 2** — 04-02-PLAN.md — Deck validation logic & stats calculation (TDD)
-- [x] **Wave 3** — 04-03-PLAN.md — Deck builder core UI: Dashboard, shell with useReducer, and stats sidebar
-- [x] **Wave 4** — 04-04-PLAN.md — Catalog integration: Selector mode, Add buttons, and shortfall highlights
-- [x] **Wave 5** — 04-05-PLAN.md — Export (Melee/JSON) and final polish
-
-### Phase 5: Want List
-**Goal**: A user can immediately see which cards each deck is missing and view a single aggregated list of everything they need to acquire across all their decks
-**Depends on**: Phase 4
-**Requirements**: WANT-01, WANT-02
-**Success Criteria** (what must be TRUE):
-  1. On any saved deck's page, the user can see a list of cards the deck requires that they do not own enough copies of, with the exact shortfall quantity shown
-  2. User can view a combined want list that aggregates missing cards across all their decks, deduplicating by card and summing shortfall quantities
-  3. Both want list views derive from a live query against collection and deck data — no separate sync or store needed
-**Plans**: 4
-- [x] **Wave 1** — 05-01-PLAN.md — NavBar component + root layout mount
-- [x] **Wave 1** — 05-02-PLAN.md — getDeckCardsForUser DB query + GET /api/want-list route
-- [x] **Wave 2** — 05-03-PLAN.md — CardItem want-list mode + WantListTab + deck builder third tab   
-- [x] **Wave 3** — 05-04-PLAN.md — Combined want list section on /decks dashboard
-
-### Phase 5.1 (INSERTED): Want List Gap Fix
-**Goal**: The want list computation includes the deck's Leader and Base cards so that WANT-01 and WANT-02 are fully satisfied — missing Leaders and Bases are surfaced in both the per-deck and combined want list views
-**Depends on**: Phase 5
-**Requirements**: WANT-01, WANT-02
-**Success Criteria** (what must be TRUE):
-  1. The per-deck want list includes the Leader and Base if the user does not own the required copy     
-  2. The combined want list aggregates Leader and Base shortfalls across all decks alongside main deck shortfalls
-  3. Existing want list behaviour for main deck cards is unchanged
-**Plans**: 1
-- [x] **Wave 1** — 05.1-01-PLAN.md — Extend getDeckCardsForUser() + inject leader/base into WantListTab prop
-
-### Phase 5.2 (INSERTED): Rarity Filter Fix
-**Goal**: The rarity dropdown in the card catalog actually filters results — `filterCards()` evaluates `selectedRarities` instead of the hardcoded `true` bypass, closing a Phase 3 success criterion gap     
-**Depends on**: Phase 5.1
-**Requirements**: COLLECT-05
-**Success Criteria** (what must be TRUE):
-  1. Selecting one or more rarities from the rarity dropdown filters the catalog to only show cards of those rarities
-  2. Selecting no rarities (cleared filter) shows all cards regardless of rarity
-  3. Rarity filter composes correctly with all other active filters (set, type, aspect, arena, trait, keyword, cost)
-**Plans**: 1
-- [x] 05.2-01-PLAN.md — Implement rarity filtering with UI label mapping
+- [ ] Phase 6: Authentication (Better Auth — per-user accounts)
+- [ ] Phase 7+: TBD after requirements definition
 
 ## Progress
 
-**Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 5.1 → 5.2
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation | 4/4 | COMPLETE | 2026-05-04 |
-| 2. Card Catalog | 3/3 | COMPLETE | 2026-05-05 |
-| 3. Collection | 4/4 | COMPLETE | 2026-05-05 |
-| 4. Deck Builder | 5/5 | COMPLETE | 2026-05-06 |
-| 5. Want List | 4/4 | COMPLETE | 2026-05-06 |
-| 5.1. Want List Gap Fix | 1/1 | COMPLETE | 2026-05-07 |
-| 5.2. Rarity Filter Fix | 1/1 | COMPLETE | 2026-05-07 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Foundation | v1 | 4/4 | ✅ Complete | 2026-05-04 |
+| 2. Card Catalog | v1 | 3/3 | ✅ Complete | 2026-05-05 |
+| 3. Collection | v1 | 4/4 | ✅ Complete | 2026-05-05 |
+| 4. Deck Builder | v1 | 5/5 | ✅ Complete | 2026-05-06 |
+| 5. Want List | v1 | 4/4 | ✅ Complete | 2026-05-06 |
+| 5.1. Want List Gap Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
+| 5.2. Rarity Filter Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
+| 6. Authentication | v2 | 0/? | Not started | — |

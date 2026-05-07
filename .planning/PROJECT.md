@@ -2,7 +2,9 @@
 
 ## What This Is
 
-A public multi-user web app for Star Wars: Unlimited TCG players. Players track their card collection and build decks in one place — so they always know what they own while building decks and exactly what they still need to acquire. It replaces the fragmented workflow of a spreadsheet for collection tracking plus a separate deck-building tool (like SWUDB) that has no awareness of what you own.
+A single-user web app for Star Wars: Unlimited TCG players. Players track their card collection and build decks in one place — so they always know what they own while building decks and exactly what cards they still need to acquire. Replaces the fragmented workflow of a spreadsheet for collection tracking plus a separate deck-building tool (like SWUDB) that has no awareness of what you own.
+
+> **v1 shipped 2026-05-07.** Single-user personal tool (no auth). Full core loop delivered. v2 will add multi-user auth.
 
 ## Core Value
 
@@ -12,50 +14,69 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ### Validated
 
-- [x] Card catalog stays current as new sets release (API-driven, no manual updates) — Validated in Phase 1: Foundation (CATALOG-04)
+- ✓ Card catalog auto-syncs from swu-db.com API without manual intervention — v1 (CATALOG-04, Phase 1)
+- ✓ User can browse/search/filter the full card catalog with images and metadata — v1 (CATALOG-01, CATALOG-02, CATALOG-03, Phase 2)
+- ✓ User can track owned copy counts and update via search & click — v1 (COLLECT-01, COLLECT-02, Phase 3)
+- ✓ User can bulk-import collection from generic CSV or community Reddit SWU spreadsheet — v1 (COLLECT-03, COLLECT-04, Phase 3)
+- ✓ User can build legal decks (1 Leader + 1 Base + 50-card main deck) with owned-count overlay and shortfall highlights — v1 (DECK-01 through DECK-05, Phase 4)
+- ✓ User can view per-deck and combined want lists showing exact missing card quantities — v1 (WANT-01, WANT-02, Phase 5 + 5.1)
+- ✓ Catalog rarity filter actually filters results — v1 (Phase 5.2, closed audit gap)
 
-### Active
+### Active (v2)
 
-- [ ] User can create an account and log in
-- [ ] User can browse the full Star Wars Unlimited card catalog (auto-populated from API)
-- [ ] User can add cards to collection via search & click (set quantity per card)
-- [ ] User can import collection from a generic spreadsheet (CSV)
-- [ ] User can import collection from a SWUDB collection CSV export
-- [ ] User can build decks with collection status (owned count) shown on each card
-- [ ] User can filter deck builder to owned cards only
-- [ ] User can see missing cards highlighted while building a deck
-- [ ] User can view a combined want list across all their decks
-- [ ] User can export or share their want list
-- [ ] App enforces Star Wars Unlimited deck legality (1 Leader, 1 Base, 50-card main deck, max 3 copies of non-unique cards)
-- [ ] Card catalog stays current as new sets release (API-driven, no manual updates)
+- [ ] User can create an account and log in (AUTH-01, AUTH-02, AUTH-03)
+- [ ] Per-user collections and decks (requires auth)
+- [ ] User can export or share their want list (WANT-03)
+- [ ] User can filter the deck builder to show only cards they own (DECK-06)
+- [ ] User can import collection from SWUDB-specific CSV export (COLLECT-05 v2)
+- [ ] User can export collection to CSV (COLLECT-04 v2)
 
 ### Out of Scope
 
-- Camera scanning with image recognition — deferred to v2 (ML complexity, CSV/spreadsheet import covers migration from existing collections)
-- Card trading / marketplace between users — out of scope, different product
+- Camera scanning with image recognition (SCAN-01) — ML complexity; CSV/spreadsheet import covers collection migration
+- Card trading / marketplace — out of scope, different product
 - Mobile native app — web-first; responsive design covers mobile browsers
+- Sideboard support — competitive feature; 50-card main deck covers casual play in v1
+- Social features (deck sharing, public profiles) — v2 retention features once core loop is proven
 
 ## Context
 
-- **Current player workflow:** Spreadsheet for collection inventory + SWUDB (or similar) for deck building — two siloed tools with no shared data
-- **Core pain:** When building a deck in a third-party tool, there's no visibility into what you actually own; want lists are also manual
-- **Card data:** External Star Wars Unlimited card API (e.g. SWUDB API) — pulls full catalog including new set releases automatically
-- **SWU deck construction rules:** 1 Leader card, 1 Base card, 50-card main deck, maximum 3 copies of any non-unique card across deck + sideboard
+**Shipped v1:** 2026-05-07
+**Stack:** Next.js 16 + TypeScript + Neon PostgreSQL (neon-http driver) + Drizzle ORM + shadcn/ui + base-ui + nuqs
+**Deployment:** Vercel (Hobby tier, daily cron sync at 06:00 UTC)
+**Codebase:** ~4,757 LOC TypeScript/TSX, 22 plans across 7 phases (5 days)
+**Auth:** v1 is single-user (userId hardcoded to 1); Better Auth deferred to v2
+**Card data:** swu-db.com API — 4,400+ cards, auto-synced via Vercel Cron
 
-## Constraints
-
-- **Tech stack:** Next.js + TypeScript + PostgreSQL — full-stack single repo, appropriate for user accounts and relational card/deck data
-- **Auth required:** Public app with per-user collections and decks — authentication is not optional
-- **External API dependency:** Card catalog depends on a third-party SWU card API; need a fallback or local cache strategy for resilience
+**Architecture decisions held:**
+- Two-table model (card_definitions + card_printings) is non-negotiable — changing causes full rewrite
+- neon-http driver for Drizzle (not WebSocket) — correct for Next.js serverless
+- nuqs for URL-synced filter state — shareable URLs, snappy client-side updates
+- is_draft boolean on decks — allows saving invalid states during deck building
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Next.js full-stack (not separate frontend/backend) | Single repo, simpler deployment, SSR for card browsing performance | — Pending |
-| Card data from API, not manual entry | New sets release regularly; API keeps catalog current automatically | — Pending |
-| Camera scanning deferred to v2 | Complex ML feature; CSV/spreadsheet import handles existing collection migration | — Pending |
-| SWUDB CSV import in v1 | Users currently use SWUDB — direct import path lowers friction to switch | — Pending |
+| Next.js full-stack (not separate frontend/backend) | Single repo, simpler Vercel deployment, SSR for card browsing | ✓ Good — clean single-repo development |
+| Card data from API + local PostgreSQL cache | New sets release regularly; local cache avoids proxying swu-db.com | ✓ Good — sync job works, cache keeps catalog fast |
+| Two-table card model (card_definitions + card_printings) | Separates card identity from print variants; enables variant tracking later | ✓ Good — critical architectural decision, never revisit |
+| neon-http driver for Drizzle | Correct choice for Next.js serverless on Vercel (not WebSocket) | ✓ Good |
+| nuqs for URL state | Snappy filters, shareable URLs, avoids useState proliferation | ✓ Good |
+| integer columns for cost/power/hp | Proper numeric sort (not lexicographic) | ✓ Good |
+| Two-pass variant strategy in sync | Normal cards anchor definitions; non-Normal look up by name+subtitle | ✓ Good |
+| v1 single-user (no auth) | Removes auth complexity from core loop validation | ✓ Good — proved the core loop works |
+| is_draft boolean on decks | Allows saving incomplete/invalid decks; strict validation only on draft=false | ✓ Good |
+| Synthetic rows in getDeckCardsForUser() | Append leader/base as typed rows after DB query results | ✓ Good — shape enforced by tsc --noEmit |
+| UI prefix stripping for rarity filter | Split on first space to normalise `(C) Common` → `Common` for DB match | ✓ Good |
+| Camera scanning deferred to v2 | Complex ML feature; CSV handles existing collection migration | ✓ Good |
+| SWUDB CSV import in v1 | Users currently use SWUDB — direct import path lowers switching friction | ✓ Good |
+
+## Constraints
+
+- **Auth:** Public app — v2 will add per-user accounts; v1 is userId=1 single-user
+- **External API dependency:** swu-db.com API; local PostgreSQL cache provides resilience
+- **Vercel Hobby tier:** 1 cron job per day maximum — syncs at 06:00 UTC
 
 ---
 
@@ -68,7 +89,6 @@ This document evolves at phase transitions and milestone boundaries.
 2. Requirements validated? → Move to Validated with phase reference
 3. New requirements emerged? → Add to Active
 4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
 
 **After each milestone** (via `/gsd-complete-milestone`):
 1. Full review of all sections
@@ -77,4 +97,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-04 after Phase 1 completion*
+*Last updated: 2026-05-07 after v1 milestone*
