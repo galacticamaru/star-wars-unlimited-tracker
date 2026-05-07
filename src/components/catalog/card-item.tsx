@@ -231,14 +231,14 @@ export function CardItem({
 
       {/* Want List mode: NEED / OWN / SHORT chips — always visible below tile */}
       {isWantList && (
-        <div className="flex gap-1 justify-center mt-1">
-          <span className="bg-muted text-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-sm">
+        <div className="flex flex-wrap gap-1 justify-center mt-1.5">
+          <span className="bg-muted text-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-sm whitespace-nowrap">
             NEED {deckQuantity}
           </span>
-          <span className="bg-muted text-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-sm">
+          <span className="bg-muted text-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-sm whitespace-nowrap">
             OWN {ownedCount}
           </span>
-          <span className="bg-destructive text-destructive-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-sm">
+          <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-sm whitespace-nowrap">
             SHORT {shortfall}
           </span>
         </div>

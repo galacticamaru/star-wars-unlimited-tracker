@@ -183,7 +183,7 @@ export default function DecksPage() {
               : `${wantList.length} cards needed, ${wantList.reduce((s, c) => s + c.shortfall, 0)} total copies short`}
           </p>
           {wantListLoading ? (
-            <div className="grid gap-2 grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9">
+            <div className="grid gap-3 grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="aspect-[2/3] bg-muted animate-pulse rounded-md" />
               ))}
@@ -194,7 +194,7 @@ export default function DecksPage() {
                 <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider border-b border-muted pb-1 mb-2">
                   {typeName}
                 </h3>
-                <div className="grid gap-2 grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9">
+                <div className="grid gap-3 grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
                   {entries.map(entry => (
                     <CardItem
                       key={entry.cardDefinitionId}

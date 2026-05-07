@@ -91,7 +91,7 @@ export function WantListTab({ deckCards, allCards }: WantListTabProps) {
           <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider border-b border-muted pb-1 mb-2">
             {typeName}
           </h3>
-          <div className="grid gap-2 grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9">
+          <div className="grid gap-3 grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
             {items.map(({ card, quantity, owned, shortfall }) => (
               <CardItem
                 key={card.id}
