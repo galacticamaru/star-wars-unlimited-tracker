@@ -9,10 +9,10 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 
 ## Current Position
 
-Phase: 5.2 (Rarity Filter Fix) — COMPLETE & VERIFIED
+Phase: 5.2 (Rarity Filter Fix) — COMPLETE & VERIFIED & SHIPPED
 Plan: 1 of 1 complete
-Status: Phase 5.2 verified. Rarity filtering fully implemented and passes all UAT tests.
-Last activity: 2026-05-07 — Phase 5.2 UAT complete
+Status: Phase 5.1 + 5.2 shipped — PR #2
+Last activity: 2026-05-07 — Shipped PR #2 (shipping-phase-5.1-5.2 → main)
 
 Progress: [██████████] 100% (Phase 5.2)
 
