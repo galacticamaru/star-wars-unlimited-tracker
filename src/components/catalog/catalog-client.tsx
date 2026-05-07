@@ -18,6 +18,7 @@ interface CatalogClientProps {
   mode?: 'catalog' | 'selector';
   deckCounts?: Record<number, number>;
   onDeckUpdate?: (cardDefinitionId: number, count: number) => void;
+  topOffset?: string;
 }
 
 const RARITY_OPTIONS = ['(C) Common', '(U) Uncommon', '(R) Rare', '(L) Legendary'];
@@ -46,7 +47,8 @@ export function CatalogClient({
   filterOptions, 
   mode = 'catalog', 
   deckCounts, 
-  onDeckUpdate 
+  onDeckUpdate,
+  topOffset
 }: CatalogClientProps) {
   const [collection, setCollection] = useState<Record<number, number>>({});
 
@@ -141,6 +143,7 @@ export function CatalogClient({
         onRaritiesChange={setSelectedRarities}
         onKeywordsChange={setSelectedKeywords}
         onCostsChange={setSelectedCosts}
+        topOffset={topOffset}
       />
       {/* Result count — right-aligned, above grid per UI-SPEC.md */}
       <div className="px-4 py-2 text-right text-xs font-semibold text-muted-foreground">
