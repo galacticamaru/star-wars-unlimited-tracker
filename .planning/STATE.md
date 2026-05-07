@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-05-07)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus:** v2 — auth + multi-user, market pricing, Deck of the Day, trade binder
+**Current focus:** v2 — Phase 6: Auth & Multi-User (first v2 phase)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-07 — Milestone v2.0 started
+Phase: 6 — Auth & Multi-User
+Plan: — (not started)
+Status: Ready to plan
+Last activity: 2026-05-07 — v2 roadmap created; Phase 6 is next
 
-Progress: [__________] 0% (v2 planning)
+Progress: [__________] 0% (v2: 0/5 phases)
 
 ## Performance Metrics
 
@@ -49,7 +49,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - Two-table card model (card_definitions + card_printings) is non-negotiable from Phase 1 — changing this later causes a rewrite
-- Local PostgreSQL card cache only — never proxy swu-db.com per user request; sync on a schedule      
+- Local PostgreSQL card cache only — never proxy swu-db.com per user request; sync on a schedule
 - v1 is single-user (no auth); Better Auth deferred to v2
 - vitest passWithNoTests: true — vitest@4.x exits code 1 with no test files; config option ensures zero-file runs exit 0
 - .env.example tracked via !.env.example gitignore negation — .env* wildcard requires explicit opt-in for example files
@@ -61,8 +61,8 @@ Recent decisions affecting current work:
 - dotenv config() must be called before any app module imports in seed scripts (but ESM hoisting makes this unreliable — prefer tsx --env-file=.env.local instead)
 - tsx --env-file=.env.local is the correct ESM-safe approach for seed scripts — avoids dotenv hoisting after Drizzle init
 - vercel.json cron: 0 6 * * * (daily at 06:00 UTC) — within Hobby tier one-per-day limit
-- .next cache must be cleared before npm run build if Turbopack dev mode was run (stale validator.ts)   
-- process.exit(0) required in seed scripts — tsx hangs on open Neon pooled HTTP connection otherwise  
+- .next cache must be cleared before npm run build if Turbopack dev mode was run (stale validator.ts)
+- process.exit(0) required in seed scripts — tsx hangs on open Neon pooled HTTP connection otherwise
 - shadcn + base-ui: DropdownMenuTrigger (from Base UI) does not support asChild; use buttonVariants on the trigger directly
 - Next.js 16 async params: dynamic route params must be awaited before destructuring (e.g. await params)
 - nuqs for URL-synced search and filters: provides snappy client-side state with sharable URLs
@@ -73,27 +73,35 @@ Recent decisions affecting current work:
 - **Phase 4 Naming**: Standardize on `cardDefinitionId` or `definitionId` across all components and API routes to avoid confusion with printings.
 - **Deck Draft Support**: `is_draft` boolean column in `decks` table allows saving invalid states; `is_draft: false` triggers strict server-side validation.
 - **Want List Visibility**: The combined want list section on `/decks` is hidden if all cards are owned or no decks exist, maintaining a clean dashboard for established collections.
+- **Better Auth — proxy.ts**: Next.js 16 breaking change — auth export must come from `proxy.ts` (not `middleware.ts`); wrong filename silently leaves routes unprotected
+- **userId=1 audit**: Phase 6 must audit every DB query and component to replace hardcoded userId=1 with session user; no exceptions
+- **Cron slot constraint**: Hobby tier allows 1 cron/day; Phase 7+ must run catalog sync → price refresh → deck fetch sequentially in one job
+- **pokemon-api.com**: Used for card pricing (Cardmarket EUR + TCGPlayer USD); 100 req/day free; never call per-request — cache in DB
+- **swuapi.com API key**: SWUAPI_KEY env var (no NEXT_PUBLIC_ prefix); server-side only
 
 ### Pending Todos
 
-None yet.
+- Run `/gsd-plan-phase 6` to begin Phase 6: Auth & Multi-User
 
 ### Blockers/Concerns
 
-- None currently identified.
+- Vercel Hobby tier cron constraint: only 1 cron job per day. Phases 7 and 8 both need daily refresh jobs (prices + deck of the day). Must run them sequentially in a single cron handler.
 
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| Auth | Better Auth / per-user accounts (AUTH-01, AUTH-02, AUTH-03) | v2 | Init |
-| Collection | CSV export (COLLECT-04 v2) | v2 | Init |
-| Deck Builder | Filter to owned-only (DECK-06) | v2 | Init |
-| Want List | Export / share want list (WANT-03) | v2 | Init |
-| Collection | Camera scanning (SCAN-01) | v2 | Init |
+| Want List | Export / share want list (WANT-03) | v3 | v2 requirements |
+| Deck Builder | Filter to owned-only (DECK-06) | v3 | v2 requirements |
+| Collection | SWUDB CSV import (COLLECT-05) | v3 | v2 requirements |
+| Collection | CSV export (COLLECT-04 v2) | v3 | v2 requirements |
+| Deck of the Day | Past archive | out of scope | v2 research |
+| Trade Binder | Private binders | out of scope | v2 research |
+| Pricing | Price history charts | out of scope | v2 research |
+| Pricing | Buy links / affiliate | out of scope | v2 research |
 
 ## Session Continuity
 
-Last session: 2026-05-07
-Stopped at: v1 milestone complete. All phases shipped. Run /gsd-new-milestone to start v2.
-Resume file: None
+Last session: 2026-05-08
+Stopped at: Phase 6 context gathered. Run /gsd-plan-phase 6 to begin planning.
+Resume file: .planning/phases/06-auth-multi-user/06-CONTEXT.md
