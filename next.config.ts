@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
     ],
     qualities: [75],
     minimumCacheTTL: 2678400,
+    // TODO(2026-06-04): Vercel Image Transformations quota exhausted — remove unoptimized once quota renews
+    unoptimized: true,
   },
 };
 
