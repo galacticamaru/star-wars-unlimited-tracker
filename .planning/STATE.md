@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-05-03)
 Phase: 5 of 5 (Want List) — COMPLETE
 Plan: 4 of 4 complete
 Status: Phase 5 complete. Core project functionality finalized.
-Last activity: 2026-05-06 — Phase 5 completed. Combined want list integrated into decks dashboard.
+Last activity: 2026-05-07 — Phase 5 shipped — PR #1
 
 Progress: [██████████] 100% (Phase 5)
 
