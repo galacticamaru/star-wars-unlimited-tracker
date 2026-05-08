@@ -1,8 +1,8 @@
 import { db } from '@/db';
-import { cardDefinitions, cardPrintings } from '@/db/schema';
-import { eq, and, notIlike, asc } from 'drizzle-orm';
+import { cardDefinitions, cardPrintings, userCollections } from '@/db/schema';
+import { eq, and, notIlike, asc, sql } from 'drizzle-orm';
 
-export async function getAllCards() {
+export async function getAllCards(userId?: number) {
   return db
     .select({
       id: cardDefinitions.id,
@@ -27,11 +27,19 @@ export async function getAllCards() {
       epicAction: cardDefinitions.epicAction,
       doubleSided: cardDefinitions.doubleSided,
       unique: cardDefinitions.unique,
+      collectionCount: sql<number>`COALESCE(${userCollections.count}, 0)`,
     })
     .from(cardDefinitions)
     .innerJoin(
       cardPrintings,
       eq(cardDefinitions.id, cardPrintings.cardDefinitionId)
+    )
+    .leftJoin(
+      userCollections,
+      and(
+        eq(cardDefinitions.id, userCollections.cardDefinitionId),
+        userId ? eq(userCollections.userId, userId) : sql`FALSE`
+      )
     )
     .where(
       and(

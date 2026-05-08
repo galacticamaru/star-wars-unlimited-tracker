@@ -1,8 +1,8 @@
 import { db } from '@/db';
-import { cardDefinitions, cardPrintings } from '@/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { cardDefinitions, cardPrintings, userCollections } from '@/db/schema';
+import { eq, and, sql } from 'drizzle-orm';
 
-export async function getCardByPrinting(setCode: string, cardNumber: string) {
+export async function getCardByPrinting(setCode: string, cardNumber: string, userId?: number) {
   // collectorNumber stored as "SOR-059" — reconstruct from URL route params
   const collectorNumber = `${setCode}-${cardNumber}`;
 
@@ -29,11 +29,19 @@ export async function getCardByPrinting(setCode: string, cardNumber: string) {
       frontArtUrl: cardPrintings.frontArtUrl,
       backArtUrl: cardPrintings.backArtUrl,
       artist: cardPrintings.artist,
+      collectionCount: sql<number>`COALESCE(${userCollections.count}, 0)`,
     })
     .from(cardDefinitions)
     .innerJoin(
       cardPrintings,
       eq(cardDefinitions.id, cardPrintings.cardDefinitionId)
+    )
+    .leftJoin(
+      userCollections,
+      and(
+        eq(cardDefinitions.id, userCollections.cardDefinitionId),
+        userId ? eq(userCollections.userId, userId) : sql`FALSE`
+      )
     )
     .where(
       and(
