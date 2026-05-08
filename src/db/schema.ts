@@ -82,6 +82,9 @@ export const cardDefinitions = pgTable('card_definitions', {
   epicAction: text('epic_action'), // Leader epic action text
   doubleSided: boolean('double_sided').notNull().default(false),
   unique: boolean('unique').notNull().default(false),
+  priceEur: integer('price_eur'),
+  priceUsd: integer('price_usd'),
+  pricesUpdatedAt: timestamp('prices_updated_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

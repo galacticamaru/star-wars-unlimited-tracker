@@ -15,6 +15,13 @@
       "when": 1778200131024,
       "tag": "0001_harsh_dust",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778209445697,
+      "tag": "0002_lumpy_silverclaw",
+      "breakpoints": true
     }
   ]
 }
