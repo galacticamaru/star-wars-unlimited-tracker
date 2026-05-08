@@ -1,7 +1,9 @@
 import { getDeckWithCards } from '@/db/queries/decks';
 import { getAllCards, getFilterOptions } from '@/db/queries/catalog';
 import { DeckBuilder } from '@/components/decks/deck-builder';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export default async function DeckPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -9,9 +11,17 @@ export default async function DeckPage({ params }: { params: Promise<{ id: strin
   
   if (isNaN(deckId)) notFound();
 
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect('/login');
+  }
+
   const [deckData, allCards, filterOptions] = await Promise.all([
-    getDeckWithCards(deckId),
-    getAllCards(),
+    getDeckWithCards(deckId, Number(session.user.id)),
+    getAllCards(Number(session.user.id)),
     getFilterOptions(),
   ]);
 

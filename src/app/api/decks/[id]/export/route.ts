@@ -1,12 +1,19 @@
 import { NextRequest } from 'next/server';
 import { getDeckForExport } from '@/db/queries/decks';
 import { toMeleeFormat, toJSONFormat } from '@/lib/export';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
     const { id } = await params;
     const deckId = parseInt(id, 10);
     
@@ -17,14 +24,10 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const format = searchParams.get('format') || 'melee';
 
-    const deck = await getDeckForExport(deckId);
+    const deck = await getDeckForExport(deckId, Number(session.user.id));
     if (!deck) {
       return new Response('Deck not found', { status: 404 });
     }
-
-    // T-04-05-01: Information Disclosure - Mitigate by checking userId
-    // In this MVP, we assume userId 1 for everyone.
-    // In a multi-user system, we would check if deck.userId === currentUser.id.
 
     let content: string;
     let contentType: string;

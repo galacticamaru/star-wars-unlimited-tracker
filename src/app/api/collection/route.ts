@@ -1,9 +1,16 @@
 import { NextRequest } from 'next/server';
 import { getUserCollection, upsertCardCount } from '@/db/queries/collection';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export async function GET() {
   try {
-    const collection = await getUserCollection(1); // Hardcoded user 1 as per D-04
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
+    const collection = await getUserCollection(Number(session.user.id));
     
     // Convert to a map for easier client-side consumption: { [cardDefinitionId]: count }
     const countMap = collection.reduce((acc, row) => {
@@ -20,6 +27,11 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
     const body = await request.json();
     const { cardDefinitionId, count } = body;
 
@@ -27,7 +39,7 @@ export async function POST(request: NextRequest) {
       return new Response('Missing cardDefinitionId or count', { status: 400 });
     }
 
-    await upsertCardCount(cardDefinitionId, count, 1); // Hardcoded user 1
+    await upsertCardCount(cardDefinitionId, count, Number(session.user.id));
 
     return Response.json({ success: true });
   } catch (error) {

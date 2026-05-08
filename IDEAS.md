@@ -68,3 +68,30 @@ Implemented: PENDING
 ### Navigation Improvement
 When returning to the catalog from a card details page, we should maintain and card filters or searches the user had.
 Implemented: 05/05/26
+-----
+### Deck Building Clarity / Improvements
+1. In the decklist page group the cards in these sections and subsections:
+Main Deck:
+- Ground Units
+- Space Units
+- Upgrades
+- Events
+
+Sideboard:
+- Ground Units
+- Space Units
+- Upgrades
+- Events
+
+2. In the stats sidebar when adding cards to a deck, add an aspect breakdown. Include both a visual and a listed number representation. For the visual representation use a bar chart, similar to the cost curve. The bars should be stylised by the aspect:
+- Aggression = red
+- Vigilance = blue
+- Command = green
+- Cunning = yellow
+- Heroism = white
+- Villiany = black
+
+Cards with multiple aspects should use have multi coloured bars.
+-----
+### Catalog Improvement
+Add more card variant support. Prestige cards, in multiple tiers, and leader showcases. Also serialised cards.

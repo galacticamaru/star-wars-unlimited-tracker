@@ -24,6 +24,9 @@ export const auth = betterAuth({
             clientSecret: process.env.DISCORD_CLIENT_SECRET || "placeholder",
         },
     },
+    emailAndPassword: {
+        enabled: true,
+    },
     advanced: {
         database: {
             generateId: "serial",

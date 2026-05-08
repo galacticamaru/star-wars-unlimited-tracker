@@ -22,7 +22,7 @@
 
 ### 📋 v2 Multi-User, Market, Decks & Trading (Phases 6–10)
 
-- [ ] **Phase 6: Auth & Multi-User** — Per-user accounts with Better Auth; migrate v1 single-user data to first account
+- [x] **Phase 6: Auth & Multi-User** — Per-user accounts with Better Auth; migrate v1 single-user data to first account — completed 2026-05-08
 - [ ] **Phase 7: Market Pricing** — Card prices (EUR + USD) from pokemon-api.com; deck cost totals; daily cache refresh
 - [ ] **Phase 8: Deck of the Day** — Daily featured tournament deck with ownership overlay and copy-to-library
 - [ ] **Phase 9: Sideboard** — Sideboard support in deck builder with rules enforcement and distinct cost curve display
@@ -106,7 +106,7 @@
 | 5. Want List | v1 | 4/4 | ✅ Complete | 2026-05-06 |
 | 5.1. Want List Gap Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
 | 5.2. Rarity Filter Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
-| 6. Auth & Multi-User | v2 | 4/4 | 📋 Planned | — |
+| 6. Auth & Multi-User | v2 | 4/4 | ✅ Complete | 2026-05-08 |
 | 7. Market Pricing | v2 | 0/? | Not started | — |
 | 8. Deck of the Day | v2 | 0/? | Not started | — |
 | 9. Sideboard | v2 | 0/? | Not started | — |
