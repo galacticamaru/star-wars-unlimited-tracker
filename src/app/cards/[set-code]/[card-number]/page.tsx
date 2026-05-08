@@ -6,6 +6,7 @@ import { getCardByPrinting } from '@/db/queries/card-detail';
 import { getUserCollection } from '@/db/queries/collection';
 import { CollectionControls } from '@/components/catalog/collection-controls';
 import { buttonVariants } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { CardImageSection } from '@/components/catalog/card-image-section';
 import { cn } from '@/lib/utils';
 
@@ -119,6 +120,16 @@ export default async function CardDetailPage({
               )}
             </div>
           )}
+
+          {/* Price Chips - UI-SPEC.md §2.2 */}
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="secondary" className="px-2.5 py-1 h-auto text-[11px] font-bold">
+              Market (NM): {card.priceEur ? `€${(card.priceEur / 100).toFixed(2)}` : '—'}
+            </Badge>
+            <Badge variant="secondary" className="px-2.5 py-1 h-auto text-[11px] font-bold">
+              Market (NM): {card.priceUsd ? `$${(card.priceUsd / 100).toFixed(2)}` : '—'}
+            </Badge>
+          </div>
 
           {/* 6. Front text (abilities) — Body, bg-muted rounded box per UI-SPEC.md */}
           {card.frontText && (

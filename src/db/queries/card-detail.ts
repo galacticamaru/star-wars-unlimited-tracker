@@ -29,6 +29,8 @@ export async function getCardByPrinting(setCode: string, cardNumber: string, use
       frontArtUrl: cardPrintings.frontArtUrl,
       backArtUrl: cardPrintings.backArtUrl,
       artist: cardPrintings.artist,
+      priceEur: cardDefinitions.priceEur,
+      priceUsd: cardDefinitions.priceUsd,
       collectionCount: sql<number>`COALESCE(${userCollections.count}, 0)`,
     })
     .from(cardDefinitions)
