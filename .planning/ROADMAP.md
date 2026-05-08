@@ -40,7 +40,11 @@
   3. User can log out from any page and is returned to the login screen
   4. All collection data and decks are visible only to the owning user — a second registered account sees a clean slate
   5. v1 data (cards, decks) is associated with the first registered account after migration
-**Plans**: TBD
+**Plans**: 4 plans
+- [ ] 06-01-PLAN.md — Setup Better Auth core, schema, and test scaffolding
+- [ ] 06-02-PLAN.md — Refactor database queries for user isolation
+- [ ] 06-03-PLAN.md — Update API routes with session checks
+- [ ] 06-04-PLAN.md — Implement route protection, migration, and UI integration
 **UI hint**: yes
 
 ### Phase 7: Market Pricing
@@ -102,7 +106,7 @@
 | 5. Want List | v1 | 4/4 | ✅ Complete | 2026-05-06 |
 | 5.1. Want List Gap Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
 | 5.2. Rarity Filter Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
-| 6. Auth & Multi-User | v2 | 0/? | Not started | — |
+| 6. Auth & Multi-User | v2 | 4/4 | 📋 Planned | — |
 | 7. Market Pricing | v2 | 0/? | Not started | — |
 | 8. Deck of the Day | v2 | 0/? | Not started | — |
 | 9. Sideboard | v2 | 0/? | Not started | — |
