@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FilterDropdown } from './filter-dropdown';
 import { X } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useCurrency, type Currency } from '@/components/currency-context';
 
 interface TopBarProps {
   search: string;
@@ -43,6 +45,8 @@ export function TopBar({
   onSetsChange, onTypesChange, onAspectsChange, onArenasChange, onTraitsChange, onRaritiesChange, onKeywordsChange, onCostsChange,
   topOffset = 'top-14',
 }: TopBarProps) {
+  const { currency, setCurrency } = useCurrency();
+
   return (
     <div
       className={cn(
@@ -80,6 +84,13 @@ export function TopBar({
         <FilterDropdown label="Set"    options={sets}    selected={selectedSets}    onChange={onSetsChange}    />
         <FilterDropdown label="Aspect" options={aspects} selected={selectedAspects} onChange={onAspectsChange} />
         <FilterDropdown label="Rarity" options={rarities} selected={selectedRarities} onChange={onRaritiesChange} />
+        
+        <Tabs value={currency} onValueChange={(v) => setCurrency(v as Currency)} className="ml-auto">
+          <TabsList className="h-9">
+            <TabsTrigger value="USD" className="px-3">USD</TabsTrigger>
+            <TabsTrigger value="EUR" className="px-3">EUR</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
       <div className="flex items-center gap-2 flex-wrap">
