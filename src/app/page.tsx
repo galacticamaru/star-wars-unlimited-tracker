@@ -11,7 +11,7 @@ export default async function CatalogPage() {
   });
 
   const [cards, filterOptions] = await Promise.all([
-    getAllCards(session?.user.id),
+    getAllCards(session?.user.id ? Number(session.user.id) : undefined),
     getFilterOptions(),
   ]);
 
