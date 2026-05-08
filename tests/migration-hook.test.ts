@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
 import { userCollections, decks } from "@/db/schema";
@@ -43,7 +43,7 @@ describe("First-User Migration Hook", () => {
         };
         (db.transaction as any).mockImplementation(async (cb: any) => cb(mockTx));
 
-        const newUser = { id: 10, email: "first@example.com", name: "First User" };
+        const newUser = { id: 10, email: "first@example.com", name: "First User" } as any;
         await afterCreateHook(newUser);
 
         // Verify that update was called for userCollections and decks
@@ -58,7 +58,7 @@ describe("First-User Migration Hook", () => {
             from: vi.fn().mockResolvedValue([{ count: 1 }])
         });
 
-        const newUser = { id: 1, email: "admin@example.com", name: "Admin" };
+        const newUser = { id: 1, email: "admin@example.com", name: "Admin" } as any;
         await afterCreateHook(newUser);
 
         expect(db.transaction).not.toHaveBeenCalled();
@@ -70,7 +70,7 @@ describe("First-User Migration Hook", () => {
             from: vi.fn().mockResolvedValue([{ count: 2 }])
         });
 
-        const newUser = { id: 11, email: "second@example.com", name: "Second User" };
+        const newUser = { id: 11, email: "second@example.com", name: "Second User" } as any;
         await afterCreateHook(newUser);
 
         expect(db.transaction).not.toHaveBeenCalled();

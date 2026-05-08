@@ -27,7 +27,7 @@ vi.mock("next/server", () => {
 
 describe("Auth Protection", () => {
     it("redirects unauthenticated users from /collection to /login", async () => {
-        vi.mocked(getSessionCookie).mockReturnValue(undefined);
+        vi.mocked(getSessionCookie).mockReturnValue(null);
         const request = new NextRequest("http://localhost:3000/collection");
         
         const response = await proxy(request as any);
@@ -38,7 +38,7 @@ describe("Auth Protection", () => {
     });
 
     it("redirects unauthenticated users from /decks to /login", async () => {
-        vi.mocked(getSessionCookie).mockReturnValue(undefined);
+        vi.mocked(getSessionCookie).mockReturnValue(null);
         const request = new NextRequest("http://localhost:3000/decks");
         
         const response = await proxy(request as any);
@@ -58,7 +58,7 @@ describe("Auth Protection", () => {
     });
 
     it("allows public access to home page", async () => {
-        vi.mocked(getSessionCookie).mockReturnValue(undefined);
+        vi.mocked(getSessionCookie).mockReturnValue(null);
         const request = new NextRequest("http://localhost:3000/");
         
         const response = await proxy(request as any);
@@ -67,7 +67,7 @@ describe("Auth Protection", () => {
     });
 
     it("allows public access to /cards/set-001", async () => {
-        vi.mocked(getSessionCookie).mockReturnValue(undefined);
+        vi.mocked(getSessionCookie).mockReturnValue(null);
         const request = new NextRequest("http://localhost:3000/cards/set-001");
         
         const response = await proxy(request as any);

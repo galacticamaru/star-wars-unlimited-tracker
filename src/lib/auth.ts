@@ -43,14 +43,14 @@ export const auth = betterAuth({
                     if (userCount === 1) {
                         // Migrate data from default userId 1 to the new first user
                         // If user.id is already 1, no migration is needed as they already own the data
-                        if (user.id !== 1) {
+                        if (Number(user.id) !== 1) {
                             await db.transaction(async (tx) => {
                                 await tx.update(schema.userCollections)
-                                    .set({ userId: user.id })
+                                    .set({ userId: Number(user.id) })
                                     .where(eq(schema.userCollections.userId, 1));
 
                                 await tx.update(schema.decks)
-                                    .set({ userId: user.id })
+                                    .set({ userId: Number(user.id) })
                                     .where(eq(schema.decks.userId, 1));
                             });
                         }
