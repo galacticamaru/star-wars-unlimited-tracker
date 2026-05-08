@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { authClient } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,14 +58,12 @@ export function NavBar() {
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
           ) : session ? (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                  {session.user.image ? (
-                    <img src={session.user.image} alt={session.user.name} className="h-full w-full rounded-full" />
-                  ) : (
-                    <User className="h-5 w-5" />
-                  )}
-                </Button>
+              <DropdownMenuTrigger className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-8 w-8 rounded-full")}>
+                {session.user.image ? (
+                  <img src={session.user.image} alt={session.user.name} className="h-full w-full rounded-full" />
+                ) : (
+                  <User className="h-5 w-5" />
+                )}
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <div className="flex flex-col space-y-1 p-2 border-b border-border">
