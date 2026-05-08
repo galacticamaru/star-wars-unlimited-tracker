@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from 'next/navigation';
 
 interface CollectionControlsProps {
   cardDefinitionId: number;
@@ -12,8 +14,16 @@ interface CollectionControlsProps {
 
 export function CollectionControls({ cardDefinitionId, initialCount }: CollectionControlsProps) {
   const [count, setCount] = useState(initialCount);
+  const { data: session } = authClient.useSession();
+  const router = useRouter();
+  const isAuthenticated = !!session;
 
   const updateCount = async (newCount: number) => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+
     const val = Math.max(0, newCount);
     setCount(val);
 

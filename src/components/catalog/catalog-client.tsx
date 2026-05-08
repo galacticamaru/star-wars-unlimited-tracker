@@ -6,6 +6,8 @@ import { filterCards, type CardForFilter } from '@/lib/filter-cards';
 import { TopBar } from './top-bar';
 import { CardGrid } from './card-grid';
 import { EmptyState } from './empty-state';
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from 'next/navigation';
 
 interface FilterOptions {
   sets: string[];
@@ -51,15 +53,27 @@ export function CatalogClient({
   topOffset
 }: CatalogClientProps) {
   const [collection, setCollection] = useState<Record<number, number>>({});
+  const { data: session } = authClient.useSession();
+  const router = useRouter();
+  const isAuthenticated = !!session;
 
   useEffect(() => {
-    fetch('/api/collection')
-      .then(res => res.json())
-      .then(data => setCollection(data))
-      .catch(err => console.error('Failed to load collection:', err));
-  }, []);
+    if (isAuthenticated) {
+      fetch('/api/collection')
+        .then(res => res.json())
+        .then(data => setCollection(data))
+        .catch(err => console.error('Failed to load collection:', err));
+    } else {
+      setCollection({});
+    }
+  }, [isAuthenticated]);
 
   const handleUpdateCount = async (cardDefinitionId: number, newCount: number) => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+
     // Optimistic update
     setCollection(prev => ({ ...prev, [cardDefinitionId]: newCount }));
 

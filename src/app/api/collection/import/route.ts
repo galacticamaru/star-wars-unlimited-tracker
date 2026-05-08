@@ -2,9 +2,16 @@ import { NextRequest } from 'next/server';
 import { db } from '@/db';
 import { userCollections, cardPrintings } from '@/db/schema';
 import { eq, inArray, sql } from 'drizzle-orm';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
     const normalizedCounts: Record<string, number> = await request.json();
     const collectorNumbers = Object.keys(normalizedCounts);
 
@@ -33,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Bulk upsert (neon-http driver does not support transactions)
-    const userId = 1; // D-04: Hardcoded for v1
+    const userId = Number(session.user.id);
     let processedCount = 0;
 
     for (const [collectorNumber, count] of Object.entries(normalizedCounts)) {

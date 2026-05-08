@@ -2,7 +2,7 @@ import { db } from '@/db';
 import { decks, deckCards, cardDefinitions, cardPrintings } from '@/db/schema';
 import { eq, desc, inArray, and } from 'drizzle-orm';
 
-export async function getDecks(userId: number = 1) {
+export async function getDecks(userId: number) {
   return db
     .select()
     .from(decks)
@@ -10,11 +10,11 @@ export async function getDecks(userId: number = 1) {
     .orderBy(desc(decks.updatedAt));
 }
 
-export async function getDeckWithCards(deckId: number) {
+export async function getDeckWithCards(deckId: number, userId: number) {
   const [deck] = await db
     .select()
     .from(decks)
-    .where(eq(decks.id, deckId));
+    .where(and(eq(decks.id, deckId), eq(decks.userId, userId)));
 
   if (!deck) return null;
 
@@ -29,7 +29,7 @@ export async function getDeckWithCards(deckId: number) {
   };
 }
 
-export async function createDeck(name: string, userId: number = 1) {
+export async function createDeck(name: string, userId: number) {
   const [newDeck] = await db
     .insert(decks)
     .values({
@@ -43,6 +43,7 @@ export async function createDeck(name: string, userId: number = 1) {
 
 export async function updateDeck(
   deckId: number,
+  userId: number,
   data: {
     name?: string;
     leaderCardDefinitionId?: number | null;
@@ -52,6 +53,14 @@ export async function updateDeck(
   }
 ) {
   return await db.transaction(async (tx) => {
+    // Check ownership
+    const [deck] = await tx
+      .select()
+      .from(decks)
+      .where(and(eq(decks.id, deckId), eq(decks.userId, userId)));
+    
+    if (!deck) throw new Error('Deck not found or unauthorized');
+
     // Update deck metadata
     const updatePayload: Record<string, any> = {};
     if (data.name !== undefined) updatePayload.name = data.name;
@@ -87,8 +96,8 @@ export async function updateDeck(
   });
 }
 
-export async function deleteDeck(deckId: number) {
-  return db.delete(decks).where(eq(decks.id, deckId));
+export async function deleteDeck(deckId: number, userId: number) {
+  return db.delete(decks).where(and(eq(decks.id, deckId), eq(decks.userId, userId)));
 }
 
 export async function getCardsByDefinitionIds(ids: number[]) {
@@ -128,11 +137,11 @@ export async function getCardsByDefinitionIds(ids: number[]) {
     );
 }
 
-export async function getDeckForExport(deckId: number) {
+export async function getDeckForExport(deckId: number, userId: number) {
   const [deck] = await db
     .select()
     .from(decks)
-    .where(eq(decks.id, deckId));
+    .where(and(eq(decks.id, deckId), eq(decks.userId, userId)));
 
   if (!deck) return null;
 
@@ -193,7 +202,7 @@ export async function getDeckForExport(deckId: number) {
   };
 }
 
-export async function getDeckCardsForUser(userId: number = 1) {
+export async function getDeckCardsForUser(userId: number) {
   // Step 1: Get all deck IDs for this user, including leader/base FK columns
   const userDecks = await db
     .select({

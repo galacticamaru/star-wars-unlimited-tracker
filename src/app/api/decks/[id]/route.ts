@@ -1,13 +1,19 @@
 import { NextRequest } from 'next/server';
 import { getDeckWithCards, updateDeck, deleteDeck, getCardsByDefinitionIds } from '@/db/queries/decks';
 import { validateDeck } from '@/lib/deck-validation';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export async function GET(
-// ... (GET handler omitted)
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
     const { id } = await params;
     const deckId = parseInt(id, 10);
     
@@ -15,7 +21,7 @@ export async function GET(
       return new Response('Invalid deck ID', { status: 400 });
     }
 
-    const deck = await getDeckWithCards(deckId);
+    const deck = await getDeckWithCards(deckId, Number(session.user.id));
     if (!deck) {
       return new Response('Deck not found', { status: 404 });
     }
@@ -32,6 +38,11 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
     const { id } = await params;
     const deckId = parseInt(id, 10);
     
@@ -42,6 +53,8 @@ export async function PATCH(
     const body = await request.json();
     const { isDraft, leaderCardDefinitionId, baseCardDefinitionId, cards } = body;
 
+    const userId = Number(session.user.id);
+
     if (isDraft === false) {
       // Need full deck state for validation
       let validationLeaderId = leaderCardDefinitionId;
@@ -50,7 +63,7 @@ export async function PATCH(
 
       // If any part is missing from request, fetch current from DB
       if (validationLeaderId === undefined || validationBaseId === undefined || validationCards === undefined) {
-        const currentDeck = await getDeckWithCards(deckId);
+        const currentDeck = await getDeckWithCards(deckId, userId);
         if (!currentDeck) return new Response('Deck not found', { status: 404 });
         
         if (validationLeaderId === undefined) validationLeaderId = currentDeck.leaderCardDefinitionId;
@@ -98,7 +111,7 @@ export async function PATCH(
       }
     }
 
-    await updateDeck(deckId, body);
+    await updateDeck(deckId, userId, body);
 
     return Response.json({ success: true });
   } catch (error) {
@@ -112,6 +125,11 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
     const { id } = await params;
     const deckId = parseInt(id, 10);
     
@@ -119,7 +137,7 @@ export async function DELETE(
       return new Response('Invalid deck ID', { status: 400 });
     }
 
-    await deleteDeck(deckId);
+    await deleteDeck(deckId, Number(session.user.id));
     return Response.json({ success: true });
   } catch (error) {
     console.error('Failed to delete deck:', error);

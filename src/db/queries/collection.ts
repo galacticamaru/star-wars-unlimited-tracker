@@ -2,7 +2,7 @@ import { db } from '@/db';
 import { userCollections } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 
-export async function getUserCollection(userId: number = 1) {
+export async function getUserCollection(userId: number) {
   return db
     .select({
       cardDefinitionId: userCollections.cardDefinitionId,
@@ -12,7 +12,7 @@ export async function getUserCollection(userId: number = 1) {
     .where(eq(userCollections.userId, userId));
 }
 
-export async function upsertCardCount(cardDefinitionId: number, count: number, userId: number = 1) {
+export async function upsertCardCount(cardDefinitionId: number, count: number, userId: number) {
   return db
     .insert(userCollections)
     .values({
