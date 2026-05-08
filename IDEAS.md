@@ -92,6 +92,10 @@ Sideboard:
 - Villiany = black
 
 Cards with multiple aspects should use have multi coloured bars.
+
+3. When a deck is completely empty, guide the user to first select a leader and base (automatically filter down to leaders and bases). Once a leader and base is selected automatically filter to the aspects of the leader and base combined. The user can still filter to anything else if they choose to, but this default will likely save the user time as most decks do not go off-aspect.
+Implemented: PENDING
 -----
 ### Catalog Improvement
 Add more card variant support. Prestige cards, in multiple tiers, and leader showcases. Also serialised cards.
+Implemented: PENDING

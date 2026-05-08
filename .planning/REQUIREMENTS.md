@@ -10,20 +10,20 @@ Expand from single-user personal tool to multi-user platform with card pricing, 
 
 ### Auth + Multi-User (AUTH)
 
-- [ ] **AUTH-01**: User can register with email and password
-- [ ] **AUTH-02**: User can log in with email and password
-- [ ] **AUTH-03**: User session persists across browser restarts (stay logged in)
-- [ ] **AUTH-04**: User can log out
-- [ ] **AUTH-05**: User can log in via Google OAuth
-- [ ] **AUTH-06**: User can log in via Discord OAuth
-- [ ] **AUTH-07**: All existing v1 collection and deck data is migrated to the first registered account
+- [x] **AUTH-01**: User can register with email and password
+- [x] **AUTH-02**: User can log in with email and password
+- [x] **AUTH-03**: User session persists across browser restarts (stay logged in)
+- [x] **AUTH-04**: User can log out
+- [x] **AUTH-05**: User can log in via Google OAuth
+- [x] **AUTH-06**: User can log in via Discord OAuth
+- [x] **AUTH-07**: All existing v1 collection and deck data is migrated to the first registered account
 
 ### Market Pricing (MARKET)
 
-- [ ] **MARKET-01**: User can view card price (EUR and USD) on the card detail page
-- [ ] **MARKET-02**: User can see total deck cost (EUR and USD) in the deck builder
-- [ ] **MARKET-03**: User can see estimated cost to complete a deck (based on missing cards) on the want list
-- [ ] **MARKET-04**: Card prices are cached in the database and refreshed daily — never fetched live per request
+- [x] **MARKET-01**: User can view card price (EUR and USD) on the card detail page
+- [x] **MARKET-02**: User can see total deck cost (EUR and USD) in the deck builder
+- [x] **MARKET-03**: User can see estimated cost to complete a deck (based on missing cards) on the want list
+- [x] **MARKET-04**: Card prices are cached in the database and refreshed daily — never fetched live per request
 
 ### Deck of the Day (DOTD)
 
@@ -73,17 +73,17 @@ Expand from single-user personal tool to multi-user platform with card pricing, 
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| AUTH-01 | Phase 6 | Pending |
-| AUTH-02 | Phase 6 | Pending |
-| AUTH-03 | Phase 6 | Pending |
-| AUTH-04 | Phase 6 | Pending |
-| AUTH-05 | Phase 6 | Pending |
-| AUTH-06 | Phase 6 | Pending |
-| AUTH-07 | Phase 6 | Pending |
-| MARKET-01 | Phase 7 | Pending |
-| MARKET-02 | Phase 7 | Pending |
-| MARKET-03 | Phase 7 | Pending |
-| MARKET-04 | Phase 7 | Pending |
+| AUTH-01 | Phase 6 | ✅ Complete |
+| AUTH-02 | Phase 6 | ✅ Complete |
+| AUTH-03 | Phase 6 | ✅ Complete |
+| AUTH-04 | Phase 6 | ✅ Complete |
+| AUTH-05 | Phase 6 | ✅ Complete |
+| AUTH-06 | Phase 6 | ✅ Complete |
+| AUTH-07 | Phase 6 | ✅ Complete |
+| MARKET-01 | Phase 7 | ✅ Complete |
+| MARKET-02 | Phase 7 | ✅ Complete |
+| MARKET-03 | Phase 7 | ✅ Complete |
+| MARKET-04 | Phase 7 | ✅ Complete |
 | DOTD-01 | Phase 8 | Pending |
 | DOTD-02 | Phase 8 | Pending |
 | DOTD-03 | Phase 8 | Pending |

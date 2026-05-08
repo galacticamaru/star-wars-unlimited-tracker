@@ -23,7 +23,7 @@
 ### 📋 v2 Multi-User, Market, Decks & Trading (Phases 6–10)
 
 - [x] **Phase 6: Auth & Multi-User** — Per-user accounts with Better Auth; migrate v1 single-user data to first account — completed 2026-05-08
-- [ ] **Phase 7: Market Pricing** — Card prices (EUR + USD) from pokemon-api.com; deck cost totals; daily cache refresh
+- [x] **Phase 7: Market Pricing** — Card prices (EUR + USD) from pokemon-api.com; deck cost totals; daily cache refresh — completed 2026-05-08
 - [ ] **Phase 8: Deck of the Day** — Daily featured tournament deck with ownership overlay and copy-to-library
 - [ ] **Phase 9: Sideboard** — Sideboard support in deck builder with rules enforcement and distinct cost curve display
 - [ ] **Phase 10: Trade Binder** — Public trade binder at /binder/[username] with catalog filters and want section
@@ -41,10 +41,10 @@
   4. All collection data and decks are visible only to the owning user — a second registered account sees a clean slate
   5. v1 data (cards, decks) is associated with the first registered account after migration
 **Plans**: 4 plans
-- [ ] 06-01-PLAN.md — Setup Better Auth core, schema, and test scaffolding
-- [ ] 06-02-PLAN.md — Refactor database queries for user isolation
-- [ ] 06-03-PLAN.md — Update API routes with session checks
-- [ ] 06-04-PLAN.md — Implement route protection, migration, and UI integration
+- [x] 06-01-PLAN.md — Setup Better Auth core, schema, and test scaffolding
+- [x] 06-02-PLAN.md — Refactor database queries for user isolation
+- [x] 06-03-PLAN.md — Update API routes with session checks
+- [x] 06-04-PLAN.md — Implement route protection, migration, and UI integration
 **UI hint**: yes
 
 ### Phase 7: Market Pricing
@@ -56,7 +56,11 @@
   2. User can view the deck builder and see a total deck cost in EUR and USD
   3. User can view their want list and see an estimated cost to acquire all missing cards
   4. Prices are never fetched live — they come from the database cache and update once per day via cron
-**Plans**: TBD
+**Plans**: 4 plans
+- [x] 07-01-PLAN.md — Schema & API Infrastructure
+- [x] 07-02-PLAN.md — Daily Price Sync Implementation
+- [x] 07-03-PLAN.md — Currency Control & Card UI
+- [x] 07-04-PLAN.md — Deck & Want List Valuation
 
 ### Phase 8: Deck of the Day
 **Goal**: Users can view a daily featured tournament deck, see which cards they own vs are missing, and copy it into their personal library
@@ -107,7 +111,7 @@
 | 5.1. Want List Gap Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
 | 5.2. Rarity Filter Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
 | 6. Auth & Multi-User | v2 | 4/4 | ✅ Complete | 2026-05-08 |
-| 7. Market Pricing | v2 | 0/? | Not started | — |
+| 7. Market Pricing | v2 | 4/4 | ✅ Complete | 2026-05-08 |
 | 8. Deck of the Day | v2 | 0/? | Not started | — |
 | 9. Sideboard | v2 | 0/? | Not started | — |
 | 10. Trade Binder | v2 | 0/? | Not started | — |

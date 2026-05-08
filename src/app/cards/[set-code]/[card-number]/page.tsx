@@ -9,6 +9,8 @@ import { buttonVariants } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CardImageSection } from '@/components/catalog/card-image-section';
 import { cn } from '@/lib/utils';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 // CRITICAL: params is a Promise in Next.js 16 — MUST await before destructuring (Pitfall 1)
 // Forgetting await causes: TypeScript error + runtime "Cannot read properties of Promise"
@@ -18,10 +20,12 @@ export default async function CardDetailPage({
   params: Promise<{ 'set-code': string; 'card-number': string }>;
 }) {
   const { 'set-code': setCode, 'card-number': cardNumber } = await params;
+  const session = await auth.api.getSession({ headers: await headers() });
+  const userId = session ? Number(session.user.id) : null;
 
   const [card, collection] = await Promise.all([
     getCardByPrinting(setCode, cardNumber),
-    getUserCollection(1),
+    userId ? getUserCollection(userId) : Promise.resolve([]),
   ]);
 
   // Return Next.js 404 page for unknown cards — do NOT throw, use notFound()

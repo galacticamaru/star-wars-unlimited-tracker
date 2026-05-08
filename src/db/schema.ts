@@ -115,7 +115,7 @@ export const cardPrintings = pgTable(
 export const userCollections = pgTable(
   'user_collections',
   {
-    userId: integer('user_id').notNull().default(1),
+    userId: integer('user_id').notNull(),
     cardDefinitionId: integer('card_definition_id')
       .notNull()
       .references(() => cardDefinitions.id),
@@ -130,7 +130,7 @@ export const userCollections = pgTable(
 
 export const decks = pgTable('decks', {
   id: serial('id').primaryKey(),
-  userId: integer('user_id').notNull().default(1),
+  userId: integer('user_id').notNull(),
   name: text('name').notNull(),
   leaderCardDefinitionId: integer('leader_card_definition_id').references(() => cardDefinitions.id),
   baseCardDefinitionId: integer('base_card_definition_id').references(() => cardDefinitions.id),
