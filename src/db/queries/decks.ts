@@ -121,6 +121,8 @@ export async function getCardsByDefinitionIds(ids: number[]) {
       epicAction: cardDefinitions.epicAction,
       doubleSided: cardDefinitions.doubleSided,
       unique: cardDefinitions.unique,
+      priceEur: cardDefinitions.priceEur,
+      priceUsd: cardDefinitions.priceUsd,
       setCode: cardPrintings.setCode,
       collectorNumber: cardPrintings.collectorNumber,
       frontArtUrl: cardPrintings.frontArtUrl,
@@ -230,6 +232,8 @@ export async function getDeckCardsForUser(userId: number) {
       collectorNumber: cardPrintings.collectorNumber,
       frontArtUrl: cardPrintings.frontArtUrl,
       backArtUrl: cardPrintings.backArtUrl,
+      priceEur: cardDefinitions.priceEur,
+      priceUsd: cardDefinitions.priceUsd,
     })
     .from(deckCards)
     .innerJoin(cardDefinitions, eq(deckCards.cardDefinitionId, cardDefinitions.id))
@@ -252,6 +256,8 @@ export async function getDeckCardsForUser(userId: number) {
         collectorNumber: cardPrintings.collectorNumber,
         frontArtUrl: cardPrintings.frontArtUrl,
         backArtUrl: cardPrintings.backArtUrl,
+        priceEur: cardDefinitions.priceEur,
+        priceUsd: cardDefinitions.priceUsd,
       })
       .from(cardDefinitions)
       .innerJoin(cardPrintings, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))

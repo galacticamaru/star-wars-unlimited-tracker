@@ -3,7 +3,8 @@
 import { useMemo } from 'react';
 import { Card, validateDeck, ValidationResult } from '@/lib/deck-validation';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, CheckCircle2, Info } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Info, DollarSign } from 'lucide-react';
+import { useCurrency } from '@/components/currency-context';
 
 interface DeckSidebarProps {
   name: string;
@@ -32,22 +33,51 @@ export function DeckSidebar({
   );
 
   const totalMain = mainDeck.reduce((sum, item) => sum + item.quantity, 0);
+  const { currency } = useCurrency();
+
+  const totalValue = useMemo(() => {
+    const getPrice = (card: Card | null) => {
+      if (!card) return 0;
+      return (currency === 'EUR' ? card.priceEur : card.priceUsd) || 0;
+    };
+
+    const leaderPrice = getPrice(leader);
+    const basePrice = getPrice(base);
+    const mainPrice = mainDeck.reduce((sum, item) => sum + getPrice(item.card) * item.quantity, 0);
+    const sideboardPrice = sideboard.reduce((sum, item) => sum + getPrice(item.card) * item.quantity, 0);
+
+    return leaderPrice + basePrice + mainPrice + sideboardPrice;
+  }, [leader, base, mainDeck, sideboard, currency]);
+
+  const formattedValue = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: currency,
+  }).format(totalValue);
 
   return (
     <div className="flex flex-col h-full bg-slate-50 border-l p-4 overflow-y-auto w-80">
       <div className="mb-6">
         <h2 className="text-xl font-bold mb-2 truncate">{name}</h2>
-        <div className="flex items-center gap-2">
-          {validation.isValid ? (
-            <Badge className="bg-green-100 text-green-800 border-green-200">
-              <CheckCircle2 className="w-3 h-3 mr-1" /> Legal
-            </Badge>
-          ) : (
-            <Badge variant="destructive">
-              <AlertCircle className="w-3 h-3 mr-1" /> Illegal
-            </Badge>
-          )}
-          <span className="text-sm text-slate-500">{totalMain} / 50 cards</span>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            {validation.isValid ? (
+              <Badge className="bg-green-100 text-green-800 border-green-200">
+                <CheckCircle2 className="w-3 h-3 mr-1" /> Legal
+              </Badge>
+            ) : (
+              <Badge variant="destructive">
+                <AlertCircle className="w-3 h-3 mr-1" /> Illegal
+              </Badge>
+            )}
+            <span className="text-sm text-slate-500">{totalMain} / 50 cards</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-indigo-600 bg-indigo-50 px-2.5 py-1.5 rounded-md border border-indigo-100">
+            <DollarSign className="w-4 h-4" />
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase font-bold leading-none text-indigo-400">Estimated Value</span>
+              <span className="text-sm font-bold leading-tight">{formattedValue}</span>
+            </div>
+          </div>
         </div>
       </div>
 

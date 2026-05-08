@@ -27,6 +27,8 @@ export async function getAllCards(userId?: number) {
       epicAction: cardDefinitions.epicAction,
       doubleSided: cardDefinitions.doubleSided,
       unique: cardDefinitions.unique,
+      priceEur: cardDefinitions.priceEur,
+      priceUsd: cardDefinitions.priceUsd,
       collectionCount: sql<number>`COALESCE(${userCollections.count}, 0)`,
     })
     .from(cardDefinitions)

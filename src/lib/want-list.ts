@@ -38,6 +38,8 @@ export async function getWantList(userId: number) {
           collectorNumber: meta.collectorNumber,
           frontArtUrl: meta.frontArtUrl,
           backArtUrl: meta.backArtUrl,
+          priceEur: meta.priceEur,
+          priceUsd: meta.priceUsd,
           maxQuantity: quantity,
           owned,
           shortfall,

@@ -21,6 +21,8 @@ export interface Card {
   epicAction: string | null;
   doubleSided: boolean;
   unique: boolean;
+  priceEur: number | null;
+  priceUsd: number | null;
 }
 
 export interface DeckCard {
