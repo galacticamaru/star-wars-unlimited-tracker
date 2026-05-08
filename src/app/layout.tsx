@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { NavBar } from '@/components/nav-bar';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import { CurrencyProvider } from '@/components/currency-context';
 
 const oxaniumHeading = Oxanium({subsets:['latin'],variable:'--font-heading'});
 
@@ -36,7 +37,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <NavBar />
-        <NuqsAdapter>{children}</NuqsAdapter>
+        <NuqsAdapter>
+          <CurrencyProvider>
+            {children}
+          </CurrencyProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );
