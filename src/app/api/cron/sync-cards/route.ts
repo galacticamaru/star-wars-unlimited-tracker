@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { syncAllCards } from '@/lib/sync/upsert-cards';
+import { syncPrices } from '@/lib/sync/prices';
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
@@ -11,11 +12,25 @@ export async function GET(request: NextRequest) {
     return new Response('Unauthorized', { status: 401 });
   }
 
+  const startTime = Date.now();
+
   try {
-    const result = await syncAllCards();
-    return Response.json({ success: true, ...result });
+    console.log('Starting card sync...');
+    const cardResult = await syncAllCards();
+    
+    console.log('Starting price sync...');
+    const priceResult = await syncPrices();
+
+    const duration = (Date.now() - startTime) / 1000;
+
+    return Response.json({ 
+      success: true, 
+      cards: cardResult,
+      prices: priceResult,
+      duration: `${duration}s`
+    });
   } catch (error) {
-    console.error('Card sync failed:', error);
+    console.error('Sync failed:', error);
     return new Response('Sync failed', { status: 500 });
   }
 }
