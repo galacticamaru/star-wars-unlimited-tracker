@@ -3,6 +3,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import type { Card } from '@/lib/deck-validation';
 import { CardItem } from '@/components/catalog/card-item';
+import { useCurrency } from '@/components/currency-context';
+import { DollarSign } from 'lucide-react';
 
 interface WantListTabProps {
   deckCards: { cardDefinitionId: number; quantity: number }[];
@@ -58,6 +60,20 @@ export function WantListTab({ deckCards, allCards }: WantListTabProps) {
     });
   }, [shortfallCards]);
 
+  const { currency } = useCurrency();
+
+  const totalCost = useMemo(() => {
+    return shortfallCards.reduce((sum, item) => {
+      const price = (currency === 'EUR' ? item.card.priceEur : item.card.priceUsd) || 0;
+      return sum + price * item.shortfall;
+    }, 0);
+  }, [shortfallCards, currency]);
+
+  const formattedCost = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: currency,
+  }).format(totalCost);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -112,6 +128,19 @@ export function WantListTab({ deckCards, allCards }: WantListTabProps) {
           </div>
         </div>
       ))}
+
+      {/* Sticky Summary Bar */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 flex justify-center pointer-events-none">
+        <div className="bg-indigo-600 text-white px-6 py-4 rounded-t-xl shadow-2xl flex items-center gap-4 max-w-lg w-full pointer-events-auto">
+          <div className="bg-white/20 p-2 rounded-lg">
+            <DollarSign className="w-6 h-6" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xs font-bold uppercase tracking-wider text-indigo-100">Estimated Cost to Complete</span>
+            <span className="text-2xl font-bold leading-none">{formattedCost}</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
