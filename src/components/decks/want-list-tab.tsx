@@ -63,10 +63,11 @@ export function WantListTab({ deckCards, allCards }: WantListTabProps) {
   const { currency } = useCurrency();
 
   const totalCost = useMemo(() => {
-    return shortfallCards.reduce((sum, item) => {
+    const cents = shortfallCards.reduce((sum, item) => {
       const price = (currency === 'EUR' ? item.card.priceEur : item.card.priceUsd) || 0;
       return sum + price * item.shortfall;
     }, 0);
+    return cents / 100;
   }, [shortfallCards, currency]);
 
   const formattedCost = new Intl.NumberFormat(undefined, {

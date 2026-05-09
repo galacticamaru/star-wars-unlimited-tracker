@@ -1,16 +1,56 @@
 import { fetchSetPrices, mapPriceData } from '../src/lib/sync/prices';
 
 async function main() {
-  const setCode = 'SOR';
-  console.log(`Starting API verification for set: ${setCode}`);
+  const setCode = 'SOR'.trim();
+  console.log(`Starting API verification for set: [${setCode}] (length: ${setCode.length})`);
+
+  const apiKey = process.env.POKEMON_API_KEY || '';
+  console.log(`API Key length: ${apiKey.length}`);
+  console.log(`API Key starts with: ${apiKey.substring(0, 5)}...`);
 
   try {
+    // Try /sets first to see if game_id=3 is working
+    console.log('Testing /sets?game_id=3...');
+    const isRapidApi = apiKey.length === 50;
+    const baseUrl = isRapidApi 
+      ? 'https://pokemon-tcg-api.p.rapidapi.com' 
+      : 'https://api.pokewallet.io';
+
+    const headers: Record<string, string> = isRapidApi 
+      ? {
+          'x-rapidapi-key': apiKey,
+          'x-rapidapi-host': 'pokemon-tcg-api.p.rapidapi.com',
+        }
+      : {
+          'X-API-Key': apiKey,
+        };
+
+    const setsResponse = await fetch(`${baseUrl}/sets?game_id=3`, { headers });
+    if (setsResponse.ok) {
+      const setsData = await setsResponse.json();
+      console.log(`✅ /sets ok. Found ${Array.isArray(setsData) ? setsData.length : 'unknown'} sets.`);
+    } else {
+      console.warn(`⚠️ /sets failed: ${setsResponse.status} ${setsResponse.statusText}`);
+      // Try /sets without game_id
+      const setsNoId = await fetch(`${baseUrl}/sets`, { headers });
+      console.log(`Testing /sets without game_id: ${setsNoId.status}`);
+    }
+
     let prices: any;
     try {
+      console.log(`Fetching ${baseUrl}/prices/${setCode}?game_id=3`);
       prices = await fetchSetPrices(setCode);
       console.log(`✅ Successfully connected to API. Found ${Object.keys(prices).length} cards.`);
     } catch (apiError: any) {
       console.warn(`⚠️ API connection failed: ${apiError.message}`);
+      
+      console.log(`Testing ${baseUrl}/prices/${setCode} (no game_id)...`);
+      const noIdResponse = await fetch(`${baseUrl}/prices/${setCode}`, { headers });
+      console.log(`Result: ${noIdResponse.status} ${noIdResponse.statusText}`);
+      if (noIdResponse.ok) {
+        console.log('✅ Success without game_id!');
+      }
+
       console.log('Falling back to mock data for mapping verification...');
       
       // Mock data matching the schema in 07-RESEARCH.md

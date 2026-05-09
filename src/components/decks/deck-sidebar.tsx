@@ -46,7 +46,7 @@ export function DeckSidebar({
     const mainPrice = mainDeck.reduce((sum, item) => sum + getPrice(item.card) * item.quantity, 0);
     const sideboardPrice = sideboard.reduce((sum, item) => sum + getPrice(item.card) * item.quantity, 0);
 
-    return leaderPrice + basePrice + mainPrice + sideboardPrice;
+    return (leaderPrice + basePrice + mainPrice + sideboardPrice) / 100;
   }, [leader, base, mainDeck, sideboard, currency]);
 
   const formattedValue = new Intl.NumberFormat(undefined, {

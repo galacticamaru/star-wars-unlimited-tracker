@@ -1,0 +1,23 @@
+
+import 'dotenv/config';
+
+async function main() {
+  const key = process.env.POKEMON_API_KEY || '';
+  const url = 'https://star-wars-unlimited-api.p.rapidapi.com/cards?limit=1';
+  const headers = {
+    'x-rapidapi-key': key,
+    'x-rapidapi-host': 'star-wars-unlimited-api.p.rapidapi.com',
+  };
+
+  const res = await fetch(url, { headers });
+  console.log(`Status: ${res.status}`);
+  if (res.ok) {
+    const data = await res.json();
+    console.log(JSON.stringify(data, null, 2));
+  } else {
+    const text = await res.text();
+    console.log(`Failed: ${text}`);
+  }
+}
+
+main();
