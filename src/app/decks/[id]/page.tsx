@@ -64,6 +64,8 @@ export default async function DeckPage({ params }: { params: Promise<{ id: strin
     epicAction: c.epicAction,
     doubleSided: c.doubleSided,
     unique: c.unique,
+    priceEur: c.priceEur,
+    priceUsd: c.priceUsd,
   }));
 
   return (

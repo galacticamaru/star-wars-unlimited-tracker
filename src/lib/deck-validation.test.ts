@@ -25,6 +25,8 @@ const createCard = (overrides: Partial<Card>): Card => ({
   epicAction: null,
   doubleSided: false,
   unique: false,
+  priceEur: null,
+  priceUsd: null,
   ...overrides,
 });
 

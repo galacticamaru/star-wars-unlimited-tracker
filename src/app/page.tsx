@@ -41,6 +41,8 @@ export default async function CatalogPage() {
     epicAction: c.epicAction,
     doubleSided: c.doubleSided,
     unique: c.unique,
+    priceEur: c.priceEur,
+    priceUsd: c.priceUsd,
   }));
 
   return (

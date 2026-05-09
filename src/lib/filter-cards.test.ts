@@ -26,6 +26,8 @@ const makeCard = (overrides: Partial<CardForFilter> = {}): CardForFilter => {
     epicAction: null,
     doubleSided: false,
     unique: false,
+    priceEur: null,
+    priceUsd: null,
   };
   return { ...defaults, ...overrides };
 };

@@ -33,6 +33,8 @@ export interface CardForFilter {
   epicAction: string | null;
   doubleSided: boolean;
   unique: boolean;
+  priceEur: number | null;
+  priceUsd: number | null;
 }
 
 export function filterCards(cards: CardForFilter[], filters: FilterState): CardForFilter[] {

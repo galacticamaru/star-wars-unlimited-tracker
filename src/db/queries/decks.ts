@@ -290,6 +290,8 @@ export async function getDeckCardsForUser(userId: number) {
         collectorNumber: printing.collectorNumber,
         frontArtUrl: printing.frontArtUrl,
         backArtUrl: printing.backArtUrl,
+        priceEur: printing.priceEur,
+        priceUsd: printing.priceUsd,
       });
     }
   }
