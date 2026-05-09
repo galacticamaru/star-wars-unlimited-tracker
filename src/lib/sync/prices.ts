@@ -56,7 +56,7 @@ export function mapPriceData(card: SWUDBCard) {
  * Orchestrates price synchronization for all active sets using swu-db.com.
  */
 export async function syncPrices() {
-  const activeSets = ['SOR', 'SHD', 'TWI'];
+  const activeSets = ['SOR', 'SHD', 'TWI', 'JTL', 'SEC', 'LAW', 'IBH'];
   let totalUpdated = 0;
   const setSummaries = [];
 
