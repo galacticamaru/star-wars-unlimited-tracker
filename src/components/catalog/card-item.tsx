@@ -15,12 +15,14 @@ interface CardItemProps {
   frontArtUrl: string | null;
   backArtUrl: string | null;
   ownedCount: number;
-  onUpdateCount: (id: number, count: number) => void;
-  mode?: 'catalog' | 'selector' | 'want-list';
+  onUpdateCount?: (id: number, count: number) => void;
+  mode?: 'catalog' | 'selector' | 'want-list' | 'binder' | 'want';
   deckCount?: number;
   deckQuantity?: number;   // quantity needed by deck (used when mode='want-list')
   shortfall?: number;      // deckQuantity - ownedCount (used when mode='want-list')
   onDeckUpdate?: (id: number, count: number) => void;
+  tradeQuantity?: number;  // used when mode='binder'
+  lookingForQuantity?: number; // used when mode='want'
 }
 
 export function CardItem({ 
@@ -37,7 +39,9 @@ export function CardItem({
   deckCount = 0,
   deckQuantity = 0,
   shortfall = 0,
-  onDeckUpdate
+  onDeckUpdate,
+  tradeQuantity = 0,
+  lookingForQuantity = 0
 }: CardItemProps) {
   const [loaded, setLoaded] = useState(false);
   // Use indexOf for robustness over edge-case multi-hyphen collector numbers
@@ -56,6 +60,9 @@ export function CardItem({
 
   const isSelector = mode === 'selector';
   const isWantList = mode === 'want-list';
+  const isBinder = mode === 'binder';
+  const isWant = mode === 'want';
+  const isReadOnly = isWantList || isBinder || isWant;
   const hasShortfall = (isSelector && deckCount > ownedCount) || isWantList;
 
   return (
@@ -96,10 +103,10 @@ export function CardItem({
           <div 
             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex flex-col items-center justify-center gap-2 z-10"
           >
-            {isWantList ? (
+            {isReadOnly ? (
               // Read-only overlay: show card name only (accessibility on small tiles)
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex items-center justify-center z-10 px-1">
-                <span className="text-white text-xs font-semibold text-center leading-tight">{name}</span>
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex items-center justify-center z-10 px-1 text-center">
+                <span className="text-white text-xs font-semibold leading-tight">{name}</span>
               </div>
             ) : isSelector ? (
               <div className="flex flex-col items-center gap-2 w-full px-2">
@@ -169,7 +176,7 @@ export function CardItem({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    onUpdateCount(id, Math.max(0, ownedCount - 1));
+                    onUpdateCount?.(id, Math.max(0, ownedCount - 1));
                   }}
                   className="p-1 hover:bg-muted rounded-full transition-colors"
                   aria-label="Decrease owned count"
@@ -182,7 +189,7 @@ export function CardItem({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    onUpdateCount(id, ownedCount + 1);
+                    onUpdateCount?.(id, ownedCount + 1);
                   }}
                   className="p-1 hover:bg-muted rounded-full transition-colors"
                   aria-label="Increase owned count"
@@ -199,9 +206,23 @@ export function CardItem({
       </Link>
       
       {/* Badge for owned count (visible even when not hovering if count > 0) */}
-      {ownedCount > 0 && !isSelector && (
+      {ownedCount > 0 && !isSelector && !isBinder && !isWant && (
         <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md z-20 pointer-events-none">
           {ownedCount}
+        </div>
+      )}
+
+      {/* Binder Mode Badge */}
+      {isBinder && tradeQuantity > 0 && (
+        <div className="absolute -top-2 -right-2 bg-green-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold shadow-md z-20 pointer-events-none whitespace-nowrap">
+          {tradeQuantity} Available
+        </div>
+      )}
+
+      {/* Want Mode Badge */}
+      {isWant && lookingForQuantity > 0 && (
+        <div className="absolute -top-2 -right-2 bg-blue-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold shadow-md z-20 pointer-events-none whitespace-nowrap">
+          {lookingForQuantity} Needed
         </div>
       )}
 

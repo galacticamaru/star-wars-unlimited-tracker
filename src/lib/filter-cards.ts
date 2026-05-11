@@ -35,6 +35,8 @@ export interface CardForFilter {
   unique: boolean;
   priceEur: number | null;
   priceUsd: number | null;
+  tradeQuantity?: number;
+  lookingForQuantity?: number;
 }
 
 export function filterCards(cards: CardForFilter[], filters: FilterState): CardForFilter[] {

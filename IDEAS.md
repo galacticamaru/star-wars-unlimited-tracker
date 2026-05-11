@@ -94,8 +94,26 @@ Sideboard:
 Cards with multiple aspects should use have multi coloured bars.
 
 3. When a deck is completely empty, guide the user to first select a leader and base (automatically filter down to leaders and bases). Once a leader and base is selected automatically filter to the aspects of the leader and base combined. The user can still filter to anything else if they choose to, but this default will likely save the user time as most decks do not go off-aspect.
+
+4. Improve visual clarity by introducing card images to the Deck List tab. Use the card image component used in the detailed card pages (or something similar) to display both the leader and base card at the top. Allow the user to switch between the front and back art of the leader card. For all the card rows below, on hover, display the front art of the card the row item is for.
 Implemented: PENDING
 -----
 ### Catalog Improvement
-Add more card variant support. Prestige cards, in multiple tiers, and leader showcases. Also serialised cards.
+1. Add all card variant support. Prestige cards, in multiple tiers, leader showcases and serialised cards.
+2. Move all filters and search field to a sidebar. Consider UI components similar to https://swu.fan/cards/. The sidebar is sticky, similar to the side bar in our deckbuilder. Consider that changes here will apply to the deck builder which displays deck information as well.
+3. Add Twin Suns set to the catalog. Set Code: TS26
+4. Add Token cards to the catalog.
+5. Implement a quick-add feature. Through quick-add, users can add pre-constructed decks to their catalogue through a click. This will work for pre-constructed decks like Spotlight Decks and Twin Suns decks. This will not add a deck for the user, it will only update their collection.
+Implemented: PENDING
+-----
+### New Home Page
+Move the catalog to it's own dedicated route /cards. Include it in the top nav. Develop a new home page strucutred like this:
+(top nav) [Logo] - clickable navigates to hope page, [Catalog] - navigates to the catalog, [Import Collection] - navigates to /collection, [Decks] - navigates to /decks, [Trade Binder] - navigates to the trade binder
+(hero) Title: 'Star Wars Unlimited Card Database and Deck Builder', Subtitle: 'Track your collection, build your decks, and begin trading with up to date market prices!'
+(Main content sections)
+1. Highest Value Cards:
+[5x2 Card Image grid] Display the top 10 highest value cards.
+2. Begin tracking your collection, automatically highlighting missing cards in your deck so you know what to trade for:
+(image of collection tracking, deck builder and trade binder). 3 CTAs:
+[Import your Collection], [Build my Decks], [Set my Trade Binder]
 Implemented: PENDING

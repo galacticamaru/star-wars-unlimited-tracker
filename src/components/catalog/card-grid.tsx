@@ -4,8 +4,8 @@ import type { CardForFilter } from '@/lib/filter-cards';
 interface CardGridProps {
   cards: CardForFilter[];
   collection: Record<number, number>;
-  onUpdateCount: (id: number, count: number) => void;
-  mode?: 'catalog' | 'selector';
+  onUpdateCount?: (id: number, count: number) => void;
+  mode?: 'catalog' | 'selector' | 'want-list' | 'binder' | 'want';
   deckCounts?: Record<number, number>;
   onDeckUpdate?: (cardDefinitionId: number, count: number) => void;
 }
@@ -28,7 +28,7 @@ export function CardGrid({
     >
       {cards.map(card => (
         <CardItem
-          key={card.id}
+          key={`${card.id}-${mode}`}
           id={card.id}
           name={card.name}
           type={card.type}
@@ -41,6 +41,8 @@ export function CardGrid({
           mode={mode}
           deckCount={deckCounts[card.id] || 0}
           onDeckUpdate={onDeckUpdate}
+          tradeQuantity={card.tradeQuantity}
+          lookingForQuantity={card.lookingForQuantity}
         />
       ))}
     </div>
