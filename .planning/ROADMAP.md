@@ -24,7 +24,7 @@
 
 - [x] **Phase 6: Auth & Multi-User** — Per-user accounts with Better Auth; migrate v1 single-user data to first account — completed 2026-05-08
 - [x] **Phase 7: Market Pricing** — Card prices (EUR + USD) from pokemon-api.com; deck cost totals; daily cache refresh — completed 2026-05-08
-- [ ] **Phase 8: Deck of the Day** — Daily featured tournament deck with ownership overlay and copy-to-library
+- [ ] ~~**Phase 8: Deck of the Day** — Daily featured tournament deck with ownership overlay and copy-to-library~~ (ABANDONED: swustats.net API issues)
 - [ ] **Phase 9: Sideboard** — Sideboard support in deck builder with rules enforcement and distinct cost curve display
 - [ ] **Phase 10: Trade Binder** — Public trade binder at /binder/[username] with catalog filters and want section
 
@@ -62,17 +62,9 @@
 - [x] 07-03-PLAN.md — Currency Control & Card UI
 - [x] 07-04-PLAN.md — Deck & Want List Valuation
 
-### Phase 8: Deck of the Day
+### ~~Phase 8: Deck of the Day~~ (ABANDONED)
 **Goal**: Users can view a daily featured tournament deck, see which cards they own vs are missing, and copy it into their personal library
-**Depends on**: Phase 6 (copy-to-library needs real userId); Phase 7 (cost summary on featured deck)
-**Requirements**: DOTD-01, DOTD-02, DOTD-03, DOTD-04
-**Success Criteria** (what must be TRUE):
-  1. User can navigate to a Deck of the Day page showing a featured PQ-or-higher tournament deck
-  2. Each card in the featured deck shows the user's owned count and highlights shortfalls — same visual as the deck builder
-  3. User can click one button to copy the Deck of the Day into their personal deck library
-  4. The featured deck changes daily without any manual action — a new deck is fetched automatically via cron
-**Plans**: TBD
-**UI hint**: yes
+**Status**: ABANDONED (2026-05-10) due to swustats.net API endpoints for tournament decks returning 404 or missing card names.
 
 ### Phase 9: Sideboard
 **Goal**: Users can add a sideboard to any deck, with rules enforcement and distinct visual separation from the main deck
@@ -83,7 +75,14 @@
   2. The deck builder prevents adding more than 10 sideboard cards and surfaces a validation message when the limit is reached
   3. The cost curve chart shows sideboard cards in a distinct color from main deck cards
   4. The deck view displays sideboard cards in a separate section below the main deck
-**Plans**: TBD
+**Plans**: 3 plans
+
+**Wave 1**
+- [ ] 09-01-PLAN.md — Extend validateDeck() with sideboardCostCurve and 10-card limit (TDD)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 09-02-PLAN.md — Add Move to SB/Main handlers and sideboard section in deck-builder.tsx
+- [ ] 09-03-PLAN.md — Stack amber sideboard bars on cost curve and update sidebar count in deck-sidebar.tsx
 **UI hint**: yes
 
 ### Phase 10: Trade Binder
@@ -112,6 +111,6 @@
 | 5.2. Rarity Filter Fix | v1 | 1/1 | ✅ Complete | 2026-05-07 |
 | 6. Auth & Multi-User | v2 | 4/4 | ✅ Complete | 2026-05-08 |
 | 7. Market Pricing | v2 | 4/4 | ✅ Complete | 2026-05-08 |
-| 8. Deck of the Day | v2 | 0/? | Not started | — |
-| 9. Sideboard | v2 | 0/? | Not started | — |
+| 8. Deck of the Day | v2 | 0/4 | ❌ Abandoned | 2026-05-10 |
+| 9. Sideboard | v2 | 0/3 | Not started | — |
 | 10. Trade Binder | v2 | 0/? | Not started | — |
