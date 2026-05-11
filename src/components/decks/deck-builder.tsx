@@ -250,6 +250,8 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
       } else if (res.status === 400) {
         const data = await res.json();
         setApiErrors(data.errors || ['Failed to save deck']);
+      } else {
+        setApiErrors([`Unexpected error (${res.status}). Please try again.`]);
       }
     } catch (err) {
       console.error('Failed to save deck', err);
