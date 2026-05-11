@@ -33,6 +33,7 @@ export function DeckSidebar({
   );
 
   const totalMain = mainDeck.reduce((sum, item) => sum + item.quantity, 0);
+  const totalSideboard = sideboard.reduce((sum, item) => sum + item.quantity, 0);
   const { currency } = useCurrency();
 
   const totalValue = useMemo(() => {
@@ -69,7 +70,9 @@ export function DeckSidebar({
                 <AlertCircle className="w-3 h-3 mr-1" /> Illegal
               </Badge>
             )}
-            <span className="text-sm text-slate-500">{totalMain} / 50 cards</span>
+            <span className="text-sm text-slate-500">
+              {totalMain} / 50 main • {totalSideboard} / 10 sideboard
+            </span>
           </div>
           <div className="flex items-center gap-1.5 text-indigo-600 bg-indigo-50 px-2.5 py-1.5 rounded-md border border-indigo-100">
             <DollarSign className="w-4 h-4" />
@@ -120,22 +123,33 @@ export function DeckSidebar({
           <div className="flex items-end gap-1 h-24 px-2 border-b border-l border-slate-200">
             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((cost) => {
               const count = validation.stats.costCurve[cost] || 0;
-              // Use a fixed max of 12 cards for 100% height. 
-              const height = Math.min((count / 12) * 100, 100);
+              const sbCount = validation.stats.sideboardCostCurve[cost] || 0;
+              const mainHeight = Math.min((count / 12) * 100, 100);
+              const sbHeight = Math.min((sbCount / 12) * 100, 100);
               return (
-                <div key={cost} className="flex-1 h-full flex flex-col justify-end items-center gap-1 group">
-                  <div 
-                    className="w-full bg-slate-400 group-hover:bg-indigo-500 transition-all rounded-t-sm" 
-                    style={{ height: `${count > 0 ? Math.max(height, 4) : 0}%` }}
-                    title={`${count} cards with cost ${cost}${cost === 9 ? '+' : ''}`}
+                <div key={cost} className="flex-1 h-full flex flex-col justify-end items-center gap-0 group">
+                  {sbCount > 0 && (
+                    <div
+                      className="w-full bg-amber-400 rounded-t-sm"
+                      style={{ height: `${Math.max(sbHeight, 4)}%` }}
+                      title={`${sbCount} sideboard cards with cost ${cost}${cost === 9 ? '+' : ''}`}
+                    />
+                  )}
+                  <div
+                    className="w-full bg-slate-400 group-hover:bg-indigo-500 transition-all rounded-t-sm"
+                    style={{ height: `${count > 0 ? Math.max(mainHeight, 4) : 0}%` }}
+                    title={`${count} main deck cards with cost ${cost}${cost === 9 ? '+' : ''}`}
                   />
                   <span className="text-[10px] text-slate-400 leading-none mb-[-20px] pb-1">{cost === 9 ? '9+' : cost}</span>
                 </div>
               );
             })}
           </div>
-          {/* Legend spacer for the labels that are pulled down */}
-          <div className="h-4" />
+          {/* Legend — replaces the plain spacer div */}
+          <div className="flex items-center gap-3 text-[10px] text-slate-500 mt-1">
+            <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-slate-400" /> Main</span>
+            <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-400" /> Sideboard</span>
+          </div>
         </div>
 
         {/* Stats: Breakdown */}
