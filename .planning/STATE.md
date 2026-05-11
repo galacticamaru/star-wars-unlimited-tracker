@@ -11,8 +11,8 @@ See: .planning/PROJECT.md (updated 2026-05-07)
 
 Phase: 9 — Sideboard
 Plan: All 3 plans complete (3/3) ✓ UAT passed
-Status: ✅ Complete
-Last activity: 2026-05-11 — Phase 9 complete and UAT approved. Legend spacing fix applied post-UAT. 1 remaining phase: Phase 10 Trade Binder.
+Status: ✅ Shipped — PR #5
+Last activity: 2026-05-11 — Phase 9 shipped. PR #5 (feat/dotd-schema → main). 1 remaining phase: Phase 10 Trade Binder.
 
 Progress: [▓▓▓▓▓▓▓▓░░] 80% (v2: 2/5 phases complete, 1 abandoned)
 
