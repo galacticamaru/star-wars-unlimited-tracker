@@ -5,18 +5,14 @@ import { X, Plus, Minus } from 'lucide-react';
 interface WantItem {
   cardDefinitionId: number;
   quantity: number;
-  card: {
-    name: string;
-    subtitle: string | null;
-  };
+  name: string;
+  subtitle: string | null;
 }
 
 interface ExclusionItem {
   cardDefinitionId: number;
-  card: {
-    name: string;
-    subtitle: string | null;
-  };
+  name: string;
+  subtitle: string | null;
 }
 
 interface ManageWantsListProps {
@@ -52,9 +48,9 @@ export function ManageWantsList({
             {wants.map((want) => (
               <div key={want.cardDefinitionId} className="flex items-center justify-between p-2 bg-muted/50 rounded-md border group">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium truncate">{want.card.name}</p>
-                  {want.card.subtitle && (
-                    <p className="text-[10px] text-muted-foreground truncate">{want.card.subtitle}</p>
+                  <p className="text-sm font-medium truncate">{want.name}</p>
+                  {want.subtitle && (
+                    <p className="text-[10px] text-muted-foreground truncate">{want.subtitle}</p>
                   )}
                 </div>
                 <div className="flex items-center gap-3 ml-4">
@@ -108,9 +104,9 @@ export function ManageWantsList({
             {exclusions.map((exclusion) => (
               <div key={exclusion.cardDefinitionId} className="flex items-center justify-between p-2 bg-muted/50 rounded-md border group">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium truncate">{exclusion.card.name}</p>
-                  {exclusion.card.subtitle && (
-                    <p className="text-[10px] text-muted-foreground truncate">{exclusion.card.subtitle}</p>
+                  <p className="text-sm font-medium truncate">{exclusion.name}</p>
+                  {exclusion.subtitle && (
+                    <p className="text-[10px] text-muted-foreground truncate">{exclusion.subtitle}</p>
                   )}
                 </div>
                 <button

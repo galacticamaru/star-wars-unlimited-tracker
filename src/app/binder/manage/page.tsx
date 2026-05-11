@@ -49,7 +49,7 @@ export default function ManageBinderPage() {
 
   const handleUpdateUsername = async () => {
     setIsUpdatingUsername(true);
-    await authClient.user.update({ 
+    await authClient.updateUser({
       username: username.toLowerCase().trim(),
       displayUsername: username.trim()
     });
@@ -109,7 +109,7 @@ export default function ManageBinderPage() {
           const card = allCards.find(c => c.id === cardDefinitionId);
           setTradeData((prev: any) => ({
             ...prev,
-            manualWants: [...prev.manualWants, { cardDefinitionId, quantity, card: { name: card.name, subtitle: card.subtitle } }]
+            manualWants: [...prev.manualWants, { cardDefinitionId, quantity, name: card.name, subtitle: card.subtitle ?? null }]
           }));
         }
       }
@@ -132,7 +132,7 @@ export default function ManageBinderPage() {
         const card = allCards.find(c => c.id === cardDefinitionId);
         setTradeData((prev: any) => ({
           ...prev,
-          exclusions: [...prev.exclusions, { cardDefinitionId, card: { name: card.name, subtitle: card.subtitle } }]
+          exclusions: [...prev.exclusions, { cardDefinitionId, name: card.name, subtitle: card.subtitle ?? null }]
         }));
       }
     }
