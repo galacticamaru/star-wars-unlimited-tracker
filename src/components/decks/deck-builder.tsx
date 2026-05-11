@@ -30,7 +30,9 @@ type DeckAction =
   | { type: 'SET_LEADER'; payload: number | null }
   | { type: 'SET_BASE'; payload: number | null }
   | { type: 'UPDATE_CARD'; payload: { cardDefinitionId: number; quantity: number; isSideboard: boolean } }
-  | { type: 'REMOVE_CARD'; payload: { cardDefinitionId: number; isSideboard: boolean } };
+  | { type: 'REMOVE_CARD'; payload: { cardDefinitionId: number; isSideboard: boolean } }
+  | { type: 'MOVE_TO_SIDEBOARD'; payload: { cardDefinitionId: number } }
+  | { type: 'MOVE_TO_MAIN'; payload: { cardDefinitionId: number } };
 
 function deckReducer(state: DeckState, action: DeckAction): DeckState {
   switch (action.type) {
@@ -62,6 +64,48 @@ function deckReducer(state: DeckState, action: DeckAction): DeckState {
       const newCards = state.cards.filter(
         (c) => !(c.cardDefinitionId === action.payload.cardDefinitionId && c.isSideboard === action.payload.isSideboard)
       );
+      return { ...state, cards: newCards };
+    }
+    case 'MOVE_TO_SIDEBOARD': {
+      const id = action.payload.cardDefinitionId;
+      const mainEntry = state.cards.find(c => c.cardDefinitionId === id && !c.isSideboard);
+      if (!mainEntry || mainEntry.quantity <= 0) return state;
+      const currentSideboardTotal = state.cards
+        .filter(c => c.isSideboard)
+        .reduce((sum, c) => sum + c.quantity, 0);
+      if (currentSideboardTotal >= 10) return state;
+      const sbEntry = state.cards.find(c => c.cardDefinitionId === id && c.isSideboard);
+      let newCards = state.cards
+        .map(c => {
+          if (c.cardDefinitionId === id && !c.isSideboard)
+            return { ...c, quantity: c.quantity - 1 };
+          if (c.cardDefinitionId === id && c.isSideboard)
+            return { ...c, quantity: c.quantity + 1 };
+          return c;
+        })
+        .filter(c => c.quantity > 0);
+      if (!sbEntry) {
+        newCards = [...newCards, { cardDefinitionId: id, quantity: 1, isSideboard: true }];
+      }
+      return { ...state, cards: newCards };
+    }
+    case 'MOVE_TO_MAIN': {
+      const id = action.payload.cardDefinitionId;
+      const sbEntry = state.cards.find(c => c.cardDefinitionId === id && c.isSideboard);
+      if (!sbEntry || sbEntry.quantity <= 0) return state;
+      const mainEntry = state.cards.find(c => c.cardDefinitionId === id && !c.isSideboard);
+      let newCards = state.cards
+        .map(c => {
+          if (c.cardDefinitionId === id && c.isSideboard)
+            return { ...c, quantity: c.quantity - 1 };
+          if (c.cardDefinitionId === id && !c.isSideboard)
+            return { ...c, quantity: c.quantity + 1 };
+          return c;
+        })
+        .filter(c => c.quantity > 0);
+      if (!mainEntry) {
+        newCards = [...newCards, { cardDefinitionId: id, quantity: 1, isSideboard: false }];
+      }
       return { ...state, cards: newCards };
     }
     default:
@@ -170,19 +214,11 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   };
 
   const handleMoveToSideboard = (cardDefinitionId: number) => {
-    const mainEntry = state.cards.find(c => c.cardDefinitionId === cardDefinitionId && !c.isSideboard);
-    if (!mainEntry) return;
-    dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId, quantity: mainEntry.quantity - 1, isSideboard: false } });
-    const sbEntry = state.cards.find(c => c.cardDefinitionId === cardDefinitionId && c.isSideboard);
-    dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId, quantity: (sbEntry?.quantity ?? 0) + 1, isSideboard: true } });
+    dispatch({ type: 'MOVE_TO_SIDEBOARD', payload: { cardDefinitionId } });
   };
 
   const handleMoveToMain = (cardDefinitionId: number) => {
-    const sbEntry = state.cards.find(c => c.cardDefinitionId === cardDefinitionId && c.isSideboard);
-    if (!sbEntry) return;
-    dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId, quantity: sbEntry.quantity - 1, isSideboard: true } });
-    const mainEntry = state.cards.find(c => c.cardDefinitionId === cardDefinitionId && !c.isSideboard);
-    dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId, quantity: (mainEntry?.quantity ?? 0) + 1, isSideboard: false } });
+    dispatch({ type: 'MOVE_TO_MAIN', payload: { cardDefinitionId } });
   };
 
   const sideboardTotal = useMemo(
