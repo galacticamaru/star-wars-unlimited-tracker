@@ -145,8 +145,8 @@ export function DeckSidebar({
               );
             })}
           </div>
-          {/* Legend — replaces the plain spacer div */}
-          <div className="flex items-center gap-3 text-[10px] text-slate-500 mt-1">
+          {/* Legend — sits below the cost number labels (which pull down 20px via mb-[-20px]) */}
+          <div className="flex items-center gap-3 text-[10px] text-slate-500 mt-6">
             <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-slate-400" /> Main</span>
             <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-400" /> Sideboard</span>
           </div>
