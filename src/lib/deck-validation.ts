@@ -124,7 +124,8 @@ export function validateDeck(
         }
       });
     } else {
-      // Sideboard stats
+      // Sideboard cards intentionally exempt from off-aspect warnings —
+      // aspect enforcement applies to the main deck only.
       if (card.cost !== null) {
         const costKey = Math.min(card.cost, 9);
         stats.sideboardCostCurve[costKey] = (stats.sideboardCostCurve[costKey] || 0) + quantity;
