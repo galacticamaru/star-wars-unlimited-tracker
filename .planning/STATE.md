@@ -5,23 +5,24 @@
 See: .planning/PROJECT.md (updated 2026-05-07)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus:** v2 — Phase 10: Trade Binder (next up)
+**Current focus**: v2 — Complete
 
 ## Current Position
 
-Phase: 10 — Trade Binder
-Plan: All 4 plans complete (4/4) ✓ UAT passed
-Status: ✅ Shipped — PR #6
-Last activity: 2026-05-11 — Phase 10 shipped. PR #6 (feat/trade-binder → main). v2 Milestone Complete.
+Phase: 10.1 — Fix sideboard filter in binder Looking For query
+Plan: All 1 plan complete (1/1) ✓ Regression tests passed
+Status: ✅ Shipped
+Last activity: 2026-05-12 — Phase 10.1 shipped. v2 Milestone Verified.
 
-Progress: [▓▓▓▓▓▓▓▓▓▓] 100% (v2: 3/5 phases complete, 1 abandoned, 1 merged/re-scoped)
+Progress: [▓▓▓▓▓▓▓▓▓▓] 100% (v2: 4/5 phases complete, 1 abandoned, 1 fix merged)
+
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 34
+- Total plans completed: 35
 - Average duration: ~10 minutes
-- Total execution time: ~5.6 hours
+- Total execution time: ~5.8 hours
 
 **By Phase:**
 
@@ -38,6 +39,7 @@ Progress: [▓▓▓▓▓▓▓▓▓▓] 100% (v2: 3/5 phases complete, 1 aban
 | 7. Market Pricing | 4/4 COMPLETE | ~50 min | ~12 min |
 | 9. Sideboard | 3/3 COMPLETE | ~30 min | ~10 min |
 | 10. Trade Binder | 4/4 COMPLETE | ~40 min | ~10 min |
+| 10.1 Sideboard Fix | 1/1 COMPLETE | ~10 min | ~10 min |
 
 
 ## Accumulated Context

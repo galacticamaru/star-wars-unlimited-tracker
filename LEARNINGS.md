@@ -47,6 +47,7 @@ This document captures key decisions, architectural patterns, lessons learned, a
 -   **Plan Exit Requirement:** Every implementation plan must have a corresponding `SUMMARY.md` generated upon completion. Missing summaries make later project audits and knowledge transfers significantly harder.
 -   **Structured Verification:** Move from informal verification to structured `VERIFICATION.md` reports with frontmatter to track success criteria coverage consistently.
 -   **TDD for Business Logic:** Writing tests first for complex logic (deck validation, price mapping, card filtering) pays off immediately when refactoring or fixing edge cases discovered later.
+-   **Manual Wants vs. Shortfall Logic:** In a trade binder, "Manual Wants" should be treated as absolute quantities to be displayed, not as a target total for the collection. Subtracting current inventory from manual wants confuses users who expect their specific requests to be honored. The correct formula is `max(autoShortfall, manualWant)`.
 
 ## ⚠️ Surprises & Pitfalls
 

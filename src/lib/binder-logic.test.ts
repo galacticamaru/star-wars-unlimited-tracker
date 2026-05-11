@@ -16,8 +16,8 @@ describe("Trade Binder Logic", () => {
     });
 
     it("should prioritize higher manualTarget over autoTarget", () => {
-      // Need 3 from decks, but want 5 manually. Have 1 -> Looking for 4
-      expect(calculateLookingFor(3, 5, 1, false)).toBe(4);
+      // Need 3 from decks, but want 5 manually. Have 1 -> Looking for 5
+      expect(calculateLookingFor(3, 5, 1, false)).toBe(5);
     });
 
     it("should respect autoTarget if it is higher than manualTarget", () => {
@@ -30,18 +30,18 @@ describe("Trade Binder Logic", () => {
       expect(calculateLookingFor(3, 5, 0, true)).toBe(0);
     });
 
-    it("should return shortfall when only manualTarget is provided", () => {
-      // No decks, but want 2 manually. Have 0 -> Looking for 2
-      expect(calculateLookingFor(0, 2, 0, false)).toBe(2);
+    it("should return manualTarget quantity even if inventory is high", () => {
+      // No decks, but want 2 manually. Have 10 -> Looking for 2
+      expect(calculateLookingFor(0, 2, 10, false)).toBe(2);
     });
 
     it("should handle cases where everything is zero", () => {
       expect(calculateLookingFor(0, 0, 0, false)).toBe(0);
     });
 
-    it("should not return negative values if inventory is high", () => {
-      // Need 1, have 10 -> Looking for 0
-      expect(calculateLookingFor(1, 1, 10, false)).toBe(0);
+    it("should show manualTarget quantity even if inventory matches or exceeds it", () => {
+      // Need 1, have 10, manual want 1 -> Looking for 1
+      expect(calculateLookingFor(1, 1, 10, false)).toBe(1);
     });
   });
 });
