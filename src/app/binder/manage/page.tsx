@@ -5,9 +5,10 @@ import { authClient } from '@/lib/auth-client';
 import { ManageTradeCard } from '@/components/binder/manage-trade-card';
 import { ManageWantsList } from '@/components/binder/manage-wants-list';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Loader2, Search, ExternalLink, Plus, Ban } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function ManageBinderPage() {
@@ -147,7 +148,7 @@ export default function ManageBinderPage() {
   }, [allCards, searchTerm]);
 
   if (isPending || isLoading) return <div className="p-8 flex justify-center"><Loader2 className="animate-spin" /></div>;
-  if (!session) return <div className="p-8 max-w-2xl mx-auto"><Card><CardHeader><CardTitle>Unauthorized</CardTitle></CardHeader><CardContent><p>Please login to manage your trade binder.</p><Button asChild className="mt-4"><Link href="/login">Login</Link></Button></CardContent></Card></div>;
+  if (!session) return <div className="p-8 max-w-2xl mx-auto"><Card><CardHeader><CardTitle>Unauthorized</CardTitle></CardHeader><CardContent><p>Please login to manage your trade binder.</p><Link href="/login" className={cn(buttonVariants({ className: "mt-4" }))}>Login</Link></CardContent></Card></div>;
 
   const publicUrl = session.user.username ? `/binder/${session.user.username}` : null;
 
@@ -159,11 +160,9 @@ export default function ManageBinderPage() {
           <p className="text-muted-foreground">Curate your public trade offerings and wants.</p>
         </div>
         {publicUrl && (
-          <Button asChild variant="outline">
-            <Link href={publicUrl} target="_blank">
-              View Public Binder <ExternalLink className="ml-2 w-4 h-4" />
-            </Link>
-          </Button>
+          <Link href={publicUrl} target="_blank" className={cn(buttonVariants({ variant: "outline" }))}>
+            View Public Binder <ExternalLink className="ml-2 w-4 h-4" />
+          </Link>
         )}
       </div>
 
