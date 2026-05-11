@@ -53,6 +53,20 @@ export function NavBar() {
           </Link>
         ))}
 
+        {session && (
+          <Link
+            href="/binder/manage"
+            className={cn(
+              'h-11 flex items-center px-4 text-sm transition-colors duration-150',
+              isActive('/binder/manage')
+                ? 'text-foreground font-semibold border-b-2 border-primary'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            My Binder
+          </Link>
+        )}
+
         <div className="flex items-center gap-4 ml-4 pl-4 border-l border-border">
           {isPending ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
