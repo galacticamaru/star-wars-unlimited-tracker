@@ -25,7 +25,7 @@
 - [x] **Phase 6: Auth & Multi-User** — Per-user accounts with Better Auth; migrate v1 single-user data to first account — completed 2026-05-08
 - [x] **Phase 7: Market Pricing** — Card prices (EUR + USD) from pokemon-api.com; deck cost totals; daily cache refresh — completed 2026-05-08
 - [ ] ~~**Phase 8: Deck of the Day** — Daily featured tournament deck with ownership overlay and copy-to-library~~ (ABANDONED: swustats.net API issues)
-- [ ] **Phase 9: Sideboard** — Sideboard support in deck builder with rules enforcement and distinct cost curve display
+- [x] **Phase 9: Sideboard** — Sideboard support in deck builder with rules enforcement and distinct cost curve display — completed 2026-05-11
 - [ ] **Phase 10: Trade Binder** — Public trade binder at /binder/[username] with catalog filters and want section
 
 ## Phase Details
@@ -78,11 +78,11 @@
 **Plans**: 3 plans
 
 **Wave 1**
-- [ ] 09-01-PLAN.md — Extend validateDeck() with sideboardCostCurve and 10-card limit (TDD)
+- [x] 09-01-PLAN.md — Extend validateDeck() with sideboardCostCurve and 10-card limit (TDD)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 09-02-PLAN.md — Add Move to SB/Main handlers and sideboard section in deck-builder.tsx
-- [ ] 09-03-PLAN.md — Stack amber sideboard bars on cost curve and update sidebar count in deck-sidebar.tsx
+- [x] 09-02-PLAN.md — Add Move to SB/Main handlers and sideboard section in deck-builder.tsx
+- [x] 09-03-PLAN.md — Stack amber sideboard bars on cost curve and update sidebar count in deck-sidebar.tsx
 **UI hint**: yes
 
 ### Phase 10: Trade Binder
@@ -112,5 +112,5 @@
 | 6. Auth & Multi-User | v2 | 4/4 | ✅ Complete | 2026-05-08 |
 | 7. Market Pricing | v2 | 4/4 | ✅ Complete | 2026-05-08 |
 | 8. Deck of the Day | v2 | 0/4 | ❌ Abandoned | 2026-05-10 |
-| 9. Sideboard | v2 | 0/3 | Not started | — |
+| 9. Sideboard | v2 | 3/3 | ✅ Complete | 2026-05-11 |
 | 10. Trade Binder | v2 | 0/? | Not started | — |

@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-05-07)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus:** v2 — Phase 9: Sideboard (planned, ready to execute)
+**Current focus:** v2 — Phase 10: Trade Binder (next up)
 
 ## Current Position
 
 Phase: 9 — Sideboard
-Plan: Ready to execute (3 plans, 2 waves)
-Status: ✅ Planned
-Last activity: 2026-05-11 — Phase 9 planned. 3 plans created: 09-01 (validateDeck TDD, wave 1), 09-02 (deck-builder.tsx move handlers, wave 2), 09-03 (deck-sidebar.tsx cost curve + count, wave 2).
+Plan: All 3 plans complete (3/3)
+Status: ✅ Complete
+Last activity: 2026-05-11 — Phase 9 complete. Sideboard support: validateDeck TDD (09-01), move handlers + sideboard section (09-02), stacked cost curve + count display (09-03). All 15 tests passing.
 
 Progress: [▓▓▓▓▓▓▓▓░░] 80% (v2: 2/5 phases complete, 1 abandoned)
 
