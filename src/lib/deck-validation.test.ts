@@ -128,17 +128,102 @@ describe('validateDeck', () => {
   it('should handle double-aspect cards and Basic aspect correctly', () => {
     const leader = createCard({ type: 'Leader', aspects: ['Command'] });
     const base = createCard({ type: 'Base', aspects: ['Command'] });
-    
+
     const doubleAspectCard = createCard({ name: 'Double', aspects: ['Command', 'Aggression'] });
     const basicCard = createCard({ name: 'Basic Card', aspects: ['Basic'] });
-    
+
     const result = validateDeck(leader, base, [
       { card: doubleAspectCard, quantity: 1 },
       { card: basicCard, quantity: 1 }
     ], []);
-    
+
     expect(result.warnings).toContain('Double is off-aspect (requires Aggression)');
     expect(result.warnings).not.toContain('Double is off-aspect (requires Command)');
     expect(result.warnings).not.toContain('Basic Card is off-aspect (requires Basic)');
+  });
+
+  // Sideboard tests — RED phase (09-01)
+
+  it('should reject sideboard exceeding 10 cards', () => {
+    const mainDeck: DeckCard[] = [];
+    for (let i = 0; i < 17; i++) {
+      mainDeck.push({ card: createCard({ swudbId: `M-${i}` }), quantity: 3 });
+    }
+    const sideboard: DeckCard[] = [];
+    for (let i = 0; i < 11; i++) {
+      sideboard.push({ card: createCard({ swudbId: `SB-${i}` }), quantity: 1 });
+    }
+    const result = validateDeck(mockLeader, mockBase, mainDeck, sideboard);
+    expect(result.errors).toContain('Sideboard cannot exceed 10 cards');
+  });
+
+  it('should allow sideboard of exactly 10 cards', () => {
+    const mainDeck: DeckCard[] = [];
+    for (let i = 0; i < 17; i++) {
+      mainDeck.push({ card: createCard({ swudbId: `M-${i}` }), quantity: 3 });
+    }
+    const sideboard: DeckCard[] = [];
+    for (let i = 0; i < 10; i++) {
+      sideboard.push({ card: createCard({ swudbId: `SB-${i}` }), quantity: 1 });
+    }
+    const result = validateDeck(mockLeader, mockBase, mainDeck, sideboard);
+    const sideboardError = result.errors.find(e => e.includes('Sideboard cannot exceed'));
+    expect(sideboardError).toBeUndefined();
+  });
+
+  it('should allow empty sideboard with no sideboard error', () => {
+    const mainDeck: DeckCard[] = [];
+    for (let i = 0; i < 17; i++) {
+      mainDeck.push({ card: createCard({ swudbId: `M-${i}` }), quantity: 3 });
+    }
+    const result = validateDeck(mockLeader, mockBase, mainDeck, []);
+    const sideboardError = result.errors.find(e => e.includes('Sideboard cannot exceed'));
+    expect(sideboardError).toBeUndefined();
+  });
+
+  it('should populate sideboardCostCurve from sideboard cards', () => {
+    const mainDeck: DeckCard[] = [];
+    for (let i = 0; i < 17; i++) {
+      mainDeck.push({ card: createCard({ swudbId: `M-${i}` }), quantity: 3 });
+    }
+    const sbCard = createCard({ swudbId: 'SB-COST3', cost: 3 });
+    const sideboard: DeckCard[] = [{ card: sbCard, quantity: 2 }];
+    const result = validateDeck(mockLeader, mockBase, mainDeck, sideboard);
+    expect(result.stats.sideboardCostCurve[3]).toBe(2);
+  });
+
+  it('should cap sideboardCostCurve at key 9 for cost >= 9', () => {
+    const mainDeck: DeckCard[] = [];
+    for (let i = 0; i < 17; i++) {
+      mainDeck.push({ card: createCard({ swudbId: `M-${i}` }), quantity: 3 });
+    }
+    const expensiveCard = createCard({ swudbId: 'SB-COST10', cost: 10 });
+    const sideboard: DeckCard[] = [{ card: expensiveCard, quantity: 1 }];
+    const result = validateDeck(mockLeader, mockBase, mainDeck, sideboard);
+    expect(result.stats.sideboardCostCurve[9]).toBe(1);
+    expect(result.stats.sideboardCostCurve[10]).toBeUndefined();
+  });
+
+  it('should return empty sideboardCostCurve when no sideboard cards', () => {
+    const mainDeck: DeckCard[] = [];
+    for (let i = 0; i < 17; i++) {
+      mainDeck.push({ card: createCard({ swudbId: `M-${i}` }), quantity: 3 });
+    }
+    const result = validateDeck(mockLeader, mockBase, mainDeck, []);
+    expect(result.stats.sideboardCostCurve).toEqual({});
+  });
+
+  it('should not include sideboard costs in main costCurve', () => {
+    const mainDeck: DeckCard[] = [];
+    for (let i = 0; i < 17; i++) {
+      mainDeck.push({ card: createCard({ swudbId: `M-${i}`, cost: 1 }), quantity: 3 });
+    }
+    const sbCard = createCard({ swudbId: 'SB-COST5', cost: 5 });
+    const sideboard: DeckCard[] = [{ card: sbCard, quantity: 2 }];
+    const result = validateDeck(mockLeader, mockBase, mainDeck, sideboard);
+    // Cost 5 should NOT appear in main costCurve
+    expect(result.stats.costCurve[5]).toBeUndefined();
+    // Cost 5 SHOULD appear in sideboardCostCurve
+    expect(result.stats.sideboardCostCurve[5]).toBe(2);
   });
 });

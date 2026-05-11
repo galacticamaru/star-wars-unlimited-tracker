@@ -30,7 +30,9 @@ type DeckAction =
   | { type: 'SET_LEADER'; payload: number | null }
   | { type: 'SET_BASE'; payload: number | null }
   | { type: 'UPDATE_CARD'; payload: { cardDefinitionId: number; quantity: number; isSideboard: boolean } }
-  | { type: 'REMOVE_CARD'; payload: { cardDefinitionId: number; isSideboard: boolean } };
+  | { type: 'REMOVE_CARD'; payload: { cardDefinitionId: number; isSideboard: boolean } }
+  | { type: 'MOVE_TO_SIDEBOARD'; payload: { cardDefinitionId: number } }
+  | { type: 'MOVE_TO_MAIN'; payload: { cardDefinitionId: number } };
 
 function deckReducer(state: DeckState, action: DeckAction): DeckState {
   switch (action.type) {
@@ -64,6 +66,48 @@ function deckReducer(state: DeckState, action: DeckAction): DeckState {
       );
       return { ...state, cards: newCards };
     }
+    case 'MOVE_TO_SIDEBOARD': {
+      const id = action.payload.cardDefinitionId;
+      const mainEntry = state.cards.find(c => c.cardDefinitionId === id && !c.isSideboard);
+      if (!mainEntry || mainEntry.quantity <= 0) return state;
+      const currentSideboardTotal = state.cards
+        .filter(c => c.isSideboard)
+        .reduce((sum, c) => sum + c.quantity, 0);
+      if (currentSideboardTotal >= 10) return state;
+      const sbEntry = state.cards.find(c => c.cardDefinitionId === id && c.isSideboard);
+      let newCards = state.cards
+        .map(c => {
+          if (c.cardDefinitionId === id && !c.isSideboard)
+            return { ...c, quantity: c.quantity - 1 };
+          if (c.cardDefinitionId === id && c.isSideboard)
+            return { ...c, quantity: c.quantity + 1 };
+          return c;
+        })
+        .filter(c => c.quantity > 0);
+      if (!sbEntry) {
+        newCards = [...newCards, { cardDefinitionId: id, quantity: 1, isSideboard: true }];
+      }
+      return { ...state, cards: newCards };
+    }
+    case 'MOVE_TO_MAIN': {
+      const id = action.payload.cardDefinitionId;
+      const sbEntry = state.cards.find(c => c.cardDefinitionId === id && c.isSideboard);
+      if (!sbEntry || sbEntry.quantity <= 0) return state;
+      const mainEntry = state.cards.find(c => c.cardDefinitionId === id && !c.isSideboard);
+      let newCards = state.cards
+        .map(c => {
+          if (c.cardDefinitionId === id && c.isSideboard)
+            return { ...c, quantity: c.quantity - 1 };
+          if (c.cardDefinitionId === id && !c.isSideboard)
+            return { ...c, quantity: c.quantity + 1 };
+          return c;
+        })
+        .filter(c => c.quantity > 0);
+      if (!mainEntry) {
+        newCards = [...newCards, { cardDefinitionId: id, quantity: 1, isSideboard: false }];
+      }
+      return { ...state, cards: newCards };
+    }
     default:
       return state;
   }
@@ -83,10 +127,17 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   const router = useRouter();
   const cleanStateRef = useRef(initialDeck);
 
-  const isDirty = useMemo(
-    () => JSON.stringify(state) !== JSON.stringify(cleanStateRef.current),
-    [state]
-  );
+  const isDirty = useMemo(() => {
+    const normaliseState = (s: typeof state) => ({
+      ...s,
+      cards: [...s.cards].sort((a, b) =>
+        a.cardDefinitionId !== b.cardDefinitionId
+          ? a.cardDefinitionId - b.cardDefinitionId
+          : Number(a.isSideboard) - Number(b.isSideboard)
+      ),
+    });
+    return JSON.stringify(normaliseState(state)) !== JSON.stringify(normaliseState(cleanStateRef.current));
+  }, [state]);
 
   // Tab/window close — only when dirty
   useEffect(() => {
@@ -169,6 +220,19 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
     }
   };
 
+  const handleMoveToSideboard = (cardDefinitionId: number) => {
+    dispatch({ type: 'MOVE_TO_SIDEBOARD', payload: { cardDefinitionId } });
+  };
+
+  const handleMoveToMain = (cardDefinitionId: number) => {
+    dispatch({ type: 'MOVE_TO_MAIN', payload: { cardDefinitionId } });
+  };
+
+  const sideboardTotal = useMemo(
+    () => sideboard.reduce((sum, item) => sum + item.quantity, 0),
+    [sideboard]
+  );
+
   const handleSave = async (isDraft: boolean) => {
     setIsSaving(true);
     setApiErrors([]);
@@ -193,6 +257,8 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
       } else if (res.status === 400) {
         const data = await res.json();
         setApiErrors(data.errors || ['Failed to save deck']);
+      } else {
+        setApiErrors([`Unexpected error (${res.status}). Please try again.`]);
       }
     } catch (err) {
       console.error('Failed to save deck', err);
@@ -332,11 +398,62 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                         <div className="flex gap-1">
                             <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: false } })}>-</Button>
                             <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: false } })}>+</Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-xs text-amber-600 border-amber-300 hover:bg-amber-50"
+                              onClick={() => handleMoveToSideboard(item.card.id)}
+                              disabled={sideboardTotal >= 10}
+                            >
+                              Move to SB
+                            </Button>
                         </div>
                         </div>
                     ))
                     )}
                 </div>
+                </div>
+
+                {/* Sideboard */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-bold">
+                      Sideboard ({sideboard.reduce((s, i) => s + i.quantity, 0)} / 10)
+                    </h3>
+                  </div>
+                  <div className="bg-white border rounded-lg divide-y shadow-sm">
+                    {sideboard.length === 0 ? (
+                      <div className="p-8 text-center text-slate-400 text-sm">
+                        <p>No sideboard cards yet. Click &apos;Move to SB&apos; on a main deck card to add one.</p>
+                      </div>
+                    ) : (
+                      sideboard.map((item) => (
+                        <div key={item.card.id} className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded bg-amber-100 flex items-center justify-center font-bold text-amber-600">
+                              {item.quantity}x
+                            </div>
+                            <div>
+                              <p className="font-medium">{item.card.name}</p>
+                              <p className="text-xs text-slate-500">{item.card.type} • {item.card.cost} Cost</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-1">
+                            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: true } })}>-</Button>
+                            <Button variant="outline" size="icon" className="h-8 w-8" disabled={sideboardTotal >= 10} onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: true } })}>+</Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-xs text-indigo-600 border-indigo-300 hover:bg-indigo-50"
+                              onClick={() => handleMoveToMain(item.card.id)}
+                            >
+                              Move to Main
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
             </div>
           ) : (

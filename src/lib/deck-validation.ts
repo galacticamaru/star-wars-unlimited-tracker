@@ -32,6 +32,7 @@ export interface DeckCard {
 
 export interface ValidationStats {
   costCurve: Record<number, number>;
+  sideboardCostCurve: Record<number, number>;
   typeCounts: Record<string, number>;
   aspectCounts: Record<string, number>;
   arenaCounts: Record<string, number>;
@@ -57,6 +58,7 @@ export function validateDeck(
   const warnings: string[] = [];
   const stats: ValidationStats = {
     costCurve: {},
+    sideboardCostCurve: {},
     typeCounts: {},
     aspectCounts: {},
     arenaCounts: {},
@@ -112,7 +114,7 @@ export function validateDeck(
 
       card.aspects.forEach((aspect) => {
         stats.aspectCounts[aspect] = (stats.aspectCounts[aspect] || 0) + quantity;
-        
+
         // Aspect penalty check (warning)
         if (aspect !== 'Basic' && !combinedAspects.has(aspect)) {
           const warning = `${card.name} is off-aspect (requires ${aspect})`;
@@ -121,6 +123,13 @@ export function validateDeck(
           }
         }
       });
+    } else {
+      // Sideboard cards intentionally exempt from off-aspect warnings —
+      // aspect enforcement applies to the main deck only.
+      if (card.cost !== null) {
+        const costKey = Math.min(card.cost, 9);
+        stats.sideboardCostCurve[costKey] = (stats.sideboardCostCurve[costKey] || 0) + quantity;
+      }
     }
   };
 
@@ -132,6 +141,12 @@ export function validateDeck(
     if (data.quantity > data.maxAllowed) {
       errors.push(`Exceeded ${data.maxAllowed} copies of ${data.name}`);
     }
+  }
+
+  // 4. Sideboard size check
+  const sideboardTotal = sideboard.reduce((sum, item) => sum + item.quantity, 0);
+  if (sideboardTotal > 10) {
+    errors.push('Sideboard cannot exceed 10 cards');
   }
 
   return {
