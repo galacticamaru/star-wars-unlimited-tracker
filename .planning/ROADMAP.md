@@ -28,6 +28,7 @@
 - [ ] ~~**Phase 8: Deck of the Day** — Daily featured tournament deck with ownership overlay and copy-to-library~~ (ABANDONED: swustats.net API issues)
 - [x] **Phase 9: Sideboard** — Sideboard support in deck builder with rules enforcement and distinct cost curve display — completed 2026-05-11
 - [x] **Phase 10: Trade Binder** — Public trade binder at /binder/[username] with catalog filters and want section — completed 2026-05-11
+- [x] **Phase 10.1 (INSERTED): Fix sideboard filter in binder Looking For query** — completed 2026-05-12
 
 </details>
 
@@ -64,6 +65,11 @@
 - [x] 10-03-PLAN.md — Public View (slug-based resolution, filtering)
 - [x] 10-04-PLAN.md — Integration & E2E Verification
 
+### Phase 10.1: Fix sideboard filter in binder Looking For query
+**Goal**: Correct the sideboard filtering logic in the public trade binder's "Looking For" query
+**Plans**: 1 plan
+- [x] 10.1-01-PLAN.md — Implement fix for sideboard filtering in binder query (TDD) — completed 2026-05-12
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -80,3 +86,4 @@
 | 8. Deck of the Day | v2 | 0/4 | ❌ Abandoned | 2026-05-10 |
 | 9. Sideboard | v2 | 3/3 | ✅ Complete | 2026-05-11 |
 | 10. Trade Binder | v2 | 4/4 | ✅ Complete | 2026-05-11 |
+| 10.1. Fix sideboard filter in binder Looking For query | v2 | 1/1 | ✅ Complete | 2026-05-12 |

@@ -34,18 +34,19 @@ Expand from single-user personal tool to multi-user platform with card pricing, 
 
 ### Trade Binder (TRADE)
 
-- [ ] **TRADE-01**: User can add cards from their collection to their trade binder with a quantity they are offering
-- [ ] **TRADE-02**: User can update or remove cards from their trade binder
-- [ ] **TRADE-03**: Trade binder is publicly viewable at a shareable URL (e.g. `/binder/[username]`) without login
-- [ ] **TRADE-04**: Trade binder supports catalog-style filters (set, type, aspect, arena, rarity, etc.)
-- [ ] **TRADE-05**: User can list cards they are looking for on their trade binder (want section alongside offerings)
+- [x] **TRADE-01**: User can add cards from their collection to their trade binder with a quantity they are offering
+- [x] **TRADE-02**: User can update or remove cards from their trade binder
+- [x] **TRADE-03**: Trade binder is publicly viewable at a shareable URL (e.g. `/binder/[username]`) without login
+- [x] **TRADE-04**: Trade binder supports catalog-style filters (set, type, aspect, arena, rarity, etc.)
+- [x] **TRADE-05**: User can list cards they are looking for on their trade binder (want section alongside offerings)
+- [ ] **TRADE-SIDE-FIX**: Sideboard cards are excluded from auto-calculated "Looking For" requirements (Phase 10.1)
 
 ### Sideboard (SIDE)
 
-- [ ] **SIDE-01**: User can mark cards in a deck as sideboard cards
-- [ ] **SIDE-02**: Sideboard is capped at 10 cards per SWU Premier rules; deck validation enforces this limit
-- [ ] **SIDE-03**: Sideboard cards appear on the cost curve with a distinct color, separate from main deck cards
-- [ ] **SIDE-04**: Sideboard cards are displayed separately from the main deck in the deck view
+- [x] **SIDE-01**: User can mark cards in a deck as sideboard cards
+- [x] **SIDE-02**: Sideboard is capped at 10 cards per SWU Premier rules; deck validation enforces this limit
+- [x] **SIDE-03**: Sideboard cards appear on the cost curve with a distinct color, separate from main deck cards
+- [x] **SIDE-04**: Sideboard cards are displayed separately from the main deck in the deck view
 
 ---
 
@@ -88,12 +89,13 @@ Expand from single-user personal tool to multi-user platform with card pricing, 
 | DOTD-02 | Phase 8 | Pending |
 | DOTD-03 | Phase 8 | Pending |
 | DOTD-04 | Phase 8 | Pending |
-| SIDE-01 | Phase 9 | Pending |
-| SIDE-02 | Phase 9 | Pending |
-| SIDE-03 | Phase 9 | Pending |
-| SIDE-04 | Phase 9 | Pending |
-| TRADE-01 | Phase 10 | Pending |
-| TRADE-02 | Phase 10 | Pending |
-| TRADE-03 | Phase 10 | Pending |
-| TRADE-04 | Phase 10 | Pending |
-| TRADE-05 | Phase 10 | Pending |
+| SIDE-01 | Phase 9 | ✅ Complete |
+| SIDE-02 | Phase 9 | ✅ Complete |
+| SIDE-03 | Phase 9 | ✅ Complete |
+| SIDE-04 | Phase 9 | ✅ Complete |
+| TRADE-01 | Phase 10 | ✅ Complete |
+| TRADE-02 | Phase 10 | ✅ Complete |
+| TRADE-03 | Phase 10 | ✅ Complete |
+| TRADE-04 | Phase 10 | ✅ Complete |
+| TRADE-05 | Phase 10 | ✅ Complete |
+| TRADE-SIDE-FIX | Phase 10.1 | Pending |

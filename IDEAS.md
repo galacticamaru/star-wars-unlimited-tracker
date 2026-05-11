@@ -91,12 +91,11 @@ Sideboard:
 Cards with multiple aspects should use have multi coloured bars.
 3. When a deck is completely empty, guide the user to first select a leader and base (automatically filter down to leaders and bases). Once a leader and base is selected automatically filter to the aspects of the leader and base combined. The user can still filter to anything else if they choose to, but this default will likely save the user time as most decks do not go off-aspect.
 4. Improve visual clarity by introducing card images to the Deck List tab. Use the card image component used in the detailed card pages (or something similar) to display both the leader and base card at the top. Allow the user to switch between the front and back art of the leader card. For all the card rows below, on hover, display the front art of the card the row item is for.
-5. 
 Implemented: PENDING
 -----
 ### Catalog Improvement
 1. Support cataloging all card variants. Prestige cards, in multiple tiers, leader showcases and serialised cards and any other variants that exist in SWU.
-2. Move all filters and search field to a sidebar. Consider UI components similar to https://swu.fan/cards/. The sidebar is sticky, similar to the side bar in our deckbuilder. Consider that changes here will apply to the deck builder which displays deck information as well.
+2. Move all filters and search field to a sidebar. Consider UI components similar to https://swu.fan/cards/. The sidebar is sticky, similar to the side bar in our deckbuilder. Consider that changes here will apply to the deck builder which displays deck information as well. It will also apply to the trade binder.
 3. Add Twin Suns set to the catalog. Set Code: TS26
 4. Implement a quick-add feature. Through quick-add, users can add pre-constructed decks to their catalogue through a click. This will work for pre-constructed decks like Spotlight Decks and Twin Suns decks. This will not add a deck for the user, it will only update their collection.
 Implemented: PENDING
@@ -116,3 +115,5 @@ Implemented: PENDING
 ### Trade Binder Improvements
 1. /binder/{username} page isn't full width. Make it full width.
 2. /binder/{username} cards are difficult to view. Make the grid the same size as the catalog card grid.
+3. /binder/manage should also display the automatic wants with an easy control to exclude.
+Implemented: PENDING

@@ -20,6 +20,6 @@ export function calculateLookingFor(
     return 0;
   }
 
-  const target = Math.max(autoTarget, manualTarget);
-  return Math.max(0, target - currentInventory);
+  const shortfall = Math.max(0, autoTarget - currentInventory);
+  return Math.max(shortfall, manualTarget);
 }
