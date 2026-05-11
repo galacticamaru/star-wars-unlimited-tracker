@@ -97,7 +97,12 @@ export async function getPublicBinderData(userId: number) {
         quantity: deckCards.quantity,
       })
       .from(deckCards)
-      .where(inArray(deckCards.deckId, deckIds));
+      .where(
+        and(
+          inArray(deckCards.deckId, deckIds),
+          eq(deckCards.isSideboard, false)
+        )
+      );
     
     for (const cq of cardQuantities) {
       const current = autoTargetMap.get(cq.cardDefinitionId) ?? 0;
