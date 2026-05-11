@@ -16,6 +16,8 @@ export const user = pgTable('user', {
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified').notNull(),
   image: text('image'),
+  username: text('username').unique(),
+  displayUsername: text('display_username'),
   createdAt: timestamp('created_at').notNull(),
   updatedAt: timestamp('updated_at').notNull(),
 });
@@ -120,6 +122,37 @@ export const userCollections = pgTable(
       .notNull()
       .references(() => cardDefinitions.id),
     count: integer('count').notNull().default(0),
+    tradeQuantity: integer('trade_quantity').notNull().default(0),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.cardDefinitionId] }),
+  ]
+);
+
+export const tradeExclusions = pgTable(
+  'trade_exclusions',
+  {
+    userId: integer('user_id').notNull(),
+    cardDefinitionId: integer('card_definition_id')
+      .notNull()
+      .references(() => cardDefinitions.id),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.cardDefinitionId] }),
+  ]
+);
+
+export const tradeManualWants = pgTable(
+  'trade_manual_wants',
+  {
+    userId: integer('user_id').notNull(),
+    cardDefinitionId: integer('card_definition_id')
+      .notNull()
+      .references(() => cardDefinitions.id),
+    quantity: integer('quantity').notNull().default(1),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },

@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { username } from "better-auth/plugins";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
@@ -14,6 +15,9 @@ export const auth = betterAuth({
             verification: schema.verification,
         }
     }),
+    plugins: [
+        username(),
+    ],
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID || "placeholder",
