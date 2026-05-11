@@ -25,7 +25,7 @@
 - [x] **Phase 6: Auth & Multi-User** — Per-user accounts with Better Auth; migrate v1 single-user data to first account — completed 2026-05-08
 - [x] **Phase 7: Market Pricing** — Card prices (EUR + USD) from pokemon-api.com; deck cost totals; daily cache refresh — completed 2026-05-08
 - [ ] ~~**Phase 8: Deck of the Day** — Daily featured tournament deck with ownership overlay and copy-to-library~~ (ABANDONED: swustats.net API issues)
-- [x] **Phase 9: Sideboard** — Sideboard support in deck builder with rules enforcement and distinct cost curve display — completed 2026-05-11
+- [x] **Phase 9: Sideboard** — Sideboard support in deck builder with rules enforcement and distinct cost curve display — completed 2026-05-11 ✓ UAT
 - [ ] **Phase 10: Trade Binder** — Public trade binder at /binder/[username] with catalog filters and want section
 
 ## Phase Details
