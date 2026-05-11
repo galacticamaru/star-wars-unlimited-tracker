@@ -65,10 +65,11 @@ Inherited from the existing deck builder. No new type sizes are introduced.
 | Label / metadata | 14px | 400 | — | `text-sm` |
 | Caption / small | 12px | 400 | — | `text-xs` |
 | Section heading | 18px | 700 | 1.2 | `text-lg font-bold` |
-| Micro label (cost curve axis, legend) | 10px | 400 | — | `text-[10px]` |
 
 Section heading pattern (e.g. "Main Deck (N)") already uses `text-lg font-bold`.
 The sideboard section heading ("Sideboard (N / 10)") uses the same class.
+The cost curve legend uses `text-xs` (12px) — the caption size already in scope
+is visually adequate for chart legend context.
 
 ---
 
@@ -183,7 +184,7 @@ introduced — the section heading provides the visual boundary.
 - **Content**: Two color swatches with labels.
 - **Markup**:
   ```
-  <div className="flex gap-3 mt-2 text-[10px] text-slate-500">
+  <div className="flex gap-3 mt-2 text-xs text-slate-500">
     <span className="flex items-center gap-1">
       <span className="inline-block w-2.5 h-2.5 rounded-sm bg-slate-400" />
       Main
@@ -194,7 +195,7 @@ introduced — the section heading provides the visual boundary.
     </span>
   </div>
   ```
-- **Style**: `text-[10px]` (10px), `text-slate-500`, no font weight change. Swatch size 10px x 10px (`w-2.5 h-2.5`), `rounded-sm`.
+- **Style**: `text-xs` (12px), `text-slate-500`, no font weight change. Swatch size 10px x 10px (`w-2.5 h-2.5`), `rounded-sm`.
 
 ---
 
