@@ -1,72 +1,43 @@
-# Requirements — v2.0 Multi-User, Market, Decks & Trading
+# Requirements — v3.0 Social, Stats & Polish
 
 ## Milestone Goal
 
-Expand from single-user personal tool to multi-user platform with card pricing, curated tournament decks, a public trade binder, and sideboard support in the deck builder.
+Enhance the social and utility features of the platform, including list sharing, advanced deck builder filtering, and data portability (CSV export).
 
 ---
 
-## v2 Requirements
+## v3 Requirements
 
-### Auth + Multi-User (AUTH)
+### Export & Share (EXPORT)
 
-- [x] **AUTH-01**: User can register with email and password
-- [x] **AUTH-02**: User can log in with email and password
-- [x] **AUTH-03**: User session persists across browser restarts (stay logged in)
-- [x] **AUTH-04**: User can log out
-- [x] **AUTH-05**: User can log in via Google OAuth
-- [x] **AUTH-06**: User can log in via Discord OAuth
-- [x] **AUTH-07**: All existing v1 collection and deck data is migrated to the first registered account
+- [ ] **WANT-03**: User can export their want list to a shareable PDF or CSV format
+- [ ] **WANT-04**: User can generate a public share link for their want list (view-only)
+- [ ] **DECK-07**: User can share a read-only view of any deck with "owned-overlay" for the viewer (if logged in)
 
-### Market Pricing (MARKET)
+### Advanced Filters & Search (SEARCH)
 
-- [x] **MARKET-01**: User can view card price (EUR and USD) on the card detail page
-- [x] **MARKET-02**: User can see total deck cost (EUR and USD) in the deck builder
-- [x] **MARKET-03**: User can see estimated cost to complete a deck (based on missing cards) on the want list
-- [x] **MARKET-04**: Card prices are cached in the database and refreshed daily — never fetched live per request
+- [ ] **DECK-06**: User can filter the deck builder catalog to show ONLY cards they own (sufficient quantity)
+- [ ] **MARKET-05**: User can filter cards by market price thresholds (e.g. "under $1.00", "over $10.00")
+- [ ] **SEARCH-02**: Save recent searches or "favorite" filters for quick access
 
-### Deck of the Day (DOTD)
+### Data Portability (DATA)
 
-- [ ] **DOTD-01**: User can view the Deck of the Day — a featured deck from a PQ-or-higher tournament winner
-- [ ] **DOTD-02**: Deck of the Day shows which cards the user owns vs is missing (owned-count overlay, same as deck builder)
-- [ ] **DOTD-03**: User can copy the Deck of the Day into their personal deck library with one click
-- [ ] **DOTD-04**: A new featured deck is automatically fetched daily via cron from swuapi.com
+- [ ] **COLLECT-04v2**: User can export their entire collection (definitions, printings, quantities) to CSV
+- [ ] **COLLECT-05**: Support for importing from SWUDB-specific CSV export format
+- [ ] **DATA-01**: User can download a JSON backup of all their decks and collection data
 
-### Trade Binder (TRADE)
+### Tournament Analysis (STATS)
 
-- [x] **TRADE-01**: User can add cards from their collection to their trade binder with a quantity they are offering
-- [x] **TRADE-02**: User can update or remove cards from their trade binder
-- [x] **TRADE-03**: Trade binder is publicly viewable at a shareable URL (e.g. `/binder/[username]`) without login
-- [x] **TRADE-04**: Trade binder supports catalog-style filters (set, type, aspect, arena, rarity, etc.)
-- [x] **TRADE-05**: User can list cards they are looking for on their trade binder (want section alongside offerings)
-- [ ] **TRADE-SIDE-FIX**: Sideboard cards are excluded from auto-calculated "Looking For" requirements (Phase 10.1)
-
-### Sideboard (SIDE)
-
-- [x] **SIDE-01**: User can mark cards in a deck as sideboard cards
-- [x] **SIDE-02**: Sideboard is capped at 10 cards per SWU Premier rules; deck validation enforces this limit
-- [x] **SIDE-03**: Sideboard cards appear on the cost curve with a distinct color, separate from main deck cards
-- [x] **SIDE-04**: Sideboard cards are displayed separately from the main deck in the deck view
+- [ ] **DOTD-v2**: Re-implement featured decks using a more stable data source (e.g. Melee.gg scrape or official API if available)
+- [ ] **STATS-01**: User can see basic statistics about their collection value over time (simple aggregate)
 
 ---
 
-## Future Requirements (Deferred to v3)
+## Future Requirements (Deferred to v4+)
 
-- **WANT-03**: User can export or share their want list — defer to v3
-- **DECK-06**: User can filter the deck builder to show only cards they own — defer to v3
-- **COLLECT-05**: User can import collection from SWUDB-specific CSV export — defer to v3
-- **COLLECT-04v2**: User can export collection to CSV — defer to v3
-
----
-
-## Out of Scope
-
-- Card trading / matching between users — marketplace feature, different product
-- Price history charts — significant complexity, low value for a deck builder
-- Buy links / affiliate integration — different product
-- Past Deck of the Day archive — nice to have, not table stakes for v2
-- Private trade binders — defeats the purpose; public is the primary use case
-- Camera scanning (SCAN-01) — ML complexity, deferred indefinitely
+- Card trading / matching between users
+- Price history charts (detailed)
+- Camera scanning for collection entry
 
 ---
 
@@ -74,28 +45,12 @@ Expand from single-user personal tool to multi-user platform with card pricing, 
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| AUTH-01 | Phase 6 | ✅ Complete |
-| AUTH-02 | Phase 6 | ✅ Complete |
-| AUTH-03 | Phase 6 | ✅ Complete |
-| AUTH-04 | Phase 6 | ✅ Complete |
-| AUTH-05 | Phase 6 | ✅ Complete |
-| AUTH-06 | Phase 6 | ✅ Complete |
-| AUTH-07 | Phase 6 | ✅ Complete |
-| MARKET-01 | Phase 7 | ✅ Complete |
-| MARKET-02 | Phase 7 | ✅ Complete |
-| MARKET-03 | Phase 7 | ✅ Complete |
-| MARKET-04 | Phase 7 | ✅ Complete |
-| DOTD-01 | Phase 8 | Pending |
-| DOTD-02 | Phase 8 | Pending |
-| DOTD-03 | Phase 8 | Pending |
-| DOTD-04 | Phase 8 | Pending |
-| SIDE-01 | Phase 9 | ✅ Complete |
-| SIDE-02 | Phase 9 | ✅ Complete |
-| SIDE-03 | Phase 9 | ✅ Complete |
-| SIDE-04 | Phase 9 | ✅ Complete |
-| TRADE-01 | Phase 10 | ✅ Complete |
-| TRADE-02 | Phase 10 | ✅ Complete |
-| TRADE-03 | Phase 10 | ✅ Complete |
-| TRADE-04 | Phase 10 | ✅ Complete |
-| TRADE-05 | Phase 10 | ✅ Complete |
-| TRADE-SIDE-FIX | Phase 10.1 | Pending |
+| WANT-03 | Phase 11 | Pending |
+| WANT-04 | Phase 11 | Pending |
+| DECK-07 | Phase 11 | Pending |
+| DECK-06 | Phase 12 | Pending |
+| MARKET-05 | Phase 12 | Pending |
+| COLLECT-04v2 | Phase 13 | Pending |
+| COLLECT-05 | Phase 13 | Pending |
+| DATA-01 | Phase 13 | Pending |
+| DOTD-v2 | Phase 14 | Pending |

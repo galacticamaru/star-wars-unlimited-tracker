@@ -5,17 +5,18 @@
 A single-user web app for Star Wars: Unlimited TCG players. Players track their card collection and build decks in one place — so they always know what they own while building decks and exactly what cards they still need to acquire. Replaces the fragmented workflow of a spreadsheet for collection tracking plus a separate deck-building tool (like SWUDB) that has no awareness of what you own.
 
 > **v1 shipped 2026-05-07.** Single-user personal tool (no auth). Full core loop delivered.
-> **v2 in progress.** Auth + multi-user, card market pricing, Deck of the Day, trade binder.
+> **v2 shipped 2026-05-12.** Multi-user (auth), market pricing, sideboard support, and public trade binders.
 
-## Current Milestone: v2.0 Multi-User, Market, Decks & Trading
+## Current Milestone: v3.0 Social, Stats & Polish
 
-**Goal:** Expand from single-user personal tool to multi-user platform with card pricing, curated tournament decks, and community trade binders.
+**Goal:** Enhance the social and utility features of the platform, including list sharing, advanced deck builder filtering, and data portability (CSV export).
 
 **Target features:**
-- Auth + multi-user accounts (Better Auth) with per-user collection and deck isolation
-- Card market pricing — price per card and total deck cost; TCGPlayer + Australian-compatible source
-- Deck of the Day — daily curated deck from PQ+ tournament winners; missing-card overlay; copy to library
-- Trade binder — quantity-based trade offers from collection; publicly viewable without login; catalog-style filters
+- **Export & Share**: Users can export or share their want list (WANT-03)
+- **Owned-Only Filtering**: Filter the deck builder to show only cards in the user's collection (DECK-06)
+- **Data Portability**: Full collection export to CSV (COLLECT-04 v2)
+- **Advanced Imports**: SWUDB-specific CSV export import support (COLLECT-05)
+- **Tournament Insights**: Re-evaluating tournament deck integration with a more reliable API source.
 
 ## Core Value
 
@@ -32,65 +33,59 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ User can build legal decks (1 Leader + 1 Base + 50-card main deck) with owned-count overlay and shortfall highlights — v1 (DECK-01 through DECK-05, Phase 4)
 - ✓ User can view per-deck and combined want lists showing exact missing card quantities — v1 (WANT-01, WANT-02, Phase 5 + 5.1)
 - ✓ Catalog rarity filter actually filters results — v1 (Phase 5.2, closed audit gap)
+- ✓ **Auth & Multi-User**: User accounts with email/OAuth and data isolation — v2 (Phase 6)
+- ✓ **Market Pricing**: EUR/USD card prices and deck valuation via PokéWallet API — v2 (Phase 7)
+- ✓ **Sideboard Support**: 10-card sideboard with rules enforcement and cost curve overlay — v2 (Phase 9)
+- ✓ **Trade Binder**: Public shareable trade binders with catalog filters and "Looking For" lists — v2 (Phase 10 + 10.1)
 
-### Active (v2)
+### Active (v3)
 
-- [ ] User can create an account and log in (AUTH-01, AUTH-02, AUTH-03)
-- [ ] Per-user collections and decks isolated by account (requires auth)
-- [ ] Card prices displayed per card and as total deck cost — TCGPlayer + AU-compatible source (MARKET-01, MARKET-02, MARKET-03)
-- [ ] Deck of the Day — daily curated deck from PQ+ tournament winners with missing-card overlay and copy-to-library (DOTD-01, DOTD-02, DOTD-03)
-- [ ] Trade binder — quantity-based trade offers from collection; publicly shareable without login (TRADE-01, TRADE-02, TRADE-03)
-- [ ] User can export or share their want list (WANT-03)
-- [ ] User can filter the deck builder to show only cards they own (DECK-06)
-- [ ] User can import collection from SWUDB-specific CSV export (COLLECT-05 v2)
-- [ ] User can export collection to CSV (COLLECT-04 v2)
+- [ ] Export or share want list (WANT-03)
+- [ ] Filter deck builder to show only owned cards (DECK-06)
+- [ ] Collection CSV export (COLLECT-04 v2)
+- [ ] SWUDB-specific CSV import (COLLECT-05)
 
 ### Out of Scope
 
-- Camera scanning with image recognition (SCAN-01) — ML complexity; CSV/spreadsheet import covers collection migration
 - Card trading / marketplace — out of scope, different product
 - Mobile native app — web-first; responsive design covers mobile browsers
-- Sideboard support — competitive feature; 50-card main deck covers casual play in v1
-- Social features (deck sharing, public profiles) — v2 retention features once core loop is proven
+- Camera scanning (SCAN-01) — ML complexity; CSV/spreadsheet import covers collection migration
+- Price history charts — significant complexity, low value for a deck builder
+- Buy links / affiliate integration — different product
 
 ## Context
 
-**Shipped v1:** 2026-05-07
-**Stack:** Next.js 16 + TypeScript + Neon PostgreSQL (neon-http driver) + Drizzle ORM + shadcn/ui + base-ui + nuqs
-**Deployment:** Vercel (Hobby tier, daily cron sync at 06:00 UTC)
-**Codebase:** ~4,757 LOC TypeScript/TSX, 22 plans across 7 phases (5 days)
-**Auth:** v1 is single-user (userId hardcoded to 1); Better Auth deferred to v2
-**Card data:** swu-db.com API — 4,400+ cards, auto-synced via Vercel Cron
+**Shipped v2:** 2026-05-12
+**Stack:** Next.js 16 + TypeScript + Neon PostgreSQL + Drizzle ORM + Better Auth + shadcn/ui + base-ui + nuqs
+**Deployment:** Vercel (Hobby tier, daily cron syncs for cards and prices)
+**Codebase**: ~21,000 LOC TypeScript/TSX, 38 plans completed across 12 phases
+**Auth**: Better Auth (Email, Google, Discord) with per-user data isolation
+**Card data**: swu-db.com API auto-sync; PokéWallet API for market prices
 
 **Architecture decisions held:**
-- Two-table model (card_definitions + card_printings) is non-negotiable — changing causes full rewrite
-- neon-http driver for Drizzle (not WebSocket) — correct for Next.js serverless
-- nuqs for URL-synced filter state — shareable URLs, snappy client-side updates
-- is_draft boolean on decks — allows saving invalid states during deck building
+- Two-table model (card_definitions + card_printings) is non-negotiable
+- Better Auth for multi-tenant support
+- integer columns for prices (cents) to avoid floating point issues
+- Sideboard as boolean flag on deck_cards
+- Usernames for public binder slugs
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Next.js full-stack (not separate frontend/backend) | Single repo, simpler Vercel deployment, SSR for card browsing | ✓ Good — clean single-repo development |
-| Card data from API + local PostgreSQL cache | New sets release regularly; local cache avoids proxying swu-db.com | ✓ Good — sync job works, cache keeps catalog fast |
-| Two-table card model (card_definitions + card_printings) | Separates card identity from print variants; enables variant tracking later | ✓ Good — critical architectural decision, never revisit |
-| neon-http driver for Drizzle | Correct choice for Next.js serverless on Vercel (not WebSocket) | ✓ Good |
+| Next.js full-stack | Single repo, simpler Vercel deployment, SSR for card browsing | ✓ Good |
+| Local PostgreSQL card cache | avoids proxying swu-db.com; sync job works, cache keeps catalog fast | ✓ Good |
+| Two-table card model | Separates card identity from print variants; enables variant tracking | ✓ Good |
 | nuqs for URL state | Snappy filters, shareable URLs, avoids useState proliferation | ✓ Good |
-| integer columns for cost/power/hp | Proper numeric sort (not lexicographic) | ✓ Good |
-| Two-pass variant strategy in sync | Normal cards anchor definitions; non-Normal look up by name+subtitle | ✓ Good |
-| v1 single-user (no auth) | Removes auth complexity from core loop validation | ✓ Good — proved the core loop works |
-| is_draft boolean on decks | Allows saving incomplete/invalid decks; strict validation only on draft=false | ✓ Good |
-| Synthetic rows in getDeckCardsForUser() | Append leader/base as typed rows after DB query results | ✓ Good — shape enforced by tsc --noEmit |
-| UI prefix stripping for rarity filter | Split on first space to normalise `(C) Common` → `Common` for DB match | ✓ Good |
-| Camera scanning deferred to v2 | Complex ML feature; CSV handles existing collection migration | ✓ Good |
-| SWUDB CSV import in v1 | Users currently use SWUDB — direct import path lowers switching friction | ✓ Good |
+| Better Auth | Industry standard, supports Email/OAuth, easy integration with Drizzle | ✓ Good |
+| Integer cents for prices | Avoids floating point precision issues in currency calculations | ✓ Good |
+| Phase 8 (DOTD) Abandonment | swustats.net API was unreliable; pivoting saved development time | ✓ Good |
+| Username slugs for binders | Improves social discoverability and shareable URL aesthetics | ✓ Good |
 
 ## Constraints
 
-- **Auth:** Public app — v2 will add per-user accounts; v1 is userId=1 single-user
-- **External API dependency:** swu-db.com API; local PostgreSQL cache provides resilience
-- **Vercel Hobby tier:** 1 cron job per day maximum — syncs at 06:00 UTC
+- **Vercel Hobby tier:** 1 cron job per day limit (multiplexed sync tasks)
+- **External API dependency:** swu-db.com (cards), PokéWallet (prices)
 
 ---
 
@@ -111,4 +106,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-07 — v2 milestone started*
+*Last updated: 2026-05-12 — v2 milestone shipped*

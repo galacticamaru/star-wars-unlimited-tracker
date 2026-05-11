@@ -2,44 +2,33 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-07)
+See: .planning/PROJECT.md (updated 2026-05-12)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus**: v2 — Complete
+**Current focus**: v3 — Planning
 
 ## Current Position
 
-Phase: 10.1 — Fix sideboard filter in binder Looking For query
-Plan: All 1 plan complete (1/1) ✓ Regression tests passed
+Phase: Transition — Milestone v2 Archived
 Status: ✅ Shipped
-Last activity: 2026-05-12 — Phase 10.1 shipped. v2 Milestone Verified.
+Last activity: 2026-05-12 — v2 Milestone Archived. Prep for v3 Social/Stats.
 
-Progress: [▓▓▓▓▓▓▓▓▓▓] 100% (v2: 4/5 phases complete, 1 abandoned, 1 fix merged)
+Progress: [▓▓▓▓▓▓▓▓▓▓] 100% (v2: 4/4 active phases complete, 1 abandoned, 1 fix merged)
 
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 35
+- Total plans completed: 38
 - Average duration: ~10 minutes
-- Total execution time: ~5.8 hours
+- Total execution time: ~6.3 hours
 
-**By Phase:**
+**By Milestone:**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 1. Foundation | 4/4 COMPLETE | ~32 min | ~8 min |
-| 2. Card Catalog | 3/3 COMPLETE | ~40 min | ~13 min |
-| 3. Collection | 4/4 COMPLETE | ~35 min | ~9 min |
-| 4. Deck Builder | 5/5 COMPLETE | ~55 min | ~11 min |
-| 5. Want List | 4/4 COMPLETE | ~40 min | ~10 min |
-| 5.1 Gap Fix | 1/1 COMPLETE | ~8 min | ~8 min |
-| 5.2 Rarity Fix | 1/1 COMPLETE | ~10 min | ~10 min |
-| 6. Auth | 4/4 COMPLETE | ~50 min | ~12 min |
-| 7. Market Pricing | 4/4 COMPLETE | ~50 min | ~12 min |
-| 9. Sideboard | 3/3 COMPLETE | ~30 min | ~10 min |
-| 10. Trade Binder | 4/4 COMPLETE | ~40 min | ~10 min |
-| 10.1 Sideboard Fix | 1/1 COMPLETE | ~10 min | ~10 min |
+| Milestone | Phases | Plans | Duration |
+|-----------|--------|-------|----------|
+| v1 MVP | 7 | 22 | ~3.6 hours |
+| v2 Multi-User | 5 | 16 | ~2.7 hours |
 
 
 ## Accumulated Context
@@ -47,23 +36,19 @@ Progress: [▓▓▓▓▓▓▓▓▓▓] 100% (v2: 4/5 phases complete, 1 aban
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+Recent decisions:
 
-- **Phase 8 Abandonment**: Abandoned swustats.net tournament deck sync due to API unreliability (404 on GetDeck.php, LoadDeck.php missing names for Melee decks).
-- Two-table card model (card_definitions + card_printings) is non-negotiable from Phase 1.
-- Local PostgreSQL card cache only — sync on a schedule.
-- v2 uses Better Auth for multi-user support and data isolation.
-- integer columns for cost/power/hp and prices (cents) to avoid floating point issues.
-- tsx --env-file=.env.local for ESM-safe environment variable loading in scripts.
-- Vercel Hobby tier allows 1 cron job per day; sequential execution of tasks required.
+- **v2 Verification**: Milestone v2 verified on 2026-05-12 with Phase 10.1 addressing binder shortfall logic.
+- **Phase 8 Abandonment**: swustats.net API unreliability led to abandoning Deck of the Day in v2.
+- **Better Auth**: Successfully implemented for multi-tenant data isolation.
 
 ### Pending Todos
 
-- None (v2 Complete)
+- [ ] New milestone kickoff (v3)
 
 ### Blockers/Concerns
 
-- **API Unreliability**: swustats.net API was found to be unreliable for tournament decklists, leading to the abandonment of the "Deck of the Day" feature.
+- None currently.
 
 ## Deferred Items
 
@@ -73,13 +58,9 @@ Recent decisions affecting current work:
 | Deck Builder | Filter to owned-only (DECK-06) | v3 | v2 requirements |
 | Collection | SWUDB CSV import (COLLECT-05) | v3 | v2 requirements |
 | Collection | CSV export (COLLECT-04 v2) | v3 | v2 requirements |
-| Deck of the Day | Feature abandoned | abandoned | v2 execution |
-| Trade Binder | Private binders | out of scope | v2 research |
-| Pricing | Price history charts | out of scope | v2 research |
-| Pricing | Buy links / affiliate | out of scope | v2 research |
 
 ## Session Continuity
 
-Last session: 2026-05-10
-Stopped at: Phase 8 abandoned. Ready to start Phase 9.
+Last session: 2026-05-12
+Stopped at: Milestone v2 Archived.
 Resume file: .planning/ROADMAP.md
