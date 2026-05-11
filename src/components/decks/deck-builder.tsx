@@ -127,10 +127,17 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   const router = useRouter();
   const cleanStateRef = useRef(initialDeck);
 
-  const isDirty = useMemo(
-    () => JSON.stringify(state) !== JSON.stringify(cleanStateRef.current),
-    [state]
-  );
+  const isDirty = useMemo(() => {
+    const normaliseState = (s: typeof state) => ({
+      ...s,
+      cards: [...s.cards].sort((a, b) =>
+        a.cardDefinitionId !== b.cardDefinitionId
+          ? a.cardDefinitionId - b.cardDefinitionId
+          : Number(a.isSideboard) - Number(b.isSideboard)
+      ),
+    });
+    return JSON.stringify(normaliseState(state)) !== JSON.stringify(normaliseState(cleanStateRef.current));
+  }, [state]);
 
   // Tab/window close — only when dirty
   useEffect(() => {
