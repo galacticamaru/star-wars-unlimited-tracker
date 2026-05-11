@@ -431,7 +431,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                           </div>
                           <div className="flex gap-1">
                             <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: true } })}>-</Button>
-                            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: true } })}>+</Button>
+                            <Button variant="outline" size="icon" className="h-8 w-8" disabled={sideboardTotal >= 10} onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: true } })}>+</Button>
                             <Button
                               variant="outline"
                               size="sm"
