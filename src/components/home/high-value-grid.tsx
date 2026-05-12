@@ -47,7 +47,7 @@ function CardPriceTile({
       >
         <div
           className={cn(
-            'relative rounded-md overflow-hidden bg-muted',
+            'relative rounded-md overflow-hidden bg-muted max-h-48',
             isHorizontal ? 'aspect-[3/2]' : 'aspect-[2/3]',
             !loaded && 'animate-pulse',
           )}
