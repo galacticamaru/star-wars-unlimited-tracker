@@ -47,15 +47,15 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| REQ-CAT-01 | Phase 11 | Pending |
-| REQ-CAT-02 | Phase 11 | Pending |
-| REQ-CAT-03 | Phase 11 | Pending |
-| REQ-CAT-04 | Phase 11 | Pending |
-| REQ-DECK-06 | Phase 12 | Pending |
-| REQ-MARKET-05 | Phase 12 | Pending |
-| REQ-HOME-01 | Phase 13 | Pending |
-| REQ-HOME-02 | Phase 13 | Pending |
-| REQ-HOME-03 | Phase 13 | Pending |
+| REQ-HOME-01 | Phase 11 | Pending |
+| REQ-HOME-02 | Phase 11 | Pending |
+| REQ-HOME-03 | Phase 11 | Pending |
+| REQ-CAT-01 | Phase 12 | Pending |
+| REQ-CAT-02 | Phase 12 | Pending |
+| REQ-CAT-03 | Phase 12 | Pending |
+| REQ-CAT-04 | Phase 12 | Pending |
+| REQ-DECK-06 | Phase 13 | Pending |
+| REQ-MARKET-05 | Phase 13 | Pending |
 | REQ-TRADE-06 | Phase 14 | Pending |
 | REQ-TRADE-07 | Phase 14 | Pending |
 | REQ-TRADE-08 | Phase 14 | Pending |
