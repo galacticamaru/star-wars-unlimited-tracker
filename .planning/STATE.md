@@ -10,8 +10,8 @@ See: .planning/PROJECT.md (updated 2026-05-12)
 ## Current Position
 
 Phase: 12 — Catalog Evolution
-Status: 🗂️ Not started
-Last activity: 2026-05-12 — Phase 11 shipped — PR #8 open against main.
+Status: 🔄 In Progress
+Last activity: 2026-05-12 — Phase 12, Plan 03 completed.
 
 Progress: [███░░░░░░░] 1/4 phases (v3)
 
@@ -38,6 +38,7 @@ Progress: [███░░░░░░░] 1/4 phases (v3)
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions:
 
+- **Catalog Layout (12-03)**: Used a fixed-height container pattern (100svh - 56px) for the catalog client to enable independent scrolling of the main content and sidebar. Phased out filter controls from the top-bar.
 - **v2 Verification**: Milestone v2 verified on 2026-05-12 with Phase 10.1 addressing binder shortfall logic.
 - **Phase 8 Abandonment**: swustats.net API unreliability led to abandoning Deck of the Day in v2.
 - **Better Auth**: Successfully implemented for multi-tenant data isolation.
@@ -62,4 +63,4 @@ Recent decisions:
 ## Session Continuity
 
 Last session: 2026-05-12
-Stopped at: Phase 11 complete and verified. Next: Phase 12 (Catalog Evolution).
+Stopped at: Phase 12, Plan 03 completed. Next: proceed to next plan in Phase 12 or Phase 13.

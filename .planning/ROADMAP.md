@@ -25,6 +25,7 @@
 | 1–5.2 | v1 | 22/22 | ✅ Complete | 2026-05-07 |
 | 6–10.1 | v2 | 16/16 | ✅ Complete | 2026-05-12 |
 | 11 | v3 | 3/3 | ✅ Complete | 2026-05-12 |
+| 12 | v3 | 3/3 | 🔄 In Progress | - |
 
 ### Phase 11: New Home Page
 

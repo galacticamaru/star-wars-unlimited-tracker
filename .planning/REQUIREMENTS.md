@@ -11,7 +11,7 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 ### Catalog Evolution (CAT)
 
 - [ ] **REQ-CAT-01**: Support all card variants (Showcase, Prestige, Serialized) in sync and UI
-- [ ] **REQ-CAT-02**: Implement sticky sidebar for catalog filters (swu.fan style)
+- [x] **REQ-CAT-02**: Implement sticky sidebar for catalog filters (swu.fan style)
 - [ ] **REQ-CAT-03**: Add Twin Suns (TS26) set support
 - [ ] **REQ-CAT-04**: "Quick-add" pre-constructed decks to collection
 
@@ -51,7 +51,7 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 | REQ-HOME-02 | Phase 11 | Pending |
 | REQ-HOME-03 | Phase 11 | Pending |
 | REQ-CAT-01 | Phase 12 | Pending |
-| REQ-CAT-02 | Phase 12 | Pending |
+| REQ-CAT-02 | Phase 12 | ✅ Complete |
 | REQ-CAT-03 | Phase 12 | Pending |
 | REQ-CAT-04 | Phase 12 | Pending |
 | REQ-DECK-06 | Phase 13 | Pending |
