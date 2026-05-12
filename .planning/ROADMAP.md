@@ -11,7 +11,7 @@
 <details>
 <summary>🏗️ v3 Catalog, Home & Binder Polish (Phases 11–14) — IN PLANNING</summary>
 
-- [ ] **Phase 11: New Home Page** — Route refactor (/cards), Hero section, and High Value card grid
+- [x] **Phase 11: New Home Page** — Route refactor (/cards), Hero section, and High Value card grid
 - [ ] **Phase 12: Catalog Evolution** — Sticky sidebar filters, variant support, and Twin Suns (TS26) set
 - [ ] **Phase 13: Advanced Filters** — Owned-only filter and market price thresholds in deck builder
 - [ ] **Phase 14: Trade Binder Polish** — Full-width layouts and automatic want management
@@ -24,7 +24,7 @@
 |-------|-----------|----------------|--------|-----------|
 | 1–5.2 | v1 | 22/22 | ✅ Complete | 2026-05-07 |
 | 6–10.1 | v2 | 16/16 | ✅ Complete | 2026-05-12 |
-| 11 | v3 | 2/3 | 🔄 In Progress | — |
+| 11 | v3 | 3/3 | ✅ Complete | 2026-05-12 |
 
 ### Phase 11: New Home Page
 
@@ -40,7 +40,7 @@ Plans:
 - [x] 11-02-PLAN.md — UI components: HeroSection, HighValueGrid, NavBar updates
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 11-03-PLAN.md — Wiring: new HomePage RSC at / + human visual verification checkpoint
+- [x] 11-03-PLAN.md — Wiring: new HomePage RSC at / + human visual verification checkpoint
 
 Cross-cutting constraints:
 - `export const dynamic = 'force-dynamic'` must appear in both `src/app/cards/page.tsx` and `src/app/page.tsx`
