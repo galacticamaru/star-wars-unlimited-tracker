@@ -37,9 +37,10 @@ interface SidebarFiltersProps {
   onKeywordsChange?: (v: string[]) => void;
   onCostsChange?: (v: string[]) => void;
   onVariantsChange?: (v: string[]) => void;
-}
+  onClearAll?: () => void;
+  }
 
-export function SidebarFilters({
+  export function SidebarFilters({
   search = '',
   onSearchChange = () => {},
   sets = [],
@@ -50,15 +51,15 @@ export function SidebarFilters({
   rarities = [],
   keywords = [],
   costs = [],
-  selectedSets = [],
-  selectedTypes = [],
-  selectedAspects = [],
-  selectedArenas = [],
-  selectedTraits = [],
-  selectedRarities = [],
-  selectedKeywords = [],
-  selectedCosts = [],
-  selectedVariants = ['Normal'],
+  selectedSets,
+  selectedTypes,
+  selectedAspects,
+  selectedArenas,
+  selectedTraits,
+  selectedRarities,
+  selectedKeywords,
+  selectedCosts,
+  selectedVariants,
   onSetsChange = () => {},
   onTypesChange = () => {},
   onAspectsChange = () => {},
@@ -68,7 +69,8 @@ export function SidebarFilters({
   onKeywordsChange = () => {},
   onCostsChange = () => {},
   onVariantsChange = () => {},
-}: SidebarFiltersProps) {
+  onClearAll = () => {},
+  }: SidebarFiltersProps) {
   return (
     <aside className="w-64 border-r p-4 shrink-0 flex flex-col gap-4 overflow-y-auto h-[calc(100vh-3.5rem)] sticky top-14 self-start bg-card">
       <h2 className="text-xl font-bold font-heading mb-2">Filters</h2>
@@ -140,7 +142,7 @@ export function SidebarFilters({
         </div>
       </div>
 
-      <Button variant="outline" className="mt-4 w-full" onClick={() => {}}>
+      <Button variant="outline" className="mt-4 w-full" onClick={onClearAll}>
         Clear All Filters
       </Button>
     </aside>
