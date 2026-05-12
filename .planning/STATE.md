@@ -5,15 +5,15 @@
 See: .planning/PROJECT.md (updated 2026-05-12)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus**: v3 — Planning
+**Current focus**: v3 — Planning (Catalog, Home & Binder Polish)
 
 ## Current Position
 
-Phase: Transition — Milestone v2 Archived
-Status: ✅ Shipped
-Last activity: 2026-05-12 — v2 Milestone Archived. Prep for v3 Social/Stats.
+Phase: Transition — Milestone v3 Redefined
+Status: 🏗️ Planning
+Last activity: 2026-05-12 — v3 redefined based on IDEAS.md.
 
-Progress: [▓▓▓▓▓▓▓▓▓▓] 100% (v2: 4/4 active phases complete, 1 abandoned, 1 fix merged)
+Progress: [░░░░░░░░░░] 0% (v3)
 
 
 ## Performance Metrics

@@ -7,16 +7,15 @@ A single-user web app for Star Wars: Unlimited TCG players. Players track their 
 > **v1 shipped 2026-05-07.** Single-user personal tool (no auth). Full core loop delivered.
 > **v2 shipped 2026-05-12.** Multi-user (auth), market pricing, sideboard support, and public trade binders.
 
-## Current Milestone: v3.0 Social, Stats & Polish
+## Current Milestone: v3.0 Catalog, Home & Binder Polish
 
-**Goal:** Enhance the social and utility features of the platform, including list sharing, advanced deck builder filtering, and data portability (CSV export).
+**Goal:** Modernize the user experience with a dedicated landing page, sticky catalog filtering, support for all card variants, and improved trade binder presentation.
 
 **Target features:**
-- **Export & Share**: Users can export or share their want list (WANT-03)
-- **Owned-Only Filtering**: Filter the deck builder to show only cards in the user's collection (DECK-06)
-- **Data Portability**: Full collection export to CSV (COLLECT-04 v2)
-- **Advanced Imports**: SWUDB-specific CSV export import support (COLLECT-05)
-- **Tournament Insights**: Re-evaluating tournament deck integration with a more reliable API source.
+- **Catalog Evolution**: Sticky sidebar filters, variant support (Showcase, Prestige), and TS26 set support.
+- **Advanced Filters**: Owned-only filtering and market price thresholds in the deck builder.
+- **New Home Page**: Dedicated `/` route with Hero, CTAs, and a "Highest Value Cards" showcase.
+- **Trade Binder Polish**: Full-width public binders and improved management of automatic wants.
 
 ## Core Value
 
@@ -29,7 +28,7 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Card catalog auto-syncs from swu-db.com API without manual intervention — v1 (CATALOG-04, Phase 1)
 - ✓ User can browse/search/filter the full card catalog with images and metadata — v1 (CATALOG-01, CATALOG-02, CATALOG-03, Phase 2)
 - ✓ User can track owned copy counts and update via search & click — v1 (COLLECT-01, COLLECT-02, Phase 3)
-- ✓ User can bulk-import collection from generic CSV or community Reddit SWU spreadsheet — v1 (COLLECT-03, COLLECT-04, Phase 3)
+- ✓ User can bulk-import collection from generic CSV or community Reddit SWU spreadsheet — v1 (COLLECT-03, CATALOG-04, Phase 3)
 - ✓ User can build legal decks (1 Leader + 1 Base + 50-card main deck) with owned-count overlay and shortfall highlights — v1 (DECK-01 through DECK-05, Phase 4)
 - ✓ User can view per-deck and combined want lists showing exact missing card quantities — v1 (WANT-01, WANT-02, Phase 5 + 5.1)
 - ✓ Catalog rarity filter actually filters results — v1 (Phase 5.2, closed audit gap)
@@ -40,10 +39,11 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ### Active (v3)
 
-- [ ] Export or share want list (WANT-03)
-- [ ] Filter deck builder to show only owned cards (DECK-06)
-- [ ] Collection CSV export (COLLECT-04 v2)
-- [ ] SWUDB-specific CSV import (COLLECT-05)
+- [ ] Sticky sidebar for catalog filters (REQ-CAT-02)
+- [ ] Support all card variants (REQ-CAT-01)
+- [ ] Owned-only deck builder filter (REQ-DECK-06)
+- [ ] Dedicated home page with High Value grid (REQ-HOME-01, REQ-HOME-02, REQ-HOME-03)
+- [ ] Full-width public trade binders (REQ-TRADE-06)
 
 ### Out of Scope
 

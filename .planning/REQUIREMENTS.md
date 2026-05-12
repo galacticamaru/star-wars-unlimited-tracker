@@ -1,43 +1,45 @@
-# Requirements — v3.0 Social, Stats & Polish
+# Requirements — v3.0 Catalog, Home & Binder Polish
 
 ## Milestone Goal
 
-Enhance the social and utility features of the platform, including list sharing, advanced deck builder filtering, and data portability (CSV export).
+Modernize the user experience with a dedicated landing page, sticky catalog filtering, support for all card variants, and improved trade binder presentation.
 
 ---
 
 ## v3 Requirements
 
-### Export & Share (EXPORT)
+### Catalog Evolution (CAT)
 
-- [ ] **WANT-03**: User can export their want list to a shareable PDF or CSV format
-- [ ] **WANT-04**: User can generate a public share link for their want list (view-only)
-- [ ] **DECK-07**: User can share a read-only view of any deck with "owned-overlay" for the viewer (if logged in)
+- [ ] **REQ-CAT-01**: Support all card variants (Showcase, Prestige, Serialized) in sync and UI
+- [ ] **REQ-CAT-02**: Implement sticky sidebar for catalog filters (swu.fan style)
+- [ ] **REQ-CAT-03**: Add Twin Suns (TS26) set support
+- [ ] **REQ-CAT-04**: "Quick-add" pre-constructed decks to collection
 
-### Advanced Filters & Search (SEARCH)
+### Advanced Filters (SEARCH)
 
-- [ ] **DECK-06**: User can filter the deck builder catalog to show ONLY cards they own (sufficient quantity)
-- [ ] **MARKET-05**: User can filter cards by market price thresholds (e.g. "under $1.00", "over $10.00")
-- [ ] **SEARCH-02**: Save recent searches or "favorite" filters for quick access
+- [ ] **REQ-DECK-06**: Filter deck builder catalog to show ONLY cards user owns
+- [ ] **REQ-MARKET-05**: Filter cards by market price thresholds (e.g. "under $1.00")
 
-### Data Portability (DATA)
+### New Home Page (HOME)
 
-- [ ] **COLLECT-04v2**: User can export their entire collection (definitions, printings, quantities) to CSV
-- [ ] **COLLECT-05**: Support for importing from SWUDB-specific CSV export format
-- [ ] **DATA-01**: User can download a JSON backup of all their decks and collection data
+- [ ] **REQ-HOME-01**: Move catalog to `/cards`; update root route and navigation
+- [ ] **REQ-HOME-02**: Hero section with Title, Subtitle, and clear CTAs (Import, Build, Trade)
+- [ ] **REQ-HOME-03**: "Highest Value Cards" 10-card grid (5x2) on home page
 
-### Tournament Analysis (STATS)
+### Trade Binder Polish (TRADE)
 
-- [ ] **DOTD-v2**: Re-implement featured decks using a more stable data source (e.g. Melee.gg scrape or official API if available)
-- [ ] **STATS-01**: User can see basic statistics about their collection value over time (simple aggregate)
+- [ ] **REQ-TRADE-06**: Make `/binder/[username]` full-width
+- [ ] **REQ-TRADE-07**: Standardize public binder card grid to match catalog size
+- [ ] **REQ-TRADE-08**: Display automatic wants in `/binder/manage` with exclusion controls
 
 ---
 
 ## Future Requirements (Deferred to v4+)
 
-- Card trading / matching between users
-- Price history charts (detailed)
-- Camera scanning for collection entry
+- **WANT-03**: Export or share want list
+- **COLLECT-04v2**: Collection CSV export
+- **COLLECT-05**: SWUDB-specific CSV import
+- **DOTD-v2**: Re-implement featured decks with stable API
 
 ---
 
@@ -45,12 +47,15 @@ Enhance the social and utility features of the platform, including list sharing,
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| WANT-03 | Phase 11 | Pending |
-| WANT-04 | Phase 11 | Pending |
-| DECK-07 | Phase 11 | Pending |
-| DECK-06 | Phase 12 | Pending |
-| MARKET-05 | Phase 12 | Pending |
-| COLLECT-04v2 | Phase 13 | Pending |
-| COLLECT-05 | Phase 13 | Pending |
-| DATA-01 | Phase 13 | Pending |
-| DOTD-v2 | Phase 14 | Pending |
+| REQ-CAT-01 | Phase 11 | Pending |
+| REQ-CAT-02 | Phase 11 | Pending |
+| REQ-CAT-03 | Phase 11 | Pending |
+| REQ-CAT-04 | Phase 11 | Pending |
+| REQ-DECK-06 | Phase 12 | Pending |
+| REQ-MARKET-05 | Phase 12 | Pending |
+| REQ-HOME-01 | Phase 13 | Pending |
+| REQ-HOME-02 | Phase 13 | Pending |
+| REQ-HOME-03 | Phase 13 | Pending |
+| REQ-TRADE-06 | Phase 14 | Pending |
+| REQ-TRADE-07 | Phase 14 | Pending |
+| REQ-TRADE-08 | Phase 14 | Pending |
