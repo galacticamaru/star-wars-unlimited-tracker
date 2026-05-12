@@ -23,6 +23,7 @@ export interface Card {
   unique: boolean;
   priceEur: number | null;
   priceUsd: number | null;
+  variantType?: string;
 }
 
 export interface DeckCard {

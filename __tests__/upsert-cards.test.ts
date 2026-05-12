@@ -201,4 +201,10 @@ describe('upsertCards', () => {
     // Verify via select being called for the Hyperspace variant lookup
     expect((mockSelect as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(0);
   });
+
+  it('does not skip TS## sets like TS26', async () => {
+    const card = makeCard({ Set: 'TS26', Number: '001', VariantType: 'Normal' });
+    const count = await upsertCards('TS26', [card] as never);
+    expect(count).toBe(1);
+  });
 });

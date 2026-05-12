@@ -4,6 +4,8 @@ import { useMemo } from 'react';
 import { useQueryState, parseAsString, parseAsArrayOf } from 'nuqs';
 import { filterCards, type CardForFilter } from '@/lib/filter-cards';
 import { TopBar } from '@/components/catalog/top-bar';
+import { SidebarFilters } from '@/components/catalog/sidebar-filters';
+import { MobileFilterSheet } from '@/components/catalog/mobile-filter-sheet';
 import { CardGrid } from '@/components/catalog/card-grid';
 import { EmptyState } from '@/components/catalog/empty-state';
 
@@ -91,83 +93,84 @@ export function PublicBinderClient({
 
   const totalFiltered = filteredOfferings.length + filteredLookingFor.length;
 
+  const sidebarProps = {
+    search, onSearchChange: setSearch,
+    sets: filterOptions.sets,
+    types: filterOptions.types,
+    aspects: aspectOptions,
+    arenas: ARENA_OPTIONS,
+    traits: TRAIT_OPTIONS,
+    rarities: RARITY_OPTIONS,
+    keywords: KEYWORD_OPTIONS,
+    costs: COST_OPTIONS,
+    selectedSets, onSetsChange: setSelectedSets,
+    selectedTypes, onTypesChange: setSelectedTypes,
+    selectedAspects, onAspectsChange: setSelectedAspects,
+    selectedArenas, onArenasChange: setSelectedArenas,
+    selectedTraits, onTraitsChange: setSelectedTraits,
+    selectedRarities, onRaritiesChange: setSelectedRarities,
+    selectedKeywords, onKeywordsChange: setSelectedKeywords,
+    selectedCosts, onCostsChange: setSelectedCosts,
+    // Variants not strictly needed in binder, but passing to satisfy SidebarFilters props if added later
+  };
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="px-4 lg:px-8 py-4 bg-muted/30 border-b border-border">
+    <div className="flex flex-col h-screen overflow-hidden">
+      <div className="px-4 lg:px-8 py-4 bg-muted/30 border-b border-border shrink-0">
         <h1 className="text-2xl font-bold font-heading">{username.toUpperCase()}&apos;s Trade Binder</h1>
       </div>
 
-      <TopBar
-        search={search}
-        onSearchChange={setSearch}
-        sets={filterOptions.sets}
-        types={filterOptions.types}
-        aspects={aspectOptions}
-        arenas={ARENA_OPTIONS}
-        traits={TRAIT_OPTIONS}
-        rarities={RARITY_OPTIONS}
-        keywords={KEYWORD_OPTIONS}
-        costs={COST_OPTIONS}
-        selectedSets={selectedSets}
-        selectedTypes={selectedTypes}
-        selectedAspects={selectedAspects}
-        selectedArenas={selectedArenas}
-        selectedTraits={selectedTraits}
-        selectedRarities={selectedRarities}
-        selectedKeywords={selectedKeywords}
-        selectedCosts={selectedCosts}
-        onSetsChange={setSelectedSets}
-        onTypesChange={setSelectedTypes}
-        onAspectsChange={setSelectedAspects}
-        onArenasChange={setSelectedArenas}
-        onTraitsChange={setSelectedTraits}
-        onRaritiesChange={setSelectedRarities}
-        onKeywordsChange={setSelectedKeywords}
-        onCostsChange={setSelectedCosts}
-        topOffset="top-0"
-      />
-
-      <div className="px-4 py-2 text-right text-xs font-semibold text-muted-foreground">
-        {totalFiltered.toLocaleString()} cards matching filters
-      </div>
-
-      {totalFiltered === 0 ? (
-        <EmptyState />
-      ) : (
-        <div className="flex flex-col gap-8 pb-12">
-          {filteredOfferings.length > 0 && (
-            <section>
-              <div className="px-4 lg:px-8 py-2 bg-muted/10 border-y border-border">
-                <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-                  Available for Trade
-                  <span className="text-xs font-normal">{filteredOfferings.length} cards</span>
-                </h2>
-              </div>
-              <CardGrid 
-                cards={filteredOfferings} 
-                collection={{}}
-                mode="binder"
-              />
-            </section>
-          )}
-
-          {filteredLookingFor.length > 0 && (
-            <section>
-              <div className="px-4 lg:px-8 py-2 bg-muted/10 border-y border-border">
-                <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-                  Looking For
-                  <span className="text-xs font-normal">{filteredLookingFor.length} cards</span>
-                </h2>
-              </div>
-              <CardGrid 
-                cards={filteredLookingFor} 
-                collection={{}}
-                mode="want"
-              />
-            </section>
-          )}
+      <div className="flex flex-1 min-h-0 w-full overflow-hidden">
+        <div className="hidden md:block shrink-0">
+          <SidebarFilters {...sidebarProps} />
         </div>
-      )}
+        
+        <main className="flex-1 flex flex-col min-w-0 overflow-y-auto relative">
+          <div className="sticky top-0 z-40 bg-background md:hidden px-4 py-2 border-b border-border flex items-center justify-between">
+            <MobileFilterSheet {...sidebarProps} />
+          </div>
+
+          <TopBar resultCount={totalFiltered} />
+
+          {totalFiltered === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="flex flex-col gap-8 pb-12">
+              {filteredOfferings.length > 0 && (
+                <section>
+                  <div className="px-4 lg:px-8 py-2 bg-muted/10 border-b border-border">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+                      Available for Trade
+                      <span className="text-xs font-normal">{filteredOfferings.length} cards</span>
+                    </h2>
+                  </div>
+                  <CardGrid 
+                    cards={filteredOfferings} 
+                    collection={{}}
+                    mode="binder"
+                  />
+                </section>
+              )}
+
+              {filteredLookingFor.length > 0 && (
+                <section>
+                  <div className="px-4 lg:px-8 py-2 bg-muted/10 border-b border-border">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+                      Looking For
+                      <span className="text-xs font-normal">{filteredLookingFor.length} cards</span>
+                    </h2>
+                  </div>
+                  <CardGrid 
+                    cards={filteredLookingFor} 
+                    collection={{}}
+                    mode="want"
+                  />
+                </section>
+              )}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

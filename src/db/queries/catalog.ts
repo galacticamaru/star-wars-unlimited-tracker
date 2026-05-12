@@ -1,8 +1,12 @@
 import { db } from '@/db';
 import { cardDefinitions, cardPrintings, userCollections } from '@/db/schema';
-import { eq, and, notIlike, asc, sql, desc, isNotNull } from 'drizzle-orm';
+import { eq, and, notIlike, asc, sql, desc, isNotNull, inArray } from 'drizzle-orm';
 
-export async function getAllCards(userId?: number) {
+export async function getAllCards(userId?: number, variantType?: string[]) {
+  const variantCondition = variantType && variantType.length > 0 
+    ? inArray(cardPrintings.variantType, variantType)
+    : eq(cardPrintings.variantType, 'Normal');
+
   return db
     .select({
       id: cardDefinitions.id,
@@ -22,6 +26,7 @@ export async function getAllCards(userId?: number) {
       frontArtUrl: cardPrintings.frontArtUrl,
       backArtUrl: cardPrintings.backArtUrl,
       rarity: cardPrintings.rarity,
+      variantType: cardPrintings.variantType,
       frontText: cardDefinitions.frontText,
       backText: cardDefinitions.backText,
       epicAction: cardDefinitions.epicAction,
@@ -46,7 +51,7 @@ export async function getAllCards(userId?: number) {
     .where(
       and(
         notIlike(cardDefinitions.type, '%token%'),
-        eq(cardPrintings.variantType, 'Normal')
+        variantCondition
       )
     )
     .orderBy(asc(cardPrintings.setCode), asc(cardPrintings.collectorNumber));

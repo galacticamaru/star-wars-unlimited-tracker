@@ -66,6 +66,7 @@ export default async function DeckPage({ params }: { params: Promise<{ id: strin
     unique: c.unique,
     priceEur: c.priceEur,
     priceUsd: c.priceUsd,
+    variantType: c.variantType ?? undefined,
   }));
 
   return (

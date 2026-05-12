@@ -11,6 +11,7 @@ export async function GET() {
     subtitle: c.subtitle,
     frontArtUrl: c.frontArtUrl,
     type: c.type,
+    variantType: c.variantType,
   }));
   return NextResponse.json(plainCards);
 }

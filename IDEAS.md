@@ -91,6 +91,7 @@ Sideboard:
 Cards with multiple aspects should use have multi coloured bars.
 3. When a deck is completely empty, guide the user to first select a leader and base (automatically filter down to leaders and bases). Once a leader and base is selected automatically filter to the aspects of the leader and base combined. The user can still filter to anything else if they choose to, but this default will likely save the user time as most decks do not go off-aspect.
 4. Improve visual clarity by introducing card images to the Deck List tab. Use the card image component used in the detailed card pages (or something similar) to display both the leader and base card at the top. Allow the user to switch between the front and back art of the leader card. For all the card rows below, on hover, display the front art of the card the row item is for.
+5. Remove the CTA in the empty deck placeholder.
 Implemented: PENDING
 -----
 ### Catalog Improvement
