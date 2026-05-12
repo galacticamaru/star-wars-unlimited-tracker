@@ -17,3 +17,11 @@ describe('getFilterOptions()', () => {
   it.todo('sets array is sorted ascending');
   it.todo('types array excludes token types');
 });
+
+describe('getTopCardsByPrice()', () => {
+  it.todo('returns at most `limit` cards');
+  it.todo('excludes cards with null priceUsd');
+  it.todo('excludes token type cards (type contains "token", case-insensitive)');
+  it.todo('excludes non-Normal variant cards (no Foil/Hyperspace duplicates)');
+  it.todo('returns cards ordered by priceUsd DESC (highest first)');
+});

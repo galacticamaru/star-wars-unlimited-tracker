@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { cardDefinitions, cardPrintings, userCollections } from '@/db/schema';
-import { eq, and, notIlike, asc, sql } from 'drizzle-orm';
+import { eq, and, notIlike, asc, sql, desc, isNotNull } from 'drizzle-orm';
 
 export async function getAllCards(userId?: number) {
   return db
@@ -76,4 +76,30 @@ export async function getFilterOptions() {
     types: types.map(r => r.type),
     // aspects: derived client-side from the full card array (avoids PostgreSQL unnest)
   };
+}
+
+export async function getTopCardsByPrice(limit: number) {
+  return db
+    .select({
+      id: cardDefinitions.id,
+      name: cardDefinitions.name,
+      type: cardDefinitions.type,
+      setCode: cardPrintings.setCode,
+      collectorNumber: cardPrintings.collectorNumber,
+      frontArtUrl: cardPrintings.frontArtUrl,
+      backArtUrl: cardPrintings.backArtUrl,
+      priceUsd: cardDefinitions.priceUsd,
+      // CRITICAL: no timestamp columns — Date objects cannot cross RSC→client boundary
+    })
+    .from(cardDefinitions)
+    .innerJoin(cardPrintings, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
+    .where(
+      and(
+        isNotNull(cardDefinitions.priceUsd),
+        notIlike(cardDefinitions.type, '%token%'),
+        eq(cardPrintings.variantType, 'Normal'),
+      )
+    )
+    .orderBy(desc(cardDefinitions.priceUsd))
+    .limit(limit);
 }
