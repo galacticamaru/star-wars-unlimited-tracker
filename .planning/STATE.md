@@ -10,8 +10,8 @@ See: .planning/PROJECT.md (updated 2026-05-12)
 ## Current Position
 
 Phase: 12 — Catalog Evolution
-Status: ✅ Complete
-Last activity: 2026-05-12 — Phase 12 execution complete.
+Status: 🚢 Shipped (Phase 12 — PR #9)
+Last activity: 2026-05-12 — Phase 12 shipped via PR #9.
 
 Progress: [███░░░░░░░] 1/4 phases (v3)
 
@@ -63,4 +63,5 @@ Recent decisions:
 ## Session Continuity
 
 Last session: 2026-05-12
-Stopped at: Phase 12 completely executed. Next: proceed to Phase 13.
+Stopped at: Phase 12 shipped (PR #9). Next: review/merge PR, then proceed to Phase 13.
+
