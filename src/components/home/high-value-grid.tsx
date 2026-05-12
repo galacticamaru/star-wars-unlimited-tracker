@@ -84,9 +84,9 @@ interface HighValueGridProps {
 
 export function HighValueGrid({ cards }: HighValueGridProps) {
   return (
-    <section className="px-4 md:px-8 py-12">
+    <section className="px-4 md:px-8 py-12 max-w-3xl mx-auto">
       <h2 className="font-heading text-xl font-semibold mb-6">Highest Value Cards</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
         {cards.map(card => (
           <CardPriceTile key={card.id} {...card} />
         ))}
