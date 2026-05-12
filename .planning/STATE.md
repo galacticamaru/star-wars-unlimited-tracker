@@ -62,5 +62,5 @@ Recent decisions:
 ## Session Continuity
 
 Last session: 2026-05-12
-Stopped at: Milestone v2 Archived.
-Resume file: .planning/ROADMAP.md
+Stopped at: Phase 11 context gathered.
+Resume file: .planning/phases/11-new-home-page/11-CONTEXT.md
