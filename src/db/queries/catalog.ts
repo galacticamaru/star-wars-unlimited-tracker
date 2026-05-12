@@ -79,8 +79,10 @@ export async function getFilterOptions() {
 }
 
 export async function getTopCardsByPrice(limit: number) {
-  return db
-    .select({
+  // Deduplicate first: one printing per card definition (reprints share the same price).
+  // DISTINCT ON requires the grouped column to lead ORDER BY; the outer query then sorts by price.
+  const deduped = db
+    .selectDistinctOn([cardDefinitions.id], {
       id: cardDefinitions.id,
       name: cardDefinitions.name,
       type: cardDefinitions.type,
@@ -89,7 +91,6 @@ export async function getTopCardsByPrice(limit: number) {
       frontArtUrl: cardPrintings.frontArtUrl,
       backArtUrl: cardPrintings.backArtUrl,
       priceUsd: cardDefinitions.priceUsd,
-      // CRITICAL: no timestamp columns — Date objects cannot cross RSC→client boundary
     })
     .from(cardDefinitions)
     .innerJoin(cardPrintings, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
@@ -100,6 +101,12 @@ export async function getTopCardsByPrice(limit: number) {
         eq(cardPrintings.variantType, 'Normal'),
       )
     )
-    .orderBy(desc(cardDefinitions.priceUsd))
+    .orderBy(cardDefinitions.id)
+    .as('deduped');
+
+  return db
+    .select()
+    .from(deduped)
+    .orderBy(desc(deduped.priceUsd))
     .limit(limit);
 }

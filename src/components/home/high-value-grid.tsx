@@ -70,7 +70,7 @@ function CardPriceTile({
         <div className="mt-1 px-0.5">
           <p className="text-xs font-medium truncate">{name}</p>
           <p className="text-xs text-muted-foreground font-semibold">
-            {priceUsd ? `$${(priceUsd / 100).toFixed(2)}` : '—'}
+            {priceUsd !== null ? `$${(priceUsd / 100).toFixed(2)}` : '—'}
           </p>
         </div>
       </Link>
