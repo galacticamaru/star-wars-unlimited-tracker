@@ -45,14 +45,14 @@ completed: 2026-05-12
 
 # Phase 11 Plan 03: Root Route Wiring Summary
 
-**New HomePage RSC wired at / — HeroSection + HighValueGrid composed via getTopCardsByPrice(10); TypeScript clean and all 9 component tests passing; awaiting human visual verification**
+**New HomePage RSC wired at / — HeroSection + HighValueGrid composed via getTopCardsByPrice(10); TypeScript clean; all 9 component tests passing; human visual verification approved.**
 
 ## Performance
 
 - **Duration:** ~5 min
 - **Started:** 2026-05-12T11:05:00Z
 - **Completed:** 2026-05-12T11:10:00Z
-- **Tasks:** 1 of 2 complete (Task 2 is a human-verify checkpoint — pending)
+- **Tasks:** 2 of 2 complete (Task 2 human-verify checkpoint — approved)
 - **Files modified:** 1
 
 ## Accomplishments
@@ -67,6 +67,9 @@ completed: 2026-05-12
 ## Task Commits
 
 1. **Task 1: Replace src/app/page.tsx with new HomePage RSC** - `bc609d9` (feat)
+2. **Task 2: Visual verification approved** — two polish fixes applied during checkpoint:
+   - `c62084c` fix: cap CardPriceTile image height at max-h-48 (192px)
+   - `9520648` fix: center card grid at max-w-3xl with tighter gap-2 on large screens
 
 ## Files Created/Modified
 
@@ -86,15 +89,9 @@ None — plan executed exactly as written.
 
 None. Pre-existing DATABASE_URL test failures in unrelated suites (auth-config, cron-route, api-deck-validation, decks page, prices sync) were present before this plan and are not caused by the page.tsx change.
 
-## Pending: Task 2 — Human Visual Verification
+## Human Verification: APPROVED
 
-Task 2 is a `checkpoint:human-verify` gate. The following must be confirmed visually:
-
-1. **Home page hero (REQ-HOME-02):** Navigate to `http://localhost:3000/` — confirm hero section with title, subtitle, and 3 CTAs; NOT the card catalog
-2. **Highest Value Cards grid (REQ-HOME-03):** Confirm 10 card tiles with prices; click a tile and confirm navigation to `/cards/[SET]/[NUMBER]`; back button returns to `/`
-3. **Navigation (REQ-HOME-01 + D-09, D-10):** "SWU Tracker" brand links to `/`; "Catalog" link goes to `/cards` and is active on `/cards` but not on `/`
-4. **Card detail back-link (REQ-HOME-01):** From `/cards`, open any card; "Back to catalog" returns to `/cards` not `/`
-5. **Responsive grid (REQ-HOME-03):** 2 cols at 375px, 3 cols at 768px, 5 cols at 1280px
+All items visually confirmed by user on 2026-05-12. Two polish fixes applied during checkpoint review (card height cap + grid centering).
 
 ## Known Stubs
 
