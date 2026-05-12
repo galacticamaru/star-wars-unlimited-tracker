@@ -1,7 +1,8 @@
 ---
 phase: 11
 slug: new-home-page
-status: draft
+status: approved
+reviewed_at: 2026-05-12
 shadcn_initialized: true
 preset: base-nova / zinc / cssVariables
 created: 2026-05-12
@@ -55,7 +56,7 @@ All sizes in pixels. Weights are design-system semantic values (mapped to numeri
 |------|------|--------|-------------|------|----------------|--------|
 | Body | 16px | 400 (regular) | 1.5 | Nunito Sans (`font-sans`) | `text-base` | Default; matches existing body text |
 | Label | 14px | 400 (regular) | 1.4 | Nunito Sans (`font-sans`) | `text-sm` | Card name, price badge, nav link text |
-| Heading | 20px | 600 (semibold) | 1.2 | Nunito Sans (`font-sans`) | `text-xl font-semibold` | Section heading "Highest Value Cards" |
+| Heading | 20px | 700 (bold) | 1.2 | Nunito Sans (`font-sans`) | `text-xl font-bold` | Section heading "Highest Value Cards" |
 | Display | 48px (mobile: 30px) | 700 (bold) | 1.15 | Oxanium (`font-heading`) | `text-3xl md:text-5xl font-bold font-heading` | Hero title only |
 
 Note: The hero subtitle uses Body role at 16px on mobile, scaling to 18px on md+ (`text-base md:text-lg`) in muted foreground color.
@@ -136,7 +137,7 @@ Existing components updated:
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Section heading: "Highest Value Cards"                         │
-│  text-xl font-semibold, px-4 md:px-8, mb-4                     │
+│  text-xl font-bold, px-4 md:px-8, mb-4                         │
 │                                                                 │
 │  Grid: grid-cols-5 gap-3 (desktop)                             │
 │        grid-cols-2 sm:grid-cols-3 md:grid-cols-5 (responsive)  │
@@ -152,7 +153,7 @@ Existing components updated:
 │  │  on load    │  animate-pulse while loading                    │
 │  └─────────────┘                                                │
 │  Card Name      text-xs font-medium truncate, mt-1              │
-│  $X.XX          text-xs text-muted-foreground font-semibold     │
+│  $X.XX          text-xs text-muted-foreground font-bold         │
 │                                                                 │
 │  Full tile is a link → /cards/{setCode}/{cardNumber}            │
 └─────────────────────────────────────────────────────────────────┘
@@ -188,7 +189,7 @@ Grid container: `px-4 md:px-8` to align with NavBar horizontal padding. No full-
 
 | State | Visual |
 |-------|--------|
-| Default | `font-heading font-semibold text-base text-foreground` |
+| Default | `font-heading font-bold text-base text-foreground` |
 | Hover | `hover:opacity-80 transition-opacity` |
 | Active (on `/`) | No separate active style — brand is not a nav item |
 
