@@ -32,6 +32,7 @@ export default async function CatalogPage() {
     power: c.power,
     hp: c.hp,
     rarity: c.rarity,
+    variantType: c.variantType,
     setCode: c.setCode,
     collectorNumber: c.collectorNumber,
     frontArtUrl: c.frontArtUrl,

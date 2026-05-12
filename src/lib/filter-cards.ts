@@ -8,6 +8,7 @@ export interface FilterState {
   selectedRarities: string[];
   selectedKeywords: string[];
   selectedCosts: string[];
+  selectedVariants?: string[] | null;
 }
 
 export interface CardForFilter {
@@ -28,6 +29,7 @@ export interface CardForFilter {
   frontArtUrl: string | null;
   backArtUrl: string | null;
   rarity: string;
+  variantType?: string;
   frontText: string | null;
   backText: string | null;
   epicAction: string | null;
@@ -50,6 +52,7 @@ export function filterCards(cards: CardForFilter[], filters: FilterState): CardF
     selectedRarities = [],
     selectedKeywords = [],
     selectedCosts = [],
+    selectedVariants = [],
   } = filters;
 
   return cards.filter(card => {
@@ -100,6 +103,9 @@ export function filterCards(cards: CardForFilter[], filters: FilterState): CardF
       })
     );
 
+    // Variant: OR within category
+    const matchesVariant = !selectedVariants?.length || (card.variantType && selectedVariants.includes(card.variantType));
+
     // AND across categories (D-05)
     return (
       matchesSearch &&
@@ -110,7 +116,8 @@ export function filterCards(cards: CardForFilter[], filters: FilterState): CardF
       matchesTrait &&
       matchesRarity &&
       matchesKeyword &&
-      matchesCost
+      matchesCost &&
+      matchesVariant
     );
   });
 }
