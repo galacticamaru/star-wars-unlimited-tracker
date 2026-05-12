@@ -24,7 +24,7 @@
 |-------|-----------|----------------|--------|-----------|
 | 1–5.2 | v1 | 22/22 | ✅ Complete | 2026-05-07 |
 | 6–10.1 | v2 | 16/16 | ✅ Complete | 2026-05-12 |
-| 11 | v3 | 1/3 | 🔄 In Progress | — |
+| 11 | v3 | 2/3 | 🔄 In Progress | — |
 
 ### Phase 11: New Home Page
 
@@ -37,7 +37,7 @@ Plans:
 - [x] 11-01-PLAN.md — Data foundation: getTopCardsByPrice query, test scaffolding, CatalogPage migration to /cards
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 11-02-PLAN.md — UI components: HeroSection, HighValueGrid, NavBar updates
+- [x] 11-02-PLAN.md — UI components: HeroSection, HighValueGrid, NavBar updates
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 11-03-PLAN.md — Wiring: new HomePage RSC at / + human visual verification checkpoint

@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-05-12)
 ## Current Position
 
 Phase: 11 — New Home Page
-Status: 🔄 Executing (Wave 2 of 3)
-Last activity: 2026-05-12 — Plan 11-01 complete. Wave 2: building HeroSection, HighValueGrid, NavBar.
+Status: 🔄 Executing (Wave 3 of 3)
+Last activity: 2026-05-12 — Plan 11-02 complete. Wave 3: wiring HomePage RSC + human checkpoint.
 
-Progress: [███░░░░░░░] 1/3 plans (v3)
+Progress: [██████░░░░] 2/3 plans (v3)
 
 
 ## Performance Metrics
