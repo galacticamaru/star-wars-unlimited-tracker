@@ -27,6 +27,7 @@ interface SidebarFiltersProps {
   selectedRarities?: string[];
   selectedKeywords?: string[];
   selectedCosts?: string[];
+  selectedVariants?: string[];
   onSetsChange?: (v: string[]) => void;
   onTypesChange?: (v: string[]) => void;
   onAspectsChange?: (v: string[]) => void;
@@ -35,6 +36,7 @@ interface SidebarFiltersProps {
   onRaritiesChange?: (v: string[]) => void;
   onKeywordsChange?: (v: string[]) => void;
   onCostsChange?: (v: string[]) => void;
+  onVariantsChange?: (v: string[]) => void;
 }
 
 export function SidebarFilters({
@@ -56,6 +58,7 @@ export function SidebarFilters({
   selectedRarities = [],
   selectedKeywords = [],
   selectedCosts = [],
+  selectedVariants = ['Normal'],
   onSetsChange = () => {},
   onTypesChange = () => {},
   onAspectsChange = () => {},
@@ -64,6 +67,7 @@ export function SidebarFilters({
   onRaritiesChange = () => {},
   onKeywordsChange = () => {},
   onCostsChange = () => {},
+  onVariantsChange = () => {},
 }: SidebarFiltersProps) {
   return (
     <aside className="w-64 border-r p-4 shrink-0 flex flex-col gap-4 overflow-y-auto h-[calc(100vh-3.5rem)] sticky top-14 self-start bg-card">
@@ -91,8 +95,7 @@ export function SidebarFilters({
         )}
       </div>
 
-      {/* Variant Filter Placeholder */}
-      <VariantFilter />
+      <VariantFilter value={selectedVariants} onChange={onVariantsChange} />
 
       {/* Priority Filters */}
       <FilterDropdown label="Set" options={sets} selected={selectedSets} onChange={onSetsChange} />

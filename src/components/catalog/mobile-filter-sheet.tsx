@@ -11,9 +11,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { SidebarFilters } from './sidebar-filters';
 import { SlidersHorizontal } from 'lucide-react';
+import React from 'react';
 
-// Props will mirror SidebarFilters to pass them down, stubbed for now
-export function MobileFilterSheet() {
+type MobileFilterSheetProps = React.ComponentProps<typeof SidebarFilters>;
+
+export function MobileFilterSheet(props: MobileFilterSheetProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -29,10 +31,8 @@ export function MobileFilterSheet() {
             Adjust filters to refine the catalog.
           </SheetDescription>
         </SheetHeader>
-        {/* We use negative margins or specific overrides if needed, but for now we just render it.
-            Since SidebarFilters has sticky/fixed widths, we might need to adjust it later, 
-            but for the scaffold we just compose it. */}
-        <SidebarFilters />
+        {/* We pass all props directly to SidebarFilters */}
+        <SidebarFilters {...props} />
       </SheetContent>
     </Sheet>
   );

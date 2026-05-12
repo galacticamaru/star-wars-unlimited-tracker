@@ -8,6 +8,8 @@ import { CardGrid } from './card-grid';
 import { EmptyState } from './empty-state';
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from 'next/navigation';
+import { SidebarFilters } from './sidebar-filters';
+import { MobileFilterSheet } from './mobile-filter-sheet';
 
 interface FilterOptions {
   sets: string[];
@@ -50,7 +52,6 @@ export function CatalogClient({
   mode = 'catalog', 
   deckCounts, 
   onDeckUpdate,
-  topOffset
 }: CatalogClientProps) {
   const [collection, setCollection] = useState<Record<number, number>>({});
   const { data: session } = authClient.useSession();
@@ -64,7 +65,8 @@ export function CatalogClient({
         .then(data => setCollection(data))
         .catch(err => console.error('Failed to load collection:', err));
     } else {
-      setCollection({});
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      setTimeout(() => setCollection({}), 0);
     }
   }, [isAuthenticated]);
 
@@ -98,6 +100,7 @@ export function CatalogClient({
   const [selectedRarities, setSelectedRarities] = useQueryState('rarities', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
   const [selectedKeywords, setSelectedKeywords] = useQueryState('keywords', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
   const [selectedCosts, setSelectedCosts] = useQueryState('costs', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
+  const [selectedVariants, setSelectedVariants] = useQueryState('variants', parseAsArrayOf(parseAsString).withDefault(['Normal']).withOptions({ shallow: true }));
 
   // Derive distinct options client-side — avoids PostgreSQL unnest complexity
   const aspectOptions = useMemo(() => [...new Set(cards.flatMap(c => c.aspects))].sort(), [cards]);
@@ -113,6 +116,7 @@ export function CatalogClient({
       selectedRarities,
       selectedKeywords,
       selectedCosts,
+      selectedVariants,
     }),
     [
       cards, 
@@ -124,57 +128,58 @@ export function CatalogClient({
       selectedTraits, 
       selectedRarities, 
       selectedKeywords, 
-      selectedCosts
+      selectedCosts,
+      selectedVariants
     ]
   );
 
+  const sidebarProps = {
+    search, onSearchChange: setSearch,
+    sets: filterOptions.sets,
+    types: filterOptions.types,
+    aspects: aspectOptions,
+    arenas: ARENA_OPTIONS,
+    traits: TRAIT_OPTIONS,
+    rarities: RARITY_OPTIONS,
+    keywords: KEYWORD_OPTIONS,
+    costs: COST_OPTIONS,
+    selectedSets, onSetsChange: setSelectedSets,
+    selectedTypes, onTypesChange: setSelectedTypes,
+    selectedAspects, onAspectsChange: setSelectedAspects,
+    selectedArenas, onArenasChange: setSelectedArenas,
+    selectedTraits, onTraitsChange: setSelectedTraits,
+    selectedRarities, onRaritiesChange: setSelectedRarities,
+    selectedKeywords, onKeywordsChange: setSelectedKeywords,
+    selectedCosts, onCostsChange: setSelectedCosts,
+    selectedVariants, onVariantsChange: setSelectedVariants,
+  };
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <TopBar
-        search={search}
-        onSearchChange={setSearch}
-        sets={filterOptions.sets}
-        types={filterOptions.types}
-        aspects={aspectOptions}
-        arenas={ARENA_OPTIONS}
-        traits={TRAIT_OPTIONS}
-        rarities={RARITY_OPTIONS}
-        keywords={KEYWORD_OPTIONS}
-        costs={COST_OPTIONS}
-        selectedSets={selectedSets}
-        selectedTypes={selectedTypes}
-        selectedAspects={selectedAspects}
-        selectedArenas={selectedArenas}
-        selectedTraits={selectedTraits}
-        selectedRarities={selectedRarities}
-        selectedKeywords={selectedKeywords}
-        selectedCosts={selectedCosts}
-        onSetsChange={setSelectedSets}
-        onTypesChange={setSelectedTypes}
-        onAspectsChange={setSelectedAspects}
-        onArenasChange={setSelectedArenas}
-        onTraitsChange={setSelectedTraits}
-        onRaritiesChange={setSelectedRarities}
-        onKeywordsChange={setSelectedKeywords}
-        onCostsChange={setSelectedCosts}
-        topOffset={topOffset}
-      />
-      {/* Result count — right-aligned, above grid per UI-SPEC.md */}
-      <div className="px-4 py-2 text-right text-xs font-semibold text-muted-foreground">
-        {filtered.length.toLocaleString()} cards
+    <div className="flex h-[calc(100svh-56px)] overflow-hidden w-full">
+      <div className="hidden md:block">
+        <SidebarFilters {...sidebarProps} />
       </div>
-      {filtered.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <CardGrid 
-          cards={filtered} 
-          collection={collection}
-          onUpdateCount={handleUpdateCount}
-          mode={mode}
-          deckCounts={deckCounts}
-          onDeckUpdate={onDeckUpdate}
-        />
-      )}
+      
+      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto relative">
+        <div className="sticky top-0 z-40 bg-background md:hidden px-4 py-2 border-b border-border flex items-center justify-between">
+          <MobileFilterSheet {...sidebarProps} />
+        </div>
+        
+        <TopBar resultCount={filtered.length} />
+        
+        {filtered.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <CardGrid 
+            cards={filtered} 
+            collection={collection}
+            onUpdateCount={handleUpdateCount}
+            mode={mode}
+            deckCounts={deckCounts}
+            onDeckUpdate={onDeckUpdate}
+          />
+        )}
+      </main>
     </div>
   );
 }
