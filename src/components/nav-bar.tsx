@@ -14,7 +14,7 @@ import {
 import { User, LogOut } from "lucide-react";
 
 const NAV_LINKS = [
-  { href: '/', label: 'Catalog' },
+  { href: '/cards', label: 'Catalog' },
   { href: '/collection', label: 'Collection' },
   { href: '/decks', label: 'Decks' },
 ];
@@ -34,9 +34,9 @@ export function NavBar() {
         'bg-background/80 backdrop-blur-sm border-b border-border',
       )}
     >
-      <span className="font-heading font-semibold text-base text-foreground mr-auto">
+      <Link href="/" className="font-heading font-semibold text-base text-foreground mr-auto hover:opacity-80 transition-opacity">
         SWU Tracker
-      </span>
+      </Link>
       <nav className="flex items-center gap-2">
         {NAV_LINKS.map(({ href, label }) => (
           <Link

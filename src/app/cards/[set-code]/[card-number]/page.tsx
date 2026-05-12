@@ -38,7 +38,7 @@ export default async function CardDetailPage({
     <div className="max-w-5xl mx-auto px-4 py-12">
       {/* Back button — top-left, ghost variant, ChevronLeft icon, label "Back to catalog" */}
       <Link
-        href="/"
+        href="/cards"
         className={cn(
           buttonVariants({ variant: 'ghost' }),
           'mb-6 -ml-2'
