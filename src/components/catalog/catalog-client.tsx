@@ -133,6 +133,19 @@ export function CatalogClient({
     ]
   );
 
+  const handleClearAll = () => {
+    setSearch('');
+    setSelectedSets([]);
+    setSelectedTypes([]);
+    setSelectedAspects([]);
+    setSelectedArenas([]);
+    setSelectedTraits([]);
+    setSelectedRarities([]);
+    setSelectedKeywords([]);
+    setSelectedCosts([]);
+    setSelectedVariants(['Normal']);
+  };
+
   const sidebarProps = {
     search, onSearchChange: setSearch,
     sets: filterOptions.sets,
@@ -152,6 +165,7 @@ export function CatalogClient({
     selectedKeywords, onKeywordsChange: setSelectedKeywords,
     selectedCosts, onCostsChange: setSelectedCosts,
     selectedVariants, onVariantsChange: setSelectedVariants,
+    onClearAll: handleClearAll,
   };
 
   return (
