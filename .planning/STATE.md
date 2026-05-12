@@ -11,7 +11,7 @@ See: .planning/PROJECT.md (updated 2026-05-12)
 
 Phase: 12 — Catalog Evolution
 Status: 🗂️ Not started
-Last activity: 2026-05-12 — Phase 11 complete (3/3 plans). New home page live with hero + highest-value grid.
+Last activity: 2026-05-12 — Phase 11 shipped — PR #8 open against main.
 
 Progress: [███░░░░░░░] 1/4 phases (v3)
 
