@@ -6,22 +6,50 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 vi.mock('next/link', () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
+  default: ({ children, href, className }: { children: React.ReactNode; href: string; className?: string }) => (
+    <a href={href} className={className}>{children}</a>
   ),
 }));
 
-// Mock shadcn Button — render as button element
-vi.mock('@/components/ui/button', () => ({
-  Button: ({ children, asChild, ...props }: any) => {
-    if (asChild) return <>{children}</>;
-    return <button {...props}>{children}</button>;
-  },
+vi.mock('@/lib/utils', () => ({
+  cn: (...args: any[]) => args.filter(Boolean).join(' '),
 }));
 
-// Wave 0 stubs — implementations pending Plan 02
-test.todo('HeroSection renders h1 with exact title: "Star Wars Unlimited Card Database and Deck Builder"');
-test.todo('HeroSection renders subtitle: "Track your collection, build your decks, and begin trading with up to date market prices"');
-test.todo('HeroSection renders CTA link to /collection with text "Import Collection"');
-test.todo('HeroSection renders CTA link to /decks with text "Build a Deck"');
-test.todo('HeroSection renders CTA link to /binder/manage with text "Trade"');
+vi.mock('@/components/ui/button', () => ({
+  buttonVariants: ({ variant, size }: { variant?: string; size?: string }) =>
+    [variant, size].filter(Boolean).join(' '),
+}));
+
+import { HeroSection } from './hero-section';
+
+test('renders h1 with exact locked title', () => {
+  render(<HeroSection />);
+  expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
+    'Star Wars Unlimited Card Database and Deck Builder'
+  );
+});
+
+test('renders subtitle paragraph', () => {
+  render(<HeroSection />);
+  expect(
+    screen.getByText('Track your collection, build your decks, and begin trading with up to date market prices')
+  ).toBeDefined();
+});
+
+test('renders Import Collection CTA linking to /collection', () => {
+  render(<HeroSection />);
+  const link = screen.getByText('Import Collection').closest('a');
+  expect(link?.getAttribute('href')).toBe('/collection');
+});
+
+test('renders Build a Deck CTA linking to /decks', () => {
+  render(<HeroSection />);
+  const link = screen.getByText('Build a Deck').closest('a');
+  expect(link?.getAttribute('href')).toBe('/decks');
+});
+
+test('renders Trade CTA linking to /binder/manage', () => {
+  render(<HeroSection />);
+  const link = screen.getByText('Trade').closest('a');
+  expect(link?.getAttribute('href')).toBe('/binder/manage');
+});

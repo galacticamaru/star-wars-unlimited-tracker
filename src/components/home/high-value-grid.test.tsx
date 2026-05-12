@@ -38,9 +38,28 @@ const makeCard = (overrides?: Partial<{
   ...overrides,
 });
 
-// Wave 0 stubs — implementations pending Plan 02
-test.todo('HighValueGrid renders one CardPriceTile per card in the array (10 tiles for 10 cards)');
-test.todo('CardPriceTile displays price as "$X.XX" — e.g. priceUsd=4500 renders "$45.00"');
-test.todo('CardPriceTile displays "—" when priceUsd is null');
-test.todo('CardPriceTile renders a link to /cards/{setCode}/{cardNumber} — e.g. "/cards/SOR/059" for collectorNumber "SOR-059"');
-test.todo('CardPriceTile renders img with alt equal to card name');
+import { HighValueGrid } from './high-value-grid';
+
+test('renders one tile per card in the array', () => {
+  const cards = Array.from({ length: 10 }, (_, i) =>
+    makeCard({ id: i + 1, name: `Card ${i + 1}`, collectorNumber: `SOR-0${String(i + 1).padStart(2, '0')}` })
+  );
+  render(<HighValueGrid cards={cards} />);
+  expect(screen.getAllByRole('link').length).toBe(10);
+});
+
+test('displays price as $X.XX when priceUsd is an integer in cents', () => {
+  render(<HighValueGrid cards={[makeCard({ priceUsd: 4500 })]} />);
+  expect(screen.getByText('$45.00')).toBeDefined();
+});
+
+test('displays em dash when priceUsd is null', () => {
+  render(<HighValueGrid cards={[makeCard({ priceUsd: null })]} />);
+  expect(screen.getByText('—')).toBeDefined();
+});
+
+test('card tile link points to /cards/{setCode}/{cardNumber} using parsed collector number', () => {
+  render(<HighValueGrid cards={[makeCard({ setCode: 'SOR', collectorNumber: 'SOR-059' })]} />);
+  const link = screen.getByRole('link');
+  expect(link.getAttribute('href')).toBe('/cards/SOR/059');
+});
