@@ -18,11 +18,11 @@ type MobileFilterSheetProps = React.ComponentProps<typeof SidebarFilters>;
 export function MobileFilterSheet(props: MobileFilterSheetProps) {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2">
-          <SlidersHorizontal className="w-4 h-4" />
-          Refine Results
-        </Button>
+      <SheetTrigger 
+        render={<Button variant="outline" className="flex items-center gap-2" />}
+      >
+        <SlidersHorizontal className="w-4 h-4" />
+        Refine Results
       </SheetTrigger>
       <SheetContent side="right" className="p-0 border-l w-[300px] sm:w-[400px]">
         <SheetHeader className="p-4 border-b sr-only">
