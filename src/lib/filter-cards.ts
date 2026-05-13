@@ -9,6 +9,7 @@ export interface FilterState {
   selectedKeywords: string[];
   selectedCosts: string[];
   selectedVariants?: string[] | null;
+  ownedOnly?: boolean;
 }
 
 export interface CardForFilter {
@@ -41,7 +42,11 @@ export interface CardForFilter {
   lookingForQuantity?: number;
 }
 
-export function filterCards(cards: CardForFilter[], filters: FilterState): CardForFilter[] {
+export function filterCards(
+  cards: CardForFilter[],
+  filters: FilterState,
+  collection: Record<number, number> = {}
+): CardForFilter[] {
   const {
     search = '',
     selectedSets = [],
@@ -53,6 +58,7 @@ export function filterCards(cards: CardForFilter[], filters: FilterState): CardF
     selectedKeywords = [],
     selectedCosts = [],
     selectedVariants = [],
+    ownedOnly = false,
   } = filters;
 
   return cards.filter(card => {
@@ -106,6 +112,9 @@ export function filterCards(cards: CardForFilter[], filters: FilterState): CardF
     // Variant: OR within category
     const matchesVariant = !selectedVariants?.length || (card.variantType && selectedVariants.includes(card.variantType));
 
+    // Owned-only gate: pass-through when toggle is off; checks collection count when on (D-01)
+    const matchesOwned = !ownedOnly || (collection[card.id] ?? 0) >= 1;
+
     // AND across categories (D-05)
     return (
       matchesSearch &&
@@ -117,7 +126,8 @@ export function filterCards(cards: CardForFilter[], filters: FilterState): CardF
       matchesRarity &&
       matchesKeyword &&
       matchesCost &&
-      matchesVariant
+      matchesVariant &&
+      matchesOwned
     );
   });
 }
