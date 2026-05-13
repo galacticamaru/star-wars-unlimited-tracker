@@ -28,18 +28,28 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 
 ### Trade Binder Polish (TRADE)
 
-- [ ] **REQ-TRADE-06**: Make `/binder/[username]` full-width
-- [ ] **REQ-TRADE-07**: Standardize public binder card grid to match catalog size
-- [ ] **REQ-TRADE-08**: Display automatic wants in `/binder/manage` with exclusion controls
+- [x] **REQ-TRADE-06**: Make `/binder/[username]` full-width
+- [x] **REQ-TRADE-07**: Standardize public binder card grid to match catalog size
+- [x] **REQ-TRADE-08**: Display automatic wants in `/binder/manage` with exclusion controls
 
 ---
 
 ## Future Requirements (Deferred to v4+)
 
+### Variant-Aware Collection Tracking (COLLECT)
+
+- [ ] **REQ-COLLECT-06**: On a card detail page, display how many copies of each variant the user owns in their collection
+- [ ] **REQ-COLLECT-07**: On a card detail page, allow adding or removing copies of any variant that card supports (not limited to Normal)
+- [ ] **REQ-COLLECT-08**: In the catalog, display the art of the highest-rarity variant the user owns, rather than always showing Normal art. Display hierarchy: Showcase > Serialized > Prestige > Hyperspace > Normal. Catalog add-to-collection button continues to add Normal variant only.
+
+### Other Deferred
+
 - **WANT-03**: Export or share want list
 - **COLLECT-04v2**: Collection CSV export
 - **COLLECT-05**: SWUDB-specific CSV import
 - **DOTD-v2**: Re-implement featured decks with stable API
+- **REQ-CAT-04**: "Quick-add" pre-constructed decks to collection
+- **REQ-MARKET-05**: Filter cards by market price thresholds
 
 ---
 
@@ -53,9 +63,12 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 | REQ-CAT-01 | Phase 12 | ✅ Complete |
 | REQ-CAT-02 | Phase 12 | ✅ Complete |
 | REQ-CAT-03 | Phase 12 | ✅ Complete |
-| REQ-CAT-04 | Phase 12 | Pending |
+| REQ-CAT-04 | — | Deferred to v4+ |
 | REQ-DECK-06 | Phase 13 | ✅ Complete |
-| REQ-MARKET-05 | Phase 13 | Deferred (out of scope) |
-| REQ-TRADE-06 | Phase 14 | Pending |
-| REQ-TRADE-07 | Phase 14 | Pending |
-| REQ-TRADE-08 | Phase 14 | Pending |
+| REQ-MARKET-05 | — | Deferred to v4+ |
+| REQ-TRADE-06 | Phase 14 | ✅ Complete |
+| REQ-TRADE-07 | Phase 14 | ✅ Complete |
+| REQ-TRADE-08 | Phase 14 | ✅ Complete |
+| REQ-COLLECT-06 | — | Backlog (v4+) |
+| REQ-COLLECT-07 | — | Backlog (v4+) |
+| REQ-COLLECT-08 | — | Backlog (v4+) |
