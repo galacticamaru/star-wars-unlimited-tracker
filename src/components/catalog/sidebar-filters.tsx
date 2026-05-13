@@ -6,6 +6,8 @@ import { X } from 'lucide-react';
 import { FilterDropdown } from './filter-dropdown';
 import { VariantFilter } from './variant-filter';
 import { cn } from '@/lib/utils';
+import { Switch } from '@/components/ui/switch';
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipPopup } from '@/components/ui/tooltip';
 
 // Stub props for now, to be wired in Plan 3
 interface SidebarFiltersProps {
@@ -38,6 +40,9 @@ interface SidebarFiltersProps {
   onCostsChange?: (v: string[]) => void;
   onVariantsChange?: (v: string[]) => void;
   onClearAll?: () => void;
+  ownedOnly?: boolean;
+  onOwnedOnlyChange?: (v: boolean) => void;
+  isAuthenticated?: boolean;
   }
 
   export function SidebarFilters({
@@ -70,6 +75,9 @@ interface SidebarFiltersProps {
   onCostsChange = () => {},
   onVariantsChange = () => {},
   onClearAll = () => {},
+  ownedOnly = false,
+  onOwnedOnlyChange = () => {},
+  isAuthenticated = false,
   }: SidebarFiltersProps) {
   return (
     <aside className="w-64 border-r p-4 shrink-0 flex flex-col gap-4 overflow-y-auto h-[calc(100vh-3.5rem)] sticky top-14 self-start bg-card">
@@ -96,6 +104,43 @@ interface SidebarFiltersProps {
           </Button>
         )}
       </div>
+
+      {/* Owned-only toggle (D-03: below search, above other filters) */}
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger
+            disabled={isAuthenticated}
+            render={<span className="w-full" />}
+          >
+            <div
+              className={cn(
+                'flex items-center justify-between py-1 px-0.5',
+                !isAuthenticated && 'opacity-50 cursor-not-allowed'
+              )}
+            >
+              <label
+                htmlFor="owned-only-switch"
+                className={cn(
+                  'text-sm font-medium',
+                  !isAuthenticated ? 'cursor-not-allowed' : 'cursor-pointer'
+                )}
+              >
+                Owned only
+              </label>
+              <Switch
+                id="owned-only-switch"
+                checked={ownedOnly}
+                onCheckedChange={onOwnedOnlyChange}
+                disabled={!isAuthenticated}
+                aria-label="Show only owned cards"
+              />
+            </div>
+          </TooltipTrigger>
+          {!isAuthenticated && (
+            <TooltipPopup>Log in to filter by owned cards</TooltipPopup>
+          )}
+        </Tooltip>
+      </TooltipProvider>
 
       <VariantFilter value={selectedVariants} onChange={onVariantsChange} />
 
