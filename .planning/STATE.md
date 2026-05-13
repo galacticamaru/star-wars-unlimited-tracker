@@ -1,44 +1,44 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: shipped
-stopped_at: "v3 milestone shipped — PR #11 open"
+milestone: v3.0
+milestone_name: Catalog, Home & Binder Polish
+status: archived
+stopped_at: "v3.0 milestone archived. Next: /gsd-new-milestone for v4"
 last_updated: "2026-05-13T00:00:00.000Z"
-last_activity: 2026-05-13 -- v3 shipped, PR #11 created
+last_activity: 2026-05-13 -- v3 milestone archived, git tag v3.0 created
 progress:
-  total_phases: 2
-  completed_phases: 1
-  total_plans: 6
-  completed_plans: 6
-  percent: 50
+  total_phases: 4
+  completed_phases: 4
+  total_plans: 12
+  completed_plans: 12
+  percent: 100
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-12)
+See: .planning/PROJECT.md (updated 2026-05-13)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus**: v3 — Planning (Catalog, Home & Binder Polish)
+**Current focus**: v4 — Planning
 
 ## Current Position
 
-Phase: 14 — Trade Binder Polish
-Status: Complete — verification passed
-Plans: 3/3 complete, 2 waves
-Last activity: 2026-05-13 -- Phase 14 verified and complete
+Phase: —
+Status: v3.0 milestone complete and archived. Ready to start v4.
+Last activity: 2026-05-13 -- v3 shipped and archived (PR #11 merged)
 
-Progress: [███░░░░░░░] 1/4 phases (v3)
+Progress: v3 [██████████] 4/4 phases complete
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 38
-- Average duration: ~10 minutes
-- Total execution time: ~6.3 hours
+- Total plans completed: 41 (across v1, v2, v3)
+- v3 plans: 12 across 4 phases
+- Average duration: ~10 minutes per plan
+- v3 total execution time: ~2 hours
 
 **By Milestone:**
 
@@ -46,26 +46,21 @@ Progress: [███░░░░░░░] 1/4 phases (v3)
 |-----------|--------|-------|----------|
 | v1 MVP | 7 | 22 | ~3.6 hours |
 | v2 Multi-User | 5 | 16 | ~2.7 hours |
+| v3 Catalog & Polish | 4 | 12 | ~2 hours |
 
 ## Accumulated Context
 
 ### Roadmap Evolution
 
-- Phase 14 added: Trade Binder Polish — Full-width layouts and automatic want management
+- v3 complete: Home page, catalog polish, owned-only filter, trade binder improvements all shipped
 
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions:
-
-- **Catalog Layout (12-03)**: Used a fixed-height container pattern (100svh - 56px) for the catalog client to enable independent scrolling of the main content and sidebar. Phased out filter controls from the top-bar.
-- **v2 Verification**: Milestone v2 verified on 2026-05-12 with Phase 10.1 addressing binder shortfall logic.
-- **Phase 8 Abandonment**: swustats.net API unreliability led to abandoning Deck of the Day in v2.
-- **Better Auth**: Successfully implemented for multi-tenant data isolation.
 
 ### Pending Todos
 
-- [ ] New milestone kickoff (v3)
+None.
 
 ### Blockers/Concerns
 
@@ -75,12 +70,15 @@ Recent decisions:
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| Want List | Export / share want list (WANT-03) | v3 | v2 requirements |
-| Deck Builder | Filter to owned-only (DECK-06) | v3 | v2 requirements |
-| Collection | SWUDB CSV import (COLLECT-05) | v3 | v2 requirements |
-| Collection | CSV export (COLLECT-04 v2) | v3 | v2 requirements |
+| Deck Builder | REQ-DECK-07 through 11 (deck list grouping, aspect chart, onboarding) | v4 backlog | v3 close |
+| Collection | REQ-COLLECT-06/07/08 (variant tracking on detail page + catalog art) | v4 backlog | v3 close |
+| Want List | Export / share want list (WANT-03) | v4+ | v2 requirements |
+| Collection | SWUDB CSV import (COLLECT-05) | v4+ | v2 requirements |
+| Collection | CSV export (COLLECT-04 v2) | v4+ | v2 requirements |
+| Catalog | Quick-add pre-constructed decks (REQ-CAT-04) | v4+ | v3 requirements |
+| Filters | Market price threshold filter (REQ-MARKET-05) | v4+ | v3 requirements |
 
 ## Session Continuity
 
-Last session: 2026-05-12
-Stopped at: Phase 12 shipped (PR #9). Next: review/merge PR, then proceed to Phase 13.
+Last session: 2026-05-13
+Stopped at: v3 milestone archived. Run `/gsd-new-milestone` to start v4.

@@ -59,14 +59,72 @@
 
 ---
 
+---
+
+## Milestone: v3 — Catalog, Home & Binder Polish
+
+**Shipped:** 2026-05-13
+**Phases:** 4 (11–14) | **Plans:** 12
+
+---
+
+### What Was Built
+
+- New home page at `/` with Hero section and "Highest Value Cards" 10-card grid; catalog migrated to `/cards`
+- Sticky catalog sidebar with independent scroll; all filters moved from top-bar to sidebar (sticky, swu.fan-style)
+- Variant support in sync and UI: Showcase, Prestige, Serialized, Hyperspace all tracked; TS26 (Twin Suns) set unblocked
+- Owned-only toggle in catalog and deck builder — URL-persisted via nuqs, disabled-with-tooltip for logged-out users; TDD approach
+- Switch and Tooltip primitives built on Base UI 1.4.1 (no Radix); MobileFilterSheet for narrow viewports
+- Full-width public trade binder (container wrapper removed); `getUserTradeData()` now returns `autoWants[]` with deck-driven shortfalls
+- "Automatic Wants" sidebar section in manage binder — active rows (quantity + Exclude), excluded rows (opacity-50 + Remove), optimistic state updates
+
+---
+
+### What Worked
+
+- **Parallel wave execution** — Phase 14 Wave 1 ran 14-01 and 14-02 truly in parallel (different files, no overlap); saved meaningful wall-clock time
+- **TDD on filterCards() ownedOnly** — writing 4 failing tests before implementation made the logic trivial to verify and the RED/GREEN/REFACTOR cycle clean; no rework
+- **Plan precision** — all three phases had exact line-number edits specified in PLAN.md (CURRENT/REPLACE WITH blocks); executors needed zero guesswork and produced zero deviations
+- **Reuse over abstraction** — `toggleExclusion` reused for auto-want exclusions with no new API surface; `calculateLookingFor` reused from binder.ts; both decisions saved a phase of work
+- **nuqs established as the standard** — URL state worked smoothly across catalog, deck builder, and filter sheets with no regressions
+
+---
+
+### What Was Inefficient
+
+- **Worktree merge ordering confusion** — in Phase 14, the 14-02 agent ran directly on the main branch while 14-01 used a worktree; the orchestrator had to manually detect the topology before merging. The plans were correctly isolated by file, but the worktree dispatch timing wasn't perfectly sequential (git config.lock race avoided but the merge step needed extra investigation)
+- **Dev server wasn't running the worktree code** — the checkpoint for 14-03 was blocked because the user ran `npm run dev` from the main tree before the worktree was merged; the user saw "no Automatic Wants" which was actually correct for the unmerged state. Merging earlier (before the checkpoint) would have avoided confusion
+- **Code review found pre-existing tech debt** — 4 Critical findings in the manage page, all pre-existing (not introduced by v3); having a baseline code review earlier would have isolated new vs. old findings
+
+---
+
+### Patterns Established
+
+- **Fixed-height container pattern** (`100svh - 56px`) for pages with sticky sidebars and independent scroll columns
+- **Full-width page pattern** — server page components return client component directly with no wrapper div; matches `/cards` and `/binder/[username]`
+- **Base UI primitives** — Switch.Root + Switch.Thumb, Tooltip with Portal wrapper; always wrap in a `'use client'` file that re-exports a clean component interface
+- **nuqs as the single source of truth for filter state** — no `useState` for filters; `parseAsBoolean`, `parseAsString`, `parseAsArrayOf` cover all filter types
+- **Optimistic exclusion toggling** — `setTradeData(prev => ({ ...prev, autoWants: prev.autoWants?.map(...) }))` pattern for in-place array item updates
+
+---
+
+### Key Lessons
+
+1. **Merge worktrees before human checkpoints.** If a human checkpoint needs to test the running dev server, the worktree must be merged to the main tree first. Otherwise the user is testing stale code.
+2. **TDD for isolated logic functions is always worth it.** `filterCards()` with `ownedOnly` was the most straightforward plan in v3 to execute and verify — because the tests defined the contract before a line of implementation was written.
+3. **Exact edit specifications in plans eliminate agent guesswork.** CURRENT/REPLACE blocks with line numbers produced zero deviations across all 12 plans. This level of precision takes more time to plan but saves even more in execution.
+4. **Reuse > abstraction at plan boundaries.** When a plan can reuse an existing function or API call rather than extracting a shared helper, do it. Three v3 decisions (toggleExclusion, calculateLookingFor, no new API endpoint) each saved at least one additional plan.
+
+---
+
 ## Cross-Milestone Trends
 
-| Metric | v1 |
-|--------|-----|
-| Phases | 7 (5 planned + 2 inserted) |
-| Plans | 22 |
-| Duration | 5 days |
-| LOC | ~4,757 TypeScript/TSX |
-| Functional bugs at audit | 2 (both fixed pre-ship) |
-| Insertion phases | 2 (5.1, 5.2) |
-| Requirements coverage | 15/15 |
+| Metric | v1 | v2 | v3 |
+|--------|-----|-----|-----|
+| Phases | 7 (5 planned + 2 inserted) | 5 | 4 |
+| Plans | 22 | 16 | 12 |
+| Duration | 5 days | 1 day | 1 day |
+| LOC (approx) | ~4,757 TypeScript/TSX | ~8,000 | ~22,000 total |
+| Functional bugs at audit | 2 (both fixed pre-ship) | 1 (10.1 binder shortfall) | 0 |
+| Insertion phases | 2 (5.1, 5.2) | 1 (10.1) | 0 |
+| Requirements coverage | 15/15 | 12/12 | 10/12 (2 deferred by design) |
