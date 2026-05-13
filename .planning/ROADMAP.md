@@ -4,17 +4,17 @@
 
 - ✅ **v1 MVP** — Phases 1–5.2 (shipped 2026-05-07) · [Archive](milestones/v1-ROADMAP.md)
 - ✅ **v2 Multi-User, Market, Decks & Trading** — Phases 6–10.1 (shipped 2026-05-12) · [Archive](milestones/v2-ROADMAP.md)
-- 🏗️ **v3 Catalog, Home & Binder Polish** — Phases 11–14 (Home Page, Catalog, Filters, Binder UI)
+- ✅ **v3 Catalog, Home & Binder Polish** — Phases 11–14 (Home Page, Catalog, Filters, Binder UI)
 
 ## Phases
 
 <details>
-<summary>🏗️ v3 Catalog, Home & Binder Polish (Phases 11–14) — IN PLANNING</summary>
+<summary>✅ v3 Catalog, Home & Binder Polish (Phases 11–14) — COMPLETE</summary>
 
 - [x] **Phase 11: New Home Page** — Route refactor (/cards), Hero section, and High Value card grid
 - [x] **Phase 12: Catalog Evolution** — Sticky sidebar filters, variant support, and Twin Suns (TS26) set
 - [x] **Phase 13: Advanced Filters** — Owned-only filter in catalog and deck builder
-- [ ] **Phase 14: Trade Binder Polish** — Full-width layouts and automatic want management
+- [x] **Phase 14: Trade Binder Polish** — Full-width layouts and automatic want management
 
 </details>
 
@@ -27,6 +27,7 @@
 | 11 | v3 | 3/3 | ✅ Complete | 2026-05-12 |
 | 12 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 13 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
+| 14 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 
 ### Phase 11: New Home Page
 
