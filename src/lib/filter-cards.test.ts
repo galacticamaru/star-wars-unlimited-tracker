@@ -156,4 +156,43 @@ describe('filterCards', () => {
     expect(result).toHaveLength(1);
     expect(result[0].id).toBe(1);
   });
+
+  describe('ownedOnly filter', () => {
+    const cardA = makeCard({ id: 1 });
+    const cardB = makeCard({ id: 2, name: 'Vader' });
+
+    it('ownedOnly=false returns all cards regardless of collection', () => {
+      const collection = {};
+      expect(
+        filterCards([cardA, cardB], { ...emptyFilters, ownedOnly: false }, collection)
+      ).toHaveLength(2);
+    });
+
+    it('ownedOnly=true returns only cards with collection[id] >= 1', () => {
+      const collection = { 1: 2 };
+      const result = filterCards([cardA, cardB], { ...emptyFilters, ownedOnly: true }, collection);
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(1);
+    });
+
+    it('ownedOnly=true with empty collection returns 0 cards', () => {
+      const collection = {};
+      expect(
+        filterCards([cardA, cardB], { ...emptyFilters, ownedOnly: true }, collection)
+      ).toHaveLength(0);
+    });
+
+    it('ownedOnly=true ANDs correctly with other active filters', () => {
+      const cardC = makeCard({ id: 3, name: 'Luke', type: 'Unit' });
+      const cardD = makeCard({ id: 4, name: 'Vader', type: 'Unit' });
+      const collection = { 3: 1 };
+      const result = filterCards(
+        [cardC, cardD],
+        { ...emptyFilters, selectedTypes: ['Unit'], ownedOnly: true },
+        collection
+      );
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(3);
+    });
+  });
 });
