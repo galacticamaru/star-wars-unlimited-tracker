@@ -17,7 +17,7 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 
 ### Advanced Filters (SEARCH)
 
-- [ ] **REQ-DECK-06**: Filter deck builder catalog to show ONLY cards user owns
+- [x] **REQ-DECK-06**: Filter deck builder catalog to show ONLY cards user owns
 - [ ] **REQ-MARKET-05**: Filter cards by market price thresholds (e.g. "under $1.00")
 
 ### New Home Page (HOME)
@@ -54,8 +54,8 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 | REQ-CAT-02 | Phase 12 | ✅ Complete |
 | REQ-CAT-03 | Phase 12 | Pending |
 | REQ-CAT-04 | Phase 12 | Pending |
-| REQ-DECK-06 | Phase 13 | Pending |
-| REQ-MARKET-05 | Phase 13 | Pending |
+| REQ-DECK-06 | Phase 13 | ✅ Complete |
+| REQ-MARKET-05 | Phase 13 | Deferred (out of scope) |
 | REQ-TRADE-06 | Phase 14 | Pending |
 | REQ-TRADE-07 | Phase 14 | Pending |
 | REQ-TRADE-08 | Phase 14 | Pending |

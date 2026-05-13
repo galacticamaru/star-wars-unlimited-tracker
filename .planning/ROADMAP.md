@@ -26,7 +26,7 @@
 | 6–10.1 | v2 | 16/16 | ✅ Complete | 2026-05-12 |
 | 11 | v3 | 3/3 | ✅ Complete | 2026-05-12 |
 | 12 | v3 | 3/3 | 🔄 In Progress | - |
-| 13 | v3 | 2/3 | 🔄 In Progress | - |
+| 13 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 
 ### Phase 11: New Home Page
 
@@ -61,7 +61,7 @@ Plans:
 - [x] 13-02-PLAN.md — UI primitives: Switch and Tooltip wrappers over Base UI 1.4.1
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 13-03-PLAN.md — Wiring: nuqs hook in CatalogClient, toggle UI in SidebarFilters, human verification checkpoint
+- [x] 13-03-PLAN.md — Wiring: nuqs hook in CatalogClient, toggle UI in SidebarFilters, human verification checkpoint
 
 Cross-cutting constraints:
 - All filter state via nuqs URL persistence — do NOT use useState for ownedOnly (Phase 12 rule)

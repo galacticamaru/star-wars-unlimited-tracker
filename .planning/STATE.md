@@ -10,7 +10,7 @@ progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
   percent: 50
 ---
 
@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-05-12)
 
 ## Current Position
 
-Phase: 13 — Advanced Filters
-Status: Executing (Wave 2)
-Last activity: 2026-05-13 -- Phase 13 Wave 1 complete (13-01, 13-02)
+Phase: 14 — Trade Binder Polish
+Status: Ready to plan
+Last activity: 2026-05-13 -- Phase 13 complete (owned-only toggle shipped)
 
 Progress: [███░░░░░░░] 1/4 phases (v3)
 
