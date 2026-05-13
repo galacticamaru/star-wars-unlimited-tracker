@@ -69,3 +69,26 @@ Cross-cutting constraints:
 - Toggle placement: below search bar, above VariantFilter in sidebar (D-03)
 - No @radix-ui imports — Base UI (@base-ui/react) only
 - REQ-MARKET-05 (price threshold filter) is OUT OF SCOPE for this phase — deferred
+
+### Phase 14: Trade Binder Polish
+
+**Goal:** Full-width public binder layout and automatic deck-driven want management in the manage page
+**Requirements:** REQ-TRADE-06, REQ-TRADE-07, REQ-TRADE-08
+**Depends on:** Phase 13
+**Plans:** 3 plans
+
+Plans:
+
+**Wave 1** *(run in parallel — no file overlap)*
+- [ ] 14-01-PLAN.md — Layout fix: remove container wrapper from public binder page (REQ-TRADE-06, REQ-TRADE-07)
+- [ ] 14-02-PLAN.md — Data layer: extend getUserTradeData() to compute and return autoWants (REQ-TRADE-08)
+
+**Wave 2** *(blocked on 14-02 completion)*
+- [ ] 14-03-PLAN.md — UI: Automatic Wants section in ManageWantsList + manage page wiring + human verification checkpoint (REQ-TRADE-08)
+
+Cross-cutting constraints:
+- Full-width applies only to public binder (/binder/[username]); manage page keeps container mx-auto (D-01)
+- Auto-wants computation inline in getUserTradeData(), not extracted to shared helper (Option B per D-07 discretion)
+- Automatic Wants row style mirrors Manual Wants: `flex items-center justify-between p-2 bg-muted/50 rounded-md border group`
+- Excluded rows rendered with opacity-50 + Excluded badge + Remove exclusion button (D-06)
+- toggleExclusion reused as-is for auto-want rows — no new API endpoints needed
