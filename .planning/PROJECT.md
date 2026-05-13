@@ -106,4 +106,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-12 — v2 milestone shipped*
+*Last updated: 2026-05-13 — Phase 13 complete (owned-only toggle shipped, REQ-DECK-06 validated)*
