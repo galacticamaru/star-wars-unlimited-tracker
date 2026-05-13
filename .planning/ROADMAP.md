@@ -12,8 +12,8 @@
 <summary>🏗️ v3 Catalog, Home & Binder Polish (Phases 11–14) — IN PLANNING</summary>
 
 - [x] **Phase 11: New Home Page** — Route refactor (/cards), Hero section, and High Value card grid
-- [ ] **Phase 12: Catalog Evolution** — Sticky sidebar filters, variant support, and Twin Suns (TS26) set
-- [ ] **Phase 13: Advanced Filters** — Owned-only filter in catalog and deck builder
+- [x] **Phase 12: Catalog Evolution** — Sticky sidebar filters, variant support, and Twin Suns (TS26) set
+- [x] **Phase 13: Advanced Filters** — Owned-only filter in catalog and deck builder
 - [ ] **Phase 14: Trade Binder Polish** — Full-width layouts and automatic want management
 
 </details>
@@ -25,7 +25,7 @@
 | 1–5.2 | v1 | 22/22 | ✅ Complete | 2026-05-07 |
 | 6–10.1 | v2 | 16/16 | ✅ Complete | 2026-05-12 |
 | 11 | v3 | 3/3 | ✅ Complete | 2026-05-12 |
-| 12 | v3 | 3/3 | 🔄 In Progress | - |
+| 12 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 13 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 
 ### Phase 11: New Home Page
@@ -84,7 +84,7 @@ Plans:
 - [x] 14-02-PLAN.md — Data layer: extend getUserTradeData() to compute and return autoWants (REQ-TRADE-08)
 
 **Wave 2** *(blocked on 14-02 completion)*
-- [ ] 14-03-PLAN.md — UI: Automatic Wants section in ManageWantsList + manage page wiring + human verification checkpoint (REQ-TRADE-08)
+- [x] 14-03-PLAN.md — UI: Automatic Wants section in ManageWantsList + manage page wiring + human verification checkpoint (REQ-TRADE-08)
 
 Cross-cutting constraints:
 - Full-width applies only to public binder (/binder/[username]); manage page keeps container mx-auto (D-01)
