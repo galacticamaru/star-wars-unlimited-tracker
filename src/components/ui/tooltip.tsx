@@ -22,7 +22,8 @@ function TooltipPopup({
   ...props
 }: TooltipPrimitive.Popup.Props) {
   return (
-    <TooltipPrimitive.Positioner>
+    <TooltipPrimitive.Portal>
+      <TooltipPrimitive.Positioner>
       <TooltipPrimitive.Popup
         data-slot="tooltip-popup"
         className={cn(
@@ -32,7 +33,8 @@ function TooltipPopup({
         )}
         {...props}
       />
-    </TooltipPrimitive.Positioner>
+      </TooltipPrimitive.Positioner>
+    </TooltipPrimitive.Portal>
   )
 }
 
