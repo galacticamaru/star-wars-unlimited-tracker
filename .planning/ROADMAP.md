@@ -13,7 +13,7 @@
 
 - [x] **Phase 11: New Home Page** — Route refactor (/cards), Hero section, and High Value card grid
 - [ ] **Phase 12: Catalog Evolution** — Sticky sidebar filters, variant support, and Twin Suns (TS26) set
-- [ ] **Phase 13: Advanced Filters** — Owned-only filter and market price thresholds in deck builder
+- [ ] **Phase 13: Advanced Filters** — Owned-only filter in catalog and deck builder
 - [ ] **Phase 14: Trade Binder Polish** — Full-width layouts and automatic want management
 
 </details>
@@ -26,6 +26,7 @@
 | 6–10.1 | v2 | 16/16 | ✅ Complete | 2026-05-12 |
 | 11 | v3 | 3/3 | ✅ Complete | 2026-05-12 |
 | 12 | v3 | 3/3 | 🔄 In Progress | - |
+| 13 | v3 | 0/3 | 📋 Planned | - |
 
 ### Phase 11: New Home Page
 
@@ -47,3 +48,24 @@ Cross-cutting constraints:
 - `export const dynamic = 'force-dynamic'` must appear in both `src/app/cards/page.tsx` and `src/app/page.tsx`
 - No auth gate on the home page or high-value grid (D-06)
 - Locked copy: title "Star Wars Unlimited Card Database and Deck Builder", subtitle as-is (D-01, D-02)
+
+### Phase 13: Advanced Filters
+
+**Goal:** Owned-only toggle in the catalog sidebar and deck builder card browser (REQ-DECK-06)
+**Plans:** 3 plans
+
+Plans:
+
+**Wave 1** *(run in parallel — no file overlap)*
+- [ ] 13-01-PLAN.md — TDD: extend FilterState + filterCards() with ownedOnly gate; 4 unit tests green
+- [ ] 13-02-PLAN.md — UI primitives: Switch and Tooltip wrappers over Base UI 1.4.1
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 13-03-PLAN.md — Wiring: nuqs hook in CatalogClient, toggle UI in SidebarFilters, human verification checkpoint
+
+Cross-cutting constraints:
+- All filter state via nuqs URL persistence — do NOT use useState for ownedOnly (Phase 12 rule)
+- Toggle visible to all users; disabled with tooltip when logged out (D-02)
+- Toggle placement: below search bar, above VariantFilter in sidebar (D-03)
+- No @radix-ui imports — Base UI (@base-ui/react) only
+- REQ-MARKET-05 (price threshold filter) is OUT OF SCOPE for this phase — deferred
