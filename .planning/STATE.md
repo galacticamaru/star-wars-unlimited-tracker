@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: complete
-stopped_at: "Phase 14 complete. v3 milestone complete."
+status: shipped
+stopped_at: "v3 milestone shipped — PR #11 open"
 last_updated: "2026-05-13T00:00:00.000Z"
-last_activity: 2026-05-13 -- Phase 14 execution complete — verified, v3 done
+last_activity: 2026-05-13 -- v3 shipped, PR #11 created
 progress:
   total_phases: 2
   completed_phases: 1
