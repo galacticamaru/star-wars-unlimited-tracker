@@ -56,13 +56,11 @@ export default async function PublicBinderPage({ params }: PublicBinderPageProps
   const lookingFor = binderData.lookingFor.map(mapToFilterable);
 
   return (
-    <div className="container mx-auto">
-      <PublicBinderClient
-        username={username}
-        offerings={offerings}
-        lookingFor={lookingFor}
-        filterOptions={filterOptions}
-      />
-    </div>
+    <PublicBinderClient
+      username={username}
+      offerings={offerings}
+      lookingFor={lookingFor}
+      filterOptions={filterOptions}
+    />
   );
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useEffect, useState } from 'react';
-import { useQueryState, parseAsString, parseAsArrayOf } from 'nuqs';
+import { useQueryState, parseAsString, parseAsArrayOf, parseAsBoolean } from 'nuqs';
 import { filterCards, type CardForFilter } from '@/lib/filter-cards';
 import { TopBar } from './top-bar';
 import { CardGrid } from './card-grid';
@@ -101,15 +101,37 @@ export function CatalogClient({
   const [selectedKeywords, setSelectedKeywords] = useQueryState('keywords', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
   const [selectedCosts, setSelectedCosts] = useQueryState('costs', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
   const [selectedVariants, setSelectedVariants] = useQueryState('variants', parseAsArrayOf(parseAsString).withDefault(['Normal']).withOptions({ shallow: true }));
+  const [ownedOnly, setOwnedOnly] = useQueryState(
+    'owned',
+    parseAsBoolean.withDefault(false).withOptions({ shallow: true })
+  );
 
   // Derive distinct options client-side — avoids PostgreSQL unnest complexity
   const aspectOptions = useMemo(() => [...new Set(cards.flatMap(c => c.aspects))].sort(), [cards]);
 
   const filtered = useMemo(
-    () => filterCards(cards, { 
-      search, 
-      selectedSets, 
-      selectedTypes, 
+    () => filterCards(
+      cards,
+      {
+        search,
+        selectedSets,
+        selectedTypes,
+        selectedAspects,
+        selectedArenas,
+        selectedTraits,
+        selectedRarities,
+        selectedKeywords,
+        selectedCosts,
+        selectedVariants,
+        ownedOnly,
+      },
+      collection
+    ),
+    [
+      cards,
+      search,
+      selectedSets,
+      selectedTypes,
       selectedAspects,
       selectedArenas,
       selectedTraits,
@@ -117,19 +139,8 @@ export function CatalogClient({
       selectedKeywords,
       selectedCosts,
       selectedVariants,
-    }),
-    [
-      cards, 
-      search, 
-      selectedSets, 
-      selectedTypes, 
-      selectedAspects, 
-      selectedArenas, 
-      selectedTraits, 
-      selectedRarities, 
-      selectedKeywords, 
-      selectedCosts,
-      selectedVariants
+      ownedOnly,
+      collection,
     ]
   );
 
@@ -144,6 +155,7 @@ export function CatalogClient({
     setSelectedKeywords([]);
     setSelectedCosts([]);
     setSelectedVariants(['Normal']);
+    setOwnedOnly(false);
   };
 
   const sidebarProps = {
@@ -165,6 +177,9 @@ export function CatalogClient({
     selectedKeywords, onKeywordsChange: setSelectedKeywords,
     selectedCosts, onCostsChange: setSelectedCosts,
     selectedVariants, onVariantsChange: setSelectedVariants,
+    ownedOnly,
+    onOwnedOnlyChange: setOwnedOnly,
+    isAuthenticated,
     onClearAll: handleClearAll,
   };
 
