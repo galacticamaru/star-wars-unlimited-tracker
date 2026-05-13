@@ -127,13 +127,19 @@ export default function ManageBinderPage() {
       if (!excluded) {
         setTradeData((prev: any) => ({
           ...prev,
-          exclusions: prev.exclusions.filter((e: any) => e.cardDefinitionId !== cardDefinitionId)
+          exclusions: prev.exclusions.filter((e: any) => e.cardDefinitionId !== cardDefinitionId),
+          autoWants: prev.autoWants?.map((w: any) =>
+            w.cardDefinitionId === cardDefinitionId ? { ...w, isExcluded: false } : w
+          ),
         }));
       } else {
         const card = allCards.find(c => c.id === cardDefinitionId);
         setTradeData((prev: any) => ({
           ...prev,
-          exclusions: [...prev.exclusions, { cardDefinitionId, name: card.name, subtitle: card.subtitle ?? null }]
+          exclusions: [...prev.exclusions, { cardDefinitionId, name: card.name, subtitle: card.subtitle ?? null }],
+          autoWants: prev.autoWants?.map((w: any) =>
+            w.cardDefinitionId === cardDefinitionId ? { ...w, isExcluded: true } : w
+          ),
         }));
       }
     }
@@ -253,12 +259,14 @@ export default function ManageBinderPage() {
         </div>
 
         <div>
-          <ManageWantsList 
-            wants={tradeData?.manualWants || []} 
-            exclusions={tradeData?.exclusions || []} 
-            onUpdateWantQuantity={updateWantQuantity} 
-            onRemoveWant={(id) => updateWantQuantity(id, 0)} 
-            onRemoveExclusion={(id) => toggleExclusion(id, false)} 
+          <ManageWantsList
+            wants={tradeData?.manualWants || []}
+            exclusions={tradeData?.exclusions || []}
+            autoWants={tradeData?.autoWants || []}
+            onUpdateWantQuantity={updateWantQuantity}
+            onRemoveWant={(id) => updateWantQuantity(id, 0)}
+            onRemoveExclusion={(id) => toggleExclusion(id, false)}
+            onToggleExclusion={toggleExclusion}
           />
         </div>
       </div>
