@@ -1,6 +1,6 @@
 'use client'
 
-import { X, Plus, Minus } from 'lucide-react';
+import { X, Plus, Minus, Ban } from 'lucide-react';
 
 interface WantItem {
   cardDefinitionId: number;
@@ -15,20 +15,32 @@ interface ExclusionItem {
   subtitle: string | null;
 }
 
+interface AutoWantItem {
+  cardDefinitionId: number;
+  quantity: number;
+  name: string;
+  subtitle: string | null;
+  isExcluded: boolean;
+}
+
 interface ManageWantsListProps {
   wants: WantItem[];
   exclusions: ExclusionItem[];
+  autoWants: AutoWantItem[];
   onUpdateWantQuantity: (id: number, quantity: number) => void;
   onRemoveWant: (id: number) => void;
   onRemoveExclusion: (id: number) => void;
+  onToggleExclusion: (id: number, excluded: boolean) => void;
 }
 
-export function ManageWantsList({ 
-  wants, 
-  exclusions, 
-  onUpdateWantQuantity, 
-  onRemoveWant, 
-  onRemoveExclusion 
+export function ManageWantsList({
+  wants,
+  exclusions,
+  autoWants,
+  onUpdateWantQuantity,
+  onRemoveWant,
+  onRemoveExclusion,
+  onToggleExclusion,
 }: ManageWantsListProps) {
   return (
     <div className="space-y-6">
@@ -119,6 +131,71 @@ export function ManageWantsList({
                 </button>
               </div>
             ))}
+          </div>
+        )}
+      </section>
+
+      <section>
+        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+          Automatic Wants
+          <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full font-normal">
+            {autoWants.length}
+          </span>
+        </h3>
+        {autoWants.length === 0 ? (
+          <p className="text-xs text-muted-foreground italic bg-muted/30 p-4 rounded-md border border-dashed text-center">
+            No deck-driven wants. Add decks to your collection to automatically track missing cards.
+          </p>
+        ) : (
+          <div className="grid gap-2">
+            {autoWants.map((w) =>
+              w.isExcluded ? (
+                <div
+                  key={w.cardDefinitionId}
+                  className="flex items-center justify-between p-2 bg-muted/50 rounded-md border group opacity-50"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">{w.name}</p>
+                    {w.subtitle && (
+                      <p className="text-[10px] text-muted-foreground truncate">{w.subtitle}</p>
+                    )}
+                    <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full font-normal">
+                      Excluded
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onToggleExclusion(w.cardDefinitionId, false)}
+                    className="p-1 text-muted-foreground hover:text-destructive transition-colors ml-4"
+                    aria-label="Remove exclusion"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div key={w.cardDefinitionId} className="flex items-center justify-between p-2 bg-muted/50 rounded-md border group">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">{w.name}</p>
+                    {w.subtitle && (
+                      <p className="text-[10px] text-muted-foreground truncate">{w.subtitle}</p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3 ml-4">
+                    <span className="text-xs font-bold bg-background rounded-full px-2 py-0.5 border shadow-sm">
+                      {w.quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => onToggleExclusion(w.cardDefinitionId, true)}
+                      className="p-1 text-muted-foreground hover:text-destructive transition-colors"
+                      aria-label="Exclude from looking for"
+                    >
+                      <Ban className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )
+            )}
           </div>
         )}
       </section>
