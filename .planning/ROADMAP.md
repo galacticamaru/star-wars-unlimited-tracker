@@ -80,8 +80,8 @@ Cross-cutting constraints:
 Plans:
 
 **Wave 1** *(run in parallel — no file overlap)*
-- [ ] 14-01-PLAN.md — Layout fix: remove container wrapper from public binder page (REQ-TRADE-06, REQ-TRADE-07)
-- [ ] 14-02-PLAN.md — Data layer: extend getUserTradeData() to compute and return autoWants (REQ-TRADE-08)
+- [x] 14-01-PLAN.md — Layout fix: remove container wrapper from public binder page (REQ-TRADE-06, REQ-TRADE-07)
+- [x] 14-02-PLAN.md — Data layer: extend getUserTradeData() to compute and return autoWants (REQ-TRADE-08)
 
 **Wave 2** *(blocked on 14-02 completion)*
 - [ ] 14-03-PLAN.md — UI: Automatic Wants section in ManageWantsList + manage page wiring + human verification checkpoint (REQ-TRADE-08)
