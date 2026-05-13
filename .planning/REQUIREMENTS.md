@@ -36,6 +36,30 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 
 ## Future Requirements (Deferred to v4+)
 
+### Deck Builder Improvements (DECK)
+
+- [ ] **REQ-DECK-07**: In the Deck List tab, group cards into labelled sections and subsections. Main Deck sections: Ground Units, Space Units, Upgrades, Events. Sideboard sections: Ground Units, Space Units, Upgrades, Events. Each section shows its card count in the heading.
+
+- [ ] **REQ-DECK-08**: Add an aspect breakdown panel to the deck stats sidebar. Requirements:
+  - Show a count for each aspect present in the deck (Aggression, Vigilance, Command, Cunning, Heroism, Villainy)
+  - Render a bar chart styled identically to the existing cost-curve chart
+  - Each bar is colour-coded: Aggression = red, Vigilance = blue, Command = green, Cunning = yellow, Heroism = white, Villainy = black
+  - Cards with multiple aspects contribute a proportional split bar (each aspect segment coloured accordingly)
+  - Show both the visual bar and a numeric count per aspect
+
+- [ ] **REQ-DECK-09**: Guided onboarding flow for empty decks:
+  - When the deck has no leader and no base selected, automatically apply a filter showing only Leader and Base cards in the card browser
+  - Once a leader and base are both selected, automatically switch the filter to the aspects of the combined leader+base (e.g. a Command/Aggression leader shows Command and Aggression cards by default)
+  - The user can clear or change filters at any time — the auto-filter is a default, not a lock
+  - Once the deck has at least one non-leader/base card, the onboarding flow no longer re-applies automatically
+
+- [ ] **REQ-DECK-10**: Introduce card art to the Deck List tab:
+  - Display the leader and base card images at the top of the Deck List tab using the same card image component used in card detail pages
+  - For the leader card, include a front/back toggle so the user can flip between the leader's two art faces
+  - For each card row in the list, show the card's front art on hover (tooltip or inline reveal)
+
+- [ ] **REQ-DECK-11**: Remove the call-to-action from the empty deck placeholder. The guided filter flow (REQ-DECK-09) replaces it as the onboarding mechanism.
+
 ### Variant-Aware Collection Tracking (COLLECT)
 
 - [ ] **REQ-COLLECT-06**: On a card detail page, display how many copies of each variant the user owns in their collection
@@ -72,3 +96,8 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 | REQ-COLLECT-06 | — | Backlog (v4+) |
 | REQ-COLLECT-07 | — | Backlog (v4+) |
 | REQ-COLLECT-08 | — | Backlog (v4+) |
+| REQ-DECK-07 | — | Backlog (v4+) |
+| REQ-DECK-08 | — | Backlog (v4+) |
+| REQ-DECK-09 | — | Backlog (v4+) |
+| REQ-DECK-10 | — | Backlog (v4+) |
+| REQ-DECK-11 | — | Backlog (v4+) |
