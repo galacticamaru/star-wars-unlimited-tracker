@@ -10,9 +10,9 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 
 ### Catalog Evolution (CAT)
 
-- [ ] **REQ-CAT-01**: Support all card variants (Showcase, Prestige, Serialized) in sync and UI
+- [x] **REQ-CAT-01**: Support all card variants (Showcase, Prestige, Serialized) in sync and UI
 - [x] **REQ-CAT-02**: Implement sticky sidebar for catalog filters (swu.fan style)
-- [ ] **REQ-CAT-03**: Add Twin Suns (TS26) set support
+- [x] **REQ-CAT-03**: Add Twin Suns (TS26) set support
 - [ ] **REQ-CAT-04**: "Quick-add" pre-constructed decks to collection
 
 ### Advanced Filters (SEARCH)
@@ -22,9 +22,9 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 
 ### New Home Page (HOME)
 
-- [ ] **REQ-HOME-01**: Move catalog to `/cards`; update root route and navigation
-- [ ] **REQ-HOME-02**: Hero section with Title, Subtitle, and clear CTAs (Import, Build, Trade)
-- [ ] **REQ-HOME-03**: "Highest Value Cards" 10-card grid (5x2) on home page
+- [x] **REQ-HOME-01**: Move catalog to `/cards`; update root route and navigation
+- [x] **REQ-HOME-02**: Hero section with Title, Subtitle, and clear CTAs (Import, Build, Trade)
+- [x] **REQ-HOME-03**: "Highest Value Cards" 10-card grid (5x2) on home page
 
 ### Trade Binder Polish (TRADE)
 
@@ -47,12 +47,12 @@ Modernize the user experience with a dedicated landing page, sticky catalog filt
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| REQ-HOME-01 | Phase 11 | Pending |
-| REQ-HOME-02 | Phase 11 | Pending |
-| REQ-HOME-03 | Phase 11 | Pending |
-| REQ-CAT-01 | Phase 12 | Pending |
+| REQ-HOME-01 | Phase 11 | ✅ Complete |
+| REQ-HOME-02 | Phase 11 | ✅ Complete |
+| REQ-HOME-03 | Phase 11 | ✅ Complete |
+| REQ-CAT-01 | Phase 12 | ✅ Complete |
 | REQ-CAT-02 | Phase 12 | ✅ Complete |
-| REQ-CAT-03 | Phase 12 | Pending |
+| REQ-CAT-03 | Phase 12 | ✅ Complete |
 | REQ-CAT-04 | Phase 12 | Pending |
 | REQ-DECK-06 | Phase 13 | ✅ Complete |
 | REQ-MARKET-05 | Phase 13 | Deferred (out of scope) |
