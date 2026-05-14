@@ -37,7 +37,7 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 
 ### v4 Deck Builder & Collection Depth (Phases 15–18)
 
-- [ ] **Phase 15: Deck List Display Polish** — Card type grouping, aspect breakdown panel, and card art in the deck list view
+- [x] **Phase 15: Deck List Display Polish** — Card type grouping, aspect breakdown panel, and card art in the deck list view (2026-05-14)
 - [ ] **Phase 16: Empty Deck Guided Onboarding** — Auto-filter flow that guides users from leader+base selection through aspect-filtered card browsing
 - [ ] **Phase 17: Variant Collection Tracking** — Per-variant owned counts viewed and updated on the card detail page
 - [ ] **Phase 18: Catalog Collection Enhancements** — Catalog grid shows highest-owned variant art; quick-add all cards from a starter deck
@@ -55,9 +55,9 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
   4. Hovering any non-Leader/Base card row in the Deck List tab shows that card's art
 **Plans**: 3 plans
 Plans:
-- [ ] 15-01-PLAN.md — Wave 0 test stubs + type-grouped card sections in deck-builder.tsx (REQ-DECK-07)
-- [ ] 15-02-PLAN.md — Leader/Base art slots + hover art preview panel in deck-builder.tsx (REQ-DECK-10)
-- [ ] 15-03-PLAN.md — Aspect breakdown panel in deck-sidebar.tsx (REQ-DECK-08)
+- [x] 15-01-PLAN.md — Wave 0 test stubs + type-grouped card sections in deck-builder.tsx (REQ-DECK-07)
+- [x] 15-02-PLAN.md — Leader/Base art slots + hover art preview panel in deck-builder.tsx (REQ-DECK-10)
+- [x] 15-03-PLAN.md — Aspect breakdown panel in deck-sidebar.tsx (REQ-DECK-08)
 **UI hint**: yes
 
 ### Phase 16: Empty Deck Guided Onboarding
@@ -104,7 +104,7 @@ Plans:
 | 12 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 13 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 14 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
-| 15 | v4 | 0/3 | Not started | — |
+| 15 | v4 | 3/3 | ✅ Complete | 2026-05-14 |
 | 16 | v4 | 0/? | Not started | — |
 | 17 | v4 | 0/? | Not started | — |
 | 18 | v4 | 0/? | Not started | — |

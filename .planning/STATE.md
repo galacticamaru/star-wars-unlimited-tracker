@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Deck Builder & Collection Depth
 status: ready
-stopped_at: "Phase 15 planned (3 plans ready)"
+stopped_at: "Phase 15 complete (3/3 plans done)"
 last_updated: "2026-05-14T00:00:00.000Z"
-last_activity: 2026-05-14 -- Phase 15 planned (3 plans in 2 waves, ready to execute)
+last_activity: 2026-05-14 -- Phase 15 executed (3/3 plans complete, verification pending)
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 0
-  percent: 0
+  completed_plans: 3
+  percent: 25
 ---
 
 # Project State
@@ -26,12 +26,12 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 ## Current Position
 
 Phase: 15 — Deck List Display Polish
-Plan: —
-Status: Ready to execute (3 plans in 2 waves)
-Last activity: 2026-05-14 — Phase 15 planned (3 plans: type grouping, art display, aspect panel)
+Plan: 3/3 complete
+Status: Executed — verification pending
+Last activity: 2026-05-14 — Phase 15 executed (type grouping, leader/base art, aspect panel all complete)
 
 ```
-v4 Progress [░░░░░░░░░░░░░░░░░░░░] 0% (0/4 phases)
+v4 Progress [█████░░░░░░░░░░░░░░░] 25% (1/4 phases)
 ```
 
 ## Performance Metrics
@@ -91,4 +91,4 @@ None.
 ## Session Continuity
 
 Last session: 2026-05-14
-Stopped at: Phase 15 UI-SPEC approved. Run `/gsd-plan-phase 15` to plan Phase 15.
+Stopped at: Phase 15 complete. Run `/gsd-discuss-phase 16` to start Phase 16 (Empty Deck Guided Onboarding).
