@@ -2,6 +2,7 @@
 
 import { useReducer, useState, useMemo, useEffect, useRef } from 'react';
 import { Card, DeckCard } from '@/lib/deck-validation';
+import { groupDeckCards } from '@/lib/deck-grouping';
 import { DeckSidebar } from './deck-sidebar';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
@@ -186,7 +187,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
     [state.cards, cardMap]
   );
 
-  const sideboard: DeckCard[] = useMemo(() => 
+  const sideboard: DeckCard[] = useMemo(() =>
     state.cards
       .filter((c) => c.isSideboard)
       .map((c) => {
@@ -196,6 +197,8 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
       .filter((c): c is DeckCard => !!c),
     [state.cards, cardMap]
   );
+
+  const groupedDeck = useMemo(() => groupDeckCards(mainDeck), [mainDeck]);
 
   const deckCounts = useMemo(() => {
     const counts: Record<number, number> = {};
@@ -371,47 +374,63 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 </div>
                 </div>
 
-                {/* Card List */}
-                <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-bold">Main Deck ({mainDeck.reduce((s,i) => s + i.quantity, 0)})</h3>
-                </div>
-                <div className="bg-white border rounded-lg divide-y shadow-sm">
-                    {mainDeck.length === 0 ? (
-                    <div className="p-12 text-center text-slate-400">
-                        <p className="mb-4">Empty deck.</p>
-                        <Button onClick={() => setView('catalog')}>Switch to Catalog</Button>
-                    </div>
-                    ) : (
-                    mainDeck.map((item) => (
-                        <div key={item.card.id} className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors">
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded bg-slate-100 flex items-center justify-center font-bold text-indigo-600">
-                            {item.quantity}x
-                            </div>
-                            <div>
-                            <p className="font-medium">{item.card.name}</p>
-                            <p className="text-xs text-slate-500">{item.card.type} • {item.card.cost} Cost</p>
-                            </div>
-                        </div>
-                        <div className="flex gap-1">
-                            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: false } })}>-</Button>
-                            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: false } })}>+</Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-8 text-xs text-amber-600 border-amber-300 hover:bg-amber-50"
-                              onClick={() => handleMoveToSideboard(item.card.id)}
-                              disabled={sideboardTotal >= 10}
-                            >
-                              Move to SB
-                            </Button>
-                        </div>
-                        </div>
-                    ))
-                    )}
-                </div>
-                </div>
+                {/* Type-Grouped Card Sections (D-01, D-02, D-03) */}
+                {mainDeck.length === 0 ? (
+                  <div className="bg-white border rounded-lg shadow-sm p-12 text-center text-slate-400">
+                    <p className="mb-4">Empty deck.</p>
+                    <Button onClick={() => setView('catalog')}>Switch to Catalog</Button>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {(
+                      [
+                        { key: 'groundUnits' as const, label: 'Ground Units' },
+                        { key: 'spaceUnits'  as const, label: 'Space Units'  },
+                        { key: 'upgrades'    as const, label: 'Upgrades'     },
+                        { key: 'events'      as const, label: 'Events'       },
+                        { key: 'other'       as const, label: 'Other'        },
+                      ]
+                    ).map(({ key, label }) => {
+                      const group = groupedDeck[key];
+                      if (group.length === 0) return null;
+                      return (
+                        <section key={key} aria-label={label}>
+                          <h3 className="text-sm font-semibold uppercase text-slate-500 mb-2 px-4 pt-2">
+                            {label} ({group.reduce((s, i) => s + i.quantity, 0)})
+                          </h3>
+                          <div className="bg-white border rounded-lg divide-y shadow-sm">
+                            {group.map((item) => (
+                              <div key={item.card.id} className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                                <div className="flex items-center gap-4">
+                                  <div className="w-10 h-10 rounded bg-slate-100 flex items-center justify-center font-bold text-indigo-600">
+                                    {item.quantity}x
+                                  </div>
+                                  <div>
+                                    <p className="font-medium">{item.card.name}</p>
+                                    <p className="text-xs text-slate-500">{item.card.type} • {item.card.cost} Cost</p>
+                                  </div>
+                                </div>
+                                <div className="flex gap-1">
+                                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: false } })}>-</Button>
+                                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: false } })}>+</Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 text-xs text-amber-600 border-amber-300 hover:bg-amber-50"
+                                    onClick={() => handleMoveToSideboard(item.card.id)}
+                                    disabled={sideboardTotal >= 10}
+                                  >
+                                    Move to SB
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </section>
+                      );
+                    })}
+                  </div>
+                )}
 
                 {/* Sideboard */}
                 <div className="space-y-4">
