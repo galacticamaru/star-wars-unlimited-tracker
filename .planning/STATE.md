@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Deck Builder & Collection Depth
 status: ready
-stopped_at: "Phase 15 UI-SPEC approved"
+stopped_at: "Phase 15 planned (3 plans ready)"
 last_updated: "2026-05-14T00:00:00.000Z"
-last_activity: 2026-05-14 -- Phase 15 UI-SPEC approved (ready to plan)
+last_activity: 2026-05-14 -- Phase 15 planned (3 plans in 2 waves, ready to execute)
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
+  total_plans: 3
   completed_plans: 0
   percent: 0
 ---
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 Phase: 15 — Deck List Display Polish
 Plan: —
-Status: UI-SPEC approved, ready to plan Phase 15
-Last activity: 2026-05-14 — Phase 15 UI-SPEC generated and verified (6/6 dimensions passed)
+Status: Ready to execute (3 plans in 2 waves)
+Last activity: 2026-05-14 — Phase 15 planned (3 plans: type grouping, art display, aspect panel)
 
 ```
 v4 Progress [░░░░░░░░░░░░░░░░░░░░] 0% (0/4 phases)
