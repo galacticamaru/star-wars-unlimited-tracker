@@ -1,6 +1,7 @@
 'use client';
 
 import { useReducer, useState, useMemo, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { Card, DeckCard } from '@/lib/deck-validation';
 import { groupDeckCards } from '@/lib/deck-grouping';
 import { DeckSidebar } from './deck-sidebar';
@@ -125,6 +126,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   const [isSaving, setIsSaving] = useState(false);
   const [view, setView] = useState<'editor' | 'catalog' | 'want-list'>('catalog');
   const [apiErrors, setApiErrors] = useState<string[]>([]);
+  const [hoveredCard, setHoveredCard] = useState<Card | null>(null);
   const router = useRouter();
   const cleanStateRef = useRef(initialDeck);
 
@@ -342,7 +344,26 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 onDeckUpdate={handleDeckUpdate}
               />
           ) : view === 'editor' ? (
-            <div className="max-w-4xl mx-auto space-y-8 p-6 pb-20">
+            <div className="max-w-4xl mx-auto p-6 pb-20">
+              <div className="flex flex-row gap-6 items-start">
+
+                {/* Hover Preview Panel — desktop only, sticky (D-11, D-14) */}
+                <div className="hidden md:block w-48 shrink-0 sticky top-0" aria-live="polite">
+                  {hoveredCard?.frontArtUrl ? (
+                    <div className="aspect-[2/3] rounded-lg overflow-hidden relative transition-opacity duration-150">
+                      <Image
+                        src={hoveredCard.frontArtUrl}
+                        alt={hoveredCard.name}
+                        fill
+                        sizes="192px"
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+
+                {/* Main content block */}
+                <div className="flex-1 space-y-8">
                 {/* Leader & Base Slot */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
@@ -473,6 +494,27 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                     )}
                   </div>
                 </div>
+                </div>{/* end flex-1 space-y-8 */}
+
+              </div>{/* end flex flex-row gap-6 items-start */}
+
+              {/* Mobile fixed bottom bar (D-13) — shown when hoveredCard is set via tap/focus */}
+              {hoveredCard && (
+                <div className="md:hidden fixed bottom-0 left-0 right-0 h-24 bg-white border-t z-50 flex items-center gap-4 px-4">
+                  {hoveredCard.frontArtUrl && (
+                    <div className="relative h-20 w-14 shrink-0 rounded overflow-hidden">
+                      <Image
+                        src={hoveredCard.frontArtUrl}
+                        alt={hoveredCard.name}
+                        fill
+                        sizes="56px"
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <span className="font-medium text-sm">{hoveredCard.name}</span>
+                </div>
+              )}
             </div>
           ) : (
             <WantListTab
