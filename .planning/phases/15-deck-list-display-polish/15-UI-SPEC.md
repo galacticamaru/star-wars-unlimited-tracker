@@ -36,7 +36,7 @@ Declared values (multiples of 4 only):
 | Token | Value | Usage |
 |-------|-------|-------|
 | xs | 4px | Icon gaps, inline badge padding |
-| sm | 8px | Compact element spacing (button gaps, row inner padding) |
+| sm | 8px | Compact element spacing (button gaps, row inner padding, sidebar panel header mb-2) |
 | md | 16px | Default element spacing (card row padding p-4, sidebar inner padding) |
 | lg | 24px | Section padding (editor view p-6, space between type-group sections) |
 | xl | 32px | Layout gaps (space-y-8 between leader/base grid and card list) |
@@ -44,9 +44,7 @@ Declared values (multiples of 4 only):
 | 3xl | 64px | Not used in this phase |
 
 Exceptions:
-- Sidebar panel header `mb-2` = 8px (sm), `mb-3` = 12px (non-standard) — match existing sidebar exactly
 - Card row action button height `h-8` = 32px — keep as established
-- Preview panel: 40px minimum width to avoid crowding the card list (10px multiples acceptable for layout math)
 
 Source: existing deck-builder.tsx and deck-sidebar.tsx patterns
 
@@ -56,15 +54,13 @@ Source: existing deck-builder.tsx and deck-sidebar.tsx patterns
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Body | 14px (text-sm) | 400 regular | 1.5 |
-| Label / metadata | 12px (text-xs) | 600 semibold | 1.0 (leading-none for uppercase caps) |
-| Section heading | 14px (text-sm) | 600 semibold | 1.2 |
+| Body / label / metadata | 14px (text-sm) | 600 semibold | 1.5 |
 | Display / deck name | 24px (text-2xl) | 700 bold | 1.2 |
 
 Notes:
-- Section headers in the sidebar and Deck List use `text-sm font-semibold uppercase text-slate-500` — must match exactly for the new type-group headers and aspect panel header
-- Type-group headers in the card list use `text-lg font-bold` (18px / 700) — same pattern as existing "Main Deck (N)" heading
-- Card row metadata (type, cost) stays `text-xs text-slate-500`
+- Section headers in the sidebar and Deck List use `text-sm font-semibold uppercase text-slate-500 mb-2` — must match exactly for the new type-group headers and aspect panel header
+- Type-group headers in the card list use `text-lg font-bold` (18px / 700) — same pattern as existing "Main Deck (N)" heading. font-bold maps to weight 700, which is the bold row in this table
+- Card row metadata (type, cost) stays `text-xs text-slate-500` with weight 600 semibold
 
 Source: deck-sidebar.tsx lines 122, 158, 169; deck-builder.tsx line 377
 
@@ -123,6 +119,7 @@ Source: globals.css, deck-sidebar.tsx, card-item.tsx hover overlay pattern
 - Layout: `flex flex-row gap-6` wrapping the preview panel and the main card list content
 - Preview panel: `w-48 shrink-0` (192px wide), `sticky top-0`, hidden when no card is hovered (`invisible` or conditional render)
 - Preview panel shows `<Image src={hoveredCard.frontArtUrl} fill object-cover />` inside a `aspect-[2/3] rounded-lg overflow-hidden` container
+- Preview panel minimum width: 40px for layout clearance
 - On screens `< md` (< 768px): preview panel does not float to the left — instead, a fixed bottom bar 96px tall with the card image appears on tap/focus (mobile-safe)
 
 ### Type-Group Sections (within main content)
@@ -225,7 +222,7 @@ Type-group sections with 0 cards are not rendered at all (D-02). The heading is 
 | Remove overlay button | "Remove" |
 | Main deck section heading (flat list removed, replaced by type groups) | N/A — heading is now per-type-group |
 
-Source: CONTEXT.md D-04 (aspect panel), D-09 (empty slots unchanged), existing deck-builder.tsx text
+Source: CONTEXT.md D-04 (aspect panel), D-09 (empty slots unchanged), D-10 (Remove overlay — locked), existing deck-builder.tsx text
 
 ---
 
