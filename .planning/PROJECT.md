@@ -8,6 +8,17 @@ A multi-user web app for Star Wars: Unlimited TCG players. Players track their c
 > **v2 shipped 2026-05-12.** Multi-user (auth), market pricing, sideboard support, and public trade binders.
 > **v3 shipped 2026-05-13.** New home page, sticky catalog sidebar, variant support, owned-only filter, and automatic trade wants.
 
+## Current Milestone: v4.0 Deck Builder & Collection Depth
+
+**Goal:** Polish the deck builder UX and deepen collection tracking with variant awareness and quick-add flows.
+
+**Target features:**
+- Deck list grouped by card type, with card art and aspect breakdown panel
+- Empty deck guided onboarding (auto-filter to leader+base, then by aspects)
+- Variant-aware collection tracking on card detail page
+- Catalog shows highest-owned variant art
+- Quick-add pre-constructed deck cards to collection
+
 ## Core Value
 
 See exactly which cards you own while building decks, and know instantly what you're missing.
@@ -40,6 +51,7 @@ See exactly which cards you own while building decks, and know instantly what yo
 - [ ] Card art in Deck List tab — leader/base images + hover art on rows (REQ-DECK-10)
 - [ ] Variant-aware collection tracking on card detail page (REQ-COLLECT-06, REQ-COLLECT-07)
 - [ ] Catalog shows highest-owned variant art (REQ-COLLECT-08)
+- [ ] Quick-add pre-constructed deck cards to collection (REQ-CAT-04)
 
 ### Out of Scope
 
@@ -103,4 +115,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-13 after v3.0 milestone*
+*Last updated: 2026-05-14 — v4.0 milestone started*
