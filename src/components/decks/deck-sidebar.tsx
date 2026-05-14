@@ -5,6 +5,7 @@ import { Card, validateDeck, ValidationResult } from '@/lib/deck-validation';
 import { Badge } from '@/components/ui/badge';
 import { AlertCircle, CheckCircle2, Info, DollarSign } from 'lucide-react';
 import { useCurrency } from '@/components/currency-context';
+import { filterAndSortAspects } from '@/lib/aspect-panel';
 
 interface DeckSidebarProps {
   name: string;
@@ -177,6 +178,25 @@ export function DeckSidebar({
             </div>
           </div>
         </div>
+
+        {/* Aspect Breakdown Panel (D-04, D-05, D-06) */}
+        {(() => {
+          const aspects = filterAndSortAspects(validation.stats.aspectCounts);
+          if (aspects.length === 0) return null;
+          return (
+            <div>
+              <h3 className="text-sm font-semibold uppercase text-slate-500 mb-2">Aspects</h3>
+              <div className="space-y-1">
+                {aspects.map(([aspect, count]) => (
+                  <div key={aspect} className="flex justify-between text-sm">
+                    <span className="text-slate-600">{aspect}</span>
+                    <span className="font-medium">{count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       <div className="mt-auto pt-6 space-y-2">
