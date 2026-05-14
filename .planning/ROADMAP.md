@@ -53,7 +53,11 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
   2. Deck stats sidebar includes an aspect pip breakdown panel showing distribution across all aspects in the deck
   3. Leader and Base card images are visible as full card art in the Deck List tab
   4. Hovering any non-Leader/Base card row in the Deck List tab shows that card's art
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 15-01-PLAN.md — Wave 0 test stubs + type-grouped card sections in deck-builder.tsx (REQ-DECK-07)
+- [ ] 15-02-PLAN.md — Leader/Base art slots + hover art preview panel in deck-builder.tsx (REQ-DECK-10)
+- [ ] 15-03-PLAN.md — Aspect breakdown panel in deck-sidebar.tsx (REQ-DECK-08)
 **UI hint**: yes
 
 ### Phase 16: Empty Deck Guided Onboarding
@@ -100,7 +104,7 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 | 12 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 13 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 14 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
-| 15 | v4 | 0/? | Not started | — |
+| 15 | v4 | 0/3 | Not started | — |
 | 16 | v4 | 0/? | Not started | — |
 | 17 | v4 | 0/? | Not started | — |
 | 18 | v4 | 0/? | Not started | — |
