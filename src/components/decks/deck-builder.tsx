@@ -368,29 +368,81 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <label className="text-xs font-bold uppercase text-slate-500">Leader</label>
-                    <div className="aspect-[3/4] border-2 border-dashed rounded-lg flex items-center justify-center bg-white shadow-sm overflow-hidden">
-                    {leader ? (
-                        <div className="text-center p-4">
-                        <p className="font-bold text-lg">{leader.name}</p>
-                        {leader.subtitle && <p className="text-sm text-slate-500">{leader.subtitle}</p>}
-                        <Button variant="ghost" size="sm" className="mt-4 text-red-500 hover:text-red-700" onClick={() => dispatch({ type: 'SET_LEADER', payload: null })}>Remove</Button>
+                    <div className="aspect-[3/4] border-2 border-dashed rounded-lg bg-white shadow-sm overflow-hidden relative group">
+                      {leader?.frontArtUrl ? (
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={leader.frontArtUrl}
+                            alt={leader.name}
+                            fill
+                            sizes="(max-width: 768px) 50vw, 192px"
+                            className="object-cover"
+                          />
+                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex items-center justify-center z-10">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-white bg-black/30 hover:bg-black/50 border border-white/20"
+                              aria-label={`Remove ${leader.name} as leader`}
+                              onClick={() => dispatch({ type: 'SET_LEADER', payload: null })}
+                            >
+                              Remove
+                            </Button>
+                          </div>
                         </div>
-                    ) : (
-                        <p className="text-slate-400 text-sm">No Leader Selected</p>
-                    )}
+                      ) : leader ? (
+                        <div className="flex items-center justify-center w-full h-full">
+                          <div className="text-center p-4">
+                            <p className="font-bold text-lg">{leader.name}</p>
+                            {leader.subtitle && <p className="text-sm text-slate-500">{leader.subtitle}</p>}
+                            <Button variant="ghost" size="sm" className="mt-4 text-red-500 hover:text-red-700"
+                              onClick={() => dispatch({ type: 'SET_LEADER', payload: null })}>Remove</Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-full">
+                          <p className="text-slate-400 text-sm">No Leader Selected</p>
+                        </div>
+                      )}
                     </div>
                 </div>
                 <div className="space-y-2">
                     <label className="text-xs font-bold uppercase text-slate-500">Base</label>
-                    <div className="aspect-[3/4] md:aspect-[4/3] border-2 border-dashed rounded-lg flex items-center justify-center bg-white shadow-sm overflow-hidden">
-                    {base ? (
-                        <div className="text-center p-4">
-                        <p className="font-bold text-lg">{base.name}</p>
-                        <Button variant="ghost" size="sm" className="mt-4 text-red-500 hover:text-red-700" onClick={() => dispatch({ type: 'SET_BASE', payload: null })}>Remove</Button>
+                    <div className="aspect-[3/4] md:aspect-[4/3] border-2 border-dashed rounded-lg bg-white shadow-sm overflow-hidden relative group">
+                      {base?.frontArtUrl ? (
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={base.frontArtUrl}
+                            alt={base.name}
+                            fill
+                            sizes="(max-width: 768px) 50vw, 192px"
+                            className="object-cover"
+                          />
+                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex items-center justify-center z-10">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-white bg-black/30 hover:bg-black/50 border border-white/20"
+                              aria-label={`Remove ${base.name} as base`}
+                              onClick={() => dispatch({ type: 'SET_BASE', payload: null })}
+                            >
+                              Remove
+                            </Button>
+                          </div>
                         </div>
-                    ) : (
-                        <p className="text-slate-400 text-sm">No Base Selected</p>
-                    )}
+                      ) : base ? (
+                        <div className="flex items-center justify-center w-full h-full">
+                          <div className="text-center p-4">
+                            <p className="font-bold text-lg">{base.name}</p>
+                            <Button variant="ghost" size="sm" className="mt-4 text-red-500 hover:text-red-700"
+                              onClick={() => dispatch({ type: 'SET_BASE', payload: null })}>Remove</Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-full">
+                          <p className="text-slate-400 text-sm">No Base Selected</p>
+                        </div>
+                      )}
                     </div>
                 </div>
                 </div>
@@ -421,7 +473,16 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                           </h3>
                           <div className="bg-white border rounded-lg divide-y shadow-sm">
                             {group.map((item) => (
-                              <div key={item.card.id} className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                              <div
+                                key={item.card.id}
+                                className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors"
+                                tabIndex={0}
+                                onMouseEnter={() => setHoveredCard(item.card)}
+                                onMouseLeave={() => setHoveredCard(null)}
+                                onFocus={() => setHoveredCard(item.card)}
+                                onBlur={() => setHoveredCard(null)}
+                                onTouchStart={() => setHoveredCard(item.card)}
+                              >
                                 <div className="flex items-center gap-4">
                                   <div className="w-10 h-10 rounded bg-slate-100 flex items-center justify-center font-bold text-indigo-600">
                                     {item.quantity}x
