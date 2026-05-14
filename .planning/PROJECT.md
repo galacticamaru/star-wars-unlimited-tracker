@@ -42,13 +42,16 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Catalog Evolution: Sticky sidebar, variant support (Showcase, Prestige, Serialized), TS26 set — v3 (Phase 12)
 - ✓ Owned-Only Filter: Toggle in catalog sidebar and deck builder card browser — v3 (Phase 13)
 - ✓ Trade Binder Polish: Full-width public binder, automatic deck-driven wants in manage page — v3 (Phase 14)
+- ✓ Deck List grouped by card type — Ground/Space Units, Upgrades, Events — v4 (REQ-DECK-07, Phase 15)
+- ✓ Aspect breakdown panel in deck stats sidebar — v4 (REQ-DECK-08, Phase 15)
+- ✓ Card art in Deck List tab — leader/base images + hover art on rows — v4 (REQ-DECK-10, Phase 15)
 
 ### Active (v4)
 
-- [ ] Deck List grouped by card type — Ground/Space Units, Upgrades, Events (REQ-DECK-07)
-- [ ] Aspect breakdown panel in deck stats sidebar (REQ-DECK-08)
 - [ ] Empty deck guided onboarding — auto-filter to leader+base, then aspects (REQ-DECK-09)
-- [ ] Card art in Deck List tab — leader/base images + hover art on rows (REQ-DECK-10)
+- [ ] Variant-aware collection tracking on card detail page (REQ-COLLECT-06, REQ-COLLECT-07)
+- [ ] Catalog shows highest-owned variant art (REQ-COLLECT-08)
+- [ ] Quick-add pre-constructed deck cards to collection (REQ-CAT-04)
 - [ ] Variant-aware collection tracking on card detail page (REQ-COLLECT-06, REQ-COLLECT-07)
 - [ ] Catalog shows highest-owned variant art (REQ-COLLECT-08)
 - [ ] Quick-add pre-constructed deck cards to collection (REQ-CAT-04)
@@ -63,10 +66,10 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ## Context
 
-**Shipped v3:** 2026-05-13
+**Shipped v3:** 2026-05-13 | **v4 Phase 15 complete:** 2026-05-14
 **Stack:** Next.js 16 + TypeScript + Neon PostgreSQL + Drizzle ORM + Better Auth + shadcn/ui + base-ui + nuqs
 **Deployment:** Vercel (Hobby tier, daily cron syncs for cards and prices)
-**Codebase:** ~22,000 LOC TypeScript/TSX, 41 plans completed across 14 phases
+**Codebase:** ~22,000 LOC TypeScript/TSX, 44 plans completed across 15 phases
 **Auth:** Better Auth (Email, Google, Discord) with per-user data isolation
 **Card data:** swu-db.com API auto-sync; PokéWallet API for market prices
 
