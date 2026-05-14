@@ -68,7 +68,17 @@ Plans:
   1. When a deck has no leader or base selected, the card browser automatically pre-filters to show only Leader and Base card types
   2. After a leader and base are selected, the card browser automatically filters to cards matching the combined aspects of that leader+base pair
   3. The user can override the auto-filter at any time without the browser reverting unexpectedly
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+**Wave 1**
+- [ ] 16-01-PLAN.md — Wave 1 TDD: pure `computeAutoFilter` + `computeAutoFilterLabel` in `src/lib/auto-filter.ts` with unit tests (REQ-DECK-09 / D-01, D-08, D-09)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 16-02-PLAN.md — Wave 2: SidebarFilters `autoFilterLabel` prop + Badge chip render (REQ-DECK-09 / D-09, D-10)
+- [ ] 16-03-PLAN.md — Wave 2: CatalogClient auto-filter useEffect, override-detection handlers, and `autoFilterLabel` threading (REQ-DECK-09 / D-02, D-03, D-06, D-07)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 16-04-PLAN.md — Wave 3: DeckBuilder state + memos + dispatch-site resets + CTA rename to "Add Cards" (REQ-DECK-09 / D-04, D-05, D-11)
 **UI hint**: yes
 
 ### Phase 17: Variant Collection Tracking
@@ -105,6 +115,6 @@ Plans:
 | 13 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 14 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 15 | v4 | 3/3 | ✅ Complete | 2026-05-14 |
-| 16 | v4 | 0/? | Not started | — |
+| 16 | v4 | 0/4 | Not started | — |
 | 17 | v4 | 0/? | Not started | — |
 | 18 | v4 | 0/? | Not started | — |
