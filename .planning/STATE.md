@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Deck Builder & Collection Depth
 status: ready
-stopped_at: "Phase 15 context gathered"
+stopped_at: "Phase 15 UI-SPEC approved"
 last_updated: "2026-05-14T00:00:00.000Z"
-last_activity: 2026-05-14 -- Phase 15 context gathered (ready to plan)
+last_activity: 2026-05-14 -- Phase 15 UI-SPEC approved (ready to plan)
 progress:
   total_phases: 4
   completed_phases: 0
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 Phase: 15 — Deck List Display Polish
 Plan: —
-Status: Roadmap defined, ready to plan Phase 15
-Last activity: 2026-05-14 — Roadmap created (Phases 15–18)
+Status: UI-SPEC approved, ready to plan Phase 15
+Last activity: 2026-05-14 — Phase 15 UI-SPEC generated and verified (6/6 dimensions passed)
 
 ```
 v4 Progress [░░░░░░░░░░░░░░░░░░░░] 0% (0/4 phases)
@@ -91,4 +91,4 @@ None.
 ## Session Continuity
 
 Last session: 2026-05-14
-Stopped at: Roadmap defined. Run `/gsd-plan-phase 15` to begin Phase 15.
+Stopped at: Phase 15 UI-SPEC approved. Run `/gsd-plan-phase 15` to plan Phase 15.
