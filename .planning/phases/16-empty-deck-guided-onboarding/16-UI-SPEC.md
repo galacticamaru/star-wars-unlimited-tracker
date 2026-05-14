@@ -1,7 +1,7 @@
 ---
 phase: 16
 slug: empty-deck-guided-onboarding
-status: draft
+status: approved
 shadcn_initialized: true
 preset: base-ui
 created: 2026-05-14
@@ -22,6 +22,8 @@ created: 2026-05-14
 | Component library | base-ui |
 | Icon library | lucide-react |
 | Font | --font-sans (Geist), --font-heading |
+
+Visual anchor: the auto-filter chip — the only new colored element in the sidebar; its `bg-primary/10` fill draws the eye to the filter guidance without competing with interactive controls.
 
 ---
 
@@ -45,12 +47,12 @@ Exceptions: The existing empty-state card uses `p-12` (48px) — do not change t
 
 ## Typography
 
+Declared values cover only what this phase introduces or actively depends on. Existing body and muted text are not modified by this phase.
+
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Body | 14px (text-sm) | 400 (normal) | 1.5 |
 | Label / chip | 12px (text-xs) | 500 (medium) | 1 (single-line) |
 | Section heading | 16px (text-xl via `text-xl font-bold`) | 700 (bold) | 1.2 |
-| Muted / meta | 12px (text-xs) | 400 (normal) | 1.5 |
 
 Source: existing SidebarFilters `<h2 className="text-xl font-bold font-heading">` and Badge base class `text-xs font-medium`.
 
@@ -202,11 +204,11 @@ All other logic (D-01 through D-08 filter state machine, `isAutoFilterOverridden
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-05-14
