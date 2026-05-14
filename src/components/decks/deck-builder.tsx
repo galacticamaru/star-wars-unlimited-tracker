@@ -368,7 +368,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <label className="text-xs font-bold uppercase text-slate-500">Leader</label>
-                    <div className="aspect-[3/4] border-2 border-dashed rounded-lg bg-white shadow-sm overflow-hidden relative group">
+                    <div className="aspect-[4/3] border-2 border-dashed rounded-lg bg-white shadow-sm overflow-hidden relative group">
                       {leader?.frontArtUrl ? (
                         <div className="relative w-full h-full">
                           <Image
@@ -528,7 +528,16 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                       </div>
                     ) : (
                       sideboard.map((item) => (
-                        <div key={item.card.id} className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                        <div
+                          key={item.card.id}
+                          className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors"
+                          tabIndex={0}
+                          onMouseEnter={() => setHoveredCard(item.card)}
+                          onMouseLeave={() => setHoveredCard(null)}
+                          onFocus={() => setHoveredCard(item.card)}
+                          onBlur={() => setHoveredCard(null)}
+                          onTouchStart={() => setHoveredCard(item.card)}
+                        >
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded bg-amber-100 flex items-center justify-center font-bold text-amber-600">
                               {item.quantity}x
