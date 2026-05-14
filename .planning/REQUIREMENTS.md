@@ -54,20 +54,20 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REQ-DECK-07 | — | Pending |
-| REQ-DECK-08 | — | Pending |
-| REQ-DECK-09 | — | Pending |
-| REQ-DECK-10 | — | Pending |
-| REQ-COLLECT-06 | — | Pending |
-| REQ-COLLECT-07 | — | Pending |
-| REQ-COLLECT-08 | — | Pending |
-| REQ-CAT-04 | — | Pending |
+| REQ-DECK-07 | Phase 15 | Pending |
+| REQ-DECK-08 | Phase 15 | Pending |
+| REQ-DECK-10 | Phase 15 | Pending |
+| REQ-DECK-09 | Phase 16 | Pending |
+| REQ-COLLECT-06 | Phase 17 | Pending |
+| REQ-COLLECT-07 | Phase 17 | Pending |
+| REQ-COLLECT-08 | Phase 18 | Pending |
+| REQ-CAT-04 | Phase 18 | Pending |
 
 **Coverage:**
 - v4 requirements: 8 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 8
+- Mapped to phases: 8
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-14*
-*Last updated: 2026-05-14 after initial v4.0 definition*
+*Last updated: 2026-05-14 — roadmap created, all 8 requirements mapped to Phases 15–18*

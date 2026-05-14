@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Deck Builder & Collection Depth
-status: planning
-stopped_at: ""
+status: ready
+stopped_at: "Phase 15"
 last_updated: "2026-05-14T00:00:00.000Z"
-last_activity: 2026-05-14 -- Milestone v4.0 started
+last_activity: 2026-05-14 -- Roadmap created for v4.0 (Phases 15-18)
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -25,10 +25,14 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 15 — Deck List Display Polish
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-14 — Milestone v4.0 started
+Status: Roadmap defined, ready to plan Phase 15
+Last activity: 2026-05-14 — Roadmap created (Phases 15–18)
+
+```
+v4 Progress [░░░░░░░░░░░░░░░░░░░░] 0% (0/4 phases)
+```
 
 ## Performance Metrics
 
@@ -52,7 +56,16 @@ Last activity: 2026-05-14 — Milestone v4.0 started
 ### Roadmap Evolution
 
 - v3 complete: Home page, catalog polish, owned-only filter, trade binder improvements all shipped
-- v4 started: Deck builder UX polish + collection depth (variant tracking, quick-add)
+- v4 started: 4 phases planned (15–18) covering deck builder display polish, guided onboarding, variant collection tracking, and catalog art enhancements
+
+### Phase Summary
+
+| Phase | Goal | Requirements |
+|-------|------|--------------|
+| 15 | Deck list type grouping, aspect breakdown, card art | REQ-DECK-07, 08, 10 |
+| 16 | Empty deck guided onboarding (auto-filter flow) | REQ-DECK-09 |
+| 17 | Per-variant owned counts on card detail page | REQ-COLLECT-06, 07 |
+| 18 | Catalog variant art + starter deck quick-add | REQ-COLLECT-08, REQ-CAT-04 |
 
 ### Decisions
 
@@ -78,4 +91,4 @@ None.
 ## Session Continuity
 
 Last session: 2026-05-14
-Stopped at: Milestone v4.0 started. Run `/gsd-discuss-phase` or `/gsd-plan-phase` for Phase 15.
+Stopped at: Roadmap defined. Run `/gsd-plan-phase 15` to begin Phase 15.
