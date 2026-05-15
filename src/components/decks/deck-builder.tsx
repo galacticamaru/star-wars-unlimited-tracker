@@ -178,14 +178,20 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   const leader = state.leaderCardDefinitionId ? cardMap.get(state.leaderCardDefinitionId) || null : null;
   const base = state.baseCardDefinitionId ? cardMap.get(state.baseCardDefinitionId) || null : null;
 
-  const mainDeck: DeckCard[] = useMemo(() => 
+  const mainDeck: DeckCard[] = useMemo(() =>
     state.cards
       .filter((c) => !c.isSideboard)
       .map((c) => {
         const card = cardMap.get(c.cardDefinitionId);
         return card ? { card, quantity: c.quantity } : null;
       })
-      .filter((c): c is DeckCard => !!c),
+      .filter((c): c is DeckCard => !!c)
+      .sort((a, b) => {
+        const costA = a.card.cost ?? 0;
+        const costB = b.card.cost ?? 0;
+        if (costA !== costB) return costA - costB;
+        return a.card.name.localeCompare(b.card.name);
+      }),
     [state.cards, cardMap]
   );
 
@@ -196,7 +202,13 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
         const card = cardMap.get(c.cardDefinitionId);
         return card ? { card, quantity: c.quantity } : null;
       })
-      .filter((c): c is DeckCard => !!c),
+      .filter((c): c is DeckCard => !!c)
+      .sort((a, b) => {
+        const costA = a.card.cost ?? 0;
+        const costB = b.card.cost ?? 0;
+        if (costA !== costB) return costA - costB;
+        return a.card.name.localeCompare(b.card.name);
+      }),
     [state.cards, cardMap]
   );
 
