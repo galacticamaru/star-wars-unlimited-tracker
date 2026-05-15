@@ -91,6 +91,16 @@ Plans:
 - [x] 16-04-PLAN.md — Wave 3: DeckBuilder state + memos + dispatch-site resets + CTA rename to "Add Cards" (REQ-DECK-09 / D-04, D-05, D-11)
 **UI hint**: yes
 
+### Phase 16.1: Reorder Deck Tabs (INSERTED)
+
+**Goal:** Tab order changes to Deck List → Add Cards → Want List; default active tab changes from Add Cards to Deck List
+**Requirements:** (polish)
+**Depends on:** Phase 16
+**Plans:** 1 plan
+
+Plans:
+- [ ] 16.1-01-PLAN.md — Reorder tab buttons and change useState default to 'editor' in deck-builder.tsx (D-01, D-02, D-03, D-04)
+
 ### Phase 17: Variant Collection Tracking
 **Goal**: Users can view and manage how many copies they own of each variant of a card on that card's detail page
 **Depends on**: Phase 14 (v3 complete)
@@ -127,5 +137,6 @@ Plans:
 | 15 | v4 | 3/3 | ✅ Complete | 2026-05-14 |
 | 15.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
 | 16 | v4 | 0/4 | Not started | — |
+| 16.1 | v4 | 0/1 | Not started | — |
 | 17 | v4 | 0/? | Not started | — |
 | 18 | v4 | 0/? | Not started | — |
