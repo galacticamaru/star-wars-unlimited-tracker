@@ -3,6 +3,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import { useQueryState, parseAsString, parseAsArrayOf, parseAsBoolean } from 'nuqs';
 import { filterCards, type CardForFilter } from '@/lib/filter-cards';
+import type { AutoFilter } from '@/lib/auto-filter';
 import { TopBar } from './top-bar';
 import { CardGrid } from './card-grid';
 import { EmptyState } from './empty-state';
@@ -23,6 +24,10 @@ interface CatalogClientProps {
   deckCounts?: Record<number, number>;
   onDeckUpdate?: (cardDefinitionId: number, count: number) => void;
   topOffset?: string;
+  autoFilter?: AutoFilter | null;
+  isAutoFilterOverridden?: boolean;
+  onFilterManualChange?: () => void;
+  autoFilterLabel?: string | null;
 }
 
 const RARITY_OPTIONS = ['(C) Common', '(U) Uncommon', '(R) Rare', '(L) Legendary'];
@@ -46,12 +51,16 @@ const TRAIT_OPTIONS = [
   'UNDERWORLD', 'VEHICLE', 'WALKER', 'WEAPON', 'WOOKIEE'
 ];
 
-export function CatalogClient({ 
-  cards, 
-  filterOptions, 
-  mode = 'catalog', 
-  deckCounts, 
+export function CatalogClient({
+  cards,
+  filterOptions,
+  mode = 'catalog',
+  deckCounts,
   onDeckUpdate,
+  autoFilter,
+  isAutoFilterOverridden = false,
+  onFilterManualChange,
+  autoFilterLabel,
 }: CatalogClientProps) {
   const [collection, setCollection] = useState<Record<number, number>>({});
   const { data: session } = authClient.useSession();
