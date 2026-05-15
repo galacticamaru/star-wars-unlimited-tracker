@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 16 context gathered
-last_updated: "2026-05-15T00:32:43.635Z"
-last_activity: 2026-05-15 -- Phase 15.1 planning complete
+stopped_at: Phase 15.1 complete, ready for Phase 16
+last_updated: "2026-05-15T10:50:00.000Z"
+last_activity: 2026-05-15 -- Phase 15.1 execution complete
 progress:
   total_phases: 5
   completed_phases: 1
@@ -25,13 +25,13 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 15 — Deck List Display Polish ✓ Shipped
-Plan: 3/3 complete
-Status: Ready to execute
-Last activity: 2026-05-15 -- Phase 15.1 planning complete
+Phase: 15.1 — Sort deck cards by cost ascending ✓ Complete
+Plan: 1/1 complete
+Status: Ready to advance
+Last activity: 2026-05-15 -- Phase 15.1 execution complete
 
 ```
-v4 Progress [█████░░░░░░░░░░░░░░░] 25% (1/4 phases)
+v4 Progress [█████░░░░░░░░░░░░░░░] 25% (1/4 phases + 1 polish)
 ```
 
 ## Performance Metrics
