@@ -23,7 +23,6 @@ interface CatalogClientProps {
   mode?: 'catalog' | 'selector';
   deckCounts?: Record<number, number>;
   onDeckUpdate?: (cardDefinitionId: number, count: number) => void;
-  topOffset?: string;
   autoFilter?: AutoFilter | null;
   isAutoFilterOverridden?: boolean;
   onFilterManualChange?: () => void;
@@ -74,8 +73,7 @@ export function CatalogClient({
         .then(data => setCollection(data))
         .catch(err => console.error('Failed to load collection:', err));
     } else {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      setTimeout(() => setCollection({}), 0);
+      setCollection({});
     }
   }, [isAuthenticated]);
 
@@ -83,13 +81,15 @@ export function CatalogClient({
   // has not yet manually overridden it, push the auto-filter values into our nuqs state.
   // Deps are intentionally [autoFilter, isAutoFilterOverridden] only — including the nuqs setters
   // or selectedTypes/selectedAspects would create an infinite loop (RESEARCH.md Pitfall 1).
+  // Each branch clears the complementary field so types+aspects don't stack and produce zero results.
   useEffect(() => {
     if (isAutoFilterOverridden || !autoFilter) return;
     if (autoFilter.types !== undefined) {
       setSelectedTypes(autoFilter.types);
-    }
-    if (autoFilter.aspects !== undefined) {
+      setSelectedAspects([]);
+    } else if (autoFilter.aspects !== undefined) {
       setSelectedAspects(autoFilter.aspects);
+      setSelectedTypes([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoFilter, isAutoFilterOverridden]);

@@ -10,7 +10,6 @@ import { Switch } from '@/components/ui/switch';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipPopup } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 
-// Stub props for now, to be wired in Plan 3
 interface SidebarFiltersProps {
   search?: string;
   onSearchChange?: (v: string) => void;
