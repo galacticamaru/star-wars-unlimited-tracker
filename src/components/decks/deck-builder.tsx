@@ -125,7 +125,7 @@ interface DeckBuilderProps {
 export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilderProps) {
   const [state, dispatch] = useReducer(deckReducer, initialDeck);
   const [isSaving, setIsSaving] = useState(false);
-  const [view, setView] = useState<'editor' | 'catalog' | 'want-list'>('catalog');
+  const [view, setView] = useState<'editor' | 'catalog' | 'want-list'>('editor');
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const [hoveredCard, setHoveredCard] = useState<Card | null>(null);
   const [isAutoFilterOverridden, setIsAutoFilterOverridden] = useState(false);
@@ -316,21 +316,21 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
               placeholder="Deck Name"
             />
             <div className="flex bg-slate-100 rounded-lg p-1">
-                <Button 
-                    variant={view === 'catalog' ? 'secondary' : 'ghost'} 
-                    size="sm" 
-                    onClick={() => setView('catalog')}
-                    className={view === 'catalog' ? 'bg-white shadow-sm' : ''}
-                >
-                    Add Cards
-                </Button>
-                <Button 
-                    variant={view === 'editor' ? 'secondary' : 'ghost'} 
-                    size="sm" 
+                <Button
+                    variant={view === 'editor' ? 'secondary' : 'ghost'}
+                    size="sm"
                     onClick={() => setView('editor')}
                     className={view === 'editor' ? 'bg-white shadow-sm' : ''}
                 >
                     Deck List
+                </Button>
+                <Button
+                    variant={view === 'catalog' ? 'secondary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setView('catalog')}
+                    className={view === 'catalog' ? 'bg-white shadow-sm' : ''}
+                >
+                    Add Cards
                 </Button>
                 <Button
                     variant={view === 'want-list' ? 'secondary' : 'ghost'}
