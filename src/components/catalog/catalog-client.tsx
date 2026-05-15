@@ -79,6 +79,21 @@ export function CatalogClient({
     }
   }, [isAuthenticated]);
 
+  // Auto-filter injection (Phase 16, D-01/D-02): when the parent passes an autoFilter and the user
+  // has not yet manually overridden it, push the auto-filter values into our nuqs state.
+  // Deps are intentionally [autoFilter, isAutoFilterOverridden] only — including the nuqs setters
+  // or selectedTypes/selectedAspects would create an infinite loop (RESEARCH.md Pitfall 1).
+  useEffect(() => {
+    if (isAutoFilterOverridden || !autoFilter) return;
+    if (autoFilter.types !== undefined) {
+      setSelectedTypes(autoFilter.types);
+    }
+    if (autoFilter.aspects !== undefined) {
+      setSelectedAspects(autoFilter.aspects);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoFilter, isAutoFilterOverridden]);
+
   const handleUpdateCount = async (cardDefinitionId: number, newCount: number) => {
     if (!isAuthenticated) {
       router.push('/login');
@@ -167,6 +182,22 @@ export function CatalogClient({
     setOwnedOnly(false);
   };
 
+  // Override detection (D-03): when the user manually changes a filter that the auto-filter
+  // currently controls, signal the parent to set isAutoFilterOverridden=true.
+  const handleTypesChange = (v: string[]) => {
+    if (!isAutoFilterOverridden && autoFilter?.types !== undefined) {
+      onFilterManualChange?.();
+    }
+    setSelectedTypes(v);
+  };
+
+  const handleAspectsChange = (v: string[]) => {
+    if (!isAutoFilterOverridden && autoFilter?.aspects !== undefined) {
+      onFilterManualChange?.();
+    }
+    setSelectedAspects(v);
+  };
+
   const sidebarProps = {
     search, onSearchChange: setSearch,
     sets: filterOptions.sets,
@@ -178,8 +209,8 @@ export function CatalogClient({
     keywords: KEYWORD_OPTIONS,
     costs: COST_OPTIONS,
     selectedSets, onSetsChange: setSelectedSets,
-    selectedTypes, onTypesChange: setSelectedTypes,
-    selectedAspects, onAspectsChange: setSelectedAspects,
+    selectedTypes, onTypesChange: handleTypesChange,
+    selectedAspects, onAspectsChange: handleAspectsChange,
     selectedArenas, onArenasChange: setSelectedArenas,
     selectedTraits, onTraitsChange: setSelectedTraits,
     selectedRarities, onRaritiesChange: setSelectedRarities,
@@ -189,6 +220,7 @@ export function CatalogClient({
     ownedOnly,
     onOwnedOnlyChange: setOwnedOnly,
     isAuthenticated,
+    autoFilterLabel,
     onClearAll: handleClearAll,
   };
 
