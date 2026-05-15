@@ -4,6 +4,7 @@ import { useReducer, useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Card, DeckCard } from '@/lib/deck-validation';
 import { groupDeckCards } from '@/lib/deck-grouping';
+import { computeAutoFilter, computeAutoFilterLabel } from '@/lib/auto-filter';
 import { DeckSidebar } from './deck-sidebar';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
@@ -127,6 +128,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   const [view, setView] = useState<'editor' | 'catalog' | 'want-list'>('catalog');
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const [hoveredCard, setHoveredCard] = useState<Card | null>(null);
+  const [isAutoFilterOverridden, setIsAutoFilterOverridden] = useState(false);
   const router = useRouter();
   const cleanStateRef = useRef(initialDeck);
 
@@ -177,6 +179,20 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
 
   const leader = state.leaderCardDefinitionId ? cardMap.get(state.leaderCardDefinitionId) || null : null;
   const base = state.baseCardDefinitionId ? cardMap.get(state.baseCardDefinitionId) || null : null;
+
+  // Phase 16 D-01/D-08: derive the auto-filter target from leader/base (null while overridden).
+  // useMemo is REQUIRED — without it, autoFilter becomes a new object every render and the
+  // useEffect in CatalogClient fires on every keystroke (RESEARCH.md Pitfall 2).
+  const autoFilter = useMemo(
+    () => (isAutoFilterOverridden ? null : computeAutoFilter(leader, base)),
+    [leader, base, isAutoFilterOverridden]
+  );
+
+  // Phase 16 D-09: derive the chip label from the (memoized) auto-filter + override flag.
+  const autoFilterLabel = useMemo(
+    () => computeAutoFilterLabel(autoFilter, isAutoFilterOverridden),
+    [autoFilter, isAutoFilterOverridden]
+  );
 
   const mainDeck: DeckCard[] = useMemo(() =>
     state.cards
