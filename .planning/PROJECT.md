@@ -45,13 +45,10 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Deck List grouped by card type — Ground/Space Units, Upgrades, Events — v4 (REQ-DECK-07, Phase 15)
 - ✓ Aspect breakdown panel in deck stats sidebar — v4 (REQ-DECK-08, Phase 15)
 - ✓ Card art in Deck List tab — leader/base images + hover art on rows — v4 (REQ-DECK-10, Phase 15)
+- ✓ Empty deck guided onboarding — auto-filter to leader+base, then aspects — v4 (REQ-DECK-09, Phase 16)
 
 ### Active (v4)
 
-- [ ] Empty deck guided onboarding — auto-filter to leader+base, then aspects (REQ-DECK-09)
-- [ ] Variant-aware collection tracking on card detail page (REQ-COLLECT-06, REQ-COLLECT-07)
-- [ ] Catalog shows highest-owned variant art (REQ-COLLECT-08)
-- [ ] Quick-add pre-constructed deck cards to collection (REQ-CAT-04)
 - [ ] Variant-aware collection tracking on card detail page (REQ-COLLECT-06, REQ-COLLECT-07)
 - [ ] Catalog shows highest-owned variant art (REQ-COLLECT-08)
 - [ ] Quick-add pre-constructed deck cards to collection (REQ-CAT-04)
@@ -66,10 +63,10 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ## Context
 
-**Shipped v3:** 2026-05-13 | **v4 Phase 15 complete:** 2026-05-14
+**Shipped v3:** 2026-05-13 | **v4 Phase 15 complete:** 2026-05-14 | **v4 Phase 16 complete:** 2026-05-15
 **Stack:** Next.js 16 + TypeScript + Neon PostgreSQL + Drizzle ORM + Better Auth + shadcn/ui + base-ui + nuqs
 **Deployment:** Vercel (Hobby tier, daily cron syncs for cards and prices)
-**Codebase:** ~22,000 LOC TypeScript/TSX, 44 plans completed across 15 phases
+**Codebase:** ~22,000 LOC TypeScript/TSX, 48 plans completed across 16 phases
 **Auth:** Better Auth (Email, Google, Discord) with per-user data isolation
 **Card data:** swu-db.com API auto-sync; PokéWallet API for market prices
 
