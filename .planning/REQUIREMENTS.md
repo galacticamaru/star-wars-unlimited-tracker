@@ -9,7 +9,7 @@
 
 - [ ] **REQ-DECK-07**: User can view the Deck List tab with cards grouped by type section (Ground Units, Space Units, Upgrades, Events)
 - [ ] **REQ-DECK-08**: User can see an aspect pip breakdown panel in the deck stats sidebar showing distribution across all aspects
-- [ ] **REQ-DECK-09**: User is guided through building an empty deck — card browser auto-filters to Leader and Base cards first, then filters by the combination of chosen leader's and base aspects after selection
+- [x] **REQ-DECK-09**: User is guided through building an empty deck — card browser auto-filters to Leader and Base cards first, then filters by the combination of chosen leader's and base aspects after selection
 - [ ] **REQ-DECK-10**: User sees leader and base card images in the Deck List tab, and card art appears on hover for all deck card rows
 
 ### Collection / Catalog
@@ -57,7 +57,7 @@ Explicitly excluded. Documented to prevent scope creep.
 | REQ-DECK-07 | Phase 15 | Pending |
 | REQ-DECK-08 | Phase 15 | Pending |
 | REQ-DECK-10 | Phase 15 | Pending |
-| REQ-DECK-09 | Phase 16 | Pending |
+| REQ-DECK-09 | Phase 16 | Complete |
 | REQ-COLLECT-06 | Phase 17 | Pending |
 | REQ-COLLECT-07 | Phase 17 | Pending |
 | REQ-COLLECT-08 | Phase 18 | Pending |

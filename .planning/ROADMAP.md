@@ -38,7 +38,7 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 ### v4 Deck Builder & Collection Depth (Phases 15–18)
 
 - [x] **Phase 15: Deck List Display Polish** — Card type grouping, aspect breakdown panel, and card art in the deck list view (2026-05-14)
-- [ ] **Phase 16: Empty Deck Guided Onboarding** — Auto-filter flow that guides users from leader+base selection through aspect-filtered card browsing
+- [x] **Phase 16: Empty Deck Guided Onboarding** — Auto-filter flow that guides users from leader+base selection through aspect-filtered card browsing (2026-05-15)
 - [ ] **Phase 17: Variant Collection Tracking** — Per-variant owned counts viewed and updated on the card detail page
 - [ ] **Phase 18: Catalog Collection Enhancements** — Catalog grid shows highest-owned variant art; quick-add all cards from a starter deck
 
@@ -88,7 +88,7 @@ Plans:
 - [x] 16-03-PLAN.md — Wave 2: CatalogClient auto-filter useEffect, override-detection handlers, and `autoFilterLabel` threading (REQ-DECK-09 / D-02, D-03, D-06, D-07)
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 16-04-PLAN.md — Wave 3: DeckBuilder state + memos + dispatch-site resets + CTA rename to "Add Cards" (REQ-DECK-09 / D-04, D-05, D-11)
+- [x] 16-04-PLAN.md — Wave 3: DeckBuilder state + memos + dispatch-site resets + CTA rename to "Add Cards" (REQ-DECK-09 / D-04, D-05, D-11)
 **UI hint**: yes
 
 ### Phase 17: Variant Collection Tracking
