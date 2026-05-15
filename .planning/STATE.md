@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 15 — Deck List Display Polish ✓ Complete
+Phase: 15 — Deck List Display Polish ✓ Shipped
 Plan: 3/3 complete
-Status: Ready to execute
-Last activity: 2026-05-14 -- Phase 16 planning complete
+Status: Phase 15 shipped — PR #12
+Last activity: 2026-05-15 -- Phase 15 shipped — PR #12
 
 ```
 v4 Progress [█████░░░░░░░░░░░░░░░] 25% (1/4 phases)
