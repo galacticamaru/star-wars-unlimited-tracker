@@ -8,6 +8,7 @@ import { VariantFilter } from './variant-filter';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipPopup } from '@/components/ui/tooltip';
+import { Badge } from '@/components/ui/badge';
 
 // Stub props for now, to be wired in Plan 3
 interface SidebarFiltersProps {
@@ -43,6 +44,7 @@ interface SidebarFiltersProps {
   ownedOnly?: boolean;
   onOwnedOnlyChange?: (v: boolean) => void;
   isAuthenticated?: boolean;
+  autoFilterLabel?: string | null;
   }
 
   export function SidebarFilters({
@@ -78,10 +80,22 @@ interface SidebarFiltersProps {
   ownedOnly = false,
   onOwnedOnlyChange = () => {},
   isAuthenticated = false,
+  autoFilterLabel,
   }: SidebarFiltersProps) {
   return (
     <aside className="w-64 border-r p-4 shrink-0 flex flex-col gap-4 overflow-y-auto h-[calc(100vh-3.5rem)] sticky top-14 self-start bg-card">
       <h2 className="text-xl font-bold font-heading mb-2">Filters</h2>
+
+      {autoFilterLabel && (
+        <Badge
+          variant="outline"
+          className="border-primary/40 bg-primary/10 text-primary dark:border-primary/30 dark:bg-primary/15 dark:text-primary"
+          aria-label={`Auto-filter active: ${autoFilterLabel}`}
+          role="status"
+        >
+          {autoFilterLabel}
+        </Badge>
+      )}
 
       {/* Search */}
       <div className="relative">
