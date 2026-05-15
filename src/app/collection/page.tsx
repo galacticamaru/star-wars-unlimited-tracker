@@ -71,12 +71,12 @@ export default function CollectionPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8">
+      <Link href="/cards" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8">
         <ChevronLeft className="mr-1 size-4" />
-        Back to catalog
+        View all cards
       </Link>
 
-      <h1 className="text-3xl font-bold font-heading mb-6">Your Collection</h1>
+      <h1 className="text-3xl font-bold font-heading mb-6">Import your Collection</h1>
       
       <div className="bg-muted/50 rounded-xl border border-border p-8 flex flex-col items-center text-center gap-6">
         <div className="bg-background p-4 rounded-full shadow-sm">
