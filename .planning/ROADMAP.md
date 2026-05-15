@@ -60,6 +60,16 @@ Plans:
 - [x] 15-03-PLAN.md — Aspect breakdown panel in deck-sidebar.tsx (REQ-DECK-08)
 **UI hint**: yes
 
+### Phase 15.1: order each cardRow in a decklist by cost ascending. (INSERTED)
+
+**Goal:** [Urgent work - to be planned]
+**Requirements**: TBD
+**Depends on:** Phase 15
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 15.1 to break down)
+
 ### Phase 16: Empty Deck Guided Onboarding
 **Goal**: A user starting with an empty deck is guided — the card browser intelligently filters first to Leader and Base cards, then narrows to the aspects of the chosen leader and base combination
 **Depends on**: Phase 15
