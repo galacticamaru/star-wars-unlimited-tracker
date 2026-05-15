@@ -81,7 +81,7 @@ Plans:
 **Plans**: 4 plans
 Plans:
 **Wave 1**
-- [ ] 16-01-PLAN.md — Wave 1 TDD: pure `computeAutoFilter` + `computeAutoFilterLabel` in `src/lib/auto-filter.ts` with unit tests (REQ-DECK-09 / D-01, D-08, D-09)
+- [x] 16-01-PLAN.md — Wave 1 TDD: pure `computeAutoFilter` + `computeAutoFilterLabel` in `src/lib/auto-filter.ts` with unit tests (REQ-DECK-09 / D-01, D-08, D-09)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 16-02-PLAN.md — Wave 2: SidebarFilters `autoFilterLabel` prop + Badge chip render (REQ-DECK-09 / D-09, D-10)
