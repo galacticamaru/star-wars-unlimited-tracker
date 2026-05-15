@@ -4,6 +4,7 @@ import { useReducer, useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Card, DeckCard } from '@/lib/deck-validation';
 import { groupDeckCards } from '@/lib/deck-grouping';
+import { computeAutoFilter, computeAutoFilterLabel } from '@/lib/auto-filter';
 import { DeckSidebar } from './deck-sidebar';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
@@ -127,6 +128,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   const [view, setView] = useState<'editor' | 'catalog' | 'want-list'>('catalog');
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const [hoveredCard, setHoveredCard] = useState<Card | null>(null);
+  const [isAutoFilterOverridden, setIsAutoFilterOverridden] = useState(false);
   const router = useRouter();
   const cleanStateRef = useRef(initialDeck);
 
@@ -177,6 +179,20 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
 
   const leader = state.leaderCardDefinitionId ? cardMap.get(state.leaderCardDefinitionId) || null : null;
   const base = state.baseCardDefinitionId ? cardMap.get(state.baseCardDefinitionId) || null : null;
+
+  // Phase 16 D-01/D-08: derive the auto-filter target from leader/base (null while overridden).
+  // useMemo is REQUIRED — without it, autoFilter becomes a new object every render and the
+  // useEffect in CatalogClient fires on every keystroke (RESEARCH.md Pitfall 2).
+  const autoFilter = useMemo(
+    () => (isAutoFilterOverridden ? null : computeAutoFilter(leader, base)),
+    [leader, base, isAutoFilterOverridden]
+  );
+
+  // Phase 16 D-09: derive the chip label from the (memoized) auto-filter + override flag.
+  const autoFilterLabel = useMemo(
+    () => computeAutoFilterLabel(autoFilter, isAutoFilterOverridden),
+    [autoFilter, isAutoFilterOverridden]
+  );
 
   const mainDeck: DeckCard[] = useMemo(() =>
     state.cards
@@ -230,8 +246,10 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
 
     if (card.type === 'Leader') {
         dispatch({ type: 'SET_LEADER', payload: quantity > 0 ? cardDefinitionId : null });
+        setIsAutoFilterOverridden(false);
     } else if (card.type === 'Base') {
         dispatch({ type: 'SET_BASE', payload: quantity > 0 ? cardDefinitionId : null });
+        setIsAutoFilterOverridden(false);
     } else {
         dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId, quantity, isSideboard: false } });
     }
@@ -348,12 +366,16 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
         {/* Builder Content */}
         <div className="flex-1 overflow-y-auto bg-slate-50">
           {view === 'catalog' ? (
-              <CatalogClient 
-                cards={allCards} 
-                filterOptions={filterOptions} 
-                mode="selector" 
+              <CatalogClient
+                cards={allCards}
+                filterOptions={filterOptions}
+                mode="selector"
                 deckCounts={deckCounts}
                 onDeckUpdate={handleDeckUpdate}
+                autoFilter={autoFilter}
+                isAutoFilterOverridden={isAutoFilterOverridden}
+                onFilterManualChange={() => setIsAutoFilterOverridden(true)}
+                autoFilterLabel={autoFilterLabel}
               />
           ) : view === 'editor' ? (
             <div className="max-w-4xl mx-auto p-6 pb-20">
@@ -396,7 +418,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                               size="sm"
                               className="text-white bg-black/30 hover:bg-black/50 border border-white/20"
                               aria-label={`Remove ${leader.name} as leader`}
-                              onClick={() => dispatch({ type: 'SET_LEADER', payload: null })}
+                              onClick={() => { dispatch({ type: 'SET_LEADER', payload: null }); setIsAutoFilterOverridden(false); }}
                             >
                               Remove
                             </Button>
@@ -408,7 +430,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                             <p className="font-bold text-lg">{leader.name}</p>
                             {leader.subtitle && <p className="text-sm text-slate-500">{leader.subtitle}</p>}
                             <Button variant="ghost" size="sm" className="mt-4 text-red-500 hover:text-red-700"
-                              onClick={() => dispatch({ type: 'SET_LEADER', payload: null })}>Remove</Button>
+                              onClick={() => { dispatch({ type: 'SET_LEADER', payload: null }); setIsAutoFilterOverridden(false); }}>Remove</Button>
                           </div>
                         </div>
                       ) : (
@@ -436,7 +458,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                               size="sm"
                               className="text-white bg-black/30 hover:bg-black/50 border border-white/20"
                               aria-label={`Remove ${base.name} as base`}
-                              onClick={() => dispatch({ type: 'SET_BASE', payload: null })}
+                              onClick={() => { dispatch({ type: 'SET_BASE', payload: null }); setIsAutoFilterOverridden(false); }}
                             >
                               Remove
                             </Button>
@@ -447,7 +469,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                           <div className="text-center p-4">
                             <p className="font-bold text-lg">{base.name}</p>
                             <Button variant="ghost" size="sm" className="mt-4 text-red-500 hover:text-red-700"
-                              onClick={() => dispatch({ type: 'SET_BASE', payload: null })}>Remove</Button>
+                              onClick={() => { dispatch({ type: 'SET_BASE', payload: null }); setIsAutoFilterOverridden(false); }}>Remove</Button>
                           </div>
                         </div>
                       ) : (
@@ -463,7 +485,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 {mainDeck.length === 0 ? (
                   <div className="bg-white border rounded-lg shadow-sm p-12 text-center text-slate-400">
                     <p className="mb-4">Empty deck.</p>
-                    <Button onClick={() => setView('catalog')}>Switch to Catalog</Button>
+                    <Button onClick={() => setView('catalog')}>Add Cards</Button>
                   </div>
                 ) : (
                   <div className="space-y-6">
