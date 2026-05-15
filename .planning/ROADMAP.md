@@ -99,7 +99,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 16.1-01-PLAN.md — Reorder tab buttons and change useState default to 'editor' in deck-builder.tsx (D-01, D-02, D-03, D-04)
+- [x] 16.1-01-PLAN.md — Reorder tab buttons and change useState default to 'editor' in deck-builder.tsx (D-01, D-02, D-03, D-04) (2026-05-15)
 
 ### Phase 17: Variant Collection Tracking
 **Goal**: Users can view and manage how many copies they own of each variant of a card on that card's detail page
@@ -136,7 +136,7 @@ Plans:
 | 14 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 15 | v4 | 3/3 | ✅ Complete | 2026-05-14 |
 | 15.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
-| 16 | v4 | 0/4 | Not started | — |
-| 16.1 | v4 | 0/1 | Not started | — |
+| 16 | v4 | 4/4 | ✅ Complete | 2026-05-15 |
+| 16.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
 | 17 | v4 | 0/? | Not started | — |
 | 18 | v4 | 0/? | Not started | — |

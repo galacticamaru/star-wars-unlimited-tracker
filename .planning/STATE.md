@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
-status: planned
-stopped_at: Phase 16.1 planned, ready to execute
-last_updated: "2026-05-15T12:00:00.000Z"
-last_activity: 2026-05-15 -- Phase 16.1 planning complete
+status: complete
+stopped_at: Phase 16.1 plan 01 complete
+last_updated: "2026-05-15T12:10:00.000Z"
+last_activity: 2026-05-15 -- Phase 16.1 plan 01 executed
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 8
-  completed_plans: 3
-  percent: 38
+  completed_plans: 4
+  percent: 50
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 ## Current Position
 
 Phase: 16.1 — Reorder Deck Tabs
-Plan: 0/1 complete
-Status: Ready to execute
-Last activity: 2026-05-15 -- Phase 16.1 planning complete
+Plan: 1/1 complete
+Status: Complete
+Last activity: 2026-05-15 -- Phase 16.1 plan 01 executed
 
 ```
 v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 1 polish)
@@ -90,5 +90,5 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-14T07:15:51.577Z
-Stopped at: Phase 16 context gathered
+Last session: 2026-05-15T12:10:00.000Z
+Stopped at: Phase 16.1 plan 01 complete — Deck List tab is now default and first in order
