@@ -62,13 +62,13 @@ Plans:
 
 ### Phase 15.1: order each cardRow in a decklist by cost ascending. (INSERTED)
 
-**Goal:** [Urgent work - to be planned]
-**Requirements**: TBD
+**Goal:** Deck list card rows in all sections are ordered by cost ascending, then alphabetically by name
+**Requirements**: (polish)
 **Depends on:** Phase 15
-**Plans:** 0 plans
+**Plans:** 1 plan
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 15.1 to break down)
+- [x] 15.1-01-PLAN.md — Sort mainDeck and sideboard arrays by cost ascending (2026-05-15)
 
 ### Phase 16: Empty Deck Guided Onboarding
 **Goal**: A user starting with an empty deck is guided — the card browser intelligently filters first to Leader and Base cards, then narrows to the aspects of the chosen leader and base combination
