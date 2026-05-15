@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
-status: executing
-stopped_at: Phase 16 complete, ready for Phase 17
-last_updated: "2026-05-15T11:40:00.000Z"
-last_activity: 2026-05-15 -- Phase 16 execution complete
+status: planned
+stopped_at: Phase 16.1 planned, ready to execute
+last_updated: "2026-05-15T12:00:00.000Z"
+last_activity: 2026-05-15 -- Phase 16.1 planning complete
 progress:
   total_phases: 5
   completed_phases: 1
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 16 — Empty Deck Guided Onboarding ✓ Complete
-Plan: 4/4 complete
-Status: Ready to advance
-Last activity: 2026-05-15 -- Phase 16 execution complete
+Phase: 16.1 — Reorder Deck Tabs
+Plan: 0/1 complete
+Status: Ready to execute
+Last activity: 2026-05-15 -- Phase 16.1 planning complete
 
 ```
 v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 1 polish)
