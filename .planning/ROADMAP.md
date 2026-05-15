@@ -84,8 +84,8 @@ Plans:
 - [x] 16-01-PLAN.md — Wave 1 TDD: pure `computeAutoFilter` + `computeAutoFilterLabel` in `src/lib/auto-filter.ts` with unit tests (REQ-DECK-09 / D-01, D-08, D-09)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 16-02-PLAN.md — Wave 2: SidebarFilters `autoFilterLabel` prop + Badge chip render (REQ-DECK-09 / D-09, D-10)
-- [ ] 16-03-PLAN.md — Wave 2: CatalogClient auto-filter useEffect, override-detection handlers, and `autoFilterLabel` threading (REQ-DECK-09 / D-02, D-03, D-06, D-07)
+- [x] 16-02-PLAN.md — Wave 2: SidebarFilters `autoFilterLabel` prop + Badge chip render (REQ-DECK-09 / D-09, D-10)
+- [x] 16-03-PLAN.md — Wave 2: CatalogClient auto-filter useEffect, override-detection handlers, and `autoFilterLabel` threading (REQ-DECK-09 / D-02, D-03, D-06, D-07)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 16-04-PLAN.md — Wave 3: DeckBuilder state + memos + dispatch-site resets + CTA rename to "Add Cards" (REQ-DECK-09 / D-04, D-05, D-11)

@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 16 executing — Wave 1 complete, Wave 2 starting
-last_updated: "2026-05-15T11:08:00.000Z"
-last_activity: 2026-05-15 -- Phase 16 Wave 1 (Plan 01) complete
+stopped_at: Phase 16 executing — Wave 2 complete, Wave 3 starting
+last_updated: "2026-05-15T11:20:00.000Z"
+last_activity: 2026-05-15 -- Phase 16 Wave 2 (Plans 02 + 03) complete
 progress:
   total_phases: 5
   completed_phases: 1
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 ## Current Position
 
 Phase: 16 — Empty Deck Guided Onboarding (executing)
-Plan: 1/4 complete
-Status: Wave 1 complete, Wave 2 executing
-Last activity: 2026-05-15 -- Phase 16 Wave 1 (Plan 01) complete
+Plan: 3/4 complete
+Status: Wave 2 complete, Wave 3 executing
+Last activity: 2026-05-15 -- Phase 16 Wave 2 (Plans 02 + 03) complete
 
 ```
 v4 Progress [█████░░░░░░░░░░░░░░░] 25% (1/4 phases + 1 polish)
