@@ -125,6 +125,7 @@ Plans:
 | 13 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 14 | v3 | 3/3 | ✅ Complete | 2026-05-13 |
 | 15 | v4 | 3/3 | ✅ Complete | 2026-05-14 |
+| 15.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
 | 16 | v4 | 0/4 | Not started | — |
 | 17 | v4 | 0/? | Not started | — |
 | 18 | v4 | 0/? | Not started | — |
