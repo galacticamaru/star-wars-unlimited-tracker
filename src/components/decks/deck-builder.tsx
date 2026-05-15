@@ -366,12 +366,16 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
         {/* Builder Content */}
         <div className="flex-1 overflow-y-auto bg-slate-50">
           {view === 'catalog' ? (
-              <CatalogClient 
-                cards={allCards} 
-                filterOptions={filterOptions} 
-                mode="selector" 
+              <CatalogClient
+                cards={allCards}
+                filterOptions={filterOptions}
+                mode="selector"
                 deckCounts={deckCounts}
                 onDeckUpdate={handleDeckUpdate}
+                autoFilter={autoFilter}
+                isAutoFilterOverridden={isAutoFilterOverridden}
+                onFilterManualChange={() => setIsAutoFilterOverridden(true)}
+                autoFilterLabel={autoFilterLabel}
               />
           ) : view === 'editor' ? (
             <div className="max-w-4xl mx-auto p-6 pb-20">
@@ -481,7 +485,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 {mainDeck.length === 0 ? (
                   <div className="bg-white border rounded-lg shadow-sm p-12 text-center text-slate-400">
                     <p className="mb-4">Empty deck.</p>
-                    <Button onClick={() => setView('catalog')}>Switch to Catalog</Button>
+                    <Button onClick={() => setView('catalog')}>Add Cards</Button>
                   </div>
                 ) : (
                   <div className="space-y-6">
