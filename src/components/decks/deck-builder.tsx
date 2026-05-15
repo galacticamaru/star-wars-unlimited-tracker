@@ -246,8 +246,10 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
 
     if (card.type === 'Leader') {
         dispatch({ type: 'SET_LEADER', payload: quantity > 0 ? cardDefinitionId : null });
+        setIsAutoFilterOverridden(false);
     } else if (card.type === 'Base') {
         dispatch({ type: 'SET_BASE', payload: quantity > 0 ? cardDefinitionId : null });
+        setIsAutoFilterOverridden(false);
     } else {
         dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId, quantity, isSideboard: false } });
     }
@@ -412,7 +414,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                               size="sm"
                               className="text-white bg-black/30 hover:bg-black/50 border border-white/20"
                               aria-label={`Remove ${leader.name} as leader`}
-                              onClick={() => dispatch({ type: 'SET_LEADER', payload: null })}
+                              onClick={() => { dispatch({ type: 'SET_LEADER', payload: null }); setIsAutoFilterOverridden(false); }}
                             >
                               Remove
                             </Button>
@@ -424,7 +426,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                             <p className="font-bold text-lg">{leader.name}</p>
                             {leader.subtitle && <p className="text-sm text-slate-500">{leader.subtitle}</p>}
                             <Button variant="ghost" size="sm" className="mt-4 text-red-500 hover:text-red-700"
-                              onClick={() => dispatch({ type: 'SET_LEADER', payload: null })}>Remove</Button>
+                              onClick={() => { dispatch({ type: 'SET_LEADER', payload: null }); setIsAutoFilterOverridden(false); }}>Remove</Button>
                           </div>
                         </div>
                       ) : (
@@ -452,7 +454,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                               size="sm"
                               className="text-white bg-black/30 hover:bg-black/50 border border-white/20"
                               aria-label={`Remove ${base.name} as base`}
-                              onClick={() => dispatch({ type: 'SET_BASE', payload: null })}
+                              onClick={() => { dispatch({ type: 'SET_BASE', payload: null }); setIsAutoFilterOverridden(false); }}
                             >
                               Remove
                             </Button>
@@ -463,7 +465,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                           <div className="text-center p-4">
                             <p className="font-bold text-lg">{base.name}</p>
                             <Button variant="ghost" size="sm" className="mt-4 text-red-500 hover:text-red-700"
-                              onClick={() => dispatch({ type: 'SET_BASE', payload: null })}>Remove</Button>
+                              onClick={() => { dispatch({ type: 'SET_BASE', payload: null }); setIsAutoFilterOverridden(false); }}>Remove</Button>
                           </div>
                         </div>
                       ) : (
