@@ -63,7 +63,7 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ## Context
 
-**Shipped v3:** 2026-05-13 | **v4 Phase 15 complete:** 2026-05-14 | **v4 Phase 16 complete:** 2026-05-15
+**Shipped v3:** 2026-05-13 | **v4 Phase 15 complete:** 2026-05-14 | **v4 Phase 16 complete:** 2026-05-15 | **v4 Phase 16.1 complete:** 2026-05-15
 **Stack:** Next.js 16 + TypeScript + Neon PostgreSQL + Drizzle ORM + Better Auth + shadcn/ui + base-ui + nuqs
 **Deployment:** Vercel (Hobby tier, daily cron syncs for cards and prices)
 **Codebase:** ~22,000 LOC TypeScript/TSX, 48 plans completed across 16 phases
@@ -115,4 +115,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-14 — v4.0 milestone started*
+*Last updated: 2026-05-15 — Phase 16.1 complete (tab reorder polish)*

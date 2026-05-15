@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
-status: complete
-stopped_at: Phase 16.1 plan 01 complete
+status: in_progress
+stopped_at: Phase 16.1 complete, ready for Phase 17
 last_updated: "2026-05-15T12:10:00.000Z"
 last_activity: 2026-05-15 -- Phase 16.1 plan 01 executed
 progress:
