@@ -110,7 +110,32 @@ Plans:
   2. User can increment the owned count for any individual variant directly on the card detail page
   3. User can decrement the owned count for any individual variant (down to zero) directly on the card detail page
   4. Changes to per-variant counts persist and are reflected immediately without a full page reload
-**Plans**: TBD
+**Plans**: 8 plans
+
+Plans:
+
+**Wave 0**
+- [ ] 17-01-PLAN.md — Test stubs + DB suffix lookup (Wave 0): normalize.test.ts, collection-shape.test.ts, collection-shape.ts stub (REQ-COLLECT-06, REQ-COLLECT-07)
+
+**Wave 1** *(blocked on Wave 0)*
+- [ ] 17-02-PLAN.md — DB schema (userPrintingCollections table) + query helpers (upsertVariantCount, recomputeTotal, getSameSetPrintingsWithCounts, updated getUserCollection) + buildCollectionMap implementation (REQ-COLLECT-06, REQ-COLLECT-07)
+
+**Wave 2** *(blocked on Wave 1, parallel)*
+- [ ] 17-03-PLAN.md — API routes: POST /api/collection/variants (new), GET /api/collection (updated shape), POST /api/collection (removed per D-03) (REQ-COLLECT-06, REQ-COLLECT-07)
+- [ ] 17-04-PLAN.md — Consumer migration: CatalogClient, WantListTab, filter-cards.ts read .total from new GET shape; CatalogClient POST mutation removed (REQ-COLLECT-06)
+
+**Wave 3** *(blocked on Waves 2a + 2b)*
+- [ ] 17-05-PLAN.md — Card detail page UI: VariantCollectionSection component + page.tsx wiring, CollectionControls removed (REQ-COLLECT-06, REQ-COLLECT-07)
+
+**Wave 4** *(blocked on Wave 1)*
+- [ ] 17-06-PLAN.md — CSV import update: normalizeRedditCsv per-variant keys, import route writes to user_printing_collections (REQ-COLLECT-06, REQ-COLLECT-07)
+
+**Wave 5 — BLOCKING** *(blocked on all preceding waves)*
+- [ ] 17-07-PLAN.md — `npx drizzle-kit push` — schema push to live Neon DB (REQ-COLLECT-06, REQ-COLLECT-07)
+
+**Wave 6** *(blocked on Wave 5)*
+- [ ] 17-08-PLAN.md — Human verification checkpoint: card detail page visual + functional check + catalog regression check (REQ-COLLECT-06, REQ-COLLECT-07)
+
 **UI hint**: yes
 
 ### Phase 18: Catalog Collection Enhancements
@@ -138,5 +163,5 @@ Plans:
 | 15.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
 | 16 | v4 | 4/4 | ✅ Complete | 2026-05-15 |
 | 16.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
-| 17 | v4 | 0/? | Not started | — |
+| 17 | v4 | 0/8 | Not started | — |
 | 18 | v4 | 0/? | Not started | — |
