@@ -131,6 +131,22 @@ export const userCollections = pgTable(
   ]
 );
 
+export const userPrintingCollections = pgTable(
+  'user_printing_collections',
+  {
+    userId: integer('user_id').notNull(),
+    cardPrintingId: integer('card_printing_id')
+      .notNull()
+      .references(() => cardPrintings.id),
+    count: integer('count').notNull().default(0),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.cardPrintingId] }),
+  ]
+);
+
 export const tradeExclusions = pgTable(
   'trade_exclusions',
   {
