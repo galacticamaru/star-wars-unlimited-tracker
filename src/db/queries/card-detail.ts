@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { cardDefinitions, cardPrintings, userCollections } from '@/db/schema';
+import { cardDefinitions, cardPrintings, userCollections, userPrintingCollections } from '@/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 
 export async function getCardByPrinting(setCode: string, cardNumber: string, userId?: number) {
@@ -55,4 +55,40 @@ export async function getCardByPrinting(setCode: string, cardNumber: string, use
     .limit(1);
 
   return card ?? null;
+}
+
+/**
+ * Fetches all card_printings rows for a given cardDefinitionId + setCode,
+ * with the per-user owned count from user_printing_collections.
+ *
+ * Used by the card detail RSC to build the VariantCollectionSection variant list.
+ * IMPORTANT: No variantType filter — all variants are returned (D-07).
+ */
+export async function getSameSetPrintingsWithCounts(
+  cardDefinitionId: number,
+  setCode: string,
+  userId?: number
+) {
+  return db
+    .select({
+      id: cardPrintings.id,
+      variantType: cardPrintings.variantType,
+      collectorNumber: cardPrintings.collectorNumber,
+      ownedCount: sql<number>`COALESCE(${userPrintingCollections.count}, 0)`,
+    })
+    .from(cardPrintings)
+    .leftJoin(
+      userPrintingCollections,
+      and(
+        eq(cardPrintings.id, userPrintingCollections.cardPrintingId),
+        userId ? eq(userPrintingCollections.userId, userId) : sql`FALSE`
+      )
+    )
+    .where(
+      and(
+        eq(cardPrintings.cardDefinitionId, cardDefinitionId),
+        eq(cardPrintings.setCode, setCode)
+      )
+    )
+    .orderBy(cardPrintings.variantType);
 }

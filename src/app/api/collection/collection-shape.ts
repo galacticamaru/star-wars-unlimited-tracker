@@ -17,7 +17,16 @@ export interface CollectionRow {
  * A card with no variant rows appears as a single row with cardPrintingId=null, variantCount=null.
  */
 export function buildCollectionMap(rows: CollectionRow[]): CollectionMap {
-  // STUB — implement in Plan 02 (collection.ts query update)
-  // Tests written against this stub will be RED until Plan 02 implements this
-  throw new Error('Not implemented');
+  const map: CollectionMap = {};
+
+  for (const row of rows) {
+    if (!map[row.cardDefinitionId]) {
+      map[row.cardDefinitionId] = { total: row.total, variants: {} };
+    }
+    if (row.cardPrintingId !== null && row.variantCount !== null) {
+      map[row.cardDefinitionId].variants[row.cardPrintingId] = row.variantCount;
+    }
+  }
+
+  return map;
 }
