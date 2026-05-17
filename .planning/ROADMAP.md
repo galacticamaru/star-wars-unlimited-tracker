@@ -115,7 +115,7 @@ Plans:
 Plans:
 
 **Wave 0**
-- [ ] 17-01-PLAN.md — Test stubs + DB suffix lookup (Wave 0): normalize.test.ts, collection-shape.test.ts, collection-shape.ts stub (REQ-COLLECT-06, REQ-COLLECT-07)
+- [x] 17-01-PLAN.md — Test stubs + DB suffix lookup (Wave 0): normalize.test.ts, collection-shape.test.ts, collection-shape.ts stub (REQ-COLLECT-06, REQ-COLLECT-07)
 
 **Wave 1** *(blocked on Wave 0)*
 - [ ] 17-02-PLAN.md — DB schema (userPrintingCollections table) + query helpers (upsertVariantCount, recomputeTotal, getSameSetPrintingsWithCounts, updated getUserCollection) + buildCollectionMap implementation (REQ-COLLECT-06, REQ-COLLECT-07)

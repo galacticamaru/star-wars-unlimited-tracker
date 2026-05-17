@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 ## Current Position
 
 Phase: 17 — Variant Collection Tracking
-Plan: 0/8 (ready to execute)
-Status: Ready to execute
-Last activity: 2026-05-17 -- Phase 17 planned (8 plans, 6 waves)
+Plan: 1/8 (executing)
+Status: In progress
+Last activity: 2026-05-17 -- Phase 17 plan 01 complete — TDD RED test scaffold + DB suffix discovery
 
 ```
 v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 2 polish; Phase 17 planned)
