@@ -121,8 +121,8 @@ Plans:
 - [x] 17-02-PLAN.md — DB schema (userPrintingCollections table) + query helpers (upsertVariantCount, recomputeTotal, getSameSetPrintingsWithCounts, updated getUserCollection) + buildCollectionMap implementation (REQ-COLLECT-06, REQ-COLLECT-07)
 
 **Wave 2** *(blocked on Wave 1, parallel)*
-- [ ] 17-03-PLAN.md — API routes: POST /api/collection/variants (new), GET /api/collection (updated shape), POST /api/collection (removed per D-03) (REQ-COLLECT-06, REQ-COLLECT-07)
-- [ ] 17-04-PLAN.md — Consumer migration: CatalogClient, WantListTab, filter-cards.ts read .total from new GET shape; CatalogClient POST mutation removed (REQ-COLLECT-06)
+- [x] 17-03-PLAN.md — API routes: POST /api/collection/variants (new), GET /api/collection (updated shape), POST /api/collection (removed per D-03) (REQ-COLLECT-06, REQ-COLLECT-07)
+- [x] 17-04-PLAN.md — Consumer migration: CatalogClient, WantListTab, filter-cards.ts read .total from new GET shape; CatalogClient POST mutation removed (REQ-COLLECT-06)
 
 **Wave 3** *(blocked on Waves 2a + 2b)*
 - [ ] 17-05-PLAN.md — Card detail page UI: VariantCollectionSection component + page.tsx wiring, CollectionControls removed (REQ-COLLECT-06, REQ-COLLECT-07)
