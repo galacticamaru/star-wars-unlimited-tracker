@@ -1,9 +1,10 @@
 import { CardItem } from './card-item';
 import type { CardForFilter } from '@/lib/filter-cards';
+import type { CollectionMap } from '@/app/api/collection/collection-shape';
 
 interface CardGridProps {
   cards: CardForFilter[];
-  collection: Record<number, number>;
+  collection: CollectionMap;
   onUpdateCount?: (id: number, count: number) => void;
   mode?: 'catalog' | 'selector' | 'want-list' | 'binder' | 'want';
   deckCounts?: Record<number, number>;
@@ -36,7 +37,7 @@ export function CardGrid({
           collectorNumber={card.collectorNumber}
           frontArtUrl={card.frontArtUrl}
           backArtUrl={card.backArtUrl}
-          ownedCount={collection[card.id] || 0}
+          ownedCount={collection[card.id]?.total ?? 0}
           onUpdateCount={onUpdateCount}
           mode={mode}
           deckCount={deckCounts[card.id] || 0}
