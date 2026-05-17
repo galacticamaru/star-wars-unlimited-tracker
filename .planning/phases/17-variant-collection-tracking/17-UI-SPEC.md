@@ -40,7 +40,7 @@ Declared values (must be multiples of 4). All values inherited from existing cod
 | Token | Value | Usage |
 |-------|-------|-------|
 | xs | 4px | Icon gaps, tight inline padding |
-| sm | 8px | Gap between variant label and count controls (gap-2) |
+| sm | 8px | Gap between variant label and count controls (gap-2), gap between +/− button and count display (gap-2), row element gap |
 | md | 16px | Section container padding (p-4), gap between rows (gap-4) |
 | lg | 24px | Gap between image column and metadata column on mobile (gap-6) |
 | xl | 32px | Column gap on desktop (gap-8) |
@@ -49,7 +49,6 @@ Declared values (must be multiples of 4). All values inherited from existing cod
 
 Exceptions:
 - Touch targets for +/− icon buttons: 32px (size-8, `size="icon"` button) — matches existing CollectionControls. No expansion needed; card detail is desktop-primary.
-- Gap between +/− button and count display: 12px (gap-3) — exact value from existing CollectionControls.
 
 Source: `src/components/catalog/collection-controls.tsx`, `src/app/cards/[set-code]/[card-number]/page.tsx`
 
@@ -63,12 +62,12 @@ All sizes, weights, and line heights are inherited from the existing type scale 
 |------|------|--------|-------------|------------|
 | Section label | 12px (text-xs) | 700 (font-bold) | 1.5 (normal) | "Your Collection" section heading, uppercase tracking-wider |
 | Body | 14px (text-sm) | 400 (font-normal) | 1.5 | Variant type labels (e.g. "Normal", "Hyperspace"), total line |
-| Body emphasis | 14px (text-sm) | 600 (font-semibold) | 1.5 | "Owned" status indicator when count > 0, "Total: X copies" value |
+| Body emphasis | 14px (text-sm) | 700 (font-bold) | 1.5 | "Owned" status indicator when count > 0, "Total: X copies" value |
 | Count display | 14px (text-sm) | 700 (font-bold) | — | Per-variant owned count number in the Input field |
 
 Constraints:
 - Maximum 4 type roles declared. No additional roles may be introduced in this phase.
-- Only 2 weights are in active use: 400 (normal) and 700 (bold). Font-semibold (600) is the exception for the "Owned" status label, inherited from existing CollectionControls.
+- Exactly 2 weights are in use: 400 (font-normal) and 700 (font-bold). No intermediate weight (600/font-semibold) is used anywhere in this phase.
 
 Source: `src/components/catalog/collection-controls.tsx` lines 43–76
 
@@ -114,7 +113,7 @@ The "Your Collection" section on the card detail page replaces `<CollectionContr
 ┌─────────────────────────────────────────────────────┐
 │  YOUR COLLECTION                         (section label, xs bold uppercase muted)
 │                                                       │
-│  Total: 3 copies                         (sm semibold foreground, read-only, BELOW rows)
+│  Total: 3 copies                         (sm bold foreground, read-only, BELOW rows)
 │  ─────────────────────────────────────────────────── │
 │  Normal          [ − ]  [ 2 ]  [ + ]    Owned        │
 │  Hyperspace      [ − ]  [ 1 ]  [ + ]    Owned        │
@@ -129,17 +128,17 @@ The "Your Collection" section on the card detail page replaces `<CollectionContr
 - Minus button (`variant="outline"` `size="icon"`, disabled when count === 0)
 - Count input (`w-16 text-center font-bold`, type="number")
 - Plus button (`variant="outline"` `size="icon"`)
-- Status indicator: "Owned" (`text-sm font-semibold text-primary`) when count > 0, "Not owned" (`text-sm font-medium text-muted-foreground`) when count === 0
+- Status indicator: "Owned" (`text-sm font-bold text-primary`) when count > 0, "Not owned" (`text-sm font-medium text-muted-foreground`) when count === 0
 
 **Total line anatomy:**
-- Label: `text-xs font-semibold text-muted-foreground` — "Total:"
-- Value: `text-sm font-semibold text-foreground` — numeric sum
+- Label: `text-xs font-bold text-muted-foreground` — "Total:"
+- Value: `text-sm font-bold text-foreground` — numeric sum
 - Separator: `border-t border-border` above the total line, `mt-2 pt-2` spacing
 - No +/− controls on total line
 
 **Container:** `flex flex-col gap-2 p-4 bg-muted/50 rounded-lg border border-border` (exact same classes as current CollectionControls wrapper — source: line 42 of collection-controls.tsx)
 
-**Row gap:** `gap-3` between variant rows (within the row itself, between elements: `gap-3` same as CollectionControls)
+**Row gap:** `gap-2` (8px) between variant rows and between elements within each row.
 
 ---
 
