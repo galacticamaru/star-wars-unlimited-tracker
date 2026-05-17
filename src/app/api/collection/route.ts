@@ -11,10 +11,15 @@ export async function GET() {
     }
 
     const collection = await getUserCollection(Number(session.user.id));
-    
-    // Convert to a map for easier client-side consumption: { [cardDefinitionId]: count }
+
+    // TODO(Plan 03): Update to new shape { [cardDefinitionId]: { total, variants } }
+    // For now, deduplicate by cardDefinitionId and expose total as count to preserve
+    // existing consumer compatibility until Plan 03 updates all callers.
     const countMap = collection.reduce((acc, row) => {
-      acc[row.cardDefinitionId] = row.count;
+      // Use first occurrence (cardDefinitionId is the same across joined printing rows)
+      if (!(row.cardDefinitionId in acc)) {
+        acc[row.cardDefinitionId] = row.total;
+      }
       return acc;
     }, {} as Record<number, number>);
 

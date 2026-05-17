@@ -31,7 +31,9 @@ export default async function CardDetailPage({
   // Return Next.js 404 page for unknown cards — do NOT throw, use notFound()
   if (!card) notFound();
 
-  const ownedCount = collection.find(c => c.cardDefinitionId === card.id)?.count || 0;
+  // TODO(Plan 05): Replace CollectionControls with VariantCollectionSection
+  // collection rows now use .total (getUserCollection returns enriched shape from Plan 02)
+  const ownedCount = collection.find(c => c.cardDefinitionId === card.id)?.total || 0;
 
   return (
     // UI-SPEC.md §Card Detail Page: max-w-5xl mx-auto px-md py-2xl
