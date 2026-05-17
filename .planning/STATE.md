@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Phase 16.1 shipped — pushed to origin/main (32 commits)
-last_updated: "2026-05-15T12:10:00.000Z"
-last_activity: 2026-05-15 -- Phase 16.1 plan 01 executed
+stopped_at: Phase 17 planned — 8 plans ready (6 waves)
+last_updated: "2026-05-17T00:00:00.000Z"
+last_activity: 2026-05-17 -- Phase 17 planned (8 plans, 6 waves)
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 8
+  total_plans: 16
   completed_plans: 4
   percent: 50
 ---
@@ -25,13 +25,13 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 16.1 — Reorder Deck Tabs
-Plan: 1/1 complete
-Status: Complete
-Last activity: 2026-05-15 -- Phase 16.1 plan 01 executed
+Phase: 17 — Variant Collection Tracking
+Plan: 0/8 (ready to execute)
+Status: Ready to execute
+Last activity: 2026-05-17 -- Phase 17 planned (8 plans, 6 waves)
 
 ```
-v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 1 polish)
+v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 2 polish; Phase 17 planned)
 ```
 
 ## Performance Metrics

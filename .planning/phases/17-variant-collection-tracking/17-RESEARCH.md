@@ -430,22 +430,25 @@ const countMap = collection.reduce((acc, row) => {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **CatalogClient mutation endpoint after POST /api/collection removal**
    - What we know: `CatalogClient.handleUpdateCount` currently calls `POST /api/collection` to update the total count for a card (from catalog card grid +/- controls). D-03 removes this endpoint.
    - What's unclear: The catalog does not know `cardPrintingId` — it only knows `cardDefinitionId`. There is no variant granularity in the catalog grid. The catalog +/- controls operate on total count only.
    - Recommendation: The planner must decide whether the catalog grid +/- controls (a) are also removed/disabled, (b) continue to call some endpoint (possibly the new variants endpoint with a designated "Normal" printingId), or (c) become read-only in this phase. The CONTEXT.md does not address this — the card detail page is the only explicit mutation surface. **Likely answer: catalog +/- mutation is out of scope for Phase 17; catalog shows `.total` from GET response but its inline mutation path needs a clear decision.** Flag for planner.
+   - **RESOLVED (Plan 04):** Catalog grid +/- mutation is removed in Phase 17. `CatalogClient.handleUpdateCount` and the count overlay badge are removed; catalog becomes read-only for count display (shows `.total` from GET response). Card detail page is the only mutation surface.
 
 2. **CSV import: per-variant collectorNumber suffix**
    - What we know: `card_printings` has one row per physical printing, each with its own `collectorNumber`. The current normalizer uses the base card number only.
    - What's unclear: The exact suffix convention for Hyperspace (H?), Foil (F?), and Showcase variants in `card_printings` is not confirmed without a live DB query.
    - Recommendation: Add a Wave 0 task to query `card_printings` for a known set (e.g., SOR) and document the actual `collectorNumber` patterns before writing the updated normalizer. This is a 5-minute lookup that prevents a hard-to-debug bug.
+   - **RESOLVED (Plan 01):** Wave 0 task queries `card_printings` for a known set (SOR) and embeds actual collectorNumber suffix patterns in the test file header before the normalizer is written in Plan 06.
 
 3. **`getUserCollection` query refactoring scope**
    - What we know: `getUserCollection` returns `{ cardDefinitionId, count }[]` from `userCollections` only. The GET /api/collection handler must now return `{ total, variants }`.
    - What's unclear: Whether to join `user_printing_collections` in the same query or run a separate query for variants.
    - Recommendation: Single query with a left join on `user_printing_collections` → `card_printings` gives `cardDefinitionId`, `total`, `cardPrintingId`, `variantCount` in one round-trip. This is more efficient and follows the existing join patterns in `card-detail.ts`.
+   - **RESOLVED (Plan 02):** Implemented as a two-join LEFT JOIN: `userCollections` LEFT JOIN `user_printing_collections` LEFT JOIN `card_printings` — single round-trip returning `cardDefinitionId`, `total`, `cardPrintingId`, `variantCount`.
 
 ---
 

@@ -136,6 +136,12 @@ Plans:
 **Wave 6** *(blocked on Wave 5)*
 - [ ] 17-08-PLAN.md — Human verification checkpoint: card detail page visual + functional check + catalog regression check (REQ-COLLECT-06, REQ-COLLECT-07)
 
+Cross-cutting constraints:
+- `userId` always from `session.user.id`, never from request body (auth on every API route)
+- `Math.max(0, count)` floor on every variant count mutation
+- GET /api/collection consumers read `.total` not raw number after shape change (CatalogClient, WantListTab)
+- No DB transactions — Neon HTTP driver requires sequential awaits (upsert then recompute)
+
 **UI hint**: yes
 
 ### Phase 18: Catalog Collection Enhancements
