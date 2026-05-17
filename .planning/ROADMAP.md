@@ -118,7 +118,7 @@ Plans:
 - [x] 17-01-PLAN.md — Test stubs + DB suffix lookup (Wave 0): normalize.test.ts, collection-shape.test.ts, collection-shape.ts stub (REQ-COLLECT-06, REQ-COLLECT-07)
 
 **Wave 1** *(blocked on Wave 0)*
-- [ ] 17-02-PLAN.md — DB schema (userPrintingCollections table) + query helpers (upsertVariantCount, recomputeTotal, getSameSetPrintingsWithCounts, updated getUserCollection) + buildCollectionMap implementation (REQ-COLLECT-06, REQ-COLLECT-07)
+- [x] 17-02-PLAN.md — DB schema (userPrintingCollections table) + query helpers (upsertVariantCount, recomputeTotal, getSameSetPrintingsWithCounts, updated getUserCollection) + buildCollectionMap implementation (REQ-COLLECT-06, REQ-COLLECT-07)
 
 **Wave 2** *(blocked on Wave 1, parallel)*
 - [ ] 17-03-PLAN.md — API routes: POST /api/collection/variants (new), GET /api/collection (updated shape), POST /api/collection (removed per D-03) (REQ-COLLECT-06, REQ-COLLECT-07)

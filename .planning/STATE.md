@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 ## Current Position
 
 Phase: 17 — Variant Collection Tracking
-Plan: 1/8 (executing)
+Plan: 2/8 (executing)
 Status: In progress
-Last activity: 2026-05-17 -- Phase 17 plan 01 complete — TDD RED test scaffold + DB suffix discovery
+Last activity: 2026-05-17 -- Phase 17 plan 02 complete — user_printing_collections table + query helpers + buildCollectionMap GREEN
 
 ```
 v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 2 polish; Phase 17 planned)
