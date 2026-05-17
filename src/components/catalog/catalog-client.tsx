@@ -4,11 +4,11 @@ import { useMemo, useEffect, useState } from 'react';
 import { useQueryState, parseAsString, parseAsArrayOf, parseAsBoolean } from 'nuqs';
 import { filterCards, type CardForFilter } from '@/lib/filter-cards';
 import type { AutoFilter } from '@/lib/auto-filter';
+import type { CollectionMap } from '@/app/api/collection/collection-shape';
 import { TopBar } from './top-bar';
 import { CardGrid } from './card-grid';
 import { EmptyState } from './empty-state';
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from 'next/navigation';
 import { SidebarFilters } from './sidebar-filters';
 import { MobileFilterSheet } from './mobile-filter-sheet';
 
@@ -61,9 +61,8 @@ export function CatalogClient({
   onFilterManualChange,
   autoFilterLabel,
 }: CatalogClientProps) {
-  const [collection, setCollection] = useState<Record<number, number>>({});
+  const [collection, setCollection] = useState<CollectionMap>({});
   const { data: session } = authClient.useSession();
-  const router = useRouter();
   const isAuthenticated = !!session;
 
   useEffect(() => {
@@ -93,27 +92,6 @@ export function CatalogClient({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoFilter, isAutoFilterOverridden]);
-
-  const handleUpdateCount = async (cardDefinitionId: number, newCount: number) => {
-    if (!isAuthenticated) {
-      router.push('/login');
-      return;
-    }
-
-    // Optimistic update
-    setCollection(prev => ({ ...prev, [cardDefinitionId]: newCount }));
-
-    try {
-      const res = await fetch('/api/collection', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cardDefinitionId, count: newCount }),
-      });
-      if (!res.ok) throw new Error('Failed to update');
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const [search, setSearch] = useQueryState('q', parseAsString.withDefault('').withOptions({ shallow: true }));
   const [selectedSets, setSelectedSets] = useQueryState('sets', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
@@ -240,10 +218,9 @@ export function CatalogClient({
         {filtered.length === 0 ? (
           <EmptyState />
         ) : (
-          <CardGrid 
-            cards={filtered} 
+          <CardGrid
+            cards={filtered}
             collection={collection}
-            onUpdateCount={handleUpdateCount}
             mode={mode}
             deckCounts={deckCounts}
             onDeckUpdate={onDeckUpdate}
