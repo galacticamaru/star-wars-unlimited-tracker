@@ -49,6 +49,14 @@ export async function getCardByPrinting(setCode: string, cardNumber: string, use
       and(
         eq(cardPrintings.setCode, setCode),
         eq(cardPrintings.collectorNumber, collectorNumber),
+        // WR-04: variantType='Normal' filter is intentional.
+        // Card detail URLs are always constructed from the Normal variant's collectorNumber
+        // (e.g. "SOR-059", not "SOR-059F" or a Hyperspace number). CardItem and any other
+        // URL builders MUST use the Normal collectorNumber — if a Foil/Hyperspace
+        // collectorNumber is ever used in a URL, this query will return null and
+        // notFound() will be called even though the card exists in the DB.
+        // This coupling must be maintained until this query is updated to prefer Normal
+        // with an ORDER BY fallback.
         eq(cardPrintings.variantType, 'Normal')
       )
     )
