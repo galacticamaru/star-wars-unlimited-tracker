@@ -20,9 +20,18 @@ export function WantListTab({ deckCards, allCards }: WantListTabProps) {
 
   useEffect(() => {
     fetch('/api/collection')
-      .then(res => res.json())
+      .then(res => {
+        // WR-05: Guard against non-ok responses (e.g. 401 Unauthorized).
+        // A 401 returns plain text "Unauthorized" which would throw on res.json(),
+        // masking the real error. Bail out early on any non-ok response.
+        if (!res.ok) {
+          setLoading(false);
+          return;
+        }
+        return res.json();
+      })
       .then(data => {
-        setCollection(data);
+        if (data) setCollection(data);
         setLoading(false);
       })
       .catch(err => {
