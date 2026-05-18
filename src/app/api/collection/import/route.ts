@@ -84,6 +84,10 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Recompute totals for all affected card definitions (D-02)
+    // Note: Neon HTTP driver does not support transactions — sequential awaits (Pitfall 5).
+    // Known TOCTOU hazard (WR-02): a concurrent single-variant edit during a bulk import
+    // can upsert between another request's upsert and recompute, producing a stale total.
+    // Long-term fix requires a WebSocket Drizzle connection for transaction support.
     for (const cardDefinitionId of affectedDefinitions) {
       await recomputeTotal(userId, cardDefinitionId);
     }

@@ -48,7 +48,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 3: Auto-sum to userCollections (D-02)
-    // Note: Neon HTTP driver does not support transactions — these are sequential awaits (Pitfall 5)
+    // Note: Neon HTTP driver does not support transactions — these are sequential awaits (Pitfall 5).
+    // Known TOCTOU hazard (WR-02): a concurrent request for the same card can upsert its variant
+    // count between this upsert and recompute, producing an intermediate total in userCollections.
+    // Long-term fix requires a WebSocket Drizzle connection for transaction support.
+    // In practice this is low-risk for single-user collection editing.
     await recomputeTotal(userId, printing.cardDefinitionId);
 
     return Response.json({ success: true });
