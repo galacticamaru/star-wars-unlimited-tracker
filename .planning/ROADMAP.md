@@ -131,7 +131,7 @@ Plans:
 - [x] 17-06-PLAN.md — CSV import update: normalizeRedditCsv per-variant keys, import route writes to user_printing_collections (REQ-COLLECT-06, REQ-COLLECT-07)
 
 **Wave 5 — BLOCKING** *(blocked on all preceding waves)*
-- [ ] 17-07-PLAN.md — `npx drizzle-kit push` — schema push to live Neon DB (REQ-COLLECT-06, REQ-COLLECT-07)
+- [x] 17-07-PLAN.md — `npx drizzle-kit push` — schema push to live Neon DB (REQ-COLLECT-06, REQ-COLLECT-07)
 
 **Wave 6** *(blocked on Wave 5)*
 - [ ] 17-08-PLAN.md — Human verification checkpoint: card detail page visual + functional check + catalog regression check (REQ-COLLECT-06, REQ-COLLECT-07)

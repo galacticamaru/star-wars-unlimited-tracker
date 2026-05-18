@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 ## Current Position
 
 Phase: 17 — Variant Collection Tracking
-Plan: 6/8 (executing)
+Plan: 7/8 (executing)
 Status: In progress
-Last activity: 2026-05-18 -- Phase 17 plan 06 complete — normalizeRedditCsv emits per-variant keys (Normal/Foil); Hyperspace skipped (no derivable collectorNumber)
+Last activity: 2026-05-18 -- Phase 17 plan 07 complete — user_printing_collections table pushed to live Neon DB
 
 ```
 v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 2 polish; Phase 17 planned)
