@@ -33,9 +33,12 @@ export function normalizeRedditCsv(rows: any[], setCode: string): Record<string,
     const nonFoil = parseInt(row['Non-Foil'] || '0', 10) || 0;
     const foil = parseInt(row['Foil'] || '0', 10) || 0;
 
-    // Standard or Non-Foil → base collectorNumber (no suffix)
-    // Math.max floors negative input at 0 (T-17-06-02 threat mitigation)
-    const normalCount = Math.max(0, standard + nonFoil);
+    // Standard or Non-Foil → base collectorNumber (no suffix).
+    // These two columns represent the same physical variant in different set tabs — take
+    // the max instead of summing to prevent double-counting if both columns are ever
+    // populated (e.g. an improperly formatted spreadsheet). Math.max(0, ...) also floors
+    // negative input at 0 (T-17-06-02 threat mitigation).
+    const normalCount = Math.max(0, Math.max(standard, nonFoil));
     if (normalCount > 0) {
       counts[base] = (counts[base] || 0) + normalCount;
     }
