@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { getCardByPrinting, getSameSetPrintingsWithCounts } from '@/db/queries/card-detail';
+import { upsertVariantCount } from '@/db/queries/collection';
 import { VariantCollectionSection } from '@/components/catalog/variant-collection-section';
 import { buttonVariants } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,7 +23,7 @@ export default async function CardDetailPage({
   const session = await auth.api.getSession({ headers: await headers() });
   const userId = session ? Number(session.user.id) : null;
 
-  const card = await getCardByPrinting(setCode, cardNumber);
+  const card = await getCardByPrinting(setCode, cardNumber, userId ?? undefined);
 
   // Return Next.js 404 page for unknown cards — do NOT throw, use notFound()
   if (!card) notFound();
@@ -30,6 +31,20 @@ export default async function CardDetailPage({
   const printings = userId
     ? await getSameSetPrintingsWithCounts(card.id, setCode, userId)
     : [];
+
+  // One-time legacy data hydration: if the user has a collection total but no per-variant rows
+  // (i.e., data pre-dates the user_printing_collections table), initialize the Normal/Standard
+  // variant with the legacy total so the UI starts at the correct count and recomputeTotal
+  // doesn't overwrite a non-zero legacy total on the first variant increment.
+  if (userId && card.collectionCount > 0 && printings.length > 0) {
+    const allZero = printings.every(p => p.ownedCount === 0);
+    if (allZero) {
+      const normalPrinting =
+        printings.find(p => p.variantType === 'Normal') ?? printings[0];
+      await upsertVariantCount(normalPrinting.id, card.collectionCount, userId);
+      normalPrinting.ownedCount = card.collectionCount;
+    }
+  }
 
   return (
     // UI-SPEC.md §Card Detail Page: max-w-5xl mx-auto px-md py-2xl

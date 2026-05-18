@@ -162,11 +162,10 @@ export function CardItem({
                   </button>
                 )}
               </div>
-            ) : (
-              <div 
+            ) : onUpdateCount ? (
+              <div
                 className="flex items-center gap-3 bg-background/90 rounded-full px-3 py-1 shadow-lg"
                 onClick={(e) => {
-                  // Prevent navigation when clicking the control bar itself
                   e.preventDefault();
                   e.stopPropagation();
                 }}
@@ -176,7 +175,7 @@ export function CardItem({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    onUpdateCount?.(id, Math.max(0, ownedCount - 1));
+                    onUpdateCount(id, Math.max(0, ownedCount - 1));
                   }}
                   className="p-1 hover:bg-muted rounded-full transition-colors"
                   aria-label="Decrease owned count"
@@ -189,13 +188,17 @@ export function CardItem({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    onUpdateCount?.(id, ownedCount + 1);
+                    onUpdateCount(id, ownedCount + 1);
                   }}
                   className="p-1 hover:bg-muted rounded-full transition-colors"
                   aria-label="Increase owned count"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
+              </div>
+            ) : (
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex items-center justify-center z-10 px-1 text-center">
+                <span className="text-white text-xs font-semibold leading-tight">{name}</span>
               </div>
             )}
           </div>
