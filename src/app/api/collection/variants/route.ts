@@ -23,12 +23,15 @@ export async function POST(request: NextRequest) {
     if (typeof cardPrintingId !== 'number' || isNaN(cardPrintingId)) {
       return new Response('cardPrintingId must be a number', { status: 400 });
     }
+    if (typeof count !== 'number' || !Number.isFinite(count)) {
+      return new Response('count must be a finite number', { status: 400 });
+    }
 
     // V4 Access Control: userId always from session, never from request body
     const userId = Number(session.user.id);
 
-    // V5 Input Validation: floor count at 0 (D-04 + security)
-    const safeCount = Math.max(0, Number(count));
+    // V5 Input Validation: floor count at 0, floor to integer (D-04 + security)
+    const safeCount = Math.max(0, Math.floor(count));
 
     // Step 1: Upsert per-variant count
     await upsertVariantCount(cardPrintingId, safeCount, userId);
