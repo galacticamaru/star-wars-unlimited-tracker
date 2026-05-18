@@ -13,11 +13,30 @@ export async function POST(request: NextRequest) {
       return new Response('Unauthorized', { status: 401 });
     }
 
-    const normalizedCounts: Record<string, number> = await request.json();
+    const rawBody: unknown = await request.json();
+    if (
+      typeof rawBody !== 'object' ||
+      rawBody === null ||
+      Array.isArray(rawBody)
+    ) {
+      return new Response('Body must be a JSON object', { status: 400 });
+    }
+    for (const [key, val] of Object.entries(rawBody as Record<string, unknown>)) {
+      if (typeof val !== 'number' || !Number.isFinite(val)) {
+        return new Response(`Invalid count for key "${key}": must be a finite number`, { status: 400 });
+      }
+    }
+    const normalizedCounts = rawBody as Record<string, number>;
     const collectorNumbers = Object.keys(normalizedCounts);
 
     if (collectorNumbers.length === 0) {
       return Response.json({ success: true, count: 0 });
+    }
+
+    // CR-05: Reject payloads exceeding key limit to prevent sequential DB round-trip DoS
+    const MAX_IMPORT_KEYS = 2000;
+    if (collectorNumbers.length > MAX_IMPORT_KEYS) {
+      return new Response(`Import exceeds maximum of ${MAX_IMPORT_KEYS} entries`, { status: 400 });
     }
 
     // 1. Map collectorNumbers to cardPrintingId AND cardDefinitionId
