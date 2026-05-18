@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 ## Current Position
 
 Phase: 17 — Variant Collection Tracking
-Plan: 4/8 (executing)
+Plan: 5/8 (executing)
 Status: In progress
-Last activity: 2026-05-17 -- Phase 17 plans 03+04 complete — variants API endpoint live, consumers migrated to CollectionMap .total
+Last activity: 2026-05-18 -- Phase 17 plan 05 complete — VariantCollectionSection component built, card detail page wired
 
 ```
 v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 2 polish; Phase 17 planned)

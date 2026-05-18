@@ -125,7 +125,7 @@ Plans:
 - [x] 17-04-PLAN.md — Consumer migration: CatalogClient, WantListTab, filter-cards.ts read .total from new GET shape; CatalogClient POST mutation removed (REQ-COLLECT-06)
 
 **Wave 3** *(blocked on Waves 2a + 2b)*
-- [ ] 17-05-PLAN.md — Card detail page UI: VariantCollectionSection component + page.tsx wiring, CollectionControls removed (REQ-COLLECT-06, REQ-COLLECT-07)
+- [x] 17-05-PLAN.md — Card detail page UI: VariantCollectionSection component + page.tsx wiring, CollectionControls removed (REQ-COLLECT-06, REQ-COLLECT-07)
 
 **Wave 4** *(blocked on Wave 1)*
 - [ ] 17-06-PLAN.md — CSV import update: normalizeRedditCsv per-variant keys, import route writes to user_printing_collections (REQ-COLLECT-06, REQ-COLLECT-07)
