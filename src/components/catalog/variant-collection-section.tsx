@@ -36,17 +36,26 @@ export function VariantCollectionSection({ printings }: VariantCollectionSection
     // Floor at 0 before optimistic update and fetch (T-17-05-02)
     const val = Math.max(0, newCount);
 
+    // Capture previous value for rollback on server error (CR-03 / WR-01)
+    const prev = counts[cardPrintingId] ?? 0;
+
     // Optimistic UI update (fire-and-update pattern from CollectionControls)
     setCounts(prev => ({ ...prev, [cardPrintingId]: val }));
 
     try {
-      await fetch('/api/collection/variants', {
+      const res = await fetch('/api/collection/variants', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cardPrintingId, count: val }),
       });
+      if (!res.ok) {
+        // Roll back optimistic update on server error to keep UI in sync with DB
+        setCounts(c => ({ ...c, [cardPrintingId]: prev }));
+        console.error('Failed to update variant count:', await res.text());
+      }
     } catch (err) {
-      // No UI error indicator in this phase — matches existing pattern (UI-SPEC §States)
+      // Roll back on network-level failure as well
+      setCounts(c => ({ ...c, [cardPrintingId]: prev }));
       console.error('Failed to update variant count:', err);
     }
   };
