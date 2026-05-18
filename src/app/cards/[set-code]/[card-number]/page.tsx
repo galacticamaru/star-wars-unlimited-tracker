@@ -2,9 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
-import { getCardByPrinting } from '@/db/queries/card-detail';
-import { getUserCollection } from '@/db/queries/collection';
-import { CollectionControls } from '@/components/catalog/collection-controls';
+import { getCardByPrinting, getSameSetPrintingsWithCounts } from '@/db/queries/card-detail';
+import { VariantCollectionSection } from '@/components/catalog/variant-collection-section';
 import { buttonVariants } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CardImageSection } from '@/components/catalog/card-image-section';
@@ -23,17 +22,14 @@ export default async function CardDetailPage({
   const session = await auth.api.getSession({ headers: await headers() });
   const userId = session ? Number(session.user.id) : null;
 
-  const [card, collection] = await Promise.all([
-    getCardByPrinting(setCode, cardNumber),
-    userId ? getUserCollection(userId) : Promise.resolve([]),
-  ]);
+  const card = await getCardByPrinting(setCode, cardNumber);
 
   // Return Next.js 404 page for unknown cards — do NOT throw, use notFound()
   if (!card) notFound();
 
-  // TODO(Plan 05): Replace CollectionControls with VariantCollectionSection
-  // collection rows now use .total (getUserCollection returns enriched shape from Plan 02)
-  const ownedCount = collection.find(c => c.cardDefinitionId === card.id)?.total || 0;
+  const printings = userId
+    ? await getSameSetPrintingsWithCounts(card.id, setCode, userId)
+    : [];
 
   return (
     // UI-SPEC.md §Card Detail Page: max-w-5xl mx-auto px-md py-2xl
@@ -62,10 +58,9 @@ export default async function CardDetailPage({
             backArtUrl={card.backArtUrl}
           />
 
-          <CollectionControls 
-            cardDefinitionId={card.id}
-            initialCount={ownedCount}
-          />
+          {userId && printings.length > 0 && (
+            <VariantCollectionSection printings={printings} />
+          )}
         </div>
 
         {/* Metadata column — flex-1 */}
