@@ -46,10 +46,9 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Aspect breakdown panel in deck stats sidebar — v4 (REQ-DECK-08, Phase 15)
 - ✓ Card art in Deck List tab — leader/base images + hover art on rows — v4 (REQ-DECK-10, Phase 15)
 - ✓ Empty deck guided onboarding — auto-filter to leader+base, then aspects — v4 (REQ-DECK-09, Phase 16)
+- ✓ Per-variant collection tracking on card detail page — Normal/Foil counts, +/- controls, total line — v4 (REQ-COLLECT-06, REQ-COLLECT-07, Phase 17)
 
 ### Active (v4)
-
-- [ ] Variant-aware collection tracking on card detail page (REQ-COLLECT-06, REQ-COLLECT-07)
 - [ ] Catalog shows highest-owned variant art (REQ-COLLECT-08)
 - [ ] Quick-add pre-constructed deck cards to collection (REQ-CAT-04)
 
@@ -63,7 +62,7 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ## Context
 
-**Shipped v3:** 2026-05-13 | **v4 Phase 15 complete:** 2026-05-14 | **v4 Phase 16 complete:** 2026-05-15 | **v4 Phase 16.1 complete:** 2026-05-15
+**Shipped v3:** 2026-05-13 | **v4 Phase 15 complete:** 2026-05-14 | **v4 Phase 16 complete:** 2026-05-15 | **v4 Phase 17 complete:** 2026-05-18
 **Stack:** Next.js 16 + TypeScript + Neon PostgreSQL + Drizzle ORM + Better Auth + shadcn/ui + base-ui + nuqs
 **Deployment:** Vercel (Hobby tier, daily cron syncs for cards and prices)
 **Codebase:** ~22,000 LOC TypeScript/TSX, 48 plans completed across 16 phases
@@ -115,4 +114,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-15 — Phase 16.1 complete (tab reorder polish)*
+*Last updated: 2026-05-18 — Phase 17 complete (variant collection tracking)*

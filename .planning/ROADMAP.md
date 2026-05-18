@@ -39,7 +39,7 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 
 - [x] **Phase 15: Deck List Display Polish** — Card type grouping, aspect breakdown panel, and card art in the deck list view (2026-05-14)
 - [x] **Phase 16: Empty Deck Guided Onboarding** — Auto-filter flow that guides users from leader+base selection through aspect-filtered card browsing (2026-05-15)
-- [ ] **Phase 17: Variant Collection Tracking** — Per-variant owned counts viewed and updated on the card detail page
+- [x] **Phase 17: Variant Collection Tracking** — Per-variant owned counts viewed and updated on the card detail page (2026-05-18)
 - [ ] **Phase 18: Catalog Collection Enhancements** — Catalog grid shows highest-owned variant art; quick-add all cards from a starter deck
 
 ## Phase Details
@@ -134,7 +134,7 @@ Plans:
 - [x] 17-07-PLAN.md — `npx drizzle-kit push` — schema push to live Neon DB (REQ-COLLECT-06, REQ-COLLECT-07)
 
 **Wave 6** *(blocked on Wave 5)*
-- [ ] 17-08-PLAN.md — Human verification checkpoint: card detail page visual + functional check + catalog regression check (REQ-COLLECT-06, REQ-COLLECT-07)
+- [x] 17-08-PLAN.md — Human verification checkpoint: card detail page visual + functional check + catalog regression check (REQ-COLLECT-06, REQ-COLLECT-07)
 
 Cross-cutting constraints:
 - `userId` always from `session.user.id`, never from request body (auth on every API route)

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Phase 17 planned — 8 plans ready (6 waves)
-last_updated: "2026-05-17T00:00:00.000Z"
-last_activity: 2026-05-17 -- Phase 17 planned (8 plans, 6 waves)
+stopped_at: Phase 17 complete — variant collection tracking shipped
+last_updated: "2026-05-18T00:00:00.000Z"
+last_activity: 2026-05-18 -- Phase 17 complete — 8/8 plans, verification passed, all review criticals fixed
 progress:
   total_phases: 5
-  completed_phases: 2
-  total_plans: 16
-  completed_plans: 4
-  percent: 50
+  completed_phases: 3
+  total_plans: 24
+  completed_plans: 12
+  percent: 75
 ---
 
 # Project State
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 17 — Variant Collection Tracking
-Plan: 7/8 (executing)
-Status: In progress
-Last activity: 2026-05-18 -- Phase 17 plan 07 complete — user_printing_collections table pushed to live Neon DB
+Phase: 18 — Catalog Collection Enhancements
+Plan: 0/? (not started)
+Status: Ready to plan
+Last activity: 2026-05-18 -- Phase 17 complete — variant collection tracking shipped
 
 ```
 v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 2 polish; Phase 17 planned)
