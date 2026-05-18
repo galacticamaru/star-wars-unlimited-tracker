@@ -128,7 +128,7 @@ Plans:
 - [x] 17-05-PLAN.md — Card detail page UI: VariantCollectionSection component + page.tsx wiring, CollectionControls removed (REQ-COLLECT-06, REQ-COLLECT-07)
 
 **Wave 4** *(blocked on Wave 1)*
-- [ ] 17-06-PLAN.md — CSV import update: normalizeRedditCsv per-variant keys, import route writes to user_printing_collections (REQ-COLLECT-06, REQ-COLLECT-07)
+- [x] 17-06-PLAN.md — CSV import update: normalizeRedditCsv per-variant keys, import route writes to user_printing_collections (REQ-COLLECT-06, REQ-COLLECT-07)
 
 **Wave 5 — BLOCKING** *(blocked on all preceding waves)*
 - [ ] 17-07-PLAN.md — `npx drizzle-kit push` — schema push to live Neon DB (REQ-COLLECT-06, REQ-COLLECT-07)

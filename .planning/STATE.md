@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 ## Current Position
 
 Phase: 17 — Variant Collection Tracking
-Plan: 5/8 (executing)
+Plan: 6/8 (executing)
 Status: In progress
-Last activity: 2026-05-18 -- Phase 17 plan 05 complete — VariantCollectionSection component built, card detail page wired
+Last activity: 2026-05-18 -- Phase 17 plan 06 complete — normalizeRedditCsv emits per-variant keys (Normal/Foil); Hyperspace skipped (no derivable collectorNumber)
 
 ```
 v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 2 polish; Phase 17 planned)
