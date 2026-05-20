@@ -40,6 +40,7 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 - [x] **Phase 15: Deck List Display Polish** — Card type grouping, aspect breakdown panel, and card art in the deck list view (2026-05-14)
 - [x] **Phase 16: Empty Deck Guided Onboarding** — Auto-filter flow that guides users from leader+base selection through aspect-filtered card browsing (2026-05-15)
 - [x] **Phase 17: Variant Collection Tracking** — Per-variant owned counts viewed and updated on the card detail page (2026-05-18)
+- [ ] **Phase 17.1: Card Sync Variant Grouping** — Refactor upsertCards to in-memory grouping; all variant types correctly linked in card_printings
 - [ ] **Phase 18: Catalog Collection Enhancements** — Catalog grid shows highest-owned variant art; quick-add all cards from a starter deck
 
 ## Phase Details
@@ -150,6 +151,19 @@ Cross-cutting constraints:
 
 **UI hint**: yes
 
+### Phase 17.1: Card Sync Variant Grouping (INSERTED)
+
+**Goal**: Replace the fragile two-pass seeding logic in `upsertCards` with in-memory variant grouping by (Name, Subtitle), so all variants of a card reliably share the same `card_definition_id` regardless of set numbering conventions
+**Depends on**: Phase 17
+**Requirements**: (data integrity)
+**Success Criteria** (what must be TRUE):
+  1. `upsertCards` groups all API-returned variants by (Name, Subtitle) in memory before any DB operations — no cross-DB name lookup inside the loop
+  2. All variant types (Normal, Foil, Hyperspace, Showcase, Prestige, etc.) for the same card share a single `card_definition_id` in `card_printings`
+  3. Re-seeding is self-healing: running `npm run db:seed` again corrects any orphaned `card_definition_id` values in `card_printings`
+  4. Promo-only sets (no Normal variant present) seed correctly using the lowest collectorNumber as the definition anchor
+  5. After re-seed: 0 orphaned Foil/variant rows across all sets (verified by the orphan-check query)
+**Plans**: TBD
+
 ### Phase 18: Catalog Collection Enhancements
 **Goal**: The catalog surface reflects variant ownership in its art display, and users can seed their collection from a known starter deck in one click
 **Depends on**: Phase 17
@@ -175,5 +189,6 @@ Cross-cutting constraints:
 | 15.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
 | 16 | v4 | 4/4 | ✅ Complete | 2026-05-15 |
 | 16.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
-| 17 | v4 | 0/8 | Not started | — |
+| 17 | v4 | 10/10 | ✅ Complete | 2026-05-20 |
+| 17.1 | v4 | 0/? | Not started | — |
 | 18 | v4 | 0/? | Not started | — |
