@@ -180,7 +180,9 @@ Plans:
   1. A catalog card tile displays the art of whichever variant the user owns the most copies of; if the user owns no copies, it falls back to Standard art
   2. User can trigger a single action to add all cards from a named pre-constructed starter deck to their collection
   3. After the quick-add action completes, the user receives confirmation of how many cards were added
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 18-01-PLAN.md — Starter deck quick-add and dynamic catalog variant art display (Phase 18)
 **UI hint**: yes
 
 ## Progress
