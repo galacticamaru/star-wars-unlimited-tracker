@@ -12,6 +12,7 @@ source:
   - 17-08-SUMMARY.md
 started: 2026-05-20T00:00:00.000Z
 updated: 2026-05-20T00:00:00.000Z
+gap_resolved: 2026-05-20
 ---
 
 ## Current Test
@@ -75,7 +76,8 @@ pending: 0
 ## Gaps
 
 - truth: "Card detail page lists all available variant printings for a card (Normal, Foil, etc.) with per-variant owned counts and +/- controls; CSV import correctly populates Foil variant counts"
-  status: failed
+  status: resolved
+  resolved_by: Phase 17.1 — upsertCards rewritten with in-memory variant grouping; all variants correctly linked to one card_definition_id after re-seed
   reason: "User reported: SEC/030 — CSV has 10 normal and 1 foil. Card detail page only shows Normal listed; no Foil variant row visible and no way to manually add it either."
   severity: major
   test: 9
