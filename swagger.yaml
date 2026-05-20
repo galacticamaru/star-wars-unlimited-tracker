@@ -1,0 +1,568 @@
+openapi: 3.0.0
+info:
+  title: Galactic Amaru - Star Wars: Unlimited Tracker API
+  description: API for managing Star Wars: Unlimited card collections, decks, and trade binders.
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Base API path
+
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Authentication via session cookie.
+    cronAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token for cron jobs (CRON_SECRET).
+
+  schemas:
+    CardDefinition:
+      type: object
+      properties:
+        id:
+          type: integer
+        swudbId:
+          type: string
+        name:
+          type: string
+        subtitle:
+          type: string
+          nullable: true
+        type:
+          type: string
+        aspects:
+          type: array
+          items:
+            type: string
+        arenas:
+          type: array
+          items:
+            type: string
+        traits:
+          type: array
+          items:
+            type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        cost:
+          type: integer
+          nullable: true
+        power:
+          type: integer
+          nullable: true
+        hp:
+          type: integer
+          nullable: true
+        frontText:
+          type: string
+          nullable: true
+        backText:
+          type: string
+          nullable: true
+        epicAction:
+          type: string
+          nullable: true
+        doubleSided:
+          type: boolean
+        unique:
+          type: boolean
+        priceEur:
+          type: integer
+          nullable: true
+        priceUsd:
+          type: integer
+          nullable: true
+
+    CardPrinting:
+      type: object
+      properties:
+        id:
+          type: integer
+        cardDefinitionId:
+          type: integer
+        setCode:
+          type: string
+        collectorNumber:
+          type: string
+        rarity:
+          type: string
+        variantType:
+          type: string
+        frontArtUrl:
+          type: string
+          nullable: true
+        backArtUrl:
+          type: string
+          nullable: true
+        artist:
+          type: string
+          nullable: true
+
+    Deck:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        name:
+          type: string
+        leaderCardDefinitionId:
+          type: integer
+          nullable: true
+        baseCardDefinitionId:
+          type: integer
+          nullable: true
+        isDraft:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    DeckWithCards:
+      allOf:
+        - $ref: '#/components/schemas/Deck'
+        - type: object
+          properties:
+            cards:
+              type: array
+              items:
+                type: object
+                properties:
+                  cardDefinitionId:
+                    type: integer
+                  quantity:
+                    type: integer
+                  isSideboard:
+                    type: boolean
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+
+paths:
+  /binder:
+    get:
+      summary: Get user's trade binder data
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Trade binder data
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+
+  /binder/exclusions:
+    post:
+      summary: Add or remove a card from trade exclusions
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardDefinitionId:
+                  type: integer
+                excluded:
+                  type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+
+  /binder/wants:
+    post:
+      summary: Update manual want quantity
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardDefinitionId:
+                  type: integer
+                quantity:
+                  type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+    delete:
+      summary: Delete manual want
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: cardDefinitionId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+
+  /cards/all:
+    get:
+      summary: Get basic info for all cards
+      responses:
+        '200':
+          description: List of cards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    subtitle:
+                      type: string
+                      nullable: true
+                    frontArtUrl:
+                      type: string
+                      nullable: true
+                    type:
+                      type: string
+                    variantType:
+                      type: string
+
+  /collection:
+    get:
+      summary: Get user's collection
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Collection data
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    total:
+                      type: integer
+                    variants:
+                      type: object
+                      additionalProperties:
+                        type: integer
+        '401':
+          description: Unauthorized
+
+  /collection/import:
+    post:
+      summary: Import collection from JSON
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: integer
+      responses:
+        '200':
+          description: Import result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  count:
+                    type: integer
+        '401':
+          description: Unauthorized
+
+  /collection/sets:
+    get:
+      summary: Get list of all set codes
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: List of set codes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '401':
+          description: Unauthorized
+
+  /collection/variants:
+    post:
+      summary: Update count for a specific card printing
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardPrintingId:
+                  type: integer
+                count:
+                  type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+
+  /cron/sync-cards:
+    get:
+      summary: Sync cards and prices (Cron job)
+      security:
+        - cronAuth: []
+      responses:
+        '200':
+          description: Sync result
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+
+  /decks:
+    get:
+      summary: Get user's decks
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: List of decks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Deck'
+        '401':
+          description: Unauthorized
+    post:
+      summary: Create a new deck
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Created deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deck'
+        '401':
+          description: Unauthorized
+
+  /decks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get a specific deck with cards
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Deck details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeckWithCards'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Deck not found
+    patch:
+      summary: Update a deck
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                isDraft:
+                  type: boolean
+                leaderCardDefinitionId:
+                  type: integer
+                  nullable: true
+                baseCardDefinitionId:
+                  type: integer
+                  nullable: true
+                cards:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      cardDefinitionId:
+                        type: integer
+                      quantity:
+                        type: integer
+                      isSideboard:
+                        type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Deck not found
+    delete:
+      summary: Delete a deck
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+
+  /decks/{id}/export:
+    get:
+      summary: Export deck in Melee or JSON format
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [melee, json]
+            default: melee
+      responses:
+        '200':
+          description: Exported file
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+        '404':
+          description: Deck not found
+
+  /trade:
+    patch:
+      summary: Update trade quantity for a card definition
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardDefinitionId:
+                  type: integer
+                tradeQuantity:
+                  type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthorized
+
+  /want-list:
+    get:
+      summary: Get computed want list
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Want list data
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
