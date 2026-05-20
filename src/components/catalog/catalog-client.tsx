@@ -5,6 +5,7 @@ import { useQueryState, parseAsString, parseAsArrayOf, parseAsBoolean } from 'nu
 import { filterCards, type CardForFilter } from '@/lib/filter-cards';
 import type { AutoFilter } from '@/lib/auto-filter';
 import type { CollectionMap } from '@/app/api/collection/collection-shape';
+import type { PrintingArtMap } from '@/lib/catalog/select-best-variant';
 import { TopBar } from './top-bar';
 import { CardGrid } from './card-grid';
 import { EmptyState } from './empty-state';
@@ -20,6 +21,7 @@ interface FilterOptions {
 interface CatalogClientProps {
   cards: CardForFilter[];
   filterOptions: FilterOptions;
+  printingArtMap?: PrintingArtMap;
   mode?: 'catalog' | 'selector';
   deckCounts?: Record<number, number>;
   onDeckUpdate?: (cardDefinitionId: number, count: number) => void;
@@ -53,6 +55,7 @@ const TRAIT_OPTIONS = [
 export function CatalogClient({
   cards,
   filterOptions,
+  printingArtMap,
   mode = 'catalog',
   deckCounts,
   onDeckUpdate,
@@ -221,6 +224,7 @@ export function CatalogClient({
           <CardGrid
             cards={filtered}
             collection={collection}
+            printingArtMap={printingArtMap}
             mode={mode}
             deckCounts={deckCounts}
             onDeckUpdate={onDeckUpdate}
