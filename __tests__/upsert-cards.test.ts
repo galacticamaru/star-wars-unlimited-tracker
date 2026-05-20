@@ -187,19 +187,31 @@ describe('upsertCards', () => {
     expect((definitionInsert![0] as Record<string, unknown>).swudbId).toBe('SOR-179');
   });
 
-  it('Hyperspace variants look up card_definitions by name+subtitle, not create new rows', async () => {
-    // Simulate: Normal card creates definition (id=1), then Hyperspace card finds it
-    (mockReturning as ReturnType<typeof vi.fn>).mockResolvedValue([{ id: 1 }]);
-    mockWhere.mockResolvedValue([{ id: 1 }]); // SELECT finds existing definition
-
+  it('Normal and Hyperspace variants of the same card share one card_definition insert (in-memory grouping)', async () => {
+    // New in-memory grouping: both variants grouped by Name|Subtitle key before any DB op.
+    // One card_definitions insert (anchor = Normal), two card_printings inserts, zero SELECT calls.
     const normalCard = makeCard({ Set: 'SOR', Number: '179', Name: 'Boba Fett', Subtitle: 'A Valued Associate', VariantType: 'Normal' });
     const hyperspaceCard = makeCard({ Set: 'SOR', Number: '281', Name: 'Boba Fett', Subtitle: 'A Valued Associate', VariantType: 'Hyperspace' });
 
     await upsertCards('SOR', [normalCard, hyperspaceCard] as never);
 
-    // card_definitions insert called once (for Normal), not twice
-    // Verify via select being called for the Hyperspace variant lookup
-    expect((mockSelect as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(0);
+    const allValueCalls = (mockValues as ReturnType<typeof vi.fn>).mock.calls;
+
+    // card_definitions upserted once (anchor = Normal — swudbId = SOR-179)
+    const definitionInserts = allValueCalls.filter(
+      (call: unknown[]) => (call[0] as Record<string, unknown>).swudbId !== undefined
+    );
+    expect(definitionInserts).toHaveLength(1);
+    expect((definitionInserts[0][0] as Record<string, unknown>).swudbId).toBe('SOR-179');
+
+    // card_printings upserted twice — one per variant
+    const printingInserts = allValueCalls.filter(
+      (call: unknown[]) => (call[0] as Record<string, unknown>).collectorNumber !== undefined
+    );
+    expect(printingInserts).toHaveLength(2);
+
+    // No DB SELECT — in-memory grouping eliminates the name+subtitle lookup
+    expect((mockSelect as ReturnType<typeof vi.fn>).mock.calls.length).toBe(0);
   });
 
   it('does not skip TS## sets like TS26', async () => {
