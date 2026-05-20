@@ -29,7 +29,7 @@ export function CardGrid({
     >
       {cards.map(card => (
         <CardItem
-          key={`${card.id}-${mode}`}
+          key={`${card.collectorNumber}-${mode}`}
           id={card.id}
           name={card.name}
           type={card.type}
