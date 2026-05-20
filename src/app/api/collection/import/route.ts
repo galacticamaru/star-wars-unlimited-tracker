@@ -1,10 +1,16 @@
 import { NextRequest } from 'next/server';
 import { db } from '@/db';
-import { cardPrintings } from '@/db/schema';
-import { inArray } from 'drizzle-orm';
+import { cardDefinitions, cardPrintings } from '@/db/schema';
+import { and, eq, inArray } from 'drizzle-orm';
 import { upsertVariantCount, recomputeTotal } from '@/db/queries/collection';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+
+type ImportPayload = Array<{
+  swudbId: string;
+  variantType: string;
+  count: number;
+}>;
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,80 +20,90 @@ export async function POST(request: NextRequest) {
     }
 
     const rawBody: unknown = await request.json();
-    if (
-      typeof rawBody !== 'object' ||
-      rawBody === null ||
-      Array.isArray(rawBody)
-    ) {
-      return new Response('Body must be a JSON object', { status: 400 });
+
+    // Validate incoming payload
+    if (!Array.isArray(rawBody)) {
+      return new Response('Body must be a JSON array', { status: 400 });
     }
-    for (const [key, val] of Object.entries(rawBody as Record<string, unknown>)) {
-      if (typeof val !== 'number' || !Number.isFinite(val)) {
-        return new Response(`Invalid count for key "${key}": must be a finite number`, { status: 400 });
+    for (const item of rawBody) {
+      if (
+        typeof item !== 'object' ||
+        item === null ||
+        typeof item.swudbId !== 'string' ||
+        typeof item.variantType !== 'string' ||
+        typeof item.count !== 'number' ||
+        !Number.isFinite(item.count)
+      ) {
+        return new Response('Invalid item in payload array', { status: 400 });
       }
     }
-    const normalizedCounts = rawBody as Record<string, number>;
-    const collectorNumbers = Object.keys(normalizedCounts);
+    const payload = rawBody as ImportPayload;
 
-    if (collectorNumbers.length === 0) {
+    if (payload.length === 0) {
       return Response.json({ success: true, count: 0 });
     }
 
-    // CR-05: Reject payloads exceeding key limit to prevent sequential DB round-trip DoS
-    const MAX_IMPORT_KEYS = 2000;
-    if (collectorNumbers.length > MAX_IMPORT_KEYS) {
-      return new Response(`Import exceeds maximum of ${MAX_IMPORT_KEYS} entries`, { status: 400 });
+    const MAX_IMPORT_ITEMS = 2000;
+    if (payload.length > MAX_IMPORT_ITEMS) {
+      return new Response(`Import exceeds maximum of ${MAX_IMPORT_ITEMS} items`, { status: 400 });
     }
 
-    // 1. Map collectorNumbers to cardPrintingId AND cardDefinitionId
-    // Chunking to avoid SQL parameter limits (same pattern as before)
+    // 1. Batch-lookup printing and definition IDs.
+    // This is more complex than the previous collectorNumber lookup. We need to join
+    // card_definitions (on swudb_id) with card_printings (on variant_type).
     const CHUNK_SIZE = 500;
     const mapping: Record<string, { printingId: number; cardDefinitionId: number }> = {};
 
-    for (let i = 0; i < collectorNumbers.length; i += CHUNK_SIZE) {
-      const chunk = collectorNumbers.slice(i, i + CHUNK_SIZE);
+    for (let i = 0; i < payload.length; i += CHUNK_SIZE) {
+      const chunk = payload.slice(i, i + CHUNK_SIZE);
+
+      // Drizzle doesn't directly support multi-column `IN` for `(swudbId, variantType)` tuples.
+      // We can simulate it with a series of `OR` conditions.
+      const conditions = chunk.map(item =>
+        and(
+          eq(cardDefinitions.swudbId, item.swudbId),
+          eq(cardPrintings.variantType, item.variantType)
+        )
+      );
+
       const results = await db
         .select({
-          collectorNumber: cardPrintings.collectorNumber,
+          swudbId: cardDefinitions.swudbId,
+          variantType: cardPrintings.variantType,
           printingId: cardPrintings.id,
           cardDefinitionId: cardPrintings.cardDefinitionId,
         })
         .from(cardPrintings)
-        .where(inArray(cardPrintings.collectorNumber, chunk));
+        .innerJoin(cardDefinitions, eq(cardPrintings.cardDefinitionId, cardDefinitions.id))
+        .where(conditions.length > 0 ? or(...conditions) : undefined);
+
 
       for (const row of results) {
-        mapping[row.collectorNumber] = {
+        const key = `${row.swudbId}|${row.variantType}`;
+        mapping[key] = {
           printingId: row.printingId,
           cardDefinitionId: row.cardDefinitionId,
         };
       }
     }
 
-    // 2. Upsert per-variant rows into user_printing_collections
-    // Note: neon-http driver does not support transactions — sequential awaits (same as before)
+    // 2. Upsert counts for each variant.
     const userId = Number(session.user.id);
     let processedCount = 0;
-
-    // Track which cardDefinitionIds need total recompute (D-02)
     const affectedDefinitions = new Set<number>();
 
-    for (const [collectorNumber, count] of Object.entries(normalizedCounts)) {
-      const lookup = mapping[collectorNumber];
+    for (const item of payload) {
+      const key = `${item.swudbId}|${item.variantType}`;
+      const lookup = mapping[key];
       if (!lookup) continue;
 
-      // Floor at 0 before upsert (T-17-06-02 threat mitigation)
-      const safeCount = Math.max(0, count);
-
+      const safeCount = Math.max(0, item.count);
       await upsertVariantCount(lookup.printingId, safeCount, userId);
       affectedDefinitions.add(lookup.cardDefinitionId);
       processedCount++;
     }
 
-    // 3. Recompute totals for all affected card definitions (D-02)
-    // Note: Neon HTTP driver does not support transactions — sequential awaits (Pitfall 5).
-    // Known TOCTOU hazard (WR-02): a concurrent single-variant edit during a bulk import
-    // can upsert between another request's upsert and recompute, producing a stale total.
-    // Long-term fix requires a WebSocket Drizzle connection for transaction support.
+    // 3. Recompute totals for all affected card definitions.
     for (const cardDefinitionId of affectedDefinitions) {
       await recomputeTotal(userId, cardDefinitionId);
     }
