@@ -8,7 +8,7 @@ interface VariantFilterProps {
   onChange?: (variants: string[]) => void;
 }
 
-const VARIANT_OPTIONS = ['Normal', 'Showcase', 'Hyperspace', 'Prestige', 'Serialized'];
+const VARIANT_OPTIONS = ['Normal', 'Foil', 'Hyperspace', 'Hyperspace Foil', 'Showcase', 'Prestige', 'Serialized'];
 
 export function VariantFilter({ value = ['Normal'], onChange = () => {} }: VariantFilterProps) {
   const toggleVariant = (variant: string) => {

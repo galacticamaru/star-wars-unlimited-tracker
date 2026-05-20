@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { db } from '@/db';
 import { cardDefinitions, cardPrintings } from '@/db/schema';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, or } from 'drizzle-orm';
 import { upsertVariantCount, recomputeTotal } from '@/db/queries/collection';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';

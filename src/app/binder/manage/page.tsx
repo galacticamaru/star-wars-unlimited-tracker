@@ -10,6 +10,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { Loader2, Search, ExternalLink, Plus, Ban } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { VariantFilter } from '@/components/catalog/variant-filter';
 
 export default function ManageBinderPage() {
   const { data: session, isPending } = authClient.useSession();
@@ -19,6 +20,7 @@ export default function ManageBinderPage() {
   const [allCards, setAllCards] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedVariants, setSelectedVariants] = useState<string[]>([]);
 
   const fetchData = async () => {
     try {
@@ -80,7 +82,7 @@ export default function ManageBinderPage() {
           const card = allCards.find(c => c.id === cardDefinitionId);
           setTradeData((prev: any) => ({
             ...prev,
-            offerings: [...prev.offerings, { cardDefinitionId, tradeQuantity, name: card.name, type: card.type, frontArtUrl: card.frontArtUrl }]
+            offerings: [...prev.offerings, { cardDefinitionId, tradeQuantity, name: card.name, type: card.type, frontArtUrl: card.frontArtUrl, variantType: card.variantType }]
           }));
         }
       }
@@ -147,11 +149,13 @@ export default function ManageBinderPage() {
 
   const filteredCards = useMemo(() => {
     if (searchTerm.length < 2) return [];
-    return allCards.filter(c => 
-      c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      c.subtitle?.toLowerCase().includes(searchTerm.toLowerCase())
-    ).slice(0, 10);
-  }, [allCards, searchTerm]);
+    return allCards.filter(c => {
+      const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                            c.subtitle?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesVariant = selectedVariants.length === 0 || selectedVariants.includes(c.variantType);
+      return matchesSearch && matchesVariant;
+    }).slice(0, 10);
+  }, [allCards, searchTerm, selectedVariants]);
 
   if (isPending || isLoading) return <div className="p-8 flex justify-center"><Loader2 className="animate-spin" /></div>;
   if (!session) return <div className="p-8 max-w-2xl mx-auto"><Card><CardHeader><CardTitle>Unauthorized</CardTitle></CardHeader><CardContent><p>Please login to manage your trade binder.</p><Link href="/login" className={cn(buttonVariants({ className: "mt-4" }))}>Login</Link></CardContent></Card></div>;
@@ -201,14 +205,17 @@ export default function ManageBinderPage() {
               <CardDescription>Search for cards to add to your trade binder or wants.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input 
-                  value={searchTerm} 
-                  onChange={e => setSearchTerm(e.target.value)} 
-                  placeholder="Search cards by name..." 
-                  className="pl-9"
-                />
+              <div className="flex gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input 
+                    value={searchTerm} 
+                    onChange={e => setSearchTerm(e.target.value)} 
+                    placeholder="Search cards by name..." 
+                    className="pl-9"
+                  />
+                </div>
+                <VariantFilter value={selectedVariants} onChange={setSelectedVariants} />
               </div>
 
               {filteredCards.length > 0 && (

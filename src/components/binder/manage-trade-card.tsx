@@ -11,6 +11,7 @@ interface ManageTradeCardProps {
   type: string;
   frontArtUrl: string | null;
   tradeQuantity: number;
+  variantType?: string;
   onUpdateTradeQuantity: (id: number, count: number) => void;
 }
 
@@ -20,6 +21,7 @@ export function ManageTradeCard({
   type, 
   frontArtUrl, 
   tradeQuantity, 
+  variantType,
   onUpdateTradeQuantity,
 }: ManageTradeCardProps) {
   const [loaded, setLoaded] = useState(false);
@@ -83,10 +85,17 @@ export function ManageTradeCard({
         </div>
       </div>
       
-      {/* Badge */}
+      {/* Quantity Badge */}
       <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md z-20 pointer-events-none">
         {tradeQuantity}
       </div>
+
+      {/* Variant Badge */}
+      {variantType && variantType !== 'Normal' && (
+        <div className="absolute top-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-md z-20 pointer-events-none uppercase">
+          {variantType}
+        </div>
+      )}
       
       <div className="mt-1 text-[10px] font-medium truncate text-center px-1 text-muted-foreground">
         {name}

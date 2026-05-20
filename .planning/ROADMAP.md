@@ -190,6 +190,35 @@ Plans:
 - [x] 18-03-PLAN.md — Expand starter-decks.ts: add deckType field + JTL/LOF/SEC Spotlight Decks (REQ-CAT-04)
 **UI hint**: yes
 
+### Phase 20: CSV Variant Imports
+**Goal**: Update CSV imports to support all four variant types
+**Depends on**: Phase 19 (or parallel)
+**Requirements**: REQ-COLLECT-09
+**Success Criteria** (what must be TRUE):
+  1. The normalizer returns variant objects.
+  2. The API route correctly looks up variant printingIds and upserts counts.
+**Plans**: 1 plan
+Plans:
+- [ ] 20-01-PLAN.md — CSV Import refactor to array-based variant lookup (REQ-COLLECT-09)
+
+### Phase 19: Variant Filter Enhancements
+**Goal**: Unified and complete variant filtering across the entire application, with clear visual identification of variants in the trade binder
+**Depends on**: Phase 18
+**Requirements**: REQ-FILTER-01, REQ-BINDER-05, REQ-BINDER-06
+**Success Criteria** (what must be TRUE):
+  1. `VariantFilter` includes "Foil" and "Hyperspace Foil" as selectable options
+  2. Public binder and Deck Builder correctly track and apply the variant filter state
+  3. The Trade Binder management page includes a variant filter next to the card search
+  4. Cards in the trade binder offerings display a "Foil", "Showcase", etc. badge if they are not "Normal"
+**Plans**: 2 plans
+
+Plans:
+**Wave 1**
+- [ ] 19-01-PLAN.md — Update VariantFilter component and public/deck-builder state tracking (REQ-FILTER-01)
+
+**Wave 2** *(blocked on Wave 1)*
+- [ ] 19-02-PLAN.md — Trade Binder filters + variant badges on trade cards (REQ-BINDER-05, REQ-BINDER-06)
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -207,3 +236,5 @@ Plans:
 | 17 | v4 | 10/10 | ✅ Complete | 2026-05-20 |
 | 17.1 | v4 | 2/2 | ✅ Complete | 2026-05-20 |
 | 18 | v4 | 3/3 | ✅ Complete | 2026-05-20 |
+| 19 | v4 | 0/2 | Pending | |
+| 20 | v4 | 1/1 | ✅ Complete | 2026-05-24 |
