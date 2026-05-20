@@ -40,7 +40,7 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 - [x] **Phase 15: Deck List Display Polish** — Card type grouping, aspect breakdown panel, and card art in the deck list view (2026-05-14)
 - [x] **Phase 16: Empty Deck Guided Onboarding** — Auto-filter flow that guides users from leader+base selection through aspect-filtered card browsing (2026-05-15)
 - [x] **Phase 17: Variant Collection Tracking** — Per-variant owned counts viewed and updated on the card detail page (2026-05-18)
-- [ ] **Phase 17.1: Card Sync Variant Grouping** — Refactor upsertCards to in-memory grouping; all variant types correctly linked in card_printings
+- [x] **Phase 17.1: Card Sync Variant Grouping** — Refactor upsertCards to in-memory grouping; all variant types correctly linked in card_printings (2026-05-20)
 - [ ] **Phase 18: Catalog Collection Enhancements** — Catalog grid shows highest-owned variant art; quick-add all cards from a starter deck
 
 ## Phase Details
@@ -170,7 +170,7 @@ Plans:
 - [x] 17.1-01-PLAN.md — Rewrite upsertCards with in-memory variant grouping; add cardDefinitionId to card_printings onConflictDoUpdate (2026-05-20)
 
 **Wave 2** *(blocked on Wave 1)*
-- [ ] 17.1-02-PLAN.md — Re-seed DB + orphan-check query verification + human checkpoint
+- [x] 17.1-02-PLAN.md — Re-seed DB + orphan-check query verification + human checkpoint (2026-05-20)
 
 ### Phase 18: Catalog Collection Enhancements
 **Goal**: The catalog surface reflects variant ownership in its art display, and users can seed their collection from a known starter deck in one click
@@ -198,5 +198,5 @@ Plans:
 | 16 | v4 | 4/4 | ✅ Complete | 2026-05-15 |
 | 16.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
 | 17 | v4 | 10/10 | ✅ Complete | 2026-05-20 |
-| 17.1 | v4 | 1/2 | In Progress | — |
+| 17.1 | v4 | 2/2 | ✅ Complete | 2026-05-20 |
 | 18 | v4 | 0/? | Not started | — |
