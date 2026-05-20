@@ -3,11 +3,7 @@ import { cardDefinitions, cardPrintings, userCollections } from '@/db/schema';
 import { eq, and, notIlike, asc, sql, desc, isNotNull, inArray } from 'drizzle-orm';
 import type { PrintingArtMap } from '@/lib/catalog/select-best-variant';
 
-export async function getAllCards(userId?: number, variantType?: string[]) {
-  const variantCondition = variantType && variantType.length > 0 
-    ? inArray(cardPrintings.variantType, variantType)
-    : eq(cardPrintings.variantType, 'Normal');
-
+export async function getAllCards(userId?: number) {
   return db
     .select({
       id: cardDefinitions.id,
@@ -52,7 +48,6 @@ export async function getAllCards(userId?: number, variantType?: string[]) {
     .where(
       and(
         notIlike(cardDefinitions.type, '%token%'),
-        variantCondition
       )
     )
     .orderBy(asc(cardPrintings.setCode), asc(cardPrintings.collectorNumber));

@@ -26,15 +26,21 @@ Deferred from v4 — not in current roadmap.
 ### Want List
 
 - **WANT-03**: User can export or share their want list (link or file)
-
 ### Collection
 
 - **COLLECT-04**: User can export their full collection as a CSV file
 - **COLLECT-05**: User can import collection from SWUDB-format CSV
+- **REQ-COLLECT-09**: User can bulk-import collection from community Reddit SWU spreadsheet, including Foil, Hyperspace, and Hyperspace Foil variants.
+
+### Filters
+  - [ ] **REQ-COLLECT-09**: User can bulk-import collection from community Reddit SWU spreadsheet, including Foil, Hyperspace, and Hyperspace Foil variants.
 
 ### Filters
 
 - **REQ-MARKET-05**: User can filter the catalog by market price threshold (min/max EUR or USD)
+- [ ] **REQ-FILTER-01**: User can filter cards by all available variant types (Normal, Foil, Hyperspace, Hyperspace Foil, Showcase, Prestige, Serialized)
+- [ ] **REQ-BINDER-05**: User can filter the search results in the trade binder management page by variant type
+- [ ] **REQ-BINDER-06**: Card tiles in the trade binder (offerings) display their variant type if it is not "Normal"
 
 ## Out of Scope
 
@@ -62,6 +68,7 @@ Explicitly excluded. Documented to prevent scope creep.
 | REQ-COLLECT-07 | Phase 17 | Pending |
 | REQ-COLLECT-08 | Phase 18 | Complete |
 | REQ-CAT-04 | Phase 18 | Complete |
+| REQ-COLLECT-09 | Phase 20 | Complete |
 
 **Coverage:**
 - v4 requirements: 8 total

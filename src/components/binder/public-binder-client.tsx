@@ -57,6 +57,7 @@ export function PublicBinderClient({
   const [selectedRarities, setSelectedRarities] = useQueryState('rarities', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
   const [selectedKeywords, setSelectedKeywords] = useQueryState('keywords', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
   const [selectedCosts, setSelectedCosts] = useQueryState('costs', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
+  const [selectedVariants, setSelectedVariants] = useQueryState('variants', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
 
   const allCards = useMemo(() => [...offerings, ...lookingFor], [offerings, lookingFor]);
   const aspectOptions = useMemo(() => [...new Set(allCards.flatMap(c => c.aspects))].sort(), [allCards]);
@@ -72,8 +73,9 @@ export function PublicBinderClient({
       selectedRarities,
       selectedKeywords,
       selectedCosts,
+      selectedVariants,
     }),
-    [offerings, search, selectedSets, selectedTypes, selectedAspects, selectedArenas, selectedTraits, selectedRarities, selectedKeywords, selectedCosts]
+    [offerings, search, selectedSets, selectedTypes, selectedAspects, selectedArenas, selectedTraits, selectedRarities, selectedKeywords, selectedCosts, selectedVariants]
   );
 
   const filteredLookingFor = useMemo(
@@ -87,8 +89,9 @@ export function PublicBinderClient({
       selectedRarities,
       selectedKeywords,
       selectedCosts,
+      selectedVariants,
     }),
-    [lookingFor, search, selectedSets, selectedTypes, selectedAspects, selectedArenas, selectedTraits, selectedRarities, selectedKeywords, selectedCosts]
+    [lookingFor, search, selectedSets, selectedTypes, selectedAspects, selectedArenas, selectedTraits, selectedRarities, selectedKeywords, selectedCosts, selectedVariants]
   );
 
   const totalFiltered = filteredOfferings.length + filteredLookingFor.length;
@@ -111,7 +114,7 @@ export function PublicBinderClient({
     selectedRarities, onRaritiesChange: setSelectedRarities,
     selectedKeywords, onKeywordsChange: setSelectedKeywords,
     selectedCosts, onCostsChange: setSelectedCosts,
-    // Variants not strictly needed in binder, but passing to satisfy SidebarFilters props if added later
+    selectedVariants, onVariantsChange: setSelectedVariants,
   };
 
   return (

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
-status: complete
-stopped_at: Phase 18 complete — v4 milestone done
+status: shipped — PR #13
+stopped_at: Phase 18 complete — v4 milestone shipped
 last_updated: "2026-05-20T00:00:00.000Z"
-last_activity: 2026-05-20 -- Phase 18 verified and complete — catalog variant art + starter deck quick-add shipped
+last_activity: 2026-05-20 -- Milestone v4 shipped — PR #13 created
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 27
-  completed_plans: 17
+  total_phases: 6
+  completed_phases: 6
+  total_plans: 28
+  completed_plans: 18
   percent: 100
 ---
 
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 18 — Catalog Collection Enhancements
-Plan: 3/3 (complete)
-Status: Complete — v4 milestone done
-Last activity: 2026-05-20 -- Phase 18 verified — catalog variant art + starter deck quick-add + spotlight decks shipped
+Phase: 20 — CSV Variant Imports
+Plan: 0/1
+Status: Planning
+Last activity: Planned Phase 20
 
 ```
 v4 Progress [████████████████████] 100% (4/4 phases + 3 polish; all complete)
@@ -66,6 +66,8 @@ v4 Progress [████████████████████] 100% 
 | 16 | Empty deck guided onboarding (auto-filter flow) | REQ-DECK-09 |
 | 17 | Per-variant owned counts on card detail page | REQ-COLLECT-06, 07 |
 | 18 | Catalog variant art + starter deck quick-add | REQ-COLLECT-08, REQ-CAT-04 |
+| 19 | Variant filters in catalog/deck builder, partial in binder | REQ-FILTER-01, REQ-BINDER-05, REQ-BINDER-06 |
+| 20 | CSV import of all variant types | REQ-COLLECT-09 |
 
 ### Decisions
 
@@ -92,3 +94,4 @@ None.
 
 Last session: 2026-05-20T00:00:00.000Z
 Stopped at: Phase 18 plan 03 complete — starter-decks.ts has 11 entries (6 starter + 5 spotlight)
+
