@@ -167,7 +167,7 @@ Cross-cutting constraints:
 Plans:
 
 **Wave 1**
-- [ ] 17.1-01-PLAN.md — Rewrite upsertCards with in-memory variant grouping; add cardDefinitionId to card_printings onConflictDoUpdate
+- [x] 17.1-01-PLAN.md — Rewrite upsertCards with in-memory variant grouping; add cardDefinitionId to card_printings onConflictDoUpdate (2026-05-20)
 
 **Wave 2** *(blocked on Wave 1)*
 - [ ] 17.1-02-PLAN.md — Re-seed DB + orphan-check query verification + human checkpoint
@@ -198,5 +198,5 @@ Plans:
 | 16 | v4 | 4/4 | ✅ Complete | 2026-05-15 |
 | 16.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
 | 17 | v4 | 10/10 | ✅ Complete | 2026-05-20 |
-| 17.1 | v4 | 0/2 | Not started | — |
+| 17.1 | v4 | 1/2 | In Progress | — |
 | 18 | v4 | 0/? | Not started | — |

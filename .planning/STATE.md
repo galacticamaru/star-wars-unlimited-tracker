@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Phase 17 complete — variant collection tracking shipped
-last_updated: "2026-05-18T00:00:00.000Z"
-last_activity: 2026-05-18 -- Phase 17 complete — 8/8 plans, verification passed, all review criticals fixed
+stopped_at: Phase 17.1 in progress — Wave 1 complete (upsertCards refactored)
+last_updated: "2026-05-20T00:00:00.000Z"
+last_activity: 2026-05-20 -- Phase 17.1 Wave 1 complete — upsertCards rewritten with in-memory variant grouping
 progress:
   total_phases: 5
   completed_phases: 3
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 18 — Catalog Collection Enhancements
-Plan: 0/? (not started)
-Status: Ready to plan
-Last activity: 2026-05-18 -- Phase 17 complete — variant collection tracking shipped
+Phase: 17.1 — Card Sync Variant Grouping
+Plan: 1/2 (Wave 1 complete)
+Status: In progress — Wave 2 pending (human checkpoint required)
+Last activity: 2026-05-20 -- Wave 1 complete — upsertCards in-memory grouping refactored
 
 ```
 v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 2 polish; Phase 17 planned)
