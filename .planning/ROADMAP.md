@@ -41,7 +41,7 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 - [x] **Phase 16: Empty Deck Guided Onboarding** — Auto-filter flow that guides users from leader+base selection through aspect-filtered card browsing (2026-05-15)
 - [x] **Phase 17: Variant Collection Tracking** — Per-variant owned counts viewed and updated on the card detail page (2026-05-18)
 - [x] **Phase 17.1: Card Sync Variant Grouping** — Refactor upsertCards to in-memory grouping; all variant types correctly linked in card_printings (2026-05-20)
-- [ ] **Phase 18: Catalog Collection Enhancements** — Catalog grid shows highest-owned variant art; quick-add all cards from a starter deck
+- [x] **Phase 18: Catalog Collection Enhancements** — Catalog grid shows highest-owned variant art; quick-add all cards from a starter deck (2026-05-20)
 
 ## Phase Details
 
@@ -180,10 +180,14 @@ Plans:
   1. A catalog card tile displays the art of whichever variant the user owns the most copies of; if the user owns no copies, it falls back to Standard art
   2. User can trigger a single action to add all cards from a named pre-constructed starter deck to their collection
   3. After the quick-add action completes, the user receives confirmation of how many cards were added
-**Plans**: 2 plans
+**Plans**: 3 plans
 Plans:
-- [ ] 18-01-PLAN.md — Starter Deck Quick-Add (REQ-CAT-04)
-- [ ] 18-02-PLAN.md — Catalog Variant Art Display (REQ-COLLECT-08)
+**Wave 1**
+- [x] 18-01-PLAN.md — Starter Deck Quick-Add (REQ-CAT-04)
+- [x] 18-02-PLAN.md — Catalog Variant Art Display (REQ-COLLECT-08)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [x] 18-03-PLAN.md — Expand starter-decks.ts: add deckType field + JTL/LOF/SEC Spotlight Decks (REQ-CAT-04)
 **UI hint**: yes
 
 ## Progress
@@ -202,4 +206,4 @@ Plans:
 | 16.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
 | 17 | v4 | 10/10 | ✅ Complete | 2026-05-20 |
 | 17.1 | v4 | 2/2 | ✅ Complete | 2026-05-20 |
-| 18 | v4 | 0/2 | Not started | — |
+| 18 | v4 | 3/3 | ✅ Complete | 2026-05-20 |

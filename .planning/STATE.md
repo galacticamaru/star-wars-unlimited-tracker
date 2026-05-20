@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Phase 17.1 complete — variant grouping fix shipped + catalog key fix
+stopped_at: Phase 18 plan 03 complete — starter-decks.ts expanded with deckType + 5 Spotlight Decks
 last_updated: "2026-05-20T00:00:00.000Z"
-last_activity: 2026-05-20 -- Phase 17.1 complete — 2/2 plans, verification passed, idempotency confirmed
+last_activity: 2026-05-20 -- Phase 18 plan 03 complete — all 3 plans in phase 18 now shipped
 progress:
   total_phases: 5
   completed_phases: 4
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 ## Current Position
 
 Phase: 18 — Catalog Collection Enhancements
-Plan: 0/? (not started)
-Status: Ready to plan
-Last activity: 2026-05-20 -- Phase 17.1 complete — upsertCards variant grouping fix + catalog key fix shipped
+Plan: 3/3 (complete)
+Status: In progress
+Last activity: 2026-05-20 -- Phase 18 plan 03 complete — deckType field + 5 Spotlight Decks added to starter-decks.ts
 
 ```
 v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 2 polish; Phase 17 planned)
@@ -90,5 +90,5 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-15T12:10:00.000Z
-Stopped at: Phase 16.1 plan 01 complete — Deck List tab is now default and first in order
+Last session: 2026-05-20T00:00:00.000Z
+Stopped at: Phase 18 plan 03 complete — starter-decks.ts has 11 entries (6 starter + 5 spotlight)
