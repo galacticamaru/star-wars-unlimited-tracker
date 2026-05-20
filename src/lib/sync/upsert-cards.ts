@@ -184,59 +184,101 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
     const [existing] = await query;
 
     if (!existing) {
-      // If no Normal variant was found (e.g., card only exists as Hyperspace in this set),
-      // create the card_definitions row using this variant's data
-      const [def] = await db
-        .insert(cardDefinitions)
-        .values({
-          swudbId: collectorNumber,
-          name: card.Name,
-          subtitle: card.Subtitle ?? null,
-          type: card.Type,
-          aspects: card.Aspects ?? [],
-          arenas: card.Arenas ?? [],
-          traits: card.Traits ?? [],
-          keywords: card.Keywords ?? [],
-          cost: parseIntOrNull(card.Cost),
-          power: parseIntOrNull(card.Power),
-          hp: parseIntOrNull(card.HP),
-          frontText: card.FrontText ?? null,
-          backText: card.BackText ?? null,
-          epicAction: card.EpicAction ?? null,
-          doubleSided: card.DoubleSided,
-          unique: card.Unique,
-          updatedAt: sql`now()`,
-        })
-        .onConflictDoUpdate({
-          target: cardDefinitions.swudbId,
-          set: { updatedAt: sql`now()` },
-        })
-        .returning({ id: cardDefinitions.id });
+      // Fallback: for Foil variants, derive the Normal's swudbId by stripping the trailing 'F'
+      // from the collectorNumber (e.g. "SEC-030F" → "SEC-030") and look up by swudbId directly.
+      // This handles cases where the API returns different name encodings for Normal vs Foil,
+      // which caused the name+subtitle match above to fail silently and create orphaned definitions.
+      let fallbackDef: { id: number } | undefined;
+      if (card.VariantType === 'Foil' && collectorNumber.endsWith('F')) {
+        const normalSwudbId = collectorNumber.replace(/F$/, '');
+        const [bySwudbId] = await db
+          .select({ id: cardDefinitions.id })
+          .from(cardDefinitions)
+          .where(eq(cardDefinitions.swudbId, normalSwudbId));
+        fallbackDef = bySwudbId;
+      }
 
-      await db
-        .insert(cardPrintings)
-        .values({
-          cardDefinitionId: def.id,
-          setCode: card.Set,
-          collectorNumber,
-          rarity: card.Rarity,
-          variantType: card.VariantType,
-          frontArtUrl: card.FrontArt ?? null,
-          backArtUrl: card.BackArt ?? null,
-          artist: card.Artist ?? null,
-          updatedAt: sql`now()`,
-        })
-        .onConflictDoUpdate({
-          target: [cardPrintings.setCode, cardPrintings.collectorNumber],
-          set: {
-            rarity: sql`excluded.rarity`,
-            variantType: sql`excluded.variant_type`,
-            frontArtUrl: sql`excluded.front_art_url`,
-            backArtUrl: sql`excluded.back_art_url`,
-            artist: sql`excluded.artist`,
+      if (fallbackDef) {
+        // Resolved via swudbId fallback — insert only card_printings with the correct definition
+        await db
+          .insert(cardPrintings)
+          .values({
+            cardDefinitionId: fallbackDef.id,
+            setCode: card.Set,
+            collectorNumber,
+            rarity: card.Rarity,
+            variantType: card.VariantType,
+            frontArtUrl: card.FrontArt ?? null,
+            backArtUrl: card.BackArt ?? null,
+            artist: card.Artist ?? null,
             updatedAt: sql`now()`,
-          },
-        });
+          })
+          .onConflictDoUpdate({
+            target: [cardPrintings.setCode, cardPrintings.collectorNumber],
+            set: {
+              rarity: sql`excluded.rarity`,
+              variantType: sql`excluded.variant_type`,
+              frontArtUrl: sql`excluded.front_art_url`,
+              backArtUrl: sql`excluded.back_art_url`,
+              artist: sql`excluded.artist`,
+              updatedAt: sql`now()`,
+            },
+          });
+      } else {
+        // No name match AND no swudbId fallback — this variant genuinely has no Normal counterpart
+        // in this set (e.g., card only exists as Hyperspace). Create the card_definitions row.
+        const [def] = await db
+          .insert(cardDefinitions)
+          .values({
+            swudbId: collectorNumber,
+            name: card.Name,
+            subtitle: card.Subtitle ?? null,
+            type: card.Type,
+            aspects: card.Aspects ?? [],
+            arenas: card.Arenas ?? [],
+            traits: card.Traits ?? [],
+            keywords: card.Keywords ?? [],
+            cost: parseIntOrNull(card.Cost),
+            power: parseIntOrNull(card.Power),
+            hp: parseIntOrNull(card.HP),
+            frontText: card.FrontText ?? null,
+            backText: card.BackText ?? null,
+            epicAction: card.EpicAction ?? null,
+            doubleSided: card.DoubleSided,
+            unique: card.Unique,
+            updatedAt: sql`now()`,
+          })
+          .onConflictDoUpdate({
+            target: cardDefinitions.swudbId,
+            set: { updatedAt: sql`now()` },
+          })
+          .returning({ id: cardDefinitions.id });
+
+        await db
+          .insert(cardPrintings)
+          .values({
+            cardDefinitionId: def.id,
+            setCode: card.Set,
+            collectorNumber,
+            rarity: card.Rarity,
+            variantType: card.VariantType,
+            frontArtUrl: card.FrontArt ?? null,
+            backArtUrl: card.BackArt ?? null,
+            artist: card.Artist ?? null,
+            updatedAt: sql`now()`,
+          })
+          .onConflictDoUpdate({
+            target: [cardPrintings.setCode, cardPrintings.collectorNumber],
+            set: {
+              rarity: sql`excluded.rarity`,
+              variantType: sql`excluded.variant_type`,
+              frontArtUrl: sql`excluded.front_art_url`,
+              backArtUrl: sql`excluded.back_art_url`,
+              artist: sql`excluded.artist`,
+              updatedAt: sql`now()`,
+            },
+          });
+      }
     } else {
       // Found existing card_definitions — insert only card_printings
       await db
