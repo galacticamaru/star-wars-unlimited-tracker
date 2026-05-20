@@ -58,6 +58,29 @@ export async function upsertVariantCount(cardPrintingId: number, count: number, 
 }
 
 /**
+ * Safely increments an existing variant count by qtyToAdd without overwriting.
+ * Uses SQL addition on conflict to avoid the upsertVariantCount overwrite pitfall.
+ * Neon HTTP driver does not support transactions — caller must invoke recomputeTotal afterward.
+ */
+export async function incrementVariantCount(
+  cardPrintingId: number,
+  qtyToAdd: number,
+  userId: number
+) {
+  return db
+    .insert(userPrintingCollections)
+    .values({ userId, cardPrintingId, count: qtyToAdd })
+    .onConflictDoUpdate({
+      target: [userPrintingCollections.userId, userPrintingCollections.cardPrintingId],
+      set: {
+        count: sql`${userPrintingCollections.count} + ${qtyToAdd}`,
+        updatedAt: new Date(),
+      },
+    })
+    .returning();
+}
+
+/**
  * After a variant upsert, recompute and persist the total count for a card definition.
  * Must be called after every upsertVariantCount.
  * Note: Neon HTTP driver does not support transactions — these are two sequential awaits.
