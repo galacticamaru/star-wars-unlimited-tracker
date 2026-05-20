@@ -7,17 +7,18 @@ A multi-user web app for Star Wars: Unlimited TCG players. Players track their c
 > **v1 shipped 2026-05-07.** Single-user personal tool (no auth). Full core loop delivered.
 > **v2 shipped 2026-05-12.** Multi-user (auth), market pricing, sideboard support, and public trade binders.
 > **v3 shipped 2026-05-13.** New home page, sticky catalog sidebar, variant support, owned-only filter, and automatic trade wants.
+> **v4 shipped 2026-05-20.** Deck builder polish (type grouping, art, aspect panel, guided onboarding), per-variant collection tracking, catalog variant art, and starter deck quick-add.
 
-## Current Milestone: v4.0 Deck Builder & Collection Depth
+## Milestone: v4.0 Deck Builder & Collection Depth — COMPLETE
 
-**Goal:** Polish the deck builder UX and deepen collection tracking with variant awareness and quick-add flows.
+**Shipped:** 2026-05-20 — All 4 phases + 3 polish phases complete.
 
-**Target features:**
-- Deck list grouped by card type, with card art and aspect breakdown panel
-- Empty deck guided onboarding (auto-filter to leader+base, then by aspects)
-- Variant-aware collection tracking on card detail page
-- Catalog shows highest-owned variant art
-- Quick-add pre-constructed deck cards to collection
+**What shipped:**
+- Deck list grouped by card type, with card art and aspect breakdown panel (Phase 15)
+- Empty deck guided onboarding — auto-filter to leader+base, then aspects (Phase 16)
+- Variant-aware collection tracking on card detail page with +/- controls (Phase 17)
+- Catalog shows highest-owned variant art with Showcase > Hyperspace precedence (Phase 18)
+- Quick-add 11 pre-constructed decks (6 starter + 5 spotlight) to collection in one click (Phase 18)
 
 ## Core Value
 
@@ -46,12 +47,12 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Aspect breakdown panel in deck stats sidebar — v4 (REQ-DECK-08, Phase 15)
 - ✓ Card art in Deck List tab — leader/base images + hover art on rows — v4 (REQ-DECK-10, Phase 15)
 - ✓ Empty deck guided onboarding — auto-filter to leader+base, then aspects — v4 (REQ-DECK-09, Phase 16)
+- ✓ Per-variant collection tracking on card detail page — Normal/Foil counts, +/- controls, total line — v4 (REQ-COLLECT-06, REQ-COLLECT-07, Phase 17)
+- ✓ Catalog shows highest-owned variant art (Showcase > Hyperspace Foil > Hyperspace > Foil > Normal precedence) — v4 (REQ-COLLECT-08, Phase 18)
+- ✓ Quick-add pre-constructed deck cards to collection — 11 decks (6 starter + 5 spotlight), additive increment — v4 (REQ-CAT-04, Phase 18)
 
-### Active (v4)
-
-- [ ] Variant-aware collection tracking on card detail page (REQ-COLLECT-06, REQ-COLLECT-07)
-- [ ] Catalog shows highest-owned variant art (REQ-COLLECT-08)
-- [ ] Quick-add pre-constructed deck cards to collection (REQ-CAT-04)
+### Active (v5)
+(None yet — v4 complete)
 
 ### Out of Scope
 
@@ -63,10 +64,10 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ## Context
 
-**Shipped v3:** 2026-05-13 | **v4 Phase 15 complete:** 2026-05-14 | **v4 Phase 16 complete:** 2026-05-15 | **v4 Phase 16.1 complete:** 2026-05-15
+**Shipped v3:** 2026-05-13 | **v4 shipped:** 2026-05-20 (Phases 15–18 + 3 polish complete)
 **Stack:** Next.js 16 + TypeScript + Neon PostgreSQL + Drizzle ORM + Better Auth + shadcn/ui + base-ui + nuqs
 **Deployment:** Vercel (Hobby tier, daily cron syncs for cards and prices)
-**Codebase:** ~22,000 LOC TypeScript/TSX, 48 plans completed across 16 phases
+**Codebase:** ~23,000 LOC TypeScript/TSX, 67 plans completed across 20 phases (incl. polish)
 **Auth:** Better Auth (Email, Google, Discord) with per-user data isolation
 **Card data:** swu-db.com API auto-sync; PokéWallet API for market prices
 
@@ -115,4 +116,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-15 — Phase 16.1 complete (tab reorder polish)*
+*Last updated: 2026-05-20 — v4 complete (Phase 18: catalog variant art + starter deck quick-add + spotlight deck expansion)*

@@ -169,7 +169,7 @@ describe('filterCards', () => {
     });
 
     it('ownedOnly=true returns only cards with collection[id] >= 1', () => {
-      const collection = { 1: 2 };
+      const collection = { 1: { total: 2, variants: {} } };
       const result = filterCards([cardA, cardB], { ...emptyFilters, ownedOnly: true }, collection);
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe(1);
@@ -185,7 +185,7 @@ describe('filterCards', () => {
     it('ownedOnly=true ANDs correctly with other active filters', () => {
       const cardC = makeCard({ id: 3, name: 'Luke', type: 'Unit' });
       const cardD = makeCard({ id: 4, name: 'Vader', type: 'Unit' });
-      const collection = { 3: 1 };
+      const collection = { 3: { total: 1, variants: {} } };
       const result = filterCards(
         [cardC, cardD],
         { ...emptyFilters, selectedTypes: ['Unit'], ownedOnly: true },

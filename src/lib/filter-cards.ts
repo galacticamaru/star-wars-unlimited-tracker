@@ -1,3 +1,5 @@
+import type { CollectionMap } from '@/app/api/collection/collection-shape';
+
 export interface FilterState {
   search: string;
   selectedSets: string[];
@@ -45,7 +47,7 @@ export interface CardForFilter {
 export function filterCards(
   cards: CardForFilter[],
   filters: FilterState,
-  collection: Record<number, number> = {}
+  collection: CollectionMap = {}
 ): CardForFilter[] {
   const {
     search = '',
@@ -113,7 +115,7 @@ export function filterCards(
     const matchesVariant = !selectedVariants?.length || (card.variantType && selectedVariants.includes(card.variantType));
 
     // Owned-only gate: pass-through when toggle is off; checks collection count when on (D-01)
-    const matchesOwned = !ownedOnly || (collection[card.id] ?? 0) >= 1;
+    const matchesOwned = !ownedOnly || (collection[card.id]?.total ?? 0) >= 1;
 
     // AND across categories (D-05)
     return (

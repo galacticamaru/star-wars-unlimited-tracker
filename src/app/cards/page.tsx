@@ -1,4 +1,4 @@
-import { getAllCards, getFilterOptions } from '@/db/queries/catalog';
+import { getAllCards, getFilterOptions, getPrintingArtMap } from '@/db/queries/catalog';
 import { CatalogClient } from '@/components/catalog/catalog-client';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
@@ -10,9 +10,10 @@ export default async function CatalogPage() {
     headers: await headers(),
   });
 
-  const [cards, filterOptions] = await Promise.all([
+  const [cards, filterOptions, printingArtMap] = await Promise.all([
     getAllCards(session?.user.id ? Number(session.user.id) : undefined),
     getFilterOptions(),
+    getPrintingArtMap(),
   ]);
 
   // Map to plain serializable objects — exclude createdAt/updatedAt (Date objects)
@@ -50,6 +51,7 @@ export default async function CatalogPage() {
     <CatalogClient
       cards={plainCards}
       filterOptions={filterOptions}
+      printingArtMap={printingArtMap}
     />
   );
 }

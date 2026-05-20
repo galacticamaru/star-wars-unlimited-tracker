@@ -1,5 +1,5 @@
-import { NextRequest } from 'next/server';
-import { getUserCollection, upsertCardCount } from '@/db/queries/collection';
+import { getUserCollection } from '@/db/queries/collection';
+import { buildCollectionMap } from '@/app/api/collection/collection-shape';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 
@@ -10,13 +10,11 @@ export async function GET() {
       return new Response('Unauthorized', { status: 401 });
     }
 
-    const collection = await getUserCollection(Number(session.user.id));
-    
-    // Convert to a map for easier client-side consumption: { [cardDefinitionId]: count }
-    const countMap = collection.reduce((acc, row) => {
-      acc[row.cardDefinitionId] = row.count;
-      return acc;
-    }, {} as Record<number, number>);
+    const rows = await getUserCollection(Number(session.user.id));
+
+    // Build the new response shape: { [cardDefinitionId]: { total, variants: { [cardPrintingId]: count } } }
+    // All consumers of this endpoint must read .total instead of the raw value (D-05)
+    const countMap = buildCollectionMap(rows);
 
     return Response.json(countMap);
   } catch (error) {
@@ -25,25 +23,5 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) {
-      return new Response('Unauthorized', { status: 401 });
-    }
-
-    const body = await request.json();
-    const { cardDefinitionId, count } = body;
-
-    if (cardDefinitionId === undefined || count === undefined) {
-      return new Response('Missing cardDefinitionId or count', { status: 400 });
-    }
-
-    await upsertCardCount(cardDefinitionId, count, Number(session.user.id));
-
-    return Response.json({ success: true });
-  } catch (error) {
-    console.error('Failed to update collection:', error);
-    return new Response('Internal Server Error', { status: 500 });
-  }
-}
+// POST /api/collection has been REMOVED (D-03).
+// All count mutations now go through POST /api/collection/variants.

@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { cardDefinitions, cardPrintings, userCollections } from '@/db/schema';
 import { eq, and, notIlike, asc, sql, desc, isNotNull, inArray } from 'drizzle-orm';
+import type { PrintingArtMap } from '@/lib/catalog/select-best-variant';
 
 export async function getAllCards(userId?: number, variantType?: string[]) {
   const variantCondition = variantType && variantType.length > 0 
@@ -81,6 +82,28 @@ export async function getFilterOptions() {
     types: types.map(r => r.type),
     // aspects: derived client-side from the full card array (avoids PostgreSQL unnest)
   };
+}
+
+/**
+ * Returns a map of all card printings keyed by cardPrintingId.
+ * Used by the catalog RSC (src/app/cards/page.tsx) to pass art data
+ * to the client for variant art resolution (REQ-COLLECT-08, D-01).
+ *
+ * This is public catalog data — no user filter needed.
+ */
+export async function getPrintingArtMap(): Promise<PrintingArtMap> {
+  const rows = await db
+    .select({
+      id: cardPrintings.id,
+      variantType: cardPrintings.variantType,
+      frontArtUrl: cardPrintings.frontArtUrl,
+    })
+    .from(cardPrintings);
+
+  return rows.reduce<PrintingArtMap>((acc, row) => {
+    acc[row.id] = { variantType: row.variantType, frontArtUrl: row.frontArtUrl };
+    return acc;
+  }, {});
 }
 
 export async function getTopCardsByPrice(limit: number) {

@@ -8,9 +8,13 @@ export async function getWantList(userId: number) {
     ]);
 
     // Build owned-count map
+    // getUserCollection now returns enriched rows (Plan 02); use .total for the aggregate count.
+    // Deduplicate by cardDefinitionId — multiple rows exist when per-variant data is present.
     const ownedMap: Record<number, number> = {};
     for (const row of collection) {
-      ownedMap[row.cardDefinitionId] = row.count;
+      if (!(row.cardDefinitionId in ownedMap)) {
+        ownedMap[row.cardDefinitionId] = row.total;
+      }
     }
 
     // Aggregate: max quantity per card across all decks (non-sideboard only)

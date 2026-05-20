@@ -14,6 +14,8 @@ interface CardItemProps {
   collectorNumber: string;  // e.g. "SOR-059"
   frontArtUrl: string | null;
   backArtUrl: string | null;
+  /** When provided, overrides frontArtUrl for the tile image (REQ-COLLECT-08, D-02). */
+  bestVariantArtUrl?: string | null;
   ownedCount: number;
   onUpdateCount?: (id: number, count: number) => void;
   mode?: 'catalog' | 'selector' | 'want-list' | 'binder' | 'want';
@@ -25,15 +27,16 @@ interface CardItemProps {
   lookingForQuantity?: number; // used when mode='want'
 }
 
-export function CardItem({ 
-  id, 
-  name, 
-  type, 
-  setCode, 
-  collectorNumber, 
-  frontArtUrl, 
-  backArtUrl, 
-  ownedCount, 
+export function CardItem({
+  id,
+  name,
+  type,
+  setCode,
+  collectorNumber,
+  frontArtUrl,
+  backArtUrl,
+  bestVariantArtUrl,
+  ownedCount,
   onUpdateCount,
   mode = 'catalog',
   deckCount = 0,
@@ -51,9 +54,12 @@ export function CardItem({
   const isLeader = type.toLowerCase().includes('leader');
   const isBase = type.toLowerCase().includes('base');
 
-  // If the previous attempt with backArtUrl was "backwards", use frontArtUrl for Leaders in the catalog.
-  // Bases usually only have frontArtUrl.
-  const displayUrl = isLeader ? (frontArtUrl || backArtUrl) : frontArtUrl;
+  // Variant art override (REQ-COLLECT-08, D-02/D-03):
+  // bestVariantArtUrl is provided by CardGrid when the user owns variants.
+  // It is null for logged-out users and when no copies are owned, so the
+  // Normal art fallback below ensures unauthenticated users see default art.
+  const normalDisplayUrl = isLeader ? (frontArtUrl || backArtUrl) : frontArtUrl;
+  const displayUrl = bestVariantArtUrl ?? normalDisplayUrl;
   
   // Leaders/Bases are horizontal (3:2) in the catalog. Others are vertical (2:3).
   const isHorizontal = isLeader || isBase;
@@ -162,11 +168,10 @@ export function CardItem({
                   </button>
                 )}
               </div>
-            ) : (
-              <div 
+            ) : onUpdateCount ? (
+              <div
                 className="flex items-center gap-3 bg-background/90 rounded-full px-3 py-1 shadow-lg"
                 onClick={(e) => {
-                  // Prevent navigation when clicking the control bar itself
                   e.preventDefault();
                   e.stopPropagation();
                 }}
@@ -176,7 +181,7 @@ export function CardItem({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    onUpdateCount?.(id, Math.max(0, ownedCount - 1));
+                    onUpdateCount(id, Math.max(0, ownedCount - 1));
                   }}
                   className="p-1 hover:bg-muted rounded-full transition-colors"
                   aria-label="Decrease owned count"
@@ -189,13 +194,17 @@ export function CardItem({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    onUpdateCount?.(id, ownedCount + 1);
+                    onUpdateCount(id, ownedCount + 1);
                   }}
                   className="p-1 hover:bg-muted rounded-full transition-colors"
                   aria-label="Increase owned count"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
+              </div>
+            ) : (
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex items-center justify-center z-10 px-1 text-center">
+                <span className="text-white text-xs font-semibold leading-tight">{name}</span>
               </div>
             )}
           </div>

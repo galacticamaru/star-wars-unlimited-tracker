@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import type { Card } from '@/lib/deck-validation';
+import type { CollectionMap } from '@/app/api/collection/collection-shape';
 import { CardItem } from '@/components/catalog/card-item';
 import { useCurrency } from '@/components/currency-context';
 import { DollarSign } from 'lucide-react';
@@ -14,14 +15,23 @@ interface WantListTabProps {
 const TYPE_ORDER = ['Leader', 'Base', 'Unit', 'Event', 'Upgrade'];
 
 export function WantListTab({ deckCards, allCards }: WantListTabProps) {
-  const [collection, setCollection] = useState<Record<number, number>>({});
+  const [collection, setCollection] = useState<CollectionMap>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/collection')
-      .then(res => res.json())
+      .then(res => {
+        // WR-05: Guard against non-ok responses (e.g. 401 Unauthorized).
+        // A 401 returns plain text "Unauthorized" which would throw on res.json(),
+        // masking the real error. Bail out early on any non-ok response.
+        if (!res.ok) {
+          setLoading(false);
+          return;
+        }
+        return res.json();
+      })
       .then(data => {
-        setCollection(data);
+        if (data) setCollection(data);
         setLoading(false);
       })
       .catch(err => {
@@ -35,7 +45,7 @@ export function WantListTab({ deckCards, allCards }: WantListTabProps) {
       .map(dc => {
         const card = allCards.find(c => c.id === dc.cardDefinitionId);
         if (!card) return null;
-        const owned = collection[dc.cardDefinitionId] ?? 0;
+        const owned = collection[dc.cardDefinitionId]?.total ?? 0;
         const shortfall = dc.quantity - owned;
         if (shortfall <= 0) return null;
         return { card, quantity: dc.quantity, owned, shortfall };
