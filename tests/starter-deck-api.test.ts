@@ -19,7 +19,11 @@ vi.mock('@/db', () => ({
 }));
 
 vi.mock('@/lib/auth', () => ({
-  auth: vi.fn().mockResolvedValue({ user: { id: '1' } }),
+  auth: {
+    api: {
+      getSession: vi.fn().mockResolvedValue({ user: { id: '1' } }),
+    },
+  },
 }));
 
 describe('REQ-CAT-04: Starter Deck Quick-Add', () => {
@@ -70,6 +74,21 @@ describe('REQ-CAT-04: Starter Deck Quick-Add', () => {
         expect(Number.isInteger(card.qty), `${deck.id}: qty must be integer`).toBe(true);
         expect(card.qty, `${deck.id}: qty must be > 0`).toBeGreaterThan(0);
       }
+    }
+  });
+
+  it('all deck ids are unique — no duplicates that would silently shadow each other', async () => {
+    const { starterDecks } = await import('../src/data/starter-decks');
+    const ids = starterDecks.map((d) => d.id);
+    const uniqueIds = new Set(ids);
+    expect(uniqueIds.size).toBe(ids.length);
+  });
+
+  it('all decks have a deckType field', async () => {
+    const { starterDecks } = await import('../src/data/starter-decks');
+    const validTypes = new Set(['starter', 'spotlight', 'twin-suns']);
+    for (const deck of starterDecks) {
+      expect(validTypes.has(deck.deckType), `${deck.id}: invalid deckType '${deck.deckType}'`).toBe(true);
     }
   });
 });

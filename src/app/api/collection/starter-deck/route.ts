@@ -26,7 +26,10 @@ export async function POST(request: NextRequest) {
       return new Response('Unknown deck', { status: 400 });
     }
 
-    const userId = Number(session.user.id);
+    const userId = parseInt(session.user.id, 10);
+    if (!Number.isFinite(userId) || userId <= 0) {
+      return new Response('Unauthorized', { status: 401 });
+    }
     const collectorNumbers = deck.cards.map((c) => c.collectorNumber);
 
     // Look up Normal variant printings for all cards in this deck
