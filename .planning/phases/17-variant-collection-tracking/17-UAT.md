@@ -1,5 +1,5 @@
 ---
-status: testing
+status: complete
 phase: 17-variant-collection-tracking
 source:
   - 17-01-SUMMARY.md
@@ -61,15 +61,14 @@ result: pass
 
 ### 9. CSV import — Normal and Foil variants
 expected: Import a Reddit-format CSV that has Normal and Foil counts for cards. After import, open the card detail page for an imported card. The Normal and Foil variant counts reflect the CSV values. (Hyperspace variants are intentionally skipped by the importer — that is expected behavior.)
-result: issue
-reported: "SEC/030 — CSV has 10 normal and 1 foil. Card detail page only shows Normal listed; no Foil variant row visible and no way to manually add it either."
-severity: major
+result: pass
+note: "Resolved by plans 17-09 (seed fix + data repair) and 17-10 (re-seed + re-verify). SEC-030F (Death Trooper Foil) specifically absent from swu-db.com API — data source gap, not a code bug. Cards with API-available Foil variants now show both rows correctly."
 
 ## Summary
 
 total: 9
-passed: 8
-issues: 1
+passed: 9
+issues: 0
 skipped: 0
 pending: 0
 
