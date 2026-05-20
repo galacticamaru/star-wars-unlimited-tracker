@@ -162,7 +162,15 @@ Cross-cutting constraints:
   3. Re-seeding is self-healing: running `npm run db:seed` again corrects any orphaned `card_definition_id` values in `card_printings`
   4. Promo-only sets (no Normal variant present) seed correctly using the lowest collectorNumber as the definition anchor
   5. After re-seed: 0 orphaned Foil/variant rows across all sets (verified by the orphan-check query)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+
+**Wave 1**
+- [ ] 17.1-01-PLAN.md — Rewrite upsertCards with in-memory variant grouping; add cardDefinitionId to card_printings onConflictDoUpdate
+
+**Wave 2** *(blocked on Wave 1)*
+- [ ] 17.1-02-PLAN.md — Re-seed DB + orphan-check query verification + human checkpoint
 
 ### Phase 18: Catalog Collection Enhancements
 **Goal**: The catalog surface reflects variant ownership in its art display, and users can seed their collection from a known starter deck in one click
@@ -190,5 +198,5 @@ Cross-cutting constraints:
 | 16 | v4 | 4/4 | ✅ Complete | 2026-05-15 |
 | 16.1 | v4 | 1/1 | ✅ Complete | 2026-05-15 |
 | 17 | v4 | 10/10 | ✅ Complete | 2026-05-20 |
-| 17.1 | v4 | 0/? | Not started | — |
+| 17.1 | v4 | 0/2 | Not started | — |
 | 18 | v4 | 0/? | Not started | — |
