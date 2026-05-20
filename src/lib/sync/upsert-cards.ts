@@ -54,8 +54,8 @@ function parseIntOrNull(value: string | undefined | null): number | null {
 /**
  * Upserts all cards for a given set into the database.
  * Skips token sets (setId starts with "T") and token card types.
- * Uses a two-pass strategy: Normal variants first (create card_definitions),
- * then Foil/Hyperspace variants (look up existing card_definitions by name+subtitle).
+ * Groups all variants by (Name, Subtitle) in memory before any DB operations —
+ * no cross-DB lookup inside the loop. All variants share one card_definition_id.
  */
 export async function upsertCards(setId: string, cards: SWUCard[]): Promise<number> {
   // Token set guard (unchanged — canonical location)
