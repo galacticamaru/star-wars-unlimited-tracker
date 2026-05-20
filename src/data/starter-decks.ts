@@ -7,6 +7,7 @@ export interface StarterDeck {
   id: string;
   name: string;
   setCode: string;
+  deckType: 'starter' | 'spotlight' | 'twin-suns';
   cards: StarterDeckCard[];
 }
 
@@ -15,6 +16,7 @@ export const starterDecks: StarterDeck[] = [
     id: 'sor-luke',
     name: 'Luke Skywalker (SOR)',
     setCode: 'SOR',
+    deckType: 'starter',
     cards: [
       { collectorNumber: 'SOR-005', qty: 1 }, // Luke Leader
       { collectorNumber: 'SOR-029', qty: 1 }, // Admin Tower
@@ -53,6 +55,7 @@ export const starterDecks: StarterDeck[] = [
     id: 'sor-vader',
     name: 'Darth Vader (SOR)',
     setCode: 'SOR',
+    deckType: 'starter',
     cards: [
       { collectorNumber: 'SOR-010', qty: 1 }, // Vader Leader
       { collectorNumber: 'SOR-030', qty: 1 }, // Command Center
@@ -89,6 +92,7 @@ export const starterDecks: StarterDeck[] = [
     id: 'shd-mando',
     name: 'The Mandalorian (SHD)',
     setCode: 'SHD',
+    deckType: 'starter',
     cards: [
       { collectorNumber: 'SHD-018', qty: 1 },
       { collectorNumber: 'SHD-029', qty: 1 },
@@ -126,6 +130,7 @@ export const starterDecks: StarterDeck[] = [
     id: 'shd-gideon',
     name: 'Moff Gideon (SHD)',
     setCode: 'SHD',
+    deckType: 'starter',
     cards: [
       { collectorNumber: 'SHD-007', qty: 1 },
       { collectorNumber: 'SHD-023', qty: 1 },
@@ -162,6 +167,7 @@ export const starterDecks: StarterDeck[] = [
     id: 'twi-ahsoka',
     name: 'Ahsoka Tano (TWI)',
     setCode: 'TWI',
+    deckType: 'starter',
     cards: [
       { collectorNumber: 'TWI-012', qty: 1 }, // Ahsoka Leader
       { collectorNumber: 'TWI-029', qty: 1 }, // Base
@@ -202,6 +208,7 @@ export const starterDecks: StarterDeck[] = [
     id: 'twi-grievous',
     name: 'General Grievous (TWI)',
     setCode: 'TWI',
+    deckType: 'starter',
     cards: [
       { collectorNumber: 'TWI-006', qty: 1 }, // Grievous Leader
       { collectorNumber: 'TWI-023', qty: 1 }, // Base
@@ -239,4 +246,184 @@ export const starterDecks: StarterDeck[] = [
       { collectorNumber: 'TWI-108', qty: 1 },
     ],
   },
+  // Spotlight Decks — pre-constructed competitive starter products (one per leader)
+  {
+    id: 'jtl-boba-fett',
+    name: 'Boba Fett – By Any Means Necessary (JTL Spotlight)',
+    setCode: 'JTL',
+    deckType: 'spotlight',
+    cards: [
+      { collectorNumber: 'JTL-009', qty: 1 }, // Leader
+      { collectorNumber: 'SHD-026', qty: 1 }, // Base
+      { collectorNumber: 'JTL-132', qty: 3 },
+      { collectorNumber: 'JTL-133', qty: 1 },
+      { collectorNumber: 'SOR-130', qty: 3 },
+      { collectorNumber: 'SOR-131', qty: 2 },
+      { collectorNumber: 'JTL-187', qty: 3 },
+      { collectorNumber: 'JTL-139', qty: 2 },
+      { collectorNumber: 'JTL-141', qty: 1 },
+      { collectorNumber: 'JTL-189', qty: 1 },
+      { collectorNumber: 'JTL-183', qty: 3 },
+      { collectorNumber: 'JTL-237', qty: 3 },
+      { collectorNumber: 'TWI-181', qty: 2 },
+      { collectorNumber: 'JTL-185', qty: 3 },
+      { collectorNumber: 'JTL-240', qty: 3 },
+      { collectorNumber: 'JTL-165', qty: 2 },
+      { collectorNumber: 'JTL-140', qty: 1 },
+      { collectorNumber: 'SOR-132', qty: 2 },
+      { collectorNumber: 'SOR-184', qty: 1 },
+      { collectorNumber: 'JTL-230', qty: 1 },
+      { collectorNumber: 'TWI-170', qty: 3 },
+      { collectorNumber: 'TWI-171', qty: 1 },
+      { collectorNumber: 'SOR-186', qty: 3 },
+      { collectorNumber: 'SOR-139', qty: 3 },
+      { collectorNumber: 'JTL-144', qty: 3 },
+    ],
+  },
+  {
+    id: 'jtl-han-solo',
+    name: 'Han Solo – May the Odds Be Ever In Your Favor (JTL Spotlight)',
+    setCode: 'JTL',
+    deckType: 'spotlight',
+    cards: [
+      { collectorNumber: 'JTL-017', qty: 1 }, // Leader
+      { collectorNumber: 'SOR-024', qty: 1 }, // Base
+      { collectorNumber: 'SHD-095', qty: 3 },
+      { collectorNumber: 'SOR-204', qty: 2 },
+      { collectorNumber: 'JTL-093', qty: 1 },
+      { collectorNumber: 'JTL-245', qty: 2 },
+      { collectorNumber: 'JTL-196', qty: 3 },
+      { collectorNumber: 'SOR-097', qty: 1 },
+      { collectorNumber: 'TWI-110', qty: 1 },
+      { collectorNumber: 'JTL-097', qty: 2 },
+      { collectorNumber: 'SOR-192', qty: 2 },
+      { collectorNumber: 'JTL-215', qty: 2 },
+      { collectorNumber: 'JTL-103', qty: 3 },
+      { collectorNumber: 'TWI-114', qty: 1 },
+      { collectorNumber: 'JTL-210', qty: 1 },
+      { collectorNumber: 'SHD-195', qty: 3 },
+      { collectorNumber: 'TWI-191', qty: 3 },
+      { collectorNumber: 'JTL-096', qty: 2 },
+      { collectorNumber: 'JTL-200', qty: 3 },
+      { collectorNumber: 'JTL-217', qty: 1 },
+      { collectorNumber: 'JTL-249', qty: 3 },
+      { collectorNumber: 'JTL-124', qty: 2 },
+      { collectorNumber: 'SOR-217', qty: 1 },
+      { collectorNumber: 'TWI-226', qty: 3 },
+      { collectorNumber: 'JTL-208', qty: 3 },
+      { collectorNumber: 'JTL-209', qty: 1 },
+      { collectorNumber: 'JTL-235', qty: 1 },
+    ],
+  },
+  {
+    id: 'lof-darth-maul',
+    name: 'Darth Maul (LOF Spotlight)',
+    setCode: 'LOF',
+    deckType: 'spotlight',
+    cards: [
+      { collectorNumber: 'LOF-009', qty: 1 }, // Leader
+      { collectorNumber: 'LOF-021', qty: 1 }, // Base
+      { collectorNumber: 'LOF-031', qty: 3 },
+      { collectorNumber: 'LOF-154', qty: 3 },
+      { collectorNumber: 'LOF-059', qty: 3 },
+      { collectorNumber: 'LOF-156', qty: 2 },
+      { collectorNumber: 'LOF-229', qty: 3 },
+      { collectorNumber: 'LOF-129', qty: 2 },
+      { collectorNumber: 'LOF-063', qty: 1 },
+      { collectorNumber: 'LOF-160', qty: 2 },
+      { collectorNumber: 'LOF-067', qty: 2 },
+      { collectorNumber: 'LOF-231', qty: 3 },
+      { collectorNumber: 'LOF-035', qty: 3 },
+      { collectorNumber: 'TWI-135', qty: 2 },
+      { collectorNumber: 'LOF-137', qty: 2 },
+      { collectorNumber: 'LOF-038', qty: 1 },
+      { collectorNumber: 'LOF-230', qty: 1 },
+      { collectorNumber: 'LOF-039', qty: 3 },
+      { collectorNumber: 'LOF-131', qty: 3 },
+      { collectorNumber: 'LOF-233', qty: 3 },
+      { collectorNumber: 'LOF-041', qty: 3 },
+      { collectorNumber: 'SOR-139', qty: 2 },
+      { collectorNumber: 'LOF-138', qty: 1 },
+      { collectorNumber: 'LOF-140', qty: 3 },
+      { collectorNumber: 'SOR-137', qty: 2 },
+    ],
+  },
+  {
+    id: 'lof-qui-gon-jinn',
+    name: 'Qui-Gon Jinn (LOF Spotlight)',
+    setCode: 'LOF',
+    deckType: 'spotlight',
+    cards: [
+      { collectorNumber: 'LOF-016', qty: 1 }, // Leader
+      { collectorNumber: 'LOF-023', qty: 1 }, // Base
+      { collectorNumber: 'LOF-190', qty: 3 },
+      { collectorNumber: 'LOF-255', qty: 3 },
+      { collectorNumber: 'SHD-096', qty: 1 },
+      { collectorNumber: 'LOF-242', qty: 3 },
+      { collectorNumber: 'TWI-193', qty: 2 },
+      { collectorNumber: 'LOF-193', qty: 3 },
+      { collectorNumber: 'LOF-111', qty: 2 },
+      { collectorNumber: 'LOF-096', qty: 3 },
+      { collectorNumber: 'JTL-201', qty: 1 },
+      { collectorNumber: 'LOF-196', qty: 3 },
+      { collectorNumber: 'LOF-249', qty: 1 },
+      { collectorNumber: 'LOF-199', qty: 2 },
+      { collectorNumber: 'LOF-100', qty: 2 },
+      { collectorNumber: 'LOF-194', qty: 2 },
+      { collectorNumber: 'LOF-099', qty: 2 },
+      { collectorNumber: 'LOF-197', qty: 3 },
+      { collectorNumber: 'LOF-198', qty: 2 },
+      { collectorNumber: 'LOF-218', qty: 2 },
+      { collectorNumber: 'SOR-219', qty: 1 },
+      { collectorNumber: 'LOF-227', qty: 3 },
+      { collectorNumber: 'LOF-104', qty: 1 },
+      { collectorNumber: 'LOF-201', qty: 3 },
+    ],
+  },
+  {
+    id: 'sec-palpatine',
+    name: 'Chancellor Palpatine (SEC Spotlight)',
+    setCode: 'SEC',
+    deckType: 'spotlight',
+    cards: [
+      { collectorNumber: 'SEC-001', qty: 1 }, // Leader
+      { collectorNumber: 'SEC-022', qty: 1 }, // Base
+      { collectorNumber: 'SEC-055', qty: 2 },
+      { collectorNumber: 'SEC-079', qty: 3 },
+      { collectorNumber: 'LOF-082', qty: 2 },
+      { collectorNumber: 'SEC-111', qty: 1 },
+      { collectorNumber: 'SEC-081', qty: 1 },
+      { collectorNumber: 'SEC-241', qty: 3 },
+      { collectorNumber: 'SEC-031', qty: 1 },
+      { collectorNumber: 'SEC-082', qty: 1 },
+      { collectorNumber: 'SEC-033', qty: 2 },
+      { collectorNumber: 'SEC-084', qty: 2 },
+      { collectorNumber: 'SEC-085', qty: 1 },
+      { collectorNumber: 'SEC-034', qty: 3 },
+      { collectorNumber: 'SEC-036', qty: 3 },
+      { collectorNumber: 'SEC-087', qty: 1 },
+      { collectorNumber: 'SEC-027', qty: 3 },
+      { collectorNumber: 'JTL-033', qty: 3 },
+      { collectorNumber: 'SEC-083', qty: 3 },
+      { collectorNumber: 'SEC-037', qty: 1 },
+      { collectorNumber: 'SEC-245', qty: 1 },
+      { collectorNumber: 'SEC-124', qty: 2 },
+      { collectorNumber: 'SEC-076', qty: 1 },
+      { collectorNumber: 'LOF-043', qty: 1 },
+      { collectorNumber: 'SEC-077', qty: 2 },
+      { collectorNumber: 'SEC-092', qty: 3 },
+      { collectorNumber: 'SEC-070', qty: 2 },
+      { collectorNumber: 'SEC-123', qty: 2 },
+    ],
+  },
+
+  // --- DEFERRED DECKS ---
+  // The following decks are known but cannot be added yet:
+  //
+  // SEC Padmé Amidala (Spotlight) — missing 4 upgrade card collector numbers
+  // LAW Jabba the Hutt (Spotlight) — complete decklist only available as image
+  // LAW Leia Organa (Spotlight) — complete decklist only available as image
+  // TS26 Twin Suns precons (x4: Aggressive Negotiations, Master and Apprentice,
+  //   Improvised Tactics, Blood Brothers) — product releases 2026-07-11;
+  //   add with deckType: 'twin-suns' once decklists are published on swu-db.com
 ];
