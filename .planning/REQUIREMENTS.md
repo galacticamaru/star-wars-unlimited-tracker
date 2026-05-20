@@ -16,8 +16,8 @@
 
 - [ ] **REQ-COLLECT-06**: User can view per-variant owned counts on the card detail page (Standard, Showcase, Prestige, Serialized)
 - [ ] **REQ-COLLECT-07**: User can increment and decrement owned count per variant on the card detail page
-- [ ] **REQ-COLLECT-08**: Catalog card grid displays art for the variant the user owns the most copies of (falls back to Standard art if none owned)
-- [ ] **REQ-CAT-04**: User can add all cards from a known pre-constructed starter deck to their collection in one action
+- [x] **REQ-COLLECT-08**: Catalog card grid displays art for the variant the user owns the most copies of (falls back to Standard art if none owned)
+- [x] **REQ-CAT-04**: User can add all cards from a known pre-constructed starter deck to their collection in one action
 
 ## Future Requirements
 
@@ -60,8 +60,8 @@ Explicitly excluded. Documented to prevent scope creep.
 | REQ-DECK-09 | Phase 16 | Complete |
 | REQ-COLLECT-06 | Phase 17 | Pending |
 | REQ-COLLECT-07 | Phase 17 | Pending |
-| REQ-COLLECT-08 | Phase 18 | Pending |
-| REQ-CAT-04 | Phase 18 | Pending |
+| REQ-COLLECT-08 | Phase 18 | Complete |
+| REQ-CAT-04 | Phase 18 | Complete |
 
 **Coverage:**
 - v4 requirements: 8 total

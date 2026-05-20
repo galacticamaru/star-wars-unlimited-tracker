@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
-status: in_progress
-stopped_at: Phase 18 plan 03 complete — starter-decks.ts expanded with deckType + 5 Spotlight Decks
+status: complete
+stopped_at: Phase 18 complete — v4 milestone done
 last_updated: "2026-05-20T00:00:00.000Z"
-last_activity: 2026-05-20 -- Phase 18 plan 03 complete — all 3 plans in phase 18 now shipped
+last_activity: 2026-05-20 -- Phase 18 verified and complete — catalog variant art + starter deck quick-add shipped
 progress:
   total_phases: 5
-  completed_phases: 4
-  total_plans: 24
-  completed_plans: 14
-  percent: 75
+  completed_phases: 5
+  total_plans: 27
+  completed_plans: 17
+  percent: 100
 ---
 
 # Project State
@@ -27,11 +27,11 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 Phase: 18 — Catalog Collection Enhancements
 Plan: 3/3 (complete)
-Status: In progress
-Last activity: 2026-05-20 -- Phase 18 plan 03 complete — deckType field + 5 Spotlight Decks added to starter-decks.ts
+Status: Complete — v4 milestone done
+Last activity: 2026-05-20 -- Phase 18 verified — catalog variant art + starter deck quick-add + spotlight decks shipped
 
 ```
-v4 Progress [██████████░░░░░░░░░░] 50% (2/4 phases + 2 polish; Phase 17 planned)
+v4 Progress [████████████████████] 100% (4/4 phases + 3 polish; all complete)
 ```
 
 ## Performance Metrics
