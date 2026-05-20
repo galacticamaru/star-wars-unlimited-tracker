@@ -58,48 +58,60 @@ function parseIntOrNull(value: string | undefined | null): number | null {
  * then Foil/Hyperspace variants (look up existing card_definitions by name+subtitle).
  */
 export async function upsertCards(setId: string, cards: SWUCard[]): Promise<number> {
-  // Canonical token set filter — callers do not need to pre-filter token sets.
-  // syncAllCards also filters token sets before calling upsertCards, but this guard
-  // is the authoritative location so upsertCards is safe to call independently
-  // (e.g., from scripts or tests) without requiring the caller to pre-filter.
-  // Token sets follow the pattern T + real set code (e.g. TSOR, TSHD), making them
-  // 4+ characters. Real set codes are 3 characters (SOR, SHD, TWI), so this check
-  // avoids incorrectly dropping real sets whose code happens to start with T.
+  // Token set guard (unchanged — canonical location)
   if (setId.startsWith('T') && setId.length > 3 && !setId.match(/^TS\d{2}$/)) return 0;
 
-  // Secondary filter — skip token card types
+  // Secondary filter — skip token card types (unchanged)
   const nonTokenCards = cards.filter(
     (card) => !card.Type.toLowerCase().includes('token')
   );
 
+  // --- In-memory variant grouping ---
+  // Key: "Name.trim()|Subtitle.trim()" (empty string for no subtitle)
+  // Value: all variants of that logical card returned by the API for this set
+  const groups = new Map<string, SWUCard[]>();
+  for (const card of nonTokenCards) {
+    const key = `${card.Name.trim()}|${(card.Subtitle ?? '').trim()}`;
+    const bucket = groups.get(key) ?? [];
+    bucket.push(card);
+    groups.set(key, bucket);
+  }
+
   let upsertCount = 0;
 
-  // Pass 1: Normal variants — these anchor the card_definitions rows
-  const normalCards = nonTokenCards.filter((card) => card.VariantType === 'Normal');
+  for (const variants of groups.values()) {
+    // --- Anchor selection ---
+    // Prefer Normal if present; otherwise use the variant with the lowest collectorNumber string.
+    // "Lowest" is lexicographic — works for both numeric (SOR-001 < SOR-010) and
+    // suffixed (SEC-030F) numbering since we only fall back here when no Normal exists.
+    const anchor =
+      variants.find((v) => v.VariantType === 'Normal') ??
+      variants.slice().sort((a, b) =>
+        `${a.Set}-${a.Number}`.localeCompare(`${b.Set}-${b.Number}`)
+      )[0];
 
-  for (const card of normalCards) {
-    const collectorNumber = `${card.Set}-${card.Number}`;
+    const anchorCollectorNumber = `${anchor.Set}-${anchor.Number}`;
 
-    // Upsert card_definitions row keyed on swudb_id = collectorNumber
+    // --- Upsert card_definitions once per logical card ---
     const [def] = await db
       .insert(cardDefinitions)
       .values({
-        swudbId: collectorNumber,
-        name: card.Name,
-        subtitle: card.Subtitle ?? null,
-        type: card.Type,
-        aspects: card.Aspects ?? [],
-        arenas: card.Arenas ?? [],
-        traits: card.Traits ?? [],
-        keywords: card.Keywords ?? [],
-        cost: parseIntOrNull(card.Cost),
-        power: parseIntOrNull(card.Power),
-        hp: parseIntOrNull(card.HP),
-        frontText: card.FrontText ?? null,
-        backText: card.BackText ?? null,
-        epicAction: card.EpicAction ?? null,
-        doubleSided: card.DoubleSided,
-        unique: card.Unique,
+        swudbId: anchorCollectorNumber,
+        name: anchor.Name,
+        subtitle: anchor.Subtitle ?? null,
+        type: anchor.Type,
+        aspects: anchor.Aspects ?? [],
+        arenas: anchor.Arenas ?? [],
+        traits: anchor.Traits ?? [],
+        keywords: anchor.Keywords ?? [],
+        cost: parseIntOrNull(anchor.Cost),
+        power: parseIntOrNull(anchor.Power),
+        hp: parseIntOrNull(anchor.HP),
+        frontText: anchor.FrontText ?? null,
+        backText: anchor.BackText ?? null,
+        epicAction: anchor.EpicAction ?? null,
+        doubleSided: anchor.DoubleSided,
+        unique: anchor.Unique,
         updatedAt: sql`now()`,
       })
       .onConflictDoUpdate({
@@ -125,166 +137,16 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
       })
       .returning({ id: cardDefinitions.id });
 
-    // Upsert the Normal card_printings row
-    await db
-      .insert(cardPrintings)
-      .values({
-        cardDefinitionId: def.id,
-        setCode: card.Set,
-        collectorNumber,
-        rarity: card.Rarity,
-        variantType: card.VariantType,
-        frontArtUrl: card.FrontArt ?? null,
-        backArtUrl: card.BackArt ?? null,
-        artist: card.Artist ?? null,
-        updatedAt: sql`now()`,
-      })
-      .onConflictDoUpdate({
-        target: [cardPrintings.setCode, cardPrintings.collectorNumber],
-        set: {
-          rarity: sql`excluded.rarity`,
-          variantType: sql`excluded.variant_type`,
-          frontArtUrl: sql`excluded.front_art_url`,
-          backArtUrl: sql`excluded.back_art_url`,
-          artist: sql`excluded.artist`,
-          updatedAt: sql`now()`,
-        },
-      });
-
-    upsertCount++;
-  }
-
-  // Pass 2: Non-Normal variants (Foil, Hyperspace, Hyperspace Foil, Showcase)
-  // Look up existing card_definitions by name+subtitle rather than creating new rows
-  const variantCards = nonTokenCards.filter((card) => card.VariantType !== 'Normal');
-
-  for (const card of variantCards) {
-    const collectorNumber = `${card.Set}-${card.Number}`;
-
-    // Look up existing card_definitions by name + subtitle, scoped to the current set
-    // to avoid matching reprints with identical names from other sets
-    const query = db
-      .select({ id: cardDefinitions.id })
-      .from(cardDefinitions)
-      .where(
-        and(
-          sql`${cardDefinitions.swudbId} LIKE ${card.Set + '-%'}`,
-          card.Subtitle
-            ? and(
-                eq(cardDefinitions.name, card.Name),
-                eq(cardDefinitions.subtitle, card.Subtitle)
-              )
-            : and(
-                eq(cardDefinitions.name, card.Name),
-                isNull(cardDefinitions.subtitle)
-              )
-        )
-      );
-
-    const [existing] = await query;
-
-    if (!existing) {
-      // Fallback: for Foil variants, derive the Normal's swudbId by stripping the trailing 'F'
-      // from the collectorNumber (e.g. "SEC-030F" → "SEC-030") and look up by swudbId directly.
-      // This handles cases where the API returns different name encodings for Normal vs Foil,
-      // which caused the name+subtitle match above to fail silently and create orphaned definitions.
-      let fallbackDef: { id: number } | undefined;
-      if (card.VariantType === 'Foil' && collectorNumber.endsWith('F')) {
-        const normalSwudbId = collectorNumber.replace(/F$/, '');
-        const [bySwudbId] = await db
-          .select({ id: cardDefinitions.id })
-          .from(cardDefinitions)
-          .where(eq(cardDefinitions.swudbId, normalSwudbId));
-        fallbackDef = bySwudbId;
-      }
-
-      if (fallbackDef) {
-        // Resolved via swudbId fallback — insert only card_printings with the correct definition
-        await db
-          .insert(cardPrintings)
-          .values({
-            cardDefinitionId: fallbackDef.id,
-            setCode: card.Set,
-            collectorNumber,
-            rarity: card.Rarity,
-            variantType: card.VariantType,
-            frontArtUrl: card.FrontArt ?? null,
-            backArtUrl: card.BackArt ?? null,
-            artist: card.Artist ?? null,
-            updatedAt: sql`now()`,
-          })
-          .onConflictDoUpdate({
-            target: [cardPrintings.setCode, cardPrintings.collectorNumber],
-            set: {
-              rarity: sql`excluded.rarity`,
-              variantType: sql`excluded.variant_type`,
-              frontArtUrl: sql`excluded.front_art_url`,
-              backArtUrl: sql`excluded.back_art_url`,
-              artist: sql`excluded.artist`,
-              updatedAt: sql`now()`,
-            },
-          });
-      } else {
-        // No name match AND no swudbId fallback — this variant genuinely has no Normal counterpart
-        // in this set (e.g., card only exists as Hyperspace). Create the card_definitions row.
-        const [def] = await db
-          .insert(cardDefinitions)
-          .values({
-            swudbId: collectorNumber,
-            name: card.Name,
-            subtitle: card.Subtitle ?? null,
-            type: card.Type,
-            aspects: card.Aspects ?? [],
-            arenas: card.Arenas ?? [],
-            traits: card.Traits ?? [],
-            keywords: card.Keywords ?? [],
-            cost: parseIntOrNull(card.Cost),
-            power: parseIntOrNull(card.Power),
-            hp: parseIntOrNull(card.HP),
-            frontText: card.FrontText ?? null,
-            backText: card.BackText ?? null,
-            epicAction: card.EpicAction ?? null,
-            doubleSided: card.DoubleSided,
-            unique: card.Unique,
-            updatedAt: sql`now()`,
-          })
-          .onConflictDoUpdate({
-            target: cardDefinitions.swudbId,
-            set: { updatedAt: sql`now()` },
-          })
-          .returning({ id: cardDefinitions.id });
-
-        await db
-          .insert(cardPrintings)
-          .values({
-            cardDefinitionId: def.id,
-            setCode: card.Set,
-            collectorNumber,
-            rarity: card.Rarity,
-            variantType: card.VariantType,
-            frontArtUrl: card.FrontArt ?? null,
-            backArtUrl: card.BackArt ?? null,
-            artist: card.Artist ?? null,
-            updatedAt: sql`now()`,
-          })
-          .onConflictDoUpdate({
-            target: [cardPrintings.setCode, cardPrintings.collectorNumber],
-            set: {
-              rarity: sql`excluded.rarity`,
-              variantType: sql`excluded.variant_type`,
-              frontArtUrl: sql`excluded.front_art_url`,
-              backArtUrl: sql`excluded.back_art_url`,
-              artist: sql`excluded.artist`,
-              updatedAt: sql`now()`,
-            },
-          });
-      }
-    } else {
-      // Found existing card_definitions — insert only card_printings
+    // --- Upsert card_printings for every variant in the group ---
+    // CRITICAL: cardDefinitionId is included in the update set so that
+    // re-seeding self-heals previously orphaned rows (rows that point to
+    // the wrong card_definition_id due to the old two-pass bug).
+    for (const card of variants) {
+      const collectorNumber = `${card.Set}-${card.Number}`;
       await db
         .insert(cardPrintings)
         .values({
-          cardDefinitionId: existing.id,
+          cardDefinitionId: def.id,
           setCode: card.Set,
           collectorNumber,
           rarity: card.Rarity,
@@ -297,6 +159,7 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
         .onConflictDoUpdate({
           target: [cardPrintings.setCode, cardPrintings.collectorNumber],
           set: {
+            cardDefinitionId: sql`excluded.card_definition_id`,
             rarity: sql`excluded.rarity`,
             variantType: sql`excluded.variant_type`,
             frontArtUrl: sql`excluded.front_art_url`,
@@ -305,9 +168,9 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
             updatedAt: sql`now()`,
           },
         });
-    }
 
-    upsertCount++;
+      upsertCount++;
+    }
   }
 
   return upsertCount;
