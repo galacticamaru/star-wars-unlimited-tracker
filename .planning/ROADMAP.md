@@ -5,7 +5,7 @@
 - ✅ **v1 MVP** — Phases 1–5.2 (shipped 2026-05-07) · [Archive](milestones/v1-ROADMAP.md)
 - ✅ **v2 Multi-User, Market, Decks & Trading** — Phases 6–10.1 (shipped 2026-05-12) · [Archive](milestones/v2-ROADMAP.md)
 - ✅ **v3 Catalog, Home & Binder Polish** — Phases 11–14 (shipped 2026-05-13) · [Archive](milestones/v3-ROADMAP.md)
-- 🔄 **v4 Deck Builder & Collection Depth** — Phases 15–18 (in progress)
+- ✅ **v4 Deck Builder & Collection Depth** — Phases 15–20 (shipped 2026-05-21)
 
 ## Phases
 
@@ -35,13 +35,15 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 
 </details>
 
-### v4 Deck Builder & Collection Depth (Phases 15–18)
+### v4 Deck Builder & Collection Depth (Phases 15–20)
 
 - [x] **Phase 15: Deck List Display Polish** — Card type grouping, aspect breakdown panel, and card art in the deck list view (2026-05-14)
 - [x] **Phase 16: Empty Deck Guided Onboarding** — Auto-filter flow that guides users from leader+base selection through aspect-filtered card browsing (2026-05-15)
 - [x] **Phase 17: Variant Collection Tracking** — Per-variant owned counts viewed and updated on the card detail page (2026-05-18)
 - [x] **Phase 17.1: Card Sync Variant Grouping** — Refactor upsertCards to in-memory grouping; all variant types correctly linked in card_printings (2026-05-20)
 - [x] **Phase 18: Catalog Collection Enhancements** — Catalog grid shows highest-owned variant art; quick-add all cards from a starter deck (2026-05-20)
+- [x] **Phase 19: Variant Filter Enhancements** — Unified variant filtering across the entire app; Foil/Hyperspace Foil added; variant badges in trade binder (2026-05-20)
+- [x] **Phase 20: CSV Variant Imports** — CSV import updated to support all four variant types via array-based variant lookup (2026-05-20)
 
 ## Phase Details
 
@@ -199,7 +201,7 @@ Plans:
   2. The API route correctly looks up variant printingIds and upserts counts.
 **Plans**: 1 plan
 Plans:
-- [ ] 20-01-PLAN.md — CSV Import refactor to array-based variant lookup (REQ-COLLECT-09)
+- [x] 20-01-PLAN.md — CSV Import refactor to array-based variant lookup (REQ-COLLECT-09)
 
 ### Phase 19: Variant Filter Enhancements
 **Goal**: Unified and complete variant filtering across the entire application, with clear visual identification of variants in the trade binder
@@ -214,10 +216,10 @@ Plans:
 
 Plans:
 **Wave 1**
-- [ ] 19-01-PLAN.md — Update VariantFilter component and public/deck-builder state tracking (REQ-FILTER-01)
+- [x] 19-01-PLAN.md — Update VariantFilter component and public/deck-builder state tracking (REQ-FILTER-01)
 
 **Wave 2** *(blocked on Wave 1)*
-- [ ] 19-02-PLAN.md — Trade Binder filters + variant badges on trade cards (REQ-BINDER-05, REQ-BINDER-06)
+- [x] 19-02-PLAN.md — Trade Binder filters + variant badges on trade cards (REQ-BINDER-05, REQ-BINDER-06)
 
 ## Progress
 
@@ -236,5 +238,5 @@ Plans:
 | 17 | v4 | 10/10 | ✅ Complete | 2026-05-20 |
 | 17.1 | v4 | 2/2 | ✅ Complete | 2026-05-20 |
 | 18 | v4 | 3/3 | ✅ Complete | 2026-05-20 |
-| 19 | v4 | 0/2 | Pending | |
-| 20 | v4 | 1/1 | ✅ Complete | 2026-05-24 |
+| 19 | v4 | 2/2 | ✅ Complete | 2026-05-20 |
+| 20 | v4 | 1/1 | ✅ Complete | 2026-05-20 |
