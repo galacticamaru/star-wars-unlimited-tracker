@@ -40,7 +40,7 @@ Three groups of decks to add:
   - SEC Padmé Amidala — deckType `'spotlight'`
   - LAW Jabba the Hutt — deckType `'spotlight'`
   - LAW Leia Organa — deckType `'spotlight'`
-- **D-13:** Researcher sources all 3 from swu-db.com. If any are still unavailable (e.g., SEC Padmé still missing upgrade numbers), note the remaining gap in the plan but proceed with what's resolvable rather than blocking the whole phase.
+- **D-13:** Researcher sources all 3 from swu-db.com. These decklists are known to exist — if any cannot be found, stop and check in with the user rather than skipping. The user will provide the decklist data directly to unblock the phase.
 
 ### Claude's Discretion
 - Deck `id` values for TS26 entries — follow existing kebab-case pattern (e.g., `ts26-improvised-tactics`, `ts26-aggressive-negotiations`, `ts26-blood-brothers`, `ts26-master-and-apprentice`)
