@@ -40,8 +40,7 @@ Declared values (multiples of 4):
 | xl | 32px | Layout gaps |
 | 2xl | 48px | Major section breaks |
 | 3xl | 64px | Page-level spacing |
-
-Exceptions: Badge uses `px-1.5 py-0.5` (Tailwind utility, not a named token — matches existing badge pattern in `manage-trade-card.tsx`). Touch-target exceptions: none for this phase (badge is `pointer-events-none`).
+| Exceptions | Badge inner padding `px-1.5 py-0.5` — non-4-multiple values carried verbatim from verified existing pattern in `src/components/binder/manage-trade-card.tsx` lines 93–98; this is a faithfully-copied project pattern, not a new design decision. Touch-target exceptions: none for this phase (badge is `pointer-events-none`). | — |
 
 ---
 
@@ -53,7 +52,7 @@ This phase introduces one new typographic element: the variant badge label on ca
 |------|------|--------|-------------|
 | Body | 16px | 400 (regular) | 1.5 |
 | Label / Badge | 9px (`text-[9px]`) | 700 (bold) | default |
-| Heading | 20px | 600 (semibold) | 1.2 |
+| Heading | 20px | 700 (bold) | 1.2 |
 | Display | 28px | 700 (bold) | 1.2 |
 
 Badge label specifics (source: `manage-trade-card.tsx` lines 93–98, verified):
