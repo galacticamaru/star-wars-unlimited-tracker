@@ -784,4 +784,166 @@ export const starterDecks: StarterDeck[] = [
       { collectorNumber: 'SEC-118', qty: 1 }, // Raxus Assembly — per D-08
     ],
   },
+
+  // IBH Preconstructed Starter Decks
+  // Note: IBH uses unique collector numbers per physical copy — all qty: 1
+  {
+    id: 'ibh-leia-rebel',
+    name: 'Leia Organa – Get to Your Transports! (IBH Starter)',
+    setCode: 'IBH',
+    deckType: 'starter',
+    cards: [
+      { collectorNumber: 'IBH-001', qty: 1 },
+      { collectorNumber: 'IBH-002', qty: 1 },
+      { collectorNumber: 'IBH-003', qty: 1 },
+      { collectorNumber: 'IBH-046', qty: 1 },
+      { collectorNumber: 'IBH-004', qty: 1 },
+      { collectorNumber: 'IBH-017', qty: 1 },
+      { collectorNumber: 'IBH-034', qty: 1 },
+      { collectorNumber: 'IBH-008', qty: 1 },
+      { collectorNumber: 'IBH-029', qty: 1 },
+      { collectorNumber: 'IBH-050', qty: 1 },
+      { collectorNumber: 'IBH-006', qty: 1 },
+      { collectorNumber: 'IBH-024', qty: 1 },
+      { collectorNumber: 'IBH-032', qty: 1 },
+      { collectorNumber: 'IBH-007', qty: 1 },
+      { collectorNumber: 'IBH-043', qty: 1 },
+      { collectorNumber: 'IBH-047', qty: 1 },
+      { collectorNumber: 'IBH-005', qty: 1 },
+      { collectorNumber: 'IBH-039', qty: 1 },
+      { collectorNumber: 'IBH-009', qty: 1 },
+      { collectorNumber: 'IBH-025', qty: 1 },
+      { collectorNumber: 'IBH-010', qty: 1 },
+      { collectorNumber: 'IBH-042', qty: 1 },
+      { collectorNumber: 'IBH-011', qty: 1 },
+      { collectorNumber: 'IBH-049', qty: 1 },
+      { collectorNumber: 'IBH-012', qty: 1 },
+      { collectorNumber: 'IBH-035', qty: 1 },
+      { collectorNumber: 'IBH-044', qty: 1 },
+      { collectorNumber: 'IBH-013', qty: 1 },
+      { collectorNumber: 'IBH-014', qty: 1 },
+      { collectorNumber: 'IBH-026', qty: 1 },
+      { collectorNumber: 'IBH-015', qty: 1 },
+      { collectorNumber: 'IBH-028', qty: 1 },
+      { collectorNumber: 'IBH-051', qty: 1 },
+      { collectorNumber: 'IBH-016', qty: 1 },
+      { collectorNumber: 'IBH-027', qty: 1 },
+      { collectorNumber: 'IBH-018', qty: 1 },
+      { collectorNumber: 'IBH-045', qty: 1 },
+      { collectorNumber: 'IBH-019', qty: 1 },
+      { collectorNumber: 'IBH-041', qty: 1 },
+      { collectorNumber: 'IBH-020', qty: 1 },
+      { collectorNumber: 'IBH-021', qty: 1 },
+      { collectorNumber: 'IBH-030', qty: 1 },
+      { collectorNumber: 'IBH-022', qty: 1 },
+      { collectorNumber: 'IBH-033', qty: 1 },
+      { collectorNumber: 'IBH-040', qty: 1 },
+      { collectorNumber: 'IBH-023', qty: 1 },
+      { collectorNumber: 'IBH-036', qty: 1 },
+      { collectorNumber: 'IBH-031', qty: 1 },
+      { collectorNumber: 'IBH-037', qty: 1 },
+      { collectorNumber: 'IBH-038', qty: 1 },
+      { collectorNumber: 'IBH-048', qty: 1 },
+      { collectorNumber: 'IBH-052', qty: 1 },
+    ],
+  },
+  {
+    id: 'ibh-vader-imperial',
+    name: 'Darth Vader – Don\'t Fail Me Again (IBH Starter)',
+    setCode: 'IBH',
+    deckType: 'starter',
+    cards: [
+      { collectorNumber: 'IBH-053', qty: 1 },
+      { collectorNumber: 'IBH-054', qty: 1 },
+      { collectorNumber: 'IBH-055', qty: 1 },
+      { collectorNumber: 'IBH-073', qty: 1 },
+      { collectorNumber: 'IBH-101', qty: 1 },
+      { collectorNumber: 'IBH-056', qty: 1 },
+      { collectorNumber: 'IBH-067', qty: 1 },
+      { collectorNumber: 'IBH-057', qty: 1 },
+      { collectorNumber: 'IBH-080', qty: 1 },
+      { collectorNumber: 'IBH-096', qty: 1 },
+      { collectorNumber: 'IBH-058', qty: 1 },
+      { collectorNumber: 'IBH-084', qty: 1 },
+      { collectorNumber: 'IBH-090', qty: 1 },
+      { collectorNumber: 'IBH-059', qty: 1 },
+      { collectorNumber: 'IBH-071', qty: 1 },
+      { collectorNumber: 'IBH-060', qty: 1 },
+      { collectorNumber: 'IBH-065', qty: 1 },
+      { collectorNumber: 'IBH-061', qty: 1 },
+      { collectorNumber: 'IBH-086', qty: 1 },
+      { collectorNumber: 'IBH-062', qty: 1 },
+      { collectorNumber: 'IBH-100', qty: 1 },
+      { collectorNumber: 'IBH-063', qty: 1 },
+      { collectorNumber: 'IBH-077', qty: 1 },
+      { collectorNumber: 'IBH-087', qty: 1 },
+      { collectorNumber: 'IBH-064', qty: 1 },
+      { collectorNumber: 'IBH-092', qty: 1 },
+      { collectorNumber: 'IBH-066', qty: 1 },
+      { collectorNumber: 'IBH-091', qty: 1 },
+      { collectorNumber: 'IBH-068', qty: 1 },
+      { collectorNumber: 'IBH-088', qty: 1 },
+      { collectorNumber: 'IBH-069', qty: 1 },
+      { collectorNumber: 'IBH-083', qty: 1 },
+      { collectorNumber: 'IBH-070', qty: 1 },
+      { collectorNumber: 'IBH-089', qty: 1 },
+      { collectorNumber: 'IBH-103', qty: 1 },
+      { collectorNumber: 'IBH-072', qty: 1 },
+      { collectorNumber: 'IBH-074', qty: 1 },
+      { collectorNumber: 'IBH-102', qty: 1 },
+      { collectorNumber: 'IBH-075', qty: 1 },
+      { collectorNumber: 'IBH-081', qty: 1 },
+      { collectorNumber: 'IBH-097', qty: 1 },
+      { collectorNumber: 'IBH-076', qty: 1 },
+      { collectorNumber: 'IBH-078', qty: 1 },
+      { collectorNumber: 'IBH-093', qty: 1 },
+      { collectorNumber: 'IBH-094', qty: 1 },
+      { collectorNumber: 'IBH-079', qty: 1 },
+      { collectorNumber: 'IBH-098', qty: 1 },
+      { collectorNumber: 'IBH-082', qty: 1 },
+      { collectorNumber: 'IBH-085', qty: 1 },
+      { collectorNumber: 'IBH-099', qty: 1 },
+      { collectorNumber: 'IBH-095', qty: 1 },
+      { collectorNumber: 'IBH-104', qty: 1 },
+    ],
+  },
+  // Spotlight Decks — previously deferred, now added
+  {
+    id: 'sec-padme-amidala',
+    name: 'Padmé Amidala (SEC Spotlight)',
+    setCode: 'SEC',
+    deckType: 'spotlight',
+    cards: [
+      { collectorNumber: 'SEC-016', qty: 1 }, // Leader
+      { collectorNumber: 'SEC-022', qty: 1 }, // Base
+      { collectorNumber: 'SEC-096', qty: 3 }, // Ahsoka Tano
+      { collectorNumber: 'SEC-201', qty: 3 }, // Anakin Skywalker
+      { collectorNumber: 'SEC-248', qty: 1 }, // B2EMO
+      { collectorNumber: 'SEC-198', qty: 2 }, // Bail Organa
+      { collectorNumber: 'SEC-093', qty: 1 }, // C-3PO
+      { collectorNumber: 'TWI-046', qty: 3 }, // Captain Typho
+      { collectorNumber: 'SEC-197', qty: 3 }, // Furtive Handmaiden
+      { collectorNumber: 'SEC-208', qty: 1 }, // Hunter
+      { collectorNumber: 'SEC-111', qty: 1 }, // Jar Jar Binks
+      { collectorNumber: 'LOF-100', qty: 1 }, // Kelleran Beq
+      { collectorNumber: 'SEC-094', qty: 2 }, // Mina Bonteri
+      { collectorNumber: 'SEC-103', qty: 1 }, // Mon Mothma
+      { collectorNumber: 'SEC-120', qty: 2 }, // Naboo Security Force
+      { collectorNumber: 'JTL-111', qty: 1 }, // Seasoned Fleet Admiral
+      { collectorNumber: 'SEC-199', qty: 2 }, // Bravo Squadron Fighter
+      { collectorNumber: 'LOF-194', qty: 3 }, // J-Type Nubian Starship
+      { collectorNumber: 'SEC-099', qty: 1 }, // Naboo Royal Starship
+      { collectorNumber: 'LOF-192', qty: 2 }, // N-1 Starfighter
+      { collectorNumber: 'SEC-116', qty: 2 }, // Nubian Star Skiff
+      { collectorNumber: 'LOF-198', qty: 2 }, // Stinger Mantis
+      { collectorNumber: 'SEC-115', qty: 1 }, // Taylander Shuttle
+      { collectorNumber: 'SEC-234', qty: 2 }, // Bog Down in Procedure
+      { collectorNumber: 'SEC-127', qty: 1 }, // Charged with Corruption
+      { collectorNumber: 'SEC-106', qty: 1 }, // Dismantle the Conspiracy
+      { collectorNumber: 'JTL-123', qty: 2 }, // Dogfight
+      { collectorNumber: 'SEC-129', qty: 2 }, // With Thunderous Applause
+      { collectorNumber: 'SEC-226', qty: 3 }, // Sneaking Suspicion
+      { collectorNumber: 'SEC-256', qty: 1 }, // Moral Authority
+    ],
+  },
 ];
