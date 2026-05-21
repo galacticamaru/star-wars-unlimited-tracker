@@ -456,6 +456,7 @@ export const starterDecks: StarterDeck[] = [
       { collectorNumber: 'TS26-048', qty: 1 },
       { collectorNumber: 'TS26-008', qty: 1 },
       { collectorNumber: 'TS26-006', qty: 1 },
+      { collectorNumber: 'TS26-003', qty: 1 },
       { collectorNumber: 'TS26-039', qty: 1 },
       { collectorNumber: 'SOR-193', qty: 1 },
       { collectorNumber: 'SOR-145', qty: 1 },
@@ -515,7 +516,6 @@ export const starterDecks: StarterDeck[] = [
     deckType: 'twin-suns',
     cards: [
       { collectorNumber: 'TS26-011', qty: 1 },
-      { collectorNumber: 'SEC-024', qty: 1 },
       { collectorNumber: 'TS26-046', qty: 1 },
       { collectorNumber: 'TS26-064', qty: 1 },
       { collectorNumber: 'TWI-129', qty: 1 },
@@ -607,7 +607,6 @@ export const starterDecks: StarterDeck[] = [
     deckType: 'twin-suns',
     cards: [
       { collectorNumber: 'TS26-012', qty: 1 },
-      { collectorNumber: 'SHD-026', qty: 1 },
       { collectorNumber: 'SOR-219', qty: 1 },
       { collectorNumber: 'TS26-070', qty: 1 },
       { collectorNumber: 'TS26-058', qty: 1 },
@@ -699,7 +698,6 @@ export const starterDecks: StarterDeck[] = [
     deckType: 'twin-suns',
     cards: [
       { collectorNumber: 'TS26-010', qty: 1 },
-      { collectorNumber: 'TWI-023', qty: 1 },
       { collectorNumber: 'TS26-033', qty: 1 },
       { collectorNumber: 'JTL-229', qty: 1 },
       { collectorNumber: 'TS26-056', qty: 1 },
