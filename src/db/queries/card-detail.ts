@@ -1,11 +1,20 @@
 import { db } from '@/db';
 import { cardDefinitions, cardPrintings, userCollections, userPrintingCollections } from '@/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/pg-core';
+
+// Alias used to join the Normal printing independently of the requested variant
+const normalPrinting = alias(cardPrintings, 'normal_printing');
 
 export async function getCardByPrinting(setCode: string, cardNumber: string, userId?: number) {
   // collectorNumber stored as "SOR-059" — reconstruct from URL route params
   const collectorNumber = `${setCode}-${cardNumber}`;
 
+  // Join any variant printing (matches the URL) → card definition → Normal printing.
+  // This allows variant collector numbers (e.g. "SOR-059H") to resolve to the correct
+  // card detail page; the displayed art and collector number always come from the
+  // Normal printing so the detail page is consistent regardless of which variant URL
+  // the user arrived from.
   const [card] = await db
     .select({
       id: cardDefinitions.id,
@@ -23,20 +32,25 @@ export async function getCardByPrinting(setCode: string, cardNumber: string, use
       backText: cardDefinitions.backText,
       epicAction: cardDefinitions.epicAction,
       doubleSided: cardDefinitions.doubleSided,
-      setCode: cardPrintings.setCode,
-      collectorNumber: cardPrintings.collectorNumber,
-      rarity: cardPrintings.rarity,
-      frontArtUrl: cardPrintings.frontArtUrl,
-      backArtUrl: cardPrintings.backArtUrl,
-      artist: cardPrintings.artist,
+      setCode: normalPrinting.setCode,
+      collectorNumber: normalPrinting.collectorNumber,
+      rarity: normalPrinting.rarity,
+      frontArtUrl: normalPrinting.frontArtUrl,
+      backArtUrl: normalPrinting.backArtUrl,
+      artist: normalPrinting.artist,
       priceEur: cardDefinitions.priceEur,
       priceUsd: cardDefinitions.priceUsd,
       collectionCount: sql<number>`COALESCE(${userCollections.count}, 0)`,
     })
-    .from(cardDefinitions)
+    .from(cardPrintings)
+    .innerJoin(cardDefinitions, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
     .innerJoin(
-      cardPrintings,
-      eq(cardDefinitions.id, cardPrintings.cardDefinitionId)
+      normalPrinting,
+      and(
+        eq(normalPrinting.cardDefinitionId, cardDefinitions.id),
+        eq(normalPrinting.setCode, cardPrintings.setCode),
+        eq(normalPrinting.variantType, 'Normal')
+      )
     )
     .leftJoin(
       userCollections,
@@ -49,15 +63,6 @@ export async function getCardByPrinting(setCode: string, cardNumber: string, use
       and(
         eq(cardPrintings.setCode, setCode),
         eq(cardPrintings.collectorNumber, collectorNumber),
-        // WR-04: variantType='Normal' filter is intentional.
-        // Card detail URLs are always constructed from the Normal variant's collectorNumber
-        // (e.g. "SOR-059", not "SOR-059F" or a Hyperspace number). CardItem and any other
-        // URL builders MUST use the Normal collectorNumber — if a Foil/Hyperspace
-        // collectorNumber is ever used in a URL, this query will return null and
-        // notFound() will be called even though the card exists in the DB.
-        // This coupling must be maintained until this query is updated to prefer Normal
-        // with an ORDER BY fallback.
-        eq(cardPrintings.variantType, 'Normal')
       )
     )
     .limit(1);

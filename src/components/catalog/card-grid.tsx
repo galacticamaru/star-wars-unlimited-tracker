@@ -32,9 +32,10 @@ export function CardGrid({
     >
       {cards.map(card => {
         // Compute best variant art URL for this card (D-02, D-04).
-        // - Reads CollectionMap.variants[card.id] (per-printing counts from Phase 17).
-        // - Picks the printing with the highest owned count; ties broken by variant precedence.
-        // - Falls back to null when no variants owned (logged-out D-03, or zero-owned D-03).
+        // If the user owns the card (any variant), always show their highest-precedence
+        // owned variant art regardless of which variant filter is active.
+        // If the user owns nothing, cardVariants is undefined → bestVariantArtUrl is null
+        // → falls back to card.frontArtUrl, which is the art for the displayed variant row.
         const cardVariants = collection[card.id]?.variants;
         const bestVariantArtUrl =
           cardVariants && printingArtMap
