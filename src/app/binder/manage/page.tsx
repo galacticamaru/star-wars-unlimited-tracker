@@ -12,38 +12,86 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { VariantFilter } from '@/components/catalog/variant-filter';
 
+interface Offering {
+  cardDefinitionId: number;
+  tradeQuantity: number;
+  name: string;
+  type: string;
+  frontArtUrl: string;
+  variantType: string;
+}
+
+interface ManualWant {
+  cardDefinitionId: number;
+  quantity: number;
+  name: string;
+  subtitle: string | null;
+}
+
+interface Exclusion {
+  cardDefinitionId: number;
+  name: string;
+  subtitle: string | null;
+}
+
+interface AutoWant {
+  cardDefinitionId: number;
+  isExcluded: boolean;
+}
+
+interface TradeData {
+  offerings: Offering[];
+  manualWants: ManualWant[];
+  exclusions: Exclusion[];
+  autoWants?: AutoWant[];
+}
+
+interface AllCard {
+  id: number;
+  name: string;
+  subtitle?: string;
+  type: string;
+  frontArtUrl: string;
+  variantType: string;
+}
+
 export default function ManageBinderPage() {
   const { data: session, isPending } = authClient.useSession();
   const [username, setUsername] = useState('');
   const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
-  const [tradeData, setTradeData] = useState<any>(null);
-  const [allCards, setAllCards] = useState<any[]>([]);
+  const [tradeData, setTradeData] = useState<TradeData | null>(null);
+  const [allCards, setAllCards] = useState<AllCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedVariants, setSelectedVariants] = useState<string[]>([]);
 
-  const fetchData = async () => {
-    try {
-      const [binderRes, cardsRes] = await Promise.all([
-        fetch('/api/binder'),
-        fetch('/api/cards/all')
-      ]);
-      const [binderData, cardsData] = await Promise.all([
-        binderRes.json(),
-        cardsRes.json()
-      ]);
-      setTradeData(binderData);
-      setAllCards(cardsData);
-    } catch (err) {
-      console.error('Failed to load binder data:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (session?.user) {
       setUsername(session.user.username || '');
+    }
+  }, [session?.user?.username]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [binderRes, cardsRes] = await Promise.all([
+          fetch('/api/binder'),
+          fetch('/api/cards/all')
+        ]);
+        const [binderData, cardsData] = await Promise.all([
+          binderRes.json(),
+          cardsRes.json()
+        ]);
+        setTradeData(binderData);
+        setAllCards(cardsData);
+      } catch (err) {
+        console.error('Failed to load binder data:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (session?.user) {
       fetchData();
     } else if (!isPending) {
       setIsLoading(false);
@@ -66,26 +114,30 @@ export default function ManageBinderPage() {
       body: JSON.stringify({ cardDefinitionId, tradeQuantity }),
     });
     if (res.ok) {
-      if (tradeQuantity === 0) {
-        setTradeData((prev: any) => ({
-          ...prev,
-          offerings: prev.offerings.filter((o: any) => o.cardDefinitionId !== cardDefinitionId)
-        }));
-      } else {
-        const existing = tradeData.offerings.find((o: any) => o.cardDefinitionId === cardDefinitionId);
-        if (existing) {
-          setTradeData((prev: any) => ({
-            ...prev,
-            offerings: prev.offerings.map((o: any) => o.cardDefinitionId === cardDefinitionId ? { ...o, tradeQuantity } : o)
-          }));
-        } else {
-          const card = allCards.find(c => c.id === cardDefinitionId);
-          setTradeData((prev: any) => ({
-            ...prev,
-            offerings: [...prev.offerings, { cardDefinitionId, tradeQuantity, name: card.name, type: card.type, frontArtUrl: card.frontArtUrl, variantType: card.variantType }]
-          }));
-        }
-      }
+        setTradeData(prev => {
+            if (!prev) return null;
+            if (tradeQuantity === 0) {
+                return {
+                    ...prev,
+                    offerings: prev.offerings.filter(o => o.cardDefinitionId !== cardDefinitionId)
+                };
+            } else {
+                const existing = prev.offerings.find(o => o.cardDefinitionId === cardDefinitionId);
+                if (existing) {
+                    return {
+                        ...prev,
+                        offerings: prev.offerings.map(o => o.cardDefinitionId === cardDefinitionId ? { ...o, tradeQuantity } : o)
+                    };
+                } else {
+                    const card = allCards.find(c => c.id === cardDefinitionId);
+                    if (!card) return prev;
+                    return {
+                        ...prev,
+                        offerings: [...prev.offerings, { cardDefinitionId, tradeQuantity, name: card.name, type: card.type, frontArtUrl: card.frontArtUrl, variantType: card.variantType }]
+                    };
+                }
+            }
+        });
     }
   };
 
@@ -96,26 +148,30 @@ export default function ManageBinderPage() {
       body: JSON.stringify({ cardDefinitionId, quantity }),
     });
     if (res.ok) {
-      if (quantity <= 0) {
-        setTradeData((prev: any) => ({
-          ...prev,
-          manualWants: prev.manualWants.filter((w: any) => w.cardDefinitionId !== cardDefinitionId)
-        }));
-      } else {
-        const existing = tradeData.manualWants.find((w: any) => w.cardDefinitionId === cardDefinitionId);
-        if (existing) {
-          setTradeData((prev: any) => ({
-            ...prev,
-            manualWants: prev.manualWants.map((w: any) => w.cardDefinitionId === cardDefinitionId ? { ...w, quantity } : w)
-          }));
-        } else {
-          const card = allCards.find(c => c.id === cardDefinitionId);
-          setTradeData((prev: any) => ({
-            ...prev,
-            manualWants: [...prev.manualWants, { cardDefinitionId, quantity, name: card.name, subtitle: card.subtitle ?? null }]
-          }));
-        }
-      }
+        setTradeData(prev => {
+            if (!prev) return null;
+            if (quantity <= 0) {
+                return {
+                    ...prev,
+                    manualWants: prev.manualWants.filter(w => w.cardDefinitionId !== cardDefinitionId)
+                };
+            } else {
+                const existing = prev.manualWants.find(w => w.cardDefinitionId === cardDefinitionId);
+                if (existing) {
+                    return {
+                        ...prev,
+                        manualWants: prev.manualWants.map(w => w.cardDefinitionId === cardDefinitionId ? { ...w, quantity } : w)
+                    };
+                } else {
+                    const card = allCards.find(c => c.id === cardDefinitionId);
+                    if (!card) return prev;
+                    return {
+                        ...prev,
+                        manualWants: [...prev.manualWants, { cardDefinitionId, quantity, name: card.name, subtitle: card.subtitle ?? null }]
+                    };
+                }
+            }
+        });
     }
   };
 
@@ -126,24 +182,28 @@ export default function ManageBinderPage() {
       body: JSON.stringify({ cardDefinitionId, excluded }),
     });
     if (res.ok) {
-      if (!excluded) {
-        setTradeData((prev: any) => ({
-          ...prev,
-          exclusions: prev.exclusions.filter((e: any) => e.cardDefinitionId !== cardDefinitionId),
-          autoWants: prev.autoWants?.map((w: any) =>
-            w.cardDefinitionId === cardDefinitionId ? { ...w, isExcluded: false } : w
-          ),
-        }));
-      } else {
-        const card = allCards.find(c => c.id === cardDefinitionId);
-        setTradeData((prev: any) => ({
-          ...prev,
-          exclusions: [...prev.exclusions, { cardDefinitionId, name: card.name, subtitle: card.subtitle ?? null }],
-          autoWants: prev.autoWants?.map((w: any) =>
-            w.cardDefinitionId === cardDefinitionId ? { ...w, isExcluded: true } : w
-          ),
-        }));
-      }
+        setTradeData(prev => {
+            if (!prev) return null;
+            if (!excluded) {
+                return {
+                    ...prev,
+                    exclusions: prev.exclusions.filter(e => e.cardDefinitionId !== cardDefinitionId),
+                    autoWants: prev.autoWants?.map(w =>
+                        w.cardDefinitionId === cardDefinitionId ? { ...w, isExcluded: false } : w
+                    ),
+                };
+            } else {
+                const card = allCards.find(c => c.id === cardDefinitionId);
+                if (!card) return prev;
+                return {
+                    ...prev,
+                    exclusions: [...prev.exclusions, { cardDefinitionId, name: card.name, subtitle: card.subtitle ?? null }],
+                    autoWants: prev.autoWants?.map(w =>
+                        w.cardDefinitionId === cardDefinitionId ? { ...w, isExcluded: true } : w
+                    ),
+                };
+            }
+        });
     }
   };
 
@@ -252,7 +312,7 @@ export default function ManageBinderPage() {
               </p>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {tradeData?.offerings.map((card: any) => (
+                {tradeData?.offerings.map((card) => (
                   <ManageTradeCard 
                     key={card.cardDefinitionId} 
                     id={card.cardDefinitionId}
