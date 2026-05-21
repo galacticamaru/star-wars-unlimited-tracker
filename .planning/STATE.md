@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: shipped — PR #13
-stopped_at: Phase 18 complete — v4 milestone shipped
-last_updated: "2026-05-20T00:00:00.000Z"
-last_activity: 2026-05-20 -- Milestone v4 shipped — PR #13 created
+stopped_at: Phase 21 context gathered
+last_updated: "2026-05-21T00:00:00.000Z"
+last_activity: 2026-05-21 -- Phase 21 context captured — ready for planning
 progress:
   total_phases: 6
   completed_phases: 6
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 20 — CSV Variant Imports
-Plan: 0/1
-Status: Planning
-Last activity: Planned Phase 20
+Phase: 21 — Binder Variant Badges (INSERTED — REQ-BINDER-06 gap closure)
+Plan: 0/?
+Status: Not started
+Last activity: Phase 21 inserted after audit gap found for REQ-BINDER-06
 
 ```
 v4 Progress [████████████████████] 100% (4/4 phases + 3 polish; all complete)
@@ -57,6 +57,8 @@ v4 Progress [████████████████████] 100% 
 
 - v3 complete: Home page, catalog polish, owned-only filter, trade binder improvements all shipped
 - v4 started: 4 phases planned (15–18) covering deck builder display polish, guided onboarding, variant collection tracking, and catalog art enhancements
+- Phase 21 inserted (2026-05-21): REQ-BINDER-06 gap closure — variant badges on trade binder offerings require a schema migration (URGENT — discovered during milestone audit)
+- Phase 22 inserted (2026-05-21): Starter deck expansions — add TS26 and IBH preconstructed decks to Quick Add feature
 
 ### Phase Summary
 
