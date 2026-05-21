@@ -157,6 +157,75 @@ describe('filterCards', () => {
     expect(result[0].id).toBe(1);
   });
 
+  describe('variant filter', () => {
+    it('empty selectedVariants passes all cards through (All = no filter)', () => {
+      const cards = [
+        makeCard({ id: 1, variantType: 'Normal' }),
+        makeCard({ id: 2, variantType: 'Foil' }),
+        makeCard({ id: 3, variantType: 'Hyperspace Foil' }),
+        makeCard({ id: 4 }), // variantType undefined
+      ];
+      expect(filterCards(cards, { ...emptyFilters })).toHaveLength(4);
+      expect(filterCards(cards, { ...emptyFilters, selectedVariants: [] })).toHaveLength(4);
+    });
+
+    it('selectedVariants: ["Foil"] passes only cards with variantType === "Foil"', () => {
+      const cards = [
+        makeCard({ id: 1, variantType: 'Normal' }),
+        makeCard({ id: 2, variantType: 'Foil' }),
+        makeCard({ id: 3, variantType: 'Hyperspace Foil' }),
+      ];
+      const result = filterCards(cards, { ...emptyFilters, selectedVariants: ['Foil'] });
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(2);
+    });
+
+    it('selectedVariants: ["Foil", "Hyperspace Foil"] passes cards matching either variant (OR)', () => {
+      const cards = [
+        makeCard({ id: 1, variantType: 'Normal' }),
+        makeCard({ id: 2, variantType: 'Foil' }),
+        makeCard({ id: 3, variantType: 'Hyperspace Foil' }),
+        makeCard({ id: 4, variantType: 'Showcase' }),
+      ];
+      const result = filterCards(cards, { ...emptyFilters, selectedVariants: ['Foil', 'Hyperspace Foil'] });
+      expect(result).toHaveLength(2);
+      expect(result.map(c => c.id)).toEqual(expect.arrayContaining([2, 3]));
+    });
+
+    it('card with undefined variantType is excluded when a variant filter is active', () => {
+      const cards = [
+        makeCard({ id: 1, variantType: 'Foil' }),
+        makeCard({ id: 2 }), // variantType: undefined
+      ];
+      const result = filterCards(cards, { ...emptyFilters, selectedVariants: ['Foil'] });
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(1);
+    });
+
+    it('selectedVariants ANDs with other active filters (Foil + Unit only)', () => {
+      const cards = [
+        makeCard({ id: 1, type: 'Unit', variantType: 'Foil' }),
+        makeCard({ id: 2, type: 'Event', variantType: 'Foil' }),
+        makeCard({ id: 3, type: 'Unit', variantType: 'Normal' }),
+      ];
+      const result = filterCards(cards, {
+        ...emptyFilters,
+        selectedTypes: ['Unit'],
+        selectedVariants: ['Foil'],
+      });
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(1);
+    });
+
+    it('selectedVariants: null is treated as no filter (all cards pass)', () => {
+      const cards = [
+        makeCard({ id: 1, variantType: 'Foil' }),
+        makeCard({ id: 2, variantType: 'Normal' }),
+      ];
+      expect(filterCards(cards, { ...emptyFilters, selectedVariants: null })).toHaveLength(2);
+    });
+  });
+
   describe('ownedOnly filter', () => {
     const cardA = makeCard({ id: 1 });
     const cardB = makeCard({ id: 2, name: 'Vader' });
