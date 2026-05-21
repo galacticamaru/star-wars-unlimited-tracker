@@ -5,7 +5,7 @@
 - ✅ **v1 MVP** — Phases 1–5.2 (shipped 2026-05-07) · [Archive](milestones/v1-ROADMAP.md)
 - ✅ **v2 Multi-User, Market, Decks & Trading** — Phases 6–10.1 (shipped 2026-05-12) · [Archive](milestones/v2-ROADMAP.md)
 - ✅ **v3 Catalog, Home & Binder Polish** — Phases 11–14 (shipped 2026-05-13) · [Archive](milestones/v3-ROADMAP.md)
-- ✅ **v4 Deck Builder & Collection Depth** — Phases 15–20 (shipped 2026-05-21)
+- 🚧 **v4 Deck Builder & Collection Depth** — Phases 15–21 (Phase 21 gap-closure in progress)
 
 ## Phases
 
@@ -44,6 +44,8 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 - [x] **Phase 18: Catalog Collection Enhancements** — Catalog grid shows highest-owned variant art; quick-add all cards from a starter deck (2026-05-20)
 - [x] **Phase 19: Variant Filter Enhancements** — Unified variant filtering across the entire app; Foil/Hyperspace Foil added; variant badges in trade binder (2026-05-20)
 - [x] **Phase 20: CSV Variant Imports** — CSV import updated to support all four variant types via array-based variant lookup (2026-05-20)
+- [ ] **Phase 21: Binder Variant Badges** — Schema migration to support per-variant trade offerings; variant type badges on public binder cards (INSERTED — REQ-BINDER-06 gap closure)
+- [ ] **Phase 22: Starter Deck Expansions** — Add TS26 and IBH preconstructed decks to the Quick Add feature (INSERTED)
 
 ## Phase Details
 
@@ -221,6 +223,40 @@ Plans:
 **Wave 2** *(blocked on Wave 1)*
 - [x] 19-02-PLAN.md — Trade Binder filters + variant badges on trade cards (REQ-BINDER-05, REQ-BINDER-06)
 
+### Phase 21: Binder Variant Badges (INSERTED)
+
+**Goal**: Trade binder offerings display a variant type badge when the variant is not "Normal", closing REQ-BINDER-06
+**Depends on**: Phase 19
+**Requirements**: REQ-BINDER-06
+**Success Criteria** (what must be TRUE):
+  1. Each trade offering record in the binder stores the specific `card_printing_id` (not just `card_definition_id`)
+  2. The public binder renders a "Foil", "Showcase", etc. badge on each offering tile that is not Normal variant
+  3. Existing binder data migrates cleanly — pre-migration offerings treated as Normal
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 22: Starter Deck Expansions (INSERTED)
+
+**Goal**: The Quick Add feature includes all TS26 preconstructed decks and IBH decks so users can seed their collection from the full range of pre-built products
+**Depends on**: Phase 18
+**Requirements**: REQ-CAT-04 (extension)
+**Success Criteria** (what must be TRUE):
+  1. All TS26 preconstructed deck entries are added to `starter-decks.ts` with correct collector numbers and deckType
+  2. All IBH deck entries are added to `starter-decks.ts` with correct collector numbers and deckType
+  3. New decks appear in the Quick Add dropdown on the Collection page and add cards correctly
+**Plans**: 3 plans
+
+Plans:
+
+**Wave 1**
+- [ ] 22-01-PLAN.md — Add 4 TS26 Twin Suns precon entries + remove deferred comment block (REQ-CAT-04)
+
+**Wave 2** *(blocked on Wave 1)*
+- [ ] 22-02-PLAN.md — Add 2 IBH starter decks + SEC Padmé Amidala spotlight (REQ-CAT-04)
+
+**Wave 3** *(blocked on Wave 2)*
+- [ ] 22-03-PLAN.md — DB lookup + add LAW Jabba the Hutt + LAW Leia Organa spotlight decks (REQ-CAT-04)
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -240,3 +276,5 @@ Plans:
 | 18 | v4 | 3/3 | ✅ Complete | 2026-05-20 |
 | 19 | v4 | 2/2 | ✅ Complete | 2026-05-20 |
 | 20 | v4 | 1/1 | ✅ Complete | 2026-05-20 |
+| 21 | v4 | 0/? | ⬜ Not started | - |
+| 22 | v4 | 0/3 | ⬜ Not started | - |
