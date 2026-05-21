@@ -425,6 +425,7 @@ export const starterDecks: StarterDeck[] = [
     deckType: 'twin-suns',
     cards: [
       { collectorNumber: 'TS26-009', qty: 1 },
+      { collectorNumber: 'TWI-021', qty: 1 },
       { collectorNumber: 'TS26-031', qty: 1 },
       { collectorNumber: 'SOR-150', qty: 1 },
       { collectorNumber: 'TS26-032', qty: 1 },
@@ -456,7 +457,6 @@ export const starterDecks: StarterDeck[] = [
       { collectorNumber: 'TS26-048', qty: 1 },
       { collectorNumber: 'TS26-008', qty: 1 },
       { collectorNumber: 'TS26-006', qty: 1 },
-      { collectorNumber: 'TS26-003', qty: 1 },
       { collectorNumber: 'TS26-039', qty: 1 },
       { collectorNumber: 'SOR-193', qty: 1 },
       { collectorNumber: 'SOR-145', qty: 1 },
