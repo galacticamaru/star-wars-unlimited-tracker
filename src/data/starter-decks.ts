@@ -373,6 +373,7 @@ export const starterDecks: StarterDeck[] = [
       { collectorNumber: 'LOF-099', qty: 2 },
       { collectorNumber: 'LOF-197', qty: 3 },
       { collectorNumber: 'LOF-198', qty: 2 },
+      { collectorNumber: 'TWI-217', qty: 2 },
       { collectorNumber: 'LOF-218', qty: 2 },
       { collectorNumber: 'SOR-219', qty: 1 },
       { collectorNumber: 'LOF-227', qty: 3 },
