@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: shipped — PR #13
-stopped_at: Phase 21 context gathered
+stopped_at: Phase 22 context gathered
 last_updated: "2026-05-21T00:00:00.000Z"
-last_activity: 2026-05-21 -- Phase 21 context captured — ready for planning
+last_activity: 2026-05-21 -- Phase 22 context captured — ready for planning
 progress:
   total_phases: 6
   completed_phases: 6
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 21 — Binder Variant Badges (INSERTED — REQ-BINDER-06 gap closure)
+Phase: 22 — Starter Deck Expansions (INSERTED)
 Plan: 0/?
 Status: Not started
-Last activity: Phase 21 inserted after audit gap found for REQ-BINDER-06
+Last activity: Phase 22 context captured — TS26/IBH/deferred spotlight decks discussed
 
 ```
 v4 Progress [████████████████████] 100% (4/4 phases + 3 polish; all complete)
