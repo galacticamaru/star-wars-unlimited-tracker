@@ -36,6 +36,9 @@ interface Exclusion {
 
 interface AutoWant {
   cardDefinitionId: number;
+  quantity: number;
+  name: string;
+  subtitle: string | null;
   isExcluded: boolean;
 }
 
