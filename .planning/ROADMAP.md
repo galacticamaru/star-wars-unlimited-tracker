@@ -245,6 +245,13 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 - [ ] 21-04-PLAN.md — [BLOCKING] drizzle-kit push + data migration SQL + human smoke verification (REQ-BINDER-06)
+
+Cross-cutting constraints:
+- `userId` always from `session.user.id`, never from request body
+- `Math.max(0, tradeQuantity)` floor on every trade quantity mutation
+- No DB transactions — Neon HTTP driver requires sequential awaits
+- `drizzle-kit push` is DDL-only — data migration SQL must run as a separate explicit step after push
+
 **UI hint**: yes
 
 ### Phase 22: Starter Deck Expansions (INSERTED)
@@ -288,5 +295,5 @@ Plans:
 | 18 | v4 | 3/3 | ✅ Complete | 2026-05-20 |
 | 19 | v4 | 2/2 | ✅ Complete | 2026-05-20 |
 | 20 | v4 | 1/1 | ✅ Complete | 2026-05-20 |
-| 21 | v4 | 0/? | ⬜ Not started | - |
+| 21 | v4 | 0/4 | ⬜ Ready to execute | - |
 | 22 | v4 | 0/3 | ⬜ Not started | - |

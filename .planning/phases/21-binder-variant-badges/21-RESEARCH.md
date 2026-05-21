@@ -421,7 +421,7 @@ await upsertTradeOffering(Number(session.user.id), cardPrintingId, tradeQuantity
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`upsertTradeOffering` — `quantity` or `tradeQuantity` column name?**
    - What we know: `userPrintingCollections` uses `count`. The context says the new table uses `quantity`. The `Offering` interface in the manage page currently names the field `tradeQuantity`.

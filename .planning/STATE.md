@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: in progress
-stopped_at: Phase 22 planned — ready to execute
+stopped_at: Phase 21 planned — ready to execute
 last_updated: "2026-05-21T00:00:00.000Z"
-last_activity: 2026-05-21 -- Phase 22 planned (3 plans) — ready for execution
+last_activity: 2026-05-21 -- Phase 21 planned (4 plans in 3 waves) — ready for execution
 progress:
   total_phases: 6
   completed_phases: 6
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 22 — Starter Deck Expansions (INSERTED)
-Plan: 0/?
-Status: Not started
-Last activity: Phase 22 context captured — TS26/IBH/deferred spotlight decks discussed
+Phase: 21 — Binder Variant Badges (INSERTED)
+Plan: 0/4
+Status: Ready to execute
+Last activity: Phase 21 planned (4 plans, 3 waves) — schema migration + binder variant badges
 
 ```
 v4 Progress [████████████████████] 100% (4/4 phases + 3 polish; all complete)
