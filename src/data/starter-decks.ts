@@ -946,4 +946,61 @@ export const starterDecks: StarterDeck[] = [
       { collectorNumber: 'SEC-256', qty: 1 }, // Moral Authority
     ],
   },
+
+  // LAW Spotlight Decks — added Phase 22 plan 03
+  {
+    id: 'law-jabba-the-hutt',
+    name: 'Jabba the Hutt (LAW Spotlight)',
+    setCode: 'LAW',
+    deckType: 'spotlight',
+    cards: [
+      { collectorNumber: 'LAW-015', qty: 1 }, // Leader
+      { collectorNumber: 'LAW-023', qty: 1 }, // Base
+      { collectorNumber: 'LAW-210', qty: 3 }, // Salacious Crumb
+      { collectorNumber: 'LAW-212', qty: 3 }, // Malakili
+      { collectorNumber: 'LAW-163', qty: 3 }, // The Sarlacc of Carkoon
+      { collectorNumber: 'LAW-134', qty: 2 }, // Bib Fortuna
+      { collectorNumber: 'SOR-211', qty: 3 }, // Gamorrean Guards
+      // TODO: { collectorNumber: 'LAW-???', qty: 3 }, // Jabba's Guard — spotlight-deck-exclusive, not in DB
+      { collectorNumber: 'SOR-247', qty: 3 }, // Underworld Thug
+      { collectorNumber: 'SOR-183', qty: 3 }, // Bounty Hunter Crew
+      { collectorNumber: 'LAW-231', qty: 3 }, // Weequay Pirate
+      // TODO: { collectorNumber: 'LAW-???', qty: 3 }, // Skiff Cargo Hold — spotlight-deck-exclusive, not in DB
+      { collectorNumber: 'LAW-158', qty: 2 }, // Khetanna
+      // TODO: { collectorNumber: 'LAW-???', qty: 2 }, // Underworld Connections — spotlight-deck-exclusive, not in DB
+      // TODO: { collectorNumber: 'LAW-???', qty: 3 }, // Cunning Deal — spotlight-deck-exclusive, not in DB
+      // TODO: { collectorNumber: 'LAW-???', qty: 2 }, // Payoff — spotlight-deck-exclusive, not in DB
+      { collectorNumber: 'SOR-217', qty: 3 }, // Shoot First
+      { collectorNumber: 'SOR-178', qty: 3 }, // Cartel Spacer
+      // TODO: { collectorNumber: 'LAW-???', qty: 3 }, // Bargaining for Life — spotlight-deck-exclusive, not in DB
+    ],
+  },
+  {
+    id: 'law-leia-organa',
+    name: 'Leia Organa (LAW Spotlight)',
+    setCode: 'LAW',
+    deckType: 'spotlight',
+    cards: [
+      { collectorNumber: 'LAW-010', qty: 1 }, // Leader
+      { collectorNumber: 'LAW-020', qty: 1 }, // Base
+      { collectorNumber: 'LAW-037', qty: 3 }, // Han Solo
+      { collectorNumber: 'LAW-145', qty: 3 }, // R2-D2
+      { collectorNumber: 'LAW-108', qty: 3 }, // Lando Calrissian
+      { collectorNumber: 'LAW-111', qty: 3 }, // Leia's Disguise
+      { collectorNumber: 'LAW-152', qty: 3 }, // C-3PO
+      { collectorNumber: 'LAW-067', qty: 2 }, // Jyn Erso
+      { collectorNumber: 'LAW-142', qty: 3 }, // Scarif Lieutenant
+      { collectorNumber: 'LAW-147', qty: 3 }, // Jaunty Light Freighter
+      { collectorNumber: 'LAW-253', qty: 3 }, // Alliance X-Wing
+      { collectorNumber: 'SOR-239', qty: 3 }, // Rebel Pathfinder
+      { collectorNumber: 'SOR-098', qty: 3 }, // Echo Base Defender
+      { collectorNumber: 'IBH-023', qty: 2 }, // General Rieekan
+      { collectorNumber: 'SOR-096', qty: 3 }, // Mon Mothma
+      { collectorNumber: 'LAW-045', qty: 1 }, // Zeb Orellios
+      { collectorNumber: 'SOR-150', qty: 2 }, // Heroic Sacrifice
+      // TODO: { collectorNumber: 'LAW-???', qty: 3 }, // Boushh's Thermals — spotlight-deck-exclusive, not in DB
+      // TODO: { collectorNumber: 'LAW-???', qty: 2 }, // Commanding Presence — spotlight-deck-exclusive, not in DB
+      // TODO: { collectorNumber: 'LAW-???', qty: 3 }, // Infiltration Plan — spotlight-deck-exclusive, not in DB
+    ],
+  },
 ];
