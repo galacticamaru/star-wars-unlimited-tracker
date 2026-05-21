@@ -232,7 +232,19 @@ Plans:
   1. Each trade offering record in the binder stores the specific `card_printing_id` (not just `card_definition_id`)
   2. The public binder renders a "Foil", "Showcase", etc. badge on each offering tile that is not Normal variant
   3. Existing binder data migrates cleanly — pre-migration offerings treated as Normal
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+
+**Wave 0**
+- [ ] 21-01-PLAN.md — Extend card-item.test.tsx with 2 failing badge tests (REQ-BINDER-06)
+
+**Wave 1** *(blocked on Wave 0)*
+- [ ] 21-02-PLAN.md — DB layer: add userTradeOfferings table, rewrite trade/binder/catalog queries (REQ-BINDER-06)
+- [ ] 21-03-PLAN.md — API + UI layer: PATCH /api/trade, /api/cards/all, CardItem badge, manage/page.tsx interfaces (REQ-BINDER-06)
+
+**Wave 2** *(blocked on Wave 1)*
+- [ ] 21-04-PLAN.md — [BLOCKING] drizzle-kit push + data migration SQL + human smoke verification (REQ-BINDER-06)
 **UI hint**: yes
 
 ### Phase 22: Starter Deck Expansions (INSERTED)
