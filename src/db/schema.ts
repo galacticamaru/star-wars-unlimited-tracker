@@ -122,7 +122,6 @@ export const userCollections = pgTable(
       .notNull()
       .references(() => cardDefinitions.id),
     count: integer('count').notNull().default(0),
-    tradeQuantity: integer('trade_quantity').notNull().default(0),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
@@ -139,6 +138,22 @@ export const userPrintingCollections = pgTable(
       .notNull()
       .references(() => cardPrintings.id),
     count: integer('count').notNull().default(0),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.cardPrintingId] }),
+  ]
+);
+
+export const userTradeOfferings = pgTable(
+  'user_trade_offerings',
+  {
+    userId: integer('user_id').notNull(),
+    cardPrintingId: integer('card_printing_id')
+      .notNull()
+      .references(() => cardPrintings.id),
+    quantity: integer('quantity').notNull().default(0),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
