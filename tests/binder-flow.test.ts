@@ -3,9 +3,9 @@
  */
 import { expect, test, vi } from 'vitest';
 import { getUserIdByUsername, getPublicBinderData } from '@/db/queries/binder';
-import { upsertTradeQuantity } from '@/db/queries/trade';
+import { upsertTradeOffering } from '@/db/queries/trade';
 import { db } from '@/db';
-import { user, userCollections } from '@/db/schema';
+import { user, userTradeOfferings } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 // Mock DB
@@ -40,15 +40,15 @@ test('Full Binder Flow: Set Username -> Add to Binder -> Public View', async () 
     
   expect(db.update).toHaveBeenCalledWith(user);
 
-  // 2. Add card to trade binder (upsertTradeQuantity)
-  const mockReturning = vi.fn().mockResolvedValue([{ userId, cardDefinitionId: cardId, tradeQuantity: quantity }]);
+  // 2. Add card to trade binder (upsertTradeOffering)
+  const mockReturning = vi.fn().mockResolvedValue([{ userId, cardPrintingId: cardId, quantity }]);
   const mockOnConflict = vi.fn().mockReturnValue({ returning: mockReturning });
   const mockValues = vi.fn().mockReturnValue({ onConflictDoUpdate: mockOnConflict });
   (db.insert as any).mockReturnValue({ values: mockValues });
 
-  await upsertTradeQuantity(userId, cardId, quantity);
-  
-  expect(db.insert).toHaveBeenCalledWith(userCollections);
+  await upsertTradeOffering(userId, cardId, quantity);
+
+  expect(db.insert).toHaveBeenCalledWith(userTradeOfferings);
 
   // 3. Resolve username to userId (getUserIdByUsername) & Fetch public binder data (getPublicBinderData)
   

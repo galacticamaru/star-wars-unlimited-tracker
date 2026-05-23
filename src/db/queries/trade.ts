@@ -1,25 +1,25 @@
 import { db } from '@/db';
-import { userCollections, tradeExclusions, tradeManualWants, cardDefinitions, cardPrintings, decks, deckCards } from '@/db/schema';
+import { userCollections, tradeExclusions, tradeManualWants, cardDefinitions, cardPrintings, decks, deckCards, userTradeOfferings } from '@/db/schema';
 import { eq, and, sql, inArray } from 'drizzle-orm';
 import { calculateLookingFor } from '@/lib/binder-logic';
 
 export async function getUserTradeData(userId: number) {
   const offerings = await db
     .select({
-      cardDefinitionId: userCollections.cardDefinitionId,
-      tradeQuantity: userCollections.tradeQuantity,
+      cardPrintingId: userTradeOfferings.cardPrintingId,
+      tradeQuantity: userTradeOfferings.quantity,
       name: cardDefinitions.name,
       type: cardDefinitions.type,
       frontArtUrl: cardPrintings.frontArtUrl,
+      variantType: cardPrintings.variantType,
     })
-    .from(userCollections)
-    .innerJoin(cardDefinitions, eq(userCollections.cardDefinitionId, cardDefinitions.id))
-    .innerJoin(cardPrintings, eq(cardPrintings.cardDefinitionId, cardDefinitions.id))
+    .from(userTradeOfferings)
+    .innerJoin(cardPrintings, eq(cardPrintings.id, userTradeOfferings.cardPrintingId))
+    .innerJoin(cardDefinitions, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
     .where(
       and(
-        eq(userCollections.userId, userId),
-        eq(cardPrintings.variantType, 'Normal'),
-        sql`${userCollections.tradeQuantity} > 0`
+        eq(userTradeOfferings.userId, userId),
+        sql`${userTradeOfferings.quantity} > 0`
       )
     );
 
@@ -172,21 +172,13 @@ export async function getUserTradeData(userId: number) {
   };
 }
 
-export async function upsertTradeQuantity(userId: number, cardDefinitionId: number, tradeQuantity: number) {
+export async function upsertTradeOffering(userId: number, cardPrintingId: number, quantity: number) {
   return db
-    .insert(userCollections)
-    .values({
-      userId,
-      cardDefinitionId,
-      count: 0,
-      tradeQuantity,
-    })
+    .insert(userTradeOfferings)
+    .values({ userId, cardPrintingId, quantity })
     .onConflictDoUpdate({
-      target: [userCollections.userId, userCollections.cardDefinitionId],
-      set: { 
-        tradeQuantity,
-        updatedAt: new Date(),
-      },
+      target: [userTradeOfferings.userId, userTradeOfferings.cardPrintingId],
+      set: { quantity, updatedAt: new Date() },
     })
     .returning();
 }
