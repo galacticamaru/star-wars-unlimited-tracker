@@ -24,6 +24,7 @@ interface CardItemProps {
   shortfall?: number;      // deckQuantity - ownedCount (used when mode='want-list')
   onDeckUpdate?: (id: number, count: number) => void;
   tradeQuantity?: number;  // used when mode='binder'
+  variantType?: string;    // used when mode='binder' — shows badge for non-Normal variants
   lookingForQuantity?: number; // used when mode='want'
 }
 
@@ -44,6 +45,7 @@ export function CardItem({
   shortfall = 0,
   onDeckUpdate,
   tradeQuantity = 0,
+  variantType,
   lookingForQuantity = 0
 }: CardItemProps) {
   const [loaded, setLoaded] = useState(false);
@@ -104,7 +106,14 @@ export function CardItem({
               onError={() => setLoaded(true)}
             />
           )}
-          
+
+          {/* Variant Type Badge — binder mode only, non-Normal variants */}
+          {isBinder && variantType && variantType !== 'Normal' && (
+            <div className="absolute top-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-md z-20 pointer-events-none uppercase">
+              {variantType}
+            </div>
+          )}
+
           {/* Hover overlay — contains collection controls */}
           <div 
             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 flex flex-col items-center justify-center gap-2 z-10"
