@@ -8,6 +8,7 @@ A multi-user web app for Star Wars: Unlimited TCG players. Players track their c
 > **v2 shipped 2026-05-12.** Multi-user (auth), market pricing, sideboard support, and public trade binders.
 > **v3 shipped 2026-05-13.** New home page, sticky catalog sidebar, variant support, owned-only filter, and automatic trade wants.
 > **v4 shipped 2026-05-20.** Deck builder polish (type grouping, art, aspect panel, guided onboarding), per-variant collection tracking, catalog variant art, and starter deck quick-add.
+> **v4 gap closure complete 2026-05-23.** Per-variant trade offerings (Phase 21) and additional starter/spotlight deck lists (Phase 22) fill remaining REQ-BINDER-06 gap.
 
 ## Milestone: v4.0 Deck Builder & Collection Depth — COMPLETE
 
@@ -50,9 +51,10 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Per-variant collection tracking on card detail page — Normal/Foil counts, +/- controls, total line — v4 (REQ-COLLECT-06, REQ-COLLECT-07, Phase 17)
 - ✓ Catalog shows highest-owned variant art (Showcase > Hyperspace Foil > Hyperspace > Foil > Normal precedence) — v4 (REQ-COLLECT-08, Phase 18)
 - ✓ Quick-add pre-constructed deck cards to collection — 11 decks (6 starter + 5 spotlight), additive increment — v4 (REQ-CAT-04, Phase 18)
+- ✓ Variant-aware trade offerings — per-printing `user_trade_offerings` table; Foil/Showcase/etc. badge on public binder tiles — v4 gap closure (REQ-BINDER-06, Phase 21)
 
 ### Active (v5)
-(None yet — v4 complete)
+(None yet — v4 + gap closure complete)
 
 ### Out of Scope
 
