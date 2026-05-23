@@ -59,6 +59,7 @@ export function CardGrid({
             deckCount={deckCounts[card.id] || 0}
             onDeckUpdate={onDeckUpdate}
             tradeQuantity={card.tradeQuantity}
+            variantType={card.variantType}
             lookingForQuantity={card.lookingForQuantity}
           />
         );
