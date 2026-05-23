@@ -12,6 +12,7 @@ export async function GET() {
     frontArtUrl: c.frontArtUrl,
     type: c.type,
     variantType: c.variantType,
+    printingId: c.printingId,
   }));
   return NextResponse.json(plainCards);
 }

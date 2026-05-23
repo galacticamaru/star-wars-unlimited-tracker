@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
-import { upsertTradeQuantity } from '@/db/queries/trade';
+import { upsertTradeOffering } from '@/db/queries/trade';
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -11,17 +11,21 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { cardDefinitionId, tradeQuantity } = body;
+    const { cardPrintingId, tradeQuantity } = body;
 
-    if (cardDefinitionId === undefined || tradeQuantity === undefined) {
-      return new Response('Missing cardDefinitionId or tradeQuantity', { status: 400 });
+    if (cardPrintingId === undefined || tradeQuantity === undefined) {
+      return new Response('Missing cardPrintingId or tradeQuantity', { status: 400 });
     }
 
-    await upsertTradeQuantity(Number(session.user.id), cardDefinitionId, tradeQuantity);
+    await upsertTradeOffering(
+      Number(session.user.id),
+      cardPrintingId,
+      Math.max(0, tradeQuantity)
+    );
 
     return Response.json({ success: true });
   } catch (error) {
-    console.error('Failed to update trade quantity:', error);
+    console.error('Failed to update trade offering:', error);
     return new Response('Internal Server Error', { status: 500 });
   }
 }
