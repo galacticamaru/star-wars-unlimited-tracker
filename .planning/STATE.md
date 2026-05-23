@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v4.0
-milestone_name: milestone
-status: shipped — PR #13
-stopped_at: Phase 18 complete — v4 milestone shipped
-last_updated: "2026-05-20T00:00:00.000Z"
-last_activity: 2026-05-20 -- Milestone v4 shipped — PR #13 created
+milestone: v4
+milestone_name: Deck Builder & Collection Depth
+status: complete
+stopped_at: v4 milestone archived — all 11 phases (34 plans) complete and documented
+last_updated: "2026-05-23T00:00:00.000Z"
+last_activity: 2026-05-23 — v4 milestone shipped — PR #16 opened (feat/v4-milestone → main)
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 28
-  completed_plans: 18
+  total_phases: 11
+  completed_phases: 11
+  total_plans: 34
+  completed_plans: 34
   percent: 100
 ---
 
@@ -18,68 +18,31 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-14)
+See: .planning/PROJECT.md (updated 2026-05-23)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus**: v4.0 — Deck Builder & Collection Depth
+**Current focus**: Planning next milestone (v5)
 
-## Current Position
+## Milestone v4 — COMPLETE
 
-Phase: 20 — CSV Variant Imports
-Plan: 0/1
-Status: Planning
-Last activity: Planned Phase 20
-
-```
-v4 Progress [████████████████████] 100% (4/4 phases + 3 polish; all complete)
-```
+All 11 phases shipped:
+- Phase 15–16.1: Deck builder display polish and guided onboarding
+- Phase 17–17.1: Per-variant collection tracking + card sync grouping fix
+- Phase 18: Catalog variant art + starter deck quick-add
+- Phase 19–20: Unified variant filters + CSV variant import
+- Phase 21: Per-variant trade offerings schema migration + binder badges
+- Phase 22: Expanded starter/spotlight deck lists (TS26, IBH, LAW, SEC, LOF, JTL)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 41 (across v1, v2, v3)
-- v3 plans: 12 across 4 phases
-- Average duration: ~10 minutes per plan
-- v3 total execution time: ~2 hours
-
-**By Milestone:**
-
 | Milestone | Phases | Plans | Duration |
 |-----------|--------|-------|----------|
-| v1 MVP | 7 | 22 | ~3.6 hours |
-| v2 Multi-User | 5 | 16 | ~2.7 hours |
-| v3 Catalog & Polish | 4 | 12 | ~2 hours |
-
-## Accumulated Context
-
-### Roadmap Evolution
-
-- v3 complete: Home page, catalog polish, owned-only filter, trade binder improvements all shipped
-- v4 started: 4 phases planned (15–18) covering deck builder display polish, guided onboarding, variant collection tracking, and catalog art enhancements
-
-### Phase Summary
-
-| Phase | Goal | Requirements |
-|-------|------|--------------|
-| 15 | Deck list type grouping, aspect breakdown, card art | REQ-DECK-07, 08, 10 |
-| 16 | Empty deck guided onboarding (auto-filter flow) | REQ-DECK-09 |
-| 17 | Per-variant owned counts on card detail page | REQ-COLLECT-06, 07 |
-| 18 | Catalog variant art + starter deck quick-add | REQ-COLLECT-08, REQ-CAT-04 |
-| 19 | Variant filters in catalog/deck builder, partial in binder | REQ-FILTER-01, REQ-BINDER-05, REQ-BINDER-06 |
-| 20 | CSV import of all variant types | REQ-COLLECT-09 |
-
-### Decisions
-
-Decisions are logged in PROJECT.md Key Decisions table.
-
-### Pending Todos
-
-None.
-
-### Blockers/Concerns
-
-- None currently.
+| v1 MVP | 7 | 22 | 5 days |
+| v2 Multi-User | 5 | 16 | 1 day |
+| v3 Catalog & Polish | 4 | 12 | 1 day |
+| v4 Deck Builder & Collection | 11 | 34 | 10 days |
 
 ## Deferred Items
 
@@ -89,9 +52,8 @@ None.
 | Collection | SWUDB CSV import (COLLECT-05) | v5+ | v4 planning |
 | Collection | CSV export (COLLECT-04 v2) | v5+ | v4 planning |
 | Filters | Market price threshold filter (REQ-MARKET-05) | v5+ | v4 planning |
-
-## Session Continuity
-
-Last session: 2026-05-20T00:00:00.000Z
-Stopped at: Phase 18 plan 03 complete — starter-decks.ts has 11 entries (6 starter + 5 spotlight)
-
+| Tech Debt | CollectionControls dead code deletion | v5+ | v4 close |
+| Tech Debt | DeckBuilder Add Cards tab variant art (getPrintingArtMap) | v5+ | v4 close |
+| Tech Debt | Prestige Foil in VARIANT_OPTIONS + Serialized in VARIANT_PRECEDENCE | v5+ | v4 close |
+| Tech Debt | Catalog state not invalidated after card detail mutation | v5+ | v4 close |
+| Tech Debt | LAW spotlight deck 9 unknown cards (commented TODOs in starter-decks.ts) | v5+ | v4 close |

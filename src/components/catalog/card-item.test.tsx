@@ -55,3 +55,15 @@ test('does not show owned count badge in binder mode', () => {
   expect(screen.queryByText('10')).toBeNull();
   expect(screen.getByText('5 Available')).toBeDefined();
 });
+
+test("shows variant badge in binder mode when variantType is 'Foil'", () => {
+  render(<CardItem {...defaultProps} mode="binder" variantType="Foil" />);
+  // variantType prop does not exist yet — this test is RED until Wave 1
+  expect(screen.getByText('Foil')).toBeDefined();
+});
+
+test("does not show variant badge in binder mode when variantType is 'Normal'", () => {
+  render(<CardItem {...defaultProps} mode="binder" variantType="Normal" />);
+  // Badge must not render for Normal variant
+  expect(screen.queryByText('Normal')).toBeNull();
+});

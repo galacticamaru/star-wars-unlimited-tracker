@@ -24,6 +24,7 @@ export async function getAllCards(userId?: number) {
       backArtUrl: cardPrintings.backArtUrl,
       rarity: cardPrintings.rarity,
       variantType: cardPrintings.variantType,
+      printingId: cardPrintings.id,  // D-07
       frontText: cardDefinitions.frontText,
       backText: cardDefinitions.backText,
       epicAction: cardDefinitions.epicAction,

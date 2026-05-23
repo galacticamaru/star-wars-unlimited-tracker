@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { user, userCollections, tradeExclusions, tradeManualWants, cardDefinitions, cardPrintings, decks, deckCards } from '@/db/schema';
+import { user, userCollections, tradeExclusions, tradeManualWants, cardDefinitions, cardPrintings, decks, deckCards, userTradeOfferings } from '@/db/schema';
 import { eq, and, sql, inArray } from 'drizzle-orm';
 import { calculateLookingFor } from '@/lib/binder-logic';
 
@@ -13,7 +13,7 @@ export async function getUserIdByUsername(username: string) {
 }
 
 export async function getPublicBinderData(userId: number) {
-  // 1. Fetch Offerings
+  // 1. Fetch Offerings — joins user_trade_offerings → card_printings → card_definitions
   const offerings = await db
     .select({
       id: cardDefinitions.id,
@@ -31,16 +31,16 @@ export async function getPublicBinderData(userId: number) {
       setCode: cardPrintings.setCode,
       collectorNumber: cardPrintings.collectorNumber,
       frontArtUrl: cardPrintings.frontArtUrl,
-      tradeQuantity: userCollections.tradeQuantity,
+      variantType: cardPrintings.variantType,
+      tradeQuantity: userTradeOfferings.quantity,
     })
-    .from(userCollections)
-    .innerJoin(cardDefinitions, eq(userCollections.cardDefinitionId, cardDefinitions.id))
-    .innerJoin(cardPrintings, eq(cardPrintings.cardDefinitionId, cardDefinitions.id))
+    .from(userTradeOfferings)
+    .innerJoin(cardPrintings, eq(cardPrintings.id, userTradeOfferings.cardPrintingId))
+    .innerJoin(cardDefinitions, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
     .where(
       and(
-        eq(userCollections.userId, userId),
-        eq(cardPrintings.variantType, 'Normal'),
-        sql`${userCollections.tradeQuantity} > 0`
+        eq(userTradeOfferings.userId, userId),
+        sql`${userTradeOfferings.quantity} > 0`
       )
     );
 

@@ -18,7 +18,7 @@ vi.mock('next/headers', () => ({
 }));
 
 vi.mock('@/db/queries/trade', () => ({
-  upsertTradeQuantity: vi.fn(),
+  upsertTradeOffering: vi.fn(),
   upsertManualWant: vi.fn(),
   deleteManualWant: vi.fn(),
   addExclusion: vi.fn(),
@@ -26,7 +26,7 @@ vi.mock('@/db/queries/trade', () => ({
 }));
 
 import { auth } from '@/lib/auth';
-import { upsertTradeQuantity, upsertManualWant, deleteManualWant, addExclusion, removeExclusion } from '@/db/queries/trade';
+import { upsertTradeOffering, upsertManualWant, deleteManualWant, addExclusion, removeExclusion } from '@/db/queries/trade';
 
 describe('Trade Binder APIs', () => {
   beforeEach(() => {
@@ -38,7 +38,7 @@ describe('Trade Binder APIs', () => {
     it('updates trade quantity', async () => {
       const request = new NextRequest('http://localhost/api/trade', {
         method: 'PATCH',
-        body: JSON.stringify({ cardDefinitionId: 101, tradeQuantity: 5 }),
+        body: JSON.stringify({ cardPrintingId: 101, tradeQuantity: 5 }),
       });
 
       const response = await tradePATCH(request);
@@ -46,14 +46,14 @@ describe('Trade Binder APIs', () => {
 
       expect(response.status).toBe(200);
       expect(data.success).toBe(true);
-      expect(upsertTradeQuantity).toHaveBeenCalledWith(1, 101, 5);
+      expect(upsertTradeOffering).toHaveBeenCalledWith(1, 101, 5);
     });
 
     it('returns 401 if not authenticated', async () => {
       (auth.api.getSession as any).mockResolvedValue(null);
       const request = new NextRequest('http://localhost/api/trade', {
         method: 'PATCH',
-        body: JSON.stringify({ cardDefinitionId: 101, tradeQuantity: 5 }),
+        body: JSON.stringify({ cardPrintingId: 101, tradeQuantity: 5 }),
       });
 
       const response = await tradePATCH(request);
