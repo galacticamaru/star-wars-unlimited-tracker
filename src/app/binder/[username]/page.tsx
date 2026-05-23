@@ -48,6 +48,7 @@ export default async function PublicBinderPage({ params }: PublicBinderPageProps
     unique: false, 
     priceEur: null,
     priceUsd: null,
+    variantType: c.variantType,
     tradeQuantity: c.tradeQuantity,
     lookingForQuantity: c.lookingForQuantity,
   });
