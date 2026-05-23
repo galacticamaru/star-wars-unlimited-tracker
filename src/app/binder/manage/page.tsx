@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { VariantFilter } from '@/components/catalog/variant-filter';
 
 interface Offering {
-  cardDefinitionId: number;
+  cardPrintingId: number;
   tradeQuantity: number;
   name: string;
   type: string;
@@ -56,6 +56,7 @@ interface AllCard {
   type: string;
   frontArtUrl: string;
   variantType: string;
+  printingId: number;
 }
 
 export default function ManageBinderPage() {
@@ -110,11 +111,11 @@ export default function ManageBinderPage() {
     setIsUpdatingUsername(false);
   };
 
-  const updateTradeQuantity = async (cardDefinitionId: number, tradeQuantity: number) => {
+  const updateTradeQuantity = async (cardPrintingId: number, tradeQuantity: number) => {
     const res = await fetch('/api/trade', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cardDefinitionId, tradeQuantity }),
+      body: JSON.stringify({ cardPrintingId, tradeQuantity }),
     });
     if (res.ok) {
         setTradeData(prev => {
@@ -122,21 +123,21 @@ export default function ManageBinderPage() {
             if (tradeQuantity === 0) {
                 return {
                     ...prev,
-                    offerings: prev.offerings.filter(o => o.cardDefinitionId !== cardDefinitionId)
+                    offerings: prev.offerings.filter(o => o.cardPrintingId !== cardPrintingId)
                 };
             } else {
-                const existing = prev.offerings.find(o => o.cardDefinitionId === cardDefinitionId);
+                const existing = prev.offerings.find(o => o.cardPrintingId === cardPrintingId);
                 if (existing) {
                     return {
                         ...prev,
-                        offerings: prev.offerings.map(o => o.cardDefinitionId === cardDefinitionId ? { ...o, tradeQuantity } : o)
+                        offerings: prev.offerings.map(o => o.cardPrintingId === cardPrintingId ? { ...o, tradeQuantity } : o)
                     };
                 } else {
-                    const card = allCards.find(c => c.id === cardDefinitionId);
+                    const card = allCards.find(c => c.printingId === cardPrintingId);
                     if (!card) return prev;
                     return {
                         ...prev,
-                        offerings: [...prev.offerings, { cardDefinitionId, tradeQuantity, name: card.name, type: card.type, frontArtUrl: card.frontArtUrl, variantType: card.variantType }]
+                        offerings: [...prev.offerings, { cardPrintingId, tradeQuantity, name: card.name, type: card.type, frontArtUrl: card.frontArtUrl, variantType: card.variantType }]
                     };
                 }
             }
@@ -290,7 +291,7 @@ export default function ManageBinderPage() {
                         {card.subtitle && <p className="text-[10px] text-muted-foreground">{card.subtitle}</p>}
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button size="sm" variant="secondary" onClick={() => updateTradeQuantity(card.id, 1)}>
+                        <Button size="sm" variant="secondary" onClick={() => updateTradeQuantity(card.printingId, 1)}>
                           <Plus className="w-3 h-3 mr-1" /> Trade
                         </Button>
                         <Button size="sm" variant="secondary" onClick={() => updateWantQuantity(card.id, 1)}>
@@ -316,10 +317,10 @@ export default function ManageBinderPage() {
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {tradeData?.offerings.map((card) => (
-                  <ManageTradeCard 
-                    key={card.cardDefinitionId} 
-                    id={card.cardDefinitionId}
-                    {...card} 
+                  <ManageTradeCard
+                    key={card.cardPrintingId}
+                    id={card.cardPrintingId}
+                    {...card}
                     onUpdateTradeQuantity={updateTradeQuantity}
                   />
                 ))}
