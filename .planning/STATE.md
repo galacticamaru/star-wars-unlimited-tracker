@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: in progress
-stopped_at: Phase 22 complete — all deck lists corrected and UAT passed
+stopped_at: Phase 21 complete — binder variant badges live, REQ-BINDER-06 closed
 last_updated: "2026-05-23T00:00:00.000Z"
-last_activity: 2026-05-23 -- Phase 22 UAT passed — TS26/IBH/LAW/SEC/LOF/JTL spotlight decks all correct
+last_activity: 2026-05-23 -- Phase 21 complete — user_trade_offerings schema live, variant badge renders on Foil tiles in public binder
 progress:
   total_phases: 6
   completed_phases: 6
@@ -70,6 +70,8 @@ v4 Progress [████████████████████] 100% 
 | 18 | Catalog variant art + starter deck quick-add | REQ-COLLECT-08, REQ-CAT-04 |
 | 19 | Variant filters in catalog/deck builder, partial in binder | REQ-FILTER-01, REQ-BINDER-05, REQ-BINDER-06 |
 | 20 | CSV import of all variant types | REQ-COLLECT-09 |
+| 21 | Per-variant trade offerings + Foil badge on public binder tiles | REQ-BINDER-06 |
+| 22 | Starter deck expansions (TS26, IBH, LAW/SEC, LOF, JTL) | — |
 
 ### Decisions
 

@@ -5,7 +5,7 @@
 - ✅ **v1 MVP** — Phases 1–5.2 (shipped 2026-05-07) · [Archive](milestones/v1-ROADMAP.md)
 - ✅ **v2 Multi-User, Market, Decks & Trading** — Phases 6–10.1 (shipped 2026-05-12) · [Archive](milestones/v2-ROADMAP.md)
 - ✅ **v3 Catalog, Home & Binder Polish** — Phases 11–14 (shipped 2026-05-13) · [Archive](milestones/v3-ROADMAP.md)
-- 🚧 **v4 Deck Builder & Collection Depth** — Phases 15–21 (Phase 21 gap-closure in progress)
+- ✅ **v4 Deck Builder & Collection Depth** — Phases 15–22 (all complete 2026-05-23)
 
 ## Phases
 
@@ -44,7 +44,7 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 - [x] **Phase 18: Catalog Collection Enhancements** — Catalog grid shows highest-owned variant art; quick-add all cards from a starter deck (2026-05-20)
 - [x] **Phase 19: Variant Filter Enhancements** — Unified variant filtering across the entire app; Foil/Hyperspace Foil added; variant badges in trade binder (2026-05-20)
 - [x] **Phase 20: CSV Variant Imports** — CSV import updated to support all four variant types via array-based variant lookup (2026-05-20)
-- [ ] **Phase 21: Binder Variant Badges** — Schema migration to support per-variant trade offerings; variant type badges on public binder cards (INSERTED — REQ-BINDER-06 gap closure)
+- [x] **Phase 21: Binder Variant Badges** — Schema migration to support per-variant trade offerings; variant type badges on public binder cards (INSERTED — REQ-BINDER-06 gap closure) (2026-05-23)
 - [x] **Phase 22: Starter Deck Expansions** — Add TS26, IBH, and LAW/SEC spotlight decks to the Quick Add feature; corrected all starter/spotlight deck card lists (2026-05-23)
 
 ## Phase Details
@@ -237,14 +237,14 @@ Plans:
 Plans:
 
 **Wave 0**
-- [ ] 21-01-PLAN.md — Extend card-item.test.tsx with 2 failing badge tests (REQ-BINDER-06)
+- [x] 21-01-PLAN.md — Extend card-item.test.tsx with 2 failing badge tests (REQ-BINDER-06)
 
 **Wave 1** *(blocked on Wave 0)*
-- [ ] 21-02-PLAN.md — DB layer: add userTradeOfferings table, rewrite trade/binder/catalog queries (REQ-BINDER-06)
-- [ ] 21-03-PLAN.md — API + UI layer: PATCH /api/trade, /api/cards/all, CardItem badge, manage/page.tsx interfaces (REQ-BINDER-06)
+- [x] 21-02-PLAN.md — DB layer: add userTradeOfferings table, rewrite trade/binder/catalog queries (REQ-BINDER-06)
+- [x] 21-03-PLAN.md — API + UI layer: PATCH /api/trade, /api/cards/all, CardItem badge, manage/page.tsx interfaces (REQ-BINDER-06)
 
 **Wave 2** *(blocked on Wave 1)*
-- [ ] 21-04-PLAN.md — [BLOCKING] drizzle-kit push + data migration SQL + human smoke verification (REQ-BINDER-06)
+- [x] 21-04-PLAN.md — [BLOCKING] drizzle-kit push + data migration SQL + human smoke verification (REQ-BINDER-06)
 
 Cross-cutting constraints:
 - `userId` always from `session.user.id`, never from request body

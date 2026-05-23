@@ -40,7 +40,7 @@ Deferred from v4 — not in current roadmap.
 - **REQ-MARKET-05**: User can filter the catalog by market price threshold (min/max EUR or USD)
 - [ ] **REQ-FILTER-01**: User can filter cards by all available variant types (Normal, Foil, Hyperspace, Hyperspace Foil, Showcase, Prestige, Serialized)
 - [ ] **REQ-BINDER-05**: User can filter the search results in the trade binder management page by variant type
-- [ ] **REQ-BINDER-06**: Card tiles in the trade binder (offerings) display their variant type if it is not "Normal"
+- [x] **REQ-BINDER-06**: Card tiles in the trade binder (offerings) display their variant type if it is not "Normal" *(Validated in Phase 21: Binder Variant Badges)*
 
 ## Out of Scope
 
