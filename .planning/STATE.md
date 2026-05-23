@@ -5,7 +5,7 @@ milestone_name: Deck Builder & Collection Depth
 status: complete
 stopped_at: v4 milestone archived — all 11 phases (34 plans) complete and documented
 last_updated: "2026-05-23T00:00:00.000Z"
-last_activity: 2026-05-23 — v4 milestone closed; ROADMAP.md archived, REQUIREMENTS.md removed, git tag v4 created
+last_activity: 2026-05-23 — v4 milestone shipped — PR #16 opened (feat/v4-milestone → main)
 progress:
   total_phases: 11
   completed_phases: 11
