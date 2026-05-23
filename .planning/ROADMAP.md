@@ -45,7 +45,7 @@ See [milestones/v3-ROADMAP.md](milestones/v3-ROADMAP.md) for full details.
 - [x] **Phase 19: Variant Filter Enhancements** — Unified variant filtering across the entire app; Foil/Hyperspace Foil added; variant badges in trade binder (2026-05-20)
 - [x] **Phase 20: CSV Variant Imports** — CSV import updated to support all four variant types via array-based variant lookup (2026-05-20)
 - [ ] **Phase 21: Binder Variant Badges** — Schema migration to support per-variant trade offerings; variant type badges on public binder cards (INSERTED — REQ-BINDER-06 gap closure)
-- [ ] **Phase 22: Starter Deck Expansions** — Add TS26 and IBH preconstructed decks to the Quick Add feature (INSERTED)
+- [x] **Phase 22: Starter Deck Expansions** — Add TS26, IBH, and LAW/SEC spotlight decks to the Quick Add feature; corrected all starter/spotlight deck card lists (2026-05-23)
 
 ## Phase Details
 

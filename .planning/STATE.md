@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: milestone
 status: in progress
-stopped_at: Phase 21 planned — ready to execute
-last_updated: "2026-05-21T00:00:00.000Z"
-last_activity: 2026-05-21 -- Phase 21 planned (4 plans in 3 waves) — ready for execution
+stopped_at: Phase 22 complete — all deck lists corrected and UAT passed
+last_updated: "2026-05-23T00:00:00.000Z"
+last_activity: 2026-05-23 -- Phase 22 UAT passed — TS26/IBH/LAW/SEC/LOF/JTL spotlight decks all correct
 progress:
   total_phases: 6
   completed_phases: 6
-  total_plans: 31
+  total_plans: 34
   completed_plans: 18
-  percent: 100
+  percent: 53
 ---
 
 # Project State
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-14)
 
 ## Current Position
 
-Phase: 21 — Binder Variant Badges (INSERTED)
-Plan: 0/4
-Status: Ready to execute
-Last activity: Phase 21 planned (4 plans, 3 waves) — schema migration + binder variant badges
+Phase: 22 — Starter Deck Expansions (INSERTED)
+Plan: 3/3
+Status: Complete — UAT passed 2026-05-23
+Last activity: Phase 22 complete — all deck lists corrected, TS26 zero-padding fixed, UAT 3/3 passed
 
 ```
 v4 Progress [████████████████████] 100% (4/4 phases + 3 polish; all complete)
