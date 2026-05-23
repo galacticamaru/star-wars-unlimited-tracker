@@ -117,14 +117,75 @@
 
 ---
 
+## Milestone: v4 — Deck Builder & Collection Depth
+
+**Shipped:** 2026-05-23
+**Phases:** 11 (15, 15.1, 16, 16.1, 17, 17.1, 18, 19, 20, 21, 22) | **Plans:** 34
+
+---
+
+### What Was Built
+
+- Deck list grouped by card type (Ground/Space Units, Upgrades, Events) with leader/base art and hover-row art (Phase 15)
+- Cost-sorted card rows within each deck section, default tab switched to Deck List (Phases 15.1, 16.1)
+- Empty deck guided onboarding: auto-filter to Leader+Base first, then to aspects of chosen leader/base pair (Phase 16)
+- Per-variant collection tracking on card detail page: Normal/Foil/Hyperspace/Showcase/Prestige with +/- controls and total line (Phase 17)
+- In-memory variant grouping in `upsertCards` — eliminated orphaned Foil/variant rows across all sets (Phase 17.1)
+- Catalog shows highest-owned variant art with Showcase > Hyperspace Foil > Hyperspace > Foil > Normal precedence (Phase 18)
+- Quick-add 20+ pre-constructed decks (TS26, IBH, JTL, LOF, SEC, LAW spotlight decks) from collection page (Phases 18 + 22)
+- Unified variant filter across catalog, public binder, and deck builder (Phase 19)
+- CSV import updated to support all four variant types via array-based variant lookup (Phase 20)
+- `user_trade_offerings` schema migration (keyed by `cardPrintingId`); Foil/Showcase/etc. variant badge on public binder tiles (Phase 21)
+
+---
+
+### What Worked
+
+- **Milestone audit surfacing a structural gap** — REQ-BINDER-06 required a full schema migration that wasn't obvious from the original plan; the audit caught it before ship and the insertion of Phase 21 resolved it cleanly
+- **Decimal phase insertion for urgent fixes** — inserting Phase 21 and 22 after the audit, and 15.1, 16.1, 17.1 during execution, maintained narrative coherence without renumbering
+- **TDD on the auto-filter logic** — `computeAutoFilter()` and `computeAutoFilterLabel()` were tested in isolation first (Phase 16 Wave 1); the downstream waves were mechanical wiring with no logic bugs
+- **In-memory grouping over two-pass DB strategy** — Phase 17.1 replaced a fragile two-pass seeding approach with in-memory variant grouping; the result was self-healing on re-seed and eliminated orphaned rows
+- **Static data file pattern** — `starter-decks.ts` as a flat TypeScript array required no new DB table, no admin UI, and was trivially extensible in Phase 22
+
+---
+
+### What Was Inefficient
+
+- **Phase 19 attempting REQ-BINDER-06 without schema migration** — Phase 19 was planned to handle variant badges but the executor discovered mid-plan that the `tradeQuantity` column was stored against `cardDefinitionId`, not per-variant; the plan was abandoned and REQ-BINDER-06 rolled into Phase 21. A deeper schema review during Phase 19 planning would have surfaced this constraint earlier
+- **Missing VERIFICATION.md for Phases 19 and 20** — both phases were shipped without verification artifacts; the audit flagged this and the gaps were acknowledged at close. Adding VERIFICATION.md as a phase exit gate (not just a SUMMARY.md) would prevent recurrence
+- **Phase 17 gap-closure plans (17-09, 17-10)** — orphaned Foil rows weren't discovered until after Phase 17 human UAT; a DB orphan-check query as part of the Phase 17 verification plan would have caught it before the UAT checkpoint
+- **TS26 zero-padding bug in Phase 22** — collector numbers were zero-padded in the first implementation; a quick cross-reference against the actual DB format before writing the data would have avoided a fix commit
+
+---
+
+### Patterns Established
+
+- **`buildCollectionMap()` with `.total` + per-variant suffix keys** — `_Foil`, `_Showcase`, etc. as the canonical collection shape; all consumers read `.total` for owned-count overlays and per-suffix for detailed display
+- **`getPrintingArtMap()` server query** — returns best variant art per `cardDefinitionId` by joining owned counts with variant precedence; the map is injected into CatalogClient as a prop
+- **DDL-first schema migration** — `drizzle-kit push` for DDL only; data migration runs as an explicit SQL step after DDL settles; no-op detection prevents double-migration
+- **`user_trade_offerings` per-printing** — composite PK `(userId, cardPrintingId)` instead of `(userId, cardDefinitionId)`; enables variant-specific trade tracking at the DB level
+- **Additive starter deck quick-add** — `incrementVariantCount` with SQL `+ quantity` on conflict; never overwrites existing counts; safe for repeated quick-add calls
+
+---
+
+### Key Lessons
+
+1. **Schema migrations require a full column-level schema review before planning variant features.** Phase 19 discovered mid-execution that `tradeQuantity` was stored against the wrong FK. A schema diagram review as part of the discuss-phase would surface this type of constraint before any code is written.
+2. **VERIFICATION.md is a plan exit gate, not a nice-to-have.** Phases 19 and 20 both had working implementations but no verification artifact; the audit had to work harder to assess coverage. Adding VERIFICATION.md as a checklist item in the plan template enforces the habit.
+3. **Validate data format against DB before writing static data files.** Phase 22 zero-padding bug was caught by a test failure on quick-add; it would have been invisible in the data file without the cross-reference check.
+4. **In-memory grouping beats two-pass DB strategies.** When a seeding algorithm requires cross-row coordination, do it in memory before touching the DB — simpler code, no timing issues, self-healing on re-run.
+5. **Milestone audit insertion phases are the right mechanism.** Both Phase 21 (schema migration gap) and Phase 22 (quick-add coverage) were discovered at audit and inserted cleanly. The pattern continues to pay off — audit early, insert late.
+
+---
+
 ## Cross-Milestone Trends
 
-| Metric | v1 | v2 | v3 |
-|--------|-----|-----|-----|
-| Phases | 7 (5 planned + 2 inserted) | 5 | 4 |
-| Plans | 22 | 16 | 12 |
-| Duration | 5 days | 1 day | 1 day |
-| LOC (approx) | ~4,757 TypeScript/TSX | ~8,000 | ~22,000 total |
-| Functional bugs at audit | 2 (both fixed pre-ship) | 1 (10.1 binder shortfall) | 0 |
-| Insertion phases | 2 (5.1, 5.2) | 1 (10.1) | 0 |
-| Requirements coverage | 15/15 | 12/12 | 10/12 (2 deferred by design) |
+| Metric | v1 | v2 | v3 | v4 |
+|--------|-----|-----|-----|-----|
+| Phases | 7 (5 planned + 2 inserted) | 5 | 4 | 11 (6 planned + 5 inserted) |
+| Plans | 22 | 16 | 12 | 34 |
+| Duration | 5 days | 1 day | 1 day | 10 days |
+| LOC (approx) | ~4,757 TypeScript/TSX | ~8,000 | ~22,000 total | ~10,000 in src/ (27,000+ total) |
+| Functional bugs at audit | 2 (both fixed pre-ship) | 1 (10.1 binder shortfall) | 0 | 1 (Phase 19 schema gap → Phase 21) |
+| Insertion phases | 2 (5.1, 5.2) | 1 (10.1) | 0 | 5 (15.1, 16.1, 17.1, 21, 22) |
+| Requirements coverage | 15/15 | 12/12 | 10/12 (2 deferred by design) | 12/12 (2 docs gaps acknowledged) |

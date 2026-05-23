@@ -118,4 +118,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-20 — v4 complete (Phase 18: catalog variant art + starter deck quick-add + spotlight deck expansion)*
+*Last updated: 2026-05-23 — v4 milestone archived (Phases 15–22 complete; per-variant trade offerings + expanded starter deck list)*
