@@ -3,15 +3,13 @@ gsd_state_version: 1.0
 milestone: v4
 milestone_name: Deck Builder & Collection Depth
 status: complete
-stopped_at: v4 milestone archived — all 11 phases (34 plans) complete and documented
-last_updated: "2026-05-23T00:00:00.000Z"
-last_activity: 2026-05-23 — v4 milestone shipped — PR #16 opened (feat/v4-milestone → main)
+last_updated: "2026-05-25T04:17:42.861Z"
 progress:
-  total_phases: 11
+  total_phases: 12
   completed_phases: 11
   total_plans: 34
   completed_plans: 34
-  percent: 100
+  percent: 92
 ---
 
 # Project State
@@ -26,6 +24,7 @@ See: .planning/PROJECT.md (updated 2026-05-23)
 ## Milestone v4 — COMPLETE
 
 All 11 phases shipped:
+
 - Phase 15–16.1: Deck builder display polish and guided onboarding
 - Phase 17–17.1: Per-variant collection tracking + card sync grouping fix
 - Phase 18: Catalog variant art + starter deck quick-add
