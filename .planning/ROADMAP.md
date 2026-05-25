@@ -126,6 +126,6 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 20 | v4 | 1/1 | ✅ Complete | 2026-05-20 |
 | 21 | v4 | 4/4 | ✅ Complete | 2026-05-23 |
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
-| 23 | v5 | 0/TBD | Not started | - |
+| 23 | v5 | 0/TBD | Discuss complete | - |
 | 24 | v5 | 0/TBD | Not started | - |
 | 25 | v5 | 0/TBD | Not started | - |

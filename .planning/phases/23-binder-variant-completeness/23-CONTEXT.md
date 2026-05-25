@@ -102,7 +102,7 @@ No changes to the trade exclusions or auto-exclusion logic.
 - `.planning/milestones/v4-phases/21-binder-variant-badges/` — Phase 21 CONTEXT.md + plans (user_trade_offerings schema, per-variant offering model, ManageTradeCard badge pattern)
 
 ### v5 milestone roadmap
-- `.planning/milestones/v5-ROADMAP.md` (on `feat/v4-milestone` branch — `git show feat/v4-milestone -- .planning/milestones/v5-ROADMAP.md`) — Phase 23 success criteria (BINDER-07, BINDER-08, BINDER-09)
+- `.planning/milestones/v5-ROADMAP.md` — Phase 23 success criteria (BINDER-07, BINDER-08, BINDER-09)
 
 </canonical_refs>
 
