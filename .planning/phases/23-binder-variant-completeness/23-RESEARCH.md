@@ -485,17 +485,19 @@ import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from '@/co
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **New owned-cards API endpoint vs extending /api/binder GET**
    - What we know: CONTEXT.md marks this as Claude's discretion
    - What's unclear: Does extending `/api/binder` GET increase its response payload significantly, or is a separate `/api/collection/owned-cards` endpoint cleaner?
    - Recommendation: Create a new `/api/collection/owned-cards` endpoint. It avoids inflating the `/api/binder` response with browse data that has different lifetime/purpose from trade state, and keeps routes single-responsibility. The planner should confirm.
+   - RESOLVED: New `/api/collection/owned-cards` endpoint created per Plan 23-04 Task 1. `getOwnedCardDefinitions` query in `src/db/queries/collection.ts` serves the endpoint.
 
 2. **Variant chip selector data source in manual wants flow**
    - What we know: After card-name search, chips show the card's available printings
    - What's unclear: The card-name search currently runs against `allCards` (now `ownedCards`) which includes printing rows. The chip selector needs all printings for the selected card (including non-owned ones, since the user may want a variant they don't own yet).
    - Recommendation: After the user selects a card from search results, fire a lightweight fetch to get all `cardPrintings` for that `cardDefinitionId`. Alternatively, the owned-cards API can include all printings per card definition with `ownedCount` per printing — the chip selector can then show all variants, marking owned ones.
+   - RESOLVED: `/api/collection/owned-cards` response includes all printings per card definition with `ownedCount` per printing. `ManualWantsAddFlow` (Plan 23-04 Task 3) uses `ownedCards[i].printings` as chip source — no extra per-card fetch needed; unowned printings show with `ownedCount: 0`.
 
 ---
 

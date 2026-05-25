@@ -74,11 +74,23 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 **Depends on:** Phase 22 (v4 complete)
 **Requirements:** BINDER-07, BINDER-08, BINDER-09
 **Success Criteria** (what must be TRUE):
+
   1. A visitor to a public binder's "Looking For" section sees a variant badge (Normal / Foil / Showcase / Hyperspace / Hyperspace Foil) on each tile, matching the badge style used on "Available for Trade" tiles
   2. An authenticated user on any card's detail page can see an "Available for Trade" section that shows current trade offer state per variant and can set, edit, or remove a quantity without visiting the Manage Binder page
   3. An authenticated user on the Manage Binder page can browse and search their owned cards directly (filtered list of collection cards) and add any of them to their trade binder — no full catalog navigation required
   4. Adding or removing a trade offer from the Card Detail page is reflected immediately in the Manage Binder page without requiring a full page reload
-**Plans:** TBD
+
+**Plans:** 4 plansPlans:
+**Wave 1**
+
+- [ ] 23-01-PLAN.md — Schema migration + DB/API foundation for printing-level manual wants (BINDER-07 data layer)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 23-02-PLAN.md — Looking For variant badge UI on public binder (BINDER-07 UI completion)
+- [ ] 23-03-PLAN.md — Card Detail "Available for Trade" section with server-rendered initial state + PATCH wiring (BINDER-08)
+- [ ] 23-04-PLAN.md — Manage Binder owned-card browse, Sheet panel, and manual-wants variant chip selector (BINDER-09 + BINDER-07 manual-wants UX)
+
 **UI hint**: yes
 
 ### Phase 24: Catalog & Page Load Performance
@@ -87,10 +99,12 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 **Depends on:** Phase 23
 **Requirements:** PERF-01, PERF-02, PERF-03
 **Success Criteria** (what must be TRUE):
+
   1. Changing any catalog filter (set, rarity, variant, owned-only) reflects new results in ≤200ms without a visible loading spinner or full page reload
   2. The catalog page and public binder page show their above-fold content measurably faster on first load — LCP is reduced compared to baseline
   3. Card images below the fold load lazily and never cause layout shift — containers have fixed dimensions before images resolve
   4. The first visible row of card images loads with priority (no waiting behind below-fold images) and displays a blur placeholder or skeleton while the image fetches
+
 **Plans:** TBD
 **UI hint**: yes
 
@@ -100,9 +114,11 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 **Depends on:** Phase 23
 **Requirements:** PERF-04, PERF-05
 **Success Criteria** (what must be TRUE):
+
   1. While a Quick Add (starter deck) or CSV Import is processing, the user sees a live progress indicator (row count or percentage) — the UI is never frozen or silent during a long operation
   2. Quick Add and CSV Import complete successfully for collections up to 1,000 cards without a timeout error, even on a slow connection
   3. After clicking "New Deck", the empty Deck Builder skeleton (with guided onboarding visible) appears within ≤500ms — no perceptible blank or loading state before onboarding renders
+
 **Plans:** TBD
 
 ## Progress
@@ -126,6 +142,6 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 20 | v4 | 1/1 | ✅ Complete | 2026-05-20 |
 | 21 | v4 | 4/4 | ✅ Complete | 2026-05-23 |
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
-| 23 | v5 | 0/TBD | Discuss complete | - |
+| 23 | v5 | 0/4 | Planned | - |
 | 24 | v5 | 0/TBD | Not started | - |
 | 25 | v5 | 0/TBD | Not started | - |
