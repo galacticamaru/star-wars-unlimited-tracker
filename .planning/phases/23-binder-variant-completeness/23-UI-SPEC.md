@@ -1,10 +1,11 @@
 ---
 phase: 23
 slug: binder-variant-completeness
-status: draft
+status: approved
 shadcn_initialized: true
 preset: base-nova / zinc / cssVariables
 created: 2026-05-25
+reviewed_at: 2026-05-25
 ---
 
 # Phase 23 — UI Design Contract
@@ -33,8 +34,8 @@ Declared values (must be multiples of 4):
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| xs | 4px | Icon gaps, variant badge inner padding, inline badge padding |
-| sm | 8px | Row internal gaps (+/- control to count input), badge-to-edge margin |
+| xs | 4px | Icon gaps, variant badge inner padding (`px-1`), inline badge padding |
+| sm | 8px | Row internal gaps (+/- control to count input), badge-to-edge margin, chip container gap (`gap-2`), badge inner horizontal padding (`px-2`) |
 | md | 16px | Section container padding, card tile gap in grid, Sheet header padding |
 | lg | 24px | Between distinct UI sections (e.g. trade section below collection section) |
 | xl | 32px | Page column gap (image column ↔ metadata column on md+) |
@@ -53,10 +54,12 @@ Exceptions:
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Body | 14px (text-sm) | 400 (regular) | 1.5 |
+| Body | 14px (text-sm) | 400 (normal) | 1.5 |
 | Label | 12px (text-xs) | 700 (bold) | 1.4 — used for section headings, badges, variant badge text |
-| Heading | 20px (text-xl) | 600 (semibold), font-heading | 1.25 — section heading inside Sheet, page h2 |
-| Micro | 10px (text-[10px]) | 700 (bold) | 1.2 — card name under tile, quantity badge, "Stop Trading" inline action |
+| Heading | 20px (text-xl) | 700 (bold), font-heading | 1.25 — section heading inside Sheet, page h2 |
+| Micro | 10px (text-[10px]) | 700 (bold) | 1.2 — card name under tile, quantity badge, "Stop Trading" inline action, owned count chip |
+
+Two weights only: 400 (normal) and 700 (bold). No intermediate weights (500 medium or 600 semibold) are used in this phase.
 
 Source: inferred from `VariantCollectionSection`, `ManageTradeCard`, `ManageWantsList` patterns in codebase.
 
@@ -92,7 +95,7 @@ Source: `src/app/globals.css` CSS variables; `manage-trade-card.tsx` badge patte
 The public binder's Looking For `CardGrid` renders tiles via the existing binder card grid pattern. No changes to the grid component itself; the data shape changes to include `variantType` per printing.
 
 **Variant badge on Looking For tiles:**
-- Apply the same badge as `ManageTradeCard`: `absolute top-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-md z-20 uppercase`
+- Apply the same badge as `ManageTradeCard`: `absolute top-1 left-1 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded-sm font-bold shadow-md z-20 uppercase`
 - Show badge when `variantType !== 'Normal'`. Normal tiles receive no badge (matches Available for Trade behavior).
 - Auto-want tiles: show no variant badge (they represent "any version") — treat as Normal display.
 - One tile per printing. Two tiles for the same card name is intentional and correct.
@@ -105,10 +108,10 @@ Section label: `text-xs font-bold uppercase tracking-wider text-muted-foreground
 
 Per-printing row anatomy (one row per printing, same as collection rows):
 - Variant type label: `text-sm text-muted-foreground w-28 min-w-[7rem]`
-- Minus Button: `variant="outline" size="icon"`, disabled when `tradeQuantity === 0`
+- Minus Button: `variant="outline" size="icon"`, disabled when `tradeQuantity === 0`, `aria-label="Decrease {variantType} trade quantity"`
 - Count Input: `w-16 text-center font-bold type="number"`, aria-label `"{variantType} trade quantity"`
-- Plus Button: `variant="outline" size="icon"`
-- Status indicator: when `tradeQuantity > 0` show `text-sm font-bold text-primary` "Trading"; when 0 show `text-sm font-medium text-muted-foreground` "Not trading"
+- Plus Button: `variant="outline" size="icon"`, `aria-label="Increase {variantType} trade quantity"`
+- Status indicator: when `tradeQuantity > 0` show `text-sm font-bold text-primary` "Trading"; when 0 show `text-sm font-normal text-muted-foreground` "Not trading"
 
 Placement: directly below `VariantCollectionSection` in the image column, gap-6 between the two sections.
 
@@ -130,12 +133,14 @@ Optimistic update: fire-and-update pattern matching `VariantCollectionSection` �
 **Side panel — per-printing trade controls (Sheet from shadcn/ui):**
 - Use existing `Sheet` component (`src/components/ui/sheet.tsx`) backed by `@base-ui/react/dialog`.
 - Sheet opens from the right (`side="right"`), width `w-full sm:max-w-sm`.
-- Sheet header: card name in `text-xl font-semibold font-heading`, subtitle in `text-sm text-muted-foreground italic`.
+- Sheet header: card name in `text-xl font-bold font-heading`, subtitle in `text-sm text-muted-foreground italic`.
 - Sheet content: list of owned printings. One row per printing.
 - Per-printing row in Sheet:
-  - Variant label: `text-sm font-medium` — e.g. "Normal", "Foil", "Showcase"
-  - Owned count chip: `text-[10px] bg-muted px-1.5 py-0.5 rounded-full font-normal` — e.g. "Owned: 3"
+  - Variant label: `text-sm font-normal` — e.g. "Normal", "Foil", "Showcase"
+  - Owned count chip: `text-[10px] bg-muted px-2 py-0.5 rounded-full font-normal` — e.g. "Owned: 3"
   - Current trade quantity with +/- controls: same pill pattern as `ManageWantsList` — `bg-background rounded-full px-2 py-0.5 border shadow-sm`
+  - Minus Button: `variant="outline" size="icon"`, `aria-label="Decrease {variantType} trade quantity"`
+  - Plus Button: `variant="outline" size="icon"`, `aria-label="Increase {variantType} trade quantity"`
   - Show all printings the user owns (count > 0). Do not show unowned printings.
 - Sheet footer: no explicit footer needed; Sheet close via the built-in X button in sheet header.
 
@@ -143,8 +148,8 @@ Optimistic update: fire-and-update pattern matching `VariantCollectionSection` �
 The existing search box in the "Add Cards" flow (now searching owned cards) is for trade offerings. The manual wants add-flow is separate. After searching by card name and selecting a card, a variant chip selector appears.
 
 Chip selector anatomy:
-- Container: `flex flex-wrap gap-1.5 mt-2`
-- Each chip: `px-2.5 py-1 rounded-full text-xs font-semibold border transition-colors`
+- Container: `flex flex-wrap gap-2 mt-2`
+- Each chip: `px-2 py-1 rounded-full text-xs font-bold border transition-colors`
 - Unselected chip: `bg-background border-input text-foreground hover:bg-muted`
 - Selected chip: `bg-primary border-primary text-primary-foreground`
 - Available chips derived from the card's printings (Normal, Foil, etc.) — not all variants, only those that exist for this card.
