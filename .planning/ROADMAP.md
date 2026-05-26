@@ -80,16 +80,16 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
   3. An authenticated user on the Manage Binder page can browse and search their owned cards directly (filtered list of collection cards) and add any of them to their trade binder — no full catalog navigation required
   4. Adding or removing a trade offer from the Card Detail page is reflected immediately in the Manage Binder page without requiring a full page reload
 
-**Plans:** 1/4 plans executed
+**Plans:** 4/4 plans complete
 **Wave 1**
 
 - [x] 23-01-PLAN.md — Schema migration + DB/API foundation for printing-level manual wants (BINDER-07 data layer)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 23-02-PLAN.md — Looking For variant badge UI on public binder (BINDER-07 UI completion)
-- [ ] 23-03-PLAN.md — Card Detail "Available for Trade" section with server-rendered initial state + PATCH wiring (BINDER-08)
-- [ ] 23-04-PLAN.md — Manage Binder owned-card browse, Sheet panel, and manual-wants variant chip selector (BINDER-09 + BINDER-07 manual-wants UX)
+- [x] 23-02-PLAN.md — Looking For variant badge UI on public binder (BINDER-07 UI completion)
+- [x] 23-03-PLAN.md — Card Detail "Available for Trade" section with server-rendered initial state + PATCH wiring (BINDER-08)
+- [x] 23-04-PLAN.md — Manage Binder owned-card browse, Sheet panel, and manual-wants variant chip selector (BINDER-09 + BINDER-07 manual-wants UX)
 
 **UI hint**: yes
 
@@ -142,6 +142,6 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 20 | v4 | 1/1 | ✅ Complete | 2026-05-20 |
 | 21 | v4 | 4/4 | ✅ Complete | 2026-05-23 |
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
-| 23 | v5 | 1/4 | In Progress|  |
+| 23 | v5 | 4/4 | Complete   | 2026-05-26 |
 | 24 | v5 | 0/TBD | Not started | - |
 | 25 | v5 | 0/TBD | Not started | - |
