@@ -2,8 +2,6 @@ import { getTopCardsByPrice } from '@/db/queries/catalog';
 import { HeroSection } from '@/components/home/hero-section';
 import { HighValueGrid } from '@/components/home/high-value-grid';
 
-export const dynamic = 'force-dynamic';
-
 export default async function HomePage() {
   const topCards = await getTopCardsByPrice(10);
 
