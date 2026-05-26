@@ -1,8 +1,6 @@
 import { getAllCards } from "@/db/queries/catalog";
 import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic';
-
 export async function GET() {
   const cards = await getAllCards();
   const plainCards = cards.map(c => ({

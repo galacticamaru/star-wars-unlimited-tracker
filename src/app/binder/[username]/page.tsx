@@ -4,8 +4,6 @@ import { getFilterOptions } from '@/db/queries/catalog';
 import { PublicBinderClient } from '@/components/binder/public-binder-client';
 import type { CardForFilter } from '@/lib/filter-cards';
 
-export const dynamic = 'force-dynamic';
-
 interface PublicBinderPageProps {
   params: Promise<{ username: string }>;
 }
