@@ -58,7 +58,7 @@ See [milestones/v4-ROADMAP.md](milestones/v4-ROADMAP.md) for full details.
 <details open>
 <summary>🚧 v5 Trade Binder & Performance (Phases 23–25) — In Progress</summary>
 
-- [ ] **Phase 23: Binder Variant Completeness** — Looking For variant badges, Card Detail trade offer management, and collection-driven Manage Binder discovery
+- [x] **Phase 23: Binder Variant Completeness** — Looking For variant badges, Card Detail trade offer management, and collection-driven Manage Binder discovery (completed 2026-05-26)
 - [ ] **Phase 24: Catalog & Page Load Performance** — Filter response ≤200ms, reduced LCP, and layout-shift-free image loading
 - [ ] **Phase 25: Operation Performance** — Progress feedback for Quick Add/CSV Import, timeout-proof bulk ops, and deck creation ≤500ms
 
@@ -142,6 +142,6 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 20 | v4 | 1/1 | ✅ Complete | 2026-05-20 |
 | 21 | v4 | 4/4 | ✅ Complete | 2026-05-23 |
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
-| 23 | v5 | 4/4 | Complete   | 2026-05-26 |
+| 23 | v5 | 4/4 | Complete    | 2026-05-26 |
 | 24 | v5 | 0/TBD | Not started | - |
 | 25 | v5 | 0/TBD | Not started | - |

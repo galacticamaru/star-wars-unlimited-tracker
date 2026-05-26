@@ -14,9 +14,9 @@ Close the variant gap in the public binder's "Looking For" section, overhaul the
 
 ### Trade Binder
 
-- [ ] **BINDER-07**: User visiting a public binder sees variant type badges (Normal / Foil / Showcase / Hyperspace / Hyperspace Foil) on "Looking For" tiles — mirrors the v4 Available for Trade badge work (Phase 19/21)
-- [ ] **BINDER-08**: Authenticated user can view and manage their trade offers directly from a Card Detail page — set quantity offered per variant, see current offer state, and toggle off — without navigating to Manage Binder
-- [ ] **BINDER-09**: Manage Binder page redesigned so user can discover tradeable cards from their own collection (filtered/searchable list of owned cards) rather than navigating the full catalog to find cards to offer
+- [x] **BINDER-07**: User visiting a public binder sees variant type badges (Normal / Foil / Showcase / Hyperspace / Hyperspace Foil) on "Looking For" tiles — mirrors the v4 Available for Trade badge work (Phase 19/21)
+- [x] **BINDER-08**: Authenticated user can view and manage their trade offers directly from a Card Detail page — set quantity offered per variant, see current offer state, and toggle off — without navigating to Manage Binder
+- [x] **BINDER-09**: Manage Binder page redesigned so user can discover tradeable cards from their own collection (filtered/searchable list of owned cards) rather than navigating the full catalog to find cards to offer
 
 ### Performance
 
