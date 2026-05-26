@@ -22,7 +22,8 @@ interface Offering {
 }
 
 interface ManualWant {
-  cardDefinitionId: number;
+  cardPrintingId: number;
+  variantType: string;
   quantity: number;
   name: string;
   subtitle: string | null;
@@ -145,11 +146,11 @@ export default function ManageBinderPage() {
     }
   };
 
-  const updateWantQuantity = async (cardDefinitionId: number, quantity: number) => {
+  const updateWantQuantity = async (cardPrintingId: number, quantity: number) => {
     const res = await fetch('/api/binder/wants', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cardDefinitionId, quantity }),
+      body: JSON.stringify({ cardPrintingId, quantity }),
     });
     if (res.ok) {
         setTradeData(prev => {
@@ -157,21 +158,21 @@ export default function ManageBinderPage() {
             if (quantity <= 0) {
                 return {
                     ...prev,
-                    manualWants: prev.manualWants.filter(w => w.cardDefinitionId !== cardDefinitionId)
+                    manualWants: prev.manualWants.filter(w => w.cardPrintingId !== cardPrintingId)
                 };
             } else {
-                const existing = prev.manualWants.find(w => w.cardDefinitionId === cardDefinitionId);
+                const existing = prev.manualWants.find(w => w.cardPrintingId === cardPrintingId);
                 if (existing) {
                     return {
                         ...prev,
-                        manualWants: prev.manualWants.map(w => w.cardDefinitionId === cardDefinitionId ? { ...w, quantity } : w)
+                        manualWants: prev.manualWants.map(w => w.cardPrintingId === cardPrintingId ? { ...w, quantity } : w)
                     };
                 } else {
-                    const card = allCards.find(c => c.id === cardDefinitionId);
+                    const card = allCards.find(c => c.printingId === cardPrintingId);
                     if (!card) return prev;
                     return {
                         ...prev,
-                        manualWants: [...prev.manualWants, { cardDefinitionId, quantity, name: card.name, subtitle: card.subtitle ?? null }]
+                        manualWants: [...prev.manualWants, { cardPrintingId, variantType: card.variantType, quantity, name: card.name, subtitle: card.subtitle ?? null }]
                     };
                 }
             }
@@ -294,7 +295,7 @@ export default function ManageBinderPage() {
                         <Button size="sm" variant="secondary" onClick={() => updateTradeQuantity(card.printingId, 1)}>
                           <Plus className="w-3 h-3 mr-1" /> Trade
                         </Button>
-                        <Button size="sm" variant="secondary" onClick={() => updateWantQuantity(card.id, 1)}>
+                        <Button size="sm" variant="secondary" onClick={() => updateWantQuantity(card.printingId, 1)}>
                           <Plus className="w-3 h-3 mr-1" /> Want
                         </Button>
                         <Button size="sm" variant="ghost" onClick={() => toggleExclusion(card.id, true)}>
