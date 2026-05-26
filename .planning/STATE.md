@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v4
-milestone_name: Deck Builder & Collection Depth
-status: complete
-stopped_at: v4 milestone archived — all 11 phases (34 plans) complete and documented
-last_updated: "2026-05-23T00:00:00.000Z"
-last_activity: 2026-05-23 — v4 milestone shipped — PR #16 opened (feat/v4-milestone → main)
+milestone: v5
+milestone_name: Trade Binder & Performance
+status: "Phase 23 shipped — PR #17"
+last_updated: "2026-05-26T07:45:59.298Z"
+last_activity: 2026-05-26
 progress:
-  total_phases: 11
-  completed_phases: 11
-  total_plans: 34
-  completed_plans: 34
-  percent: 100
+  total_phases: 2
+  completed_phases: 1
+  total_plans: 9
+  completed_plans: 4
+  percent: 44
 ---
 
 # Project State
@@ -21,17 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-23)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus**: Planning next milestone (v5)
+**Current focus**: v5 — Trade Binder & Performance
 
-## Milestone v4 — COMPLETE
+## Current Position
 
-All 11 phases shipped:
-- Phase 15–16.1: Deck builder display polish and guided onboarding
-- Phase 17–17.1: Per-variant collection tracking + card sync grouping fix
-- Phase 18: Catalog variant art + starter deck quick-add
-- Phase 19–20: Unified variant filters + CSV variant import
-- Phase 21: Per-variant trade offerings schema migration + binder badges
-- Phase 22: Expanded starter/spotlight deck lists (TS26, IBH, LAW, SEC, LOF, JTL)
+Phase: 24
+Plan: Not started
+Status: Phase 23 shipped — PR #17
+Last activity: 2026-05-26
 
 ## Performance Metrics
 

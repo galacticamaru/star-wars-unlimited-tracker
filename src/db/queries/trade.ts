@@ -35,13 +35,15 @@ export async function getUserTradeData(userId: number) {
 
   const manualWants = await db
     .select({
-      cardDefinitionId: tradeManualWants.cardDefinitionId,
+      cardPrintingId: tradeManualWants.cardPrintingId,
+      variantType: cardPrintings.variantType,
       quantity: tradeManualWants.quantity,
       name: cardDefinitions.name,
       subtitle: cardDefinitions.subtitle,
     })
     .from(tradeManualWants)
-    .innerJoin(cardDefinitions, eq(tradeManualWants.cardDefinitionId, cardDefinitions.id))
+    .innerJoin(cardPrintings, eq(cardPrintings.id, tradeManualWants.cardPrintingId))
+    .innerJoin(cardDefinitions, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
     .where(eq(tradeManualWants.userId, userId));
 
   // --- Auto-wants: deck-driven shortfall computation ---
@@ -183,17 +185,17 @@ export async function upsertTradeOffering(userId: number, cardPrintingId: number
     .returning();
 }
 
-export async function upsertManualWant(userId: number, cardDefinitionId: number, quantity: number) {
+export async function upsertManualWant(userId: number, cardPrintingId: number, quantity: number) {
   return db
     .insert(tradeManualWants)
     .values({
       userId,
-      cardDefinitionId,
+      cardPrintingId,
       quantity,
     })
     .onConflictDoUpdate({
-      target: [tradeManualWants.userId, tradeManualWants.cardDefinitionId],
-      set: { 
+      target: [tradeManualWants.userId, tradeManualWants.cardPrintingId],
+      set: {
         quantity,
         updatedAt: new Date(),
       },
@@ -201,13 +203,13 @@ export async function upsertManualWant(userId: number, cardDefinitionId: number,
     .returning();
 }
 
-export async function deleteManualWant(userId: number, cardDefinitionId: number) {
+export async function deleteManualWant(userId: number, cardPrintingId: number) {
   return db
     .delete(tradeManualWants)
     .where(
       and(
         eq(tradeManualWants.userId, userId),
-        eq(tradeManualWants.cardDefinitionId, cardDefinitionId)
+        eq(tradeManualWants.cardPrintingId, cardPrintingId)
       )
     );
 }

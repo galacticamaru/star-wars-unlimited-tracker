@@ -11,17 +11,18 @@ interface Printing {
   id: number;
   variantType: string;
   collectorNumber?: string;
-  ownedCount: number;
+  tradeQuantity: number;
 }
 
-interface VariantCollectionSectionProps {
+interface VariantTradeSectionProps {
   printings: Printing[];
+  onQuantityChange?: (cardPrintingId: number, tradeQuantity: number) => void;
 }
 
-export function VariantCollectionSection({ printings }: VariantCollectionSectionProps) {
-  // Initialize counts map from RSC-fetched ownedCount per printing (Pattern 5 from RESEARCH.md)
+export function VariantTradeSection({ printings, onQuantityChange }: VariantTradeSectionProps) {
+  // Initialize counts map from RSC-fetched tradeQuantity per printing (D-11 — no client fetch)
   const [counts, setCounts] = useState<Record<number, number>>(
-    Object.fromEntries(printings.map(p => [p.id, p.ownedCount]))
+    Object.fromEntries(printings.map(p => [p.id, p.tradeQuantity]))
   );
   const { data: session } = authClient.useSession();
   const router = useRouter();
@@ -33,72 +34,70 @@ export function VariantCollectionSection({ printings }: VariantCollectionSection
       return;
     }
 
-    // Floor at 0 before optimistic update and fetch (T-17-05-02)
+    // Floor at 0 (D-10 / UI-SPEC §Interaction Contract; T-23-03-04)
     const val = Math.max(0, newCount);
 
-    // Capture previous value for rollback on server error (CR-03 / WR-01)
+    // Capture previous value for rollback on server error
     const prev = counts[cardPrintingId] ?? 0;
 
-    // Optimistic UI update (fire-and-update pattern from CollectionControls)
-    setCounts(prev => ({ ...prev, [cardPrintingId]: val }));
+    // Optimistic UI update
+    setCounts(c => ({ ...c, [cardPrintingId]: val }));
 
     try {
-      const res = await fetch('/api/collection/variants', {
-        method: 'POST',
+      const res = await fetch('/api/trade', {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cardPrintingId, count: val }),
+        body: JSON.stringify({ cardPrintingId, tradeQuantity: val }),
       });
       if (!res.ok) {
-        // Roll back optimistic update on server error to keep UI in sync with DB
         setCounts(c => ({ ...c, [cardPrintingId]: prev }));
-        console.error('Failed to update variant count:', await res.text());
+        console.error('Failed to update trade quantity:', await res.text());
+      } else {
+        onQuantityChange?.(cardPrintingId, val);
       }
     } catch (err) {
       // Roll back on network-level failure as well
       setCounts(c => ({ ...c, [cardPrintingId]: prev }));
-      console.error('Failed to update variant count:', err);
+      console.error('Failed to update trade quantity:', err);
     }
   };
 
-  // Total derived from client state — recalculates on every count change (UI-SPEC §Interaction Contract)
-  const total = Object.values(counts).reduce((a, b) => a + b, 0);
-
   return (
-    // Container — exact classes from UI-SPEC.md §Layout and existing CollectionControls wrapper
+    // Container — matches VariantCollectionSection container exactly (UI-SPEC Surface 2)
     <div className="flex flex-col gap-2 p-4 bg-muted/50 rounded-lg border border-border">
       {/* Section label — uppercase via className (UI-SPEC §Copywriting Contract) */}
       <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-        Your Collection
+        Available for Trade
       </p>
 
-      {/* Per-variant rows */}
+      {/* Per-variant rows — one per printing, zero rows remain visible (D-10) */}
       {printings.map(printing => {
         const count = counts[printing.id] ?? 0;
         return (
           <div key={printing.id} className="flex items-center gap-2">
-            {/* Variant type label — w-28 ensures alignment across rows (UI-SPEC §Variant row anatomy) */}
+            {/* Variant type label — w-28 ensures alignment across rows */}
             <span className="text-sm text-muted-foreground w-28 min-w-[7rem]">
               {printing.variantType}
             </span>
 
-            {/* Minus button — disabled at 0 (UI-SPEC §Interaction Contract) */}
+            {/* Minus button — disabled at 0 (UI-SPEC §Surface 2) */}
             <Button
               variant="outline"
               size="icon"
               onClick={() => updateVariant(printing.id, count - 1)}
               disabled={count === 0}
-              aria-label={`Decrease ${printing.variantType} owned count`}
+              aria-label={`Decrease ${printing.variantType} trade quantity`}
             >
               <Minus className="size-4" />
             </Button>
 
-            {/* Count display input (UI-SPEC §Variant row anatomy) */}
+            {/* Trade quantity input */}
             <Input
               type="number"
               value={count}
               onChange={(e) => updateVariant(printing.id, parseInt(e.target.value, 10) || 0)}
               className="w-16 text-center font-bold"
-              aria-label={`${printing.variantType} owned count`}
+              aria-label={`${printing.variantType} trade quantity`}
             />
 
             {/* Plus button */}
@@ -106,26 +105,20 @@ export function VariantCollectionSection({ printings }: VariantCollectionSection
               variant="outline"
               size="icon"
               onClick={() => updateVariant(printing.id, count + 1)}
-              aria-label={`Increase ${printing.variantType} owned count`}
+              aria-label={`Increase ${printing.variantType} trade quantity`}
             >
               <Plus className="size-4" />
             </Button>
 
-            {/* Owned status indicator (UI-SPEC §Variant row anatomy) */}
+            {/* Status indicator — Trading / Not trading (UI-SPEC §Surface 2 / D-10) */}
             {count > 0 ? (
-              <span className="text-sm font-bold text-primary">Owned</span>
+              <span className="text-sm font-bold text-primary">Trading</span>
             ) : (
-              <span className="text-sm font-medium text-muted-foreground">Not owned</span>
+              <span className="text-sm font-normal text-muted-foreground">Not trading</span>
             )}
           </div>
         );
       })}
-
-      {/* Total line — below variant rows (D-12, UI-SPEC §Total line position) */}
-      <div className="border-t border-border mt-2 pt-2 flex items-center gap-2">
-        <span className="text-xs font-bold text-muted-foreground">Total:</span>
-        <span className="text-sm font-bold text-foreground">{total} copies</span>
-      </div>
     </div>
   );
 }

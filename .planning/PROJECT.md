@@ -10,6 +10,18 @@ A multi-user web app for Star Wars: Unlimited TCG players. Players track their c
 > **v4 shipped 2026-05-20.** Deck builder polish (type grouping, art, aspect panel, guided onboarding), per-variant collection tracking, catalog variant art, and starter deck quick-add.
 > **v4 gap closure complete 2026-05-23.** Per-variant trade offerings (Phase 21) and additional starter/spotlight deck lists (Phase 22) fill remaining REQ-BINDER-06 gap.
 
+## Current Milestone: v5 Trade Binder & Performance
+
+**Goal:** Close the variant gap in the public binder's "Looking For" section, overhaul the add-to-trade workflow, extend card detail pages with a trade-offer section, and measurably improve catalog browsing performance.
+
+**Target features:**
+- Looking For tiles on public binder show variant badges (mirrors v4 Available for Trade work)
+- Card Detail page gets an "Available for Trade" section — mark quantity, see current offer
+- Manage Binder UX overhaul — easier card discovery and add-to-trade flow
+- Catalog browsing performance — faster filter response and initial load
+- Page load speed (LCP / TTFB), image loading (lazy loading, layout shift)
+- Quick Add / CSV Import speed improvements
+
 ## Milestone: v4.0 Deck Builder & Collection Depth — COMPLETE
 
 **Shipped:** 2026-05-20 — All 4 phases + 3 polish phases complete.
@@ -54,7 +66,14 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Variant-aware trade offerings — per-printing `user_trade_offerings` table; Foil/Showcase/etc. badge on public binder tiles — v4 gap closure (REQ-BINDER-06, Phase 21)
 
 ### Active (v5)
-(None yet — v4 + gap closure complete)
+
+- ✓ **BINDER-07**: Looking For tiles on public binder show variant type badge — Validated in Phase 23
+- ✓ **BINDER-08**: Card Detail page has "Available for Trade" section — mark quantity, view/edit current offer — Validated in Phase 23
+- ✓ **BINDER-09**: Manage Binder page — collection-driven discovery, VariantTradeSheet, manual-wants chip selector — Validated in Phase 23
+- [ ] **PERF-01**: Catalog filter response time measurably reduced (target: &lt;100ms on filter interaction)
+- [ ] **PERF-02**: Page load speed improved — LCP and TTFB reduced for catalog and binder routes
+- [ ] **PERF-03**: Card image loading improved — lazy loading, no layout shift
+- [ ] **PERF-04**: Quick Add and CSV Import provide progress feedback and complete faster
 
 ### Out of Scope
 
@@ -118,4 +137,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-23 — v4 milestone archived (Phases 15–22 complete; per-variant trade offerings + expanded starter deck list)*
+*Last updated: 2026-05-26 — Phase 23 complete: binder variant completeness (BINDER-07/08/09 all validated)*

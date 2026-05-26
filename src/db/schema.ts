@@ -180,15 +180,15 @@ export const tradeManualWants = pgTable(
   'trade_manual_wants',
   {
     userId: integer('user_id').notNull(),
-    cardDefinitionId: integer('card_definition_id')
+    cardPrintingId: integer('card_printing_id')
       .notNull()
-      .references(() => cardDefinitions.id),
+      .references(() => cardPrintings.id),
     quantity: integer('quantity').notNull().default(1),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
   (t) => [
-    primaryKey({ columns: [t.userId, t.cardDefinitionId] }),
+    primaryKey({ columns: [t.userId, t.cardPrintingId] }),
   ]
 );
 
