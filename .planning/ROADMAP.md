@@ -105,7 +105,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
   3. Card images below the fold load lazily and never cause layout shift — containers have fixed dimensions before images resolve
   4. The first visible row of card images loads with priority (no waiting behind below-fold images) and displays a blur placeholder or skeleton while the image fetches
 
-**Plans:** 1/5 plans executed
+**Plans:** 3/5 plans executed
 
 **Wave 0** *(test infrastructure — must complete before Wave 1)*
 
@@ -113,8 +113,8 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 **Wave 1** *(parallel — independent file ownership)*
 
-- [ ] 24-02-PLAN.md - Search input 150ms debounce in CatalogClient (PERF-01)
-- [ ] 24-04-PLAN.md - RSC caching: use-cache directive + cacheTag, remove force-dynamic, drop userId from getAllCards (PERF-02)
+- [x] 24-02-PLAN.md - Search input 150ms debounce in CatalogClient (PERF-01)
+- [x] 24-04-PLAN.md - RSC caching: use-cache directive + cacheTag, remove force-dynamic, drop userId from getAllCards (PERF-02)
 
 **Wave 2** *(blocked on Wave 1 catalog-client.tsx ownership)*
 
@@ -160,5 +160,5 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 21 | v4 | 4/4 | ✅ Complete | 2026-05-23 |
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
 | 23 | v5 | 4/4 | Complete    | 2026-05-26 |
-| 24 | v5 | 1/5 | In Progress|  |
+| 24 | v5 | 3/5 | In Progress|  |
 | 25 | v5 | 0/TBD | Not started | - |
