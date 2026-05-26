@@ -61,7 +61,14 @@ export function ManageWantsList({
             {wants.map((want) => (
               <div key={want.cardPrintingId} className="flex items-center justify-between p-2 bg-muted/50 rounded-md border group">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium truncate">{want.name}</p>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <p className="text-sm font-medium truncate">{want.name}</p>
+                    {want.variantType !== 'Normal' && (
+                      <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-sm font-bold uppercase">
+                        {want.variantType}
+                      </span>
+                    )}
+                  </div>
                   {want.subtitle && (
                     <p className="text-[10px] text-muted-foreground truncate">{want.subtitle}</p>
                   )}
