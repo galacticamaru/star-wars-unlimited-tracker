@@ -21,7 +21,7 @@ export default async function DeckPage({ params }: { params: Promise<{ id: strin
 
   const [deckData, allCards, filterOptions] = await Promise.all([
     getDeckWithCards(deckId, Number(session.user.id)),
-    getAllCards(Number(session.user.id)),
+    getAllCards(),
     getFilterOptions(),
   ]);
 
