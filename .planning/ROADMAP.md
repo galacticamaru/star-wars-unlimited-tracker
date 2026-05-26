@@ -105,7 +105,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
   3. Card images below the fold load lazily and never cause layout shift — containers have fixed dimensions before images resolve
   4. The first visible row of card images loads with priority (no waiting behind below-fold images) and displays a blur placeholder or skeleton while the image fetches
 
-**Plans:** 3/5 plans executed
+**Plans:** 4/5 plans executed
 
 **Wave 0** *(test infrastructure — must complete before Wave 1)*
 
@@ -118,7 +118,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 **Wave 2** *(blocked on Wave 1 catalog-client.tsx ownership)*
 
-- [ ] 24-03-PLAN.md - CardGrid virtualization with @tanstack/react-virtual + image priority threshold (PERF-01 + PERF-03)
+- [x] 24-03-PLAN.md - CardGrid virtualization with @tanstack/react-virtual + image priority threshold (PERF-01 + PERF-03)
 
 **Wave 3** *(final verification)*
 
@@ -160,5 +160,5 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 21 | v4 | 4/4 | ✅ Complete | 2026-05-23 |
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
 | 23 | v5 | 4/4 | Complete    | 2026-05-26 |
-| 24 | v5 | 3/5 | In Progress|  |
+| 24 | v5 | 4/5 | In Progress|  |
 | 25 | v5 | 0/TBD | Not started | - |
