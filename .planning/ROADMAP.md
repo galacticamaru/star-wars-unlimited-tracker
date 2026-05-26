@@ -105,7 +105,24 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
   3. Card images below the fold load lazily and never cause layout shift — containers have fixed dimensions before images resolve
   4. The first visible row of card images loads with priority (no waiting behind below-fold images) and displays a blur placeholder or skeleton while the image fetches
 
-**Plans:** TBD
+**Plans:** 5 plans
+
+**Wave 0** *(test infrastructure — must complete before Wave 1)*
+
+- [ ] 24-01-PLAN.md - Wave 0 test stubs for CardGrid virtualization + getAllCards signature change
+
+**Wave 1** *(parallel — independent file ownership)*
+
+- [ ] 24-02-PLAN.md - Search input 150ms debounce in CatalogClient (PERF-01)
+- [ ] 24-04-PLAN.md - RSC caching: use-cache directive + cacheTag, remove force-dynamic, drop userId from getAllCards (PERF-02)
+
+**Wave 2** *(blocked on Wave 1 catalog-client.tsx ownership)*
+
+- [ ] 24-03-PLAN.md - CardGrid virtualization with @tanstack/react-virtual + image priority threshold (PERF-01 + PERF-03)
+
+**Wave 3** *(final verification)*
+
+- [ ] 24-05-PLAN.md - npm run build + full test suite + route handler cacheComponents compat
 **UI hint**: yes
 
 ### Phase 25: Operation Performance

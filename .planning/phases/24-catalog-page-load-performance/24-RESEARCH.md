@@ -628,7 +628,7 @@ interface CardItemProps {
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Row height estimate for `estimateSize`**
    - What we know: Cards use `aspect-[2/3]` (portrait) or `aspect-[3/2]` (leaders/bases, landscape). The grid has `gap-2 px-4 py-4`. Container width varies by breakpoint.
