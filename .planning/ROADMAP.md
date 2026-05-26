@@ -59,7 +59,7 @@ See [milestones/v4-ROADMAP.md](milestones/v4-ROADMAP.md) for full details.
 <summary>🚧 v5 Trade Binder & Performance (Phases 23–25) — In Progress</summary>
 
 - [x] **Phase 23: Binder Variant Completeness** — Looking For variant badges, Card Detail trade offer management, and collection-driven Manage Binder discovery (completed 2026-05-26)
-- [ ] **Phase 24: Catalog & Page Load Performance** — Filter response ≤200ms, reduced LCP, and layout-shift-free image loading
+- [x] **Phase 24: Catalog & Page Load Performance** — Filter response ≤200ms, reduced LCP, and layout-shift-free image loading (completed 2026-05-26)
 - [ ] **Phase 25: Operation Performance** — Progress feedback for Quick Add/CSV Import, timeout-proof bulk ops, and deck creation ≤500ms
 
 See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
@@ -105,7 +105,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
   3. Card images below the fold load lazily and never cause layout shift — containers have fixed dimensions before images resolve
   4. The first visible row of card images loads with priority (no waiting behind below-fold images) and displays a blur placeholder or skeleton while the image fetches
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 **Wave 0** *(test infrastructure — must complete before Wave 1)*
 
@@ -122,7 +122,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 **Wave 3** *(final verification)*
 
-- [ ] 24-05-PLAN.md - npm run build + full test suite + route handler cacheComponents compat
+- [x] 24-05-PLAN.md - npm run build + full test suite + route handler cacheComponents compat
 **UI hint**: yes
 
 ### Phase 25: Operation Performance
@@ -160,5 +160,5 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 21 | v4 | 4/4 | ✅ Complete | 2026-05-23 |
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
 | 23 | v5 | 4/4 | Complete    | 2026-05-26 |
-| 24 | v5 | 4/5 | In Progress|  |
+| 24 | v5 | 5/5 | Complete   | 2026-05-26 |
 | 25 | v5 | 0/TBD | Not started | - |
