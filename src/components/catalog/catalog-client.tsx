@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useEffect, useState, useRef } from 'react';
 import { useQueryState, parseAsString, parseAsArrayOf, parseAsBoolean } from 'nuqs';
 import { filterCards, type CardForFilter } from '@/lib/filter-cards';
 import type { AutoFilter } from '@/lib/auto-filter';
@@ -65,6 +65,7 @@ export function CatalogClient({
   autoFilterLabel,
 }: CatalogClientProps) {
   const [collection, setCollection] = useState<CollectionMap>({});
+  const scrollContainerRef = useRef<HTMLElement>(null);
   const { data: session } = authClient.useSession();
   const isAuthenticated = !!session;
 
@@ -221,7 +222,7 @@ export function CatalogClient({
         <SidebarFilters {...sidebarProps} />
       </div>
       
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto relative">
+      <main ref={scrollContainerRef} className="flex-1 flex flex-col min-w-0 overflow-y-auto relative">
         <div className="sticky top-0 z-40 bg-background md:hidden px-4 py-2 border-b border-border flex items-center justify-between">
           <MobileFilterSheet {...sidebarProps} />
         </div>
@@ -238,6 +239,7 @@ export function CatalogClient({
             mode={mode}
             deckCounts={deckCounts}
             onDeckUpdate={onDeckUpdate}
+            scrollContainerRef={scrollContainerRef}
           />
         )}
       </main>
