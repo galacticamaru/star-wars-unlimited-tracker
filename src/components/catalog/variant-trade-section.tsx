@@ -10,15 +10,16 @@ import { useRouter } from 'next/navigation';
 interface Printing {
   id: number;
   variantType: string;
-  collectorNumber: string;
+  collectorNumber?: string;
   tradeQuantity: number;
 }
 
 interface VariantTradeSectionProps {
   printings: Printing[];
+  onQuantityChange?: (cardPrintingId: number, tradeQuantity: number) => void;
 }
 
-export function VariantTradeSection({ printings }: VariantTradeSectionProps) {
+export function VariantTradeSection({ printings, onQuantityChange }: VariantTradeSectionProps) {
   // Initialize counts map from RSC-fetched tradeQuantity per printing (D-11 — no client fetch)
   const [counts, setCounts] = useState<Record<number, number>>(
     Object.fromEntries(printings.map(p => [p.id, p.tradeQuantity]))
@@ -49,9 +50,10 @@ export function VariantTradeSection({ printings }: VariantTradeSectionProps) {
         body: JSON.stringify({ cardPrintingId, tradeQuantity: val }),
       });
       if (!res.ok) {
-        // Roll back optimistic update on server error to keep UI in sync with DB
         setCounts(c => ({ ...c, [cardPrintingId]: prev }));
         console.error('Failed to update trade quantity:', await res.text());
+      } else {
+        onQuantityChange?.(cardPrintingId, val);
       }
     } catch (err) {
       // Roll back on network-level failure as well

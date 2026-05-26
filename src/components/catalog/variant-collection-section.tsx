@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 interface Printing {
   id: number;
   variantType: string;
-  collectorNumber: string;
+  collectorNumber?: string;
   ownedCount: number;
 }
 
