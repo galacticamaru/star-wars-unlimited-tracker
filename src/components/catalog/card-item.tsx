@@ -107,8 +107,8 @@ export function CardItem({
             />
           )}
 
-          {/* Variant Type Badge — binder mode only, non-Normal variants */}
-          {isBinder && variantType && variantType !== 'Normal' && (
+          {/* Variant Type Badge — binder and want mode, non-Normal variants */}
+          {(isBinder || isWant) && variantType && variantType !== 'Normal' && (
             <div className="absolute top-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-md z-20 pointer-events-none uppercase">
               {variantType}
             </div>
