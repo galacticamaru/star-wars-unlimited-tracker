@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { cardDefinitions, cardPrintings, userCollections, userPrintingCollections } from '@/db/schema';
+import { cardDefinitions, cardPrintings, userCollections, userPrintingCollections, userTradeOfferings } from '@/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
@@ -88,6 +88,7 @@ export async function getSameSetPrintingsWithCounts(
       variantType: cardPrintings.variantType,
       collectorNumber: cardPrintings.collectorNumber,
       ownedCount: sql<number>`COALESCE(${userPrintingCollections.count}, 0)`,
+      tradeQuantity: sql<number>`COALESCE(${userTradeOfferings.quantity}, 0)`,
     })
     .from(cardPrintings)
     .leftJoin(
@@ -95,6 +96,13 @@ export async function getSameSetPrintingsWithCounts(
       and(
         eq(cardPrintings.id, userPrintingCollections.cardPrintingId),
         userId ? eq(userPrintingCollections.userId, userId) : sql`FALSE`
+      )
+    )
+    .leftJoin(
+      userTradeOfferings,
+      and(
+        eq(cardPrintings.id, userTradeOfferings.cardPrintingId),
+        userId ? eq(userTradeOfferings.userId, userId) : sql`FALSE`
       )
     )
     .where(
