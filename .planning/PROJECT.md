@@ -67,9 +67,9 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ### Active (v5)
 
-- [ ] **BINDER-07**: Looking For tiles on public binder show variant type badge (Normal/Foil/Showcase/etc.)
-- [ ] **BINDER-08**: Card Detail page has "Available for Trade" section — mark quantity, view/edit current offer
-- [ ] **BINDER-09**: Manage Binder page — improved UX for discovering and adding cards to trade
+- ✓ **BINDER-07**: Looking For tiles on public binder show variant type badge — Validated in Phase 23
+- ✓ **BINDER-08**: Card Detail page has "Available for Trade" section — mark quantity, view/edit current offer — Validated in Phase 23
+- ✓ **BINDER-09**: Manage Binder page — collection-driven discovery, VariantTradeSheet, manual-wants chip selector — Validated in Phase 23
 - [ ] **PERF-01**: Catalog filter response time measurably reduced (target: &lt;100ms on filter interaction)
 - [ ] **PERF-02**: Page load speed improved — LCP and TTFB reduced for catalog and binder routes
 - [ ] **PERF-03**: Card image loading improved — lazy loading, no layout shift
@@ -137,4 +137,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-23 — v5 milestone started: Trade Binder & Performance*
+*Last updated: 2026-05-26 — Phase 23 complete: binder variant completeness (BINDER-07/08/09 all validated)*
