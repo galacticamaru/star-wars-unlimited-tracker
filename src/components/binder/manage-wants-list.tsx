@@ -3,7 +3,8 @@
 import { X, Plus, Minus, Ban } from 'lucide-react';
 
 interface WantItem {
-  cardDefinitionId: number;
+  cardPrintingId: number;
+  variantType: string;
   quantity: number;
   name: string;
   subtitle: string | null;
@@ -58,7 +59,7 @@ export function ManageWantsList({
         ) : (
           <div className="grid gap-2">
             {wants.map((want) => (
-              <div key={want.cardDefinitionId} className="flex items-center justify-between p-2 bg-muted/50 rounded-md border group">
+              <div key={want.cardPrintingId} className="flex items-center justify-between p-2 bg-muted/50 rounded-md border group">
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium truncate">{want.name}</p>
                   {want.subtitle && (
@@ -69,7 +70,7 @@ export function ManageWantsList({
                   <div className="flex items-center gap-2 bg-background rounded-full px-2 py-0.5 border shadow-sm">
                     <button
                       type="button"
-                      onClick={() => onUpdateWantQuantity(want.cardDefinitionId, Math.max(0, want.quantity - 1))}
+                      onClick={() => onUpdateWantQuantity(want.cardPrintingId, Math.max(0, want.quantity - 1))}
                       className="p-0.5 hover:bg-muted rounded-full transition-colors"
                       aria-label="Decrease want quantity"
                     >
@@ -78,7 +79,7 @@ export function ManageWantsList({
                     <span className="text-xs font-bold min-w-[1.5ch] text-center">{want.quantity}</span>
                     <button
                       type="button"
-                      onClick={() => onUpdateWantQuantity(want.cardDefinitionId, want.quantity + 1)}
+                      onClick={() => onUpdateWantQuantity(want.cardPrintingId, want.quantity + 1)}
                       className="p-0.5 hover:bg-muted rounded-full transition-colors"
                       aria-label="Increase want quantity"
                     >
@@ -87,7 +88,7 @@ export function ManageWantsList({
                   </div>
                   <button
                     type="button"
-                    onClick={() => onRemoveWant(want.cardDefinitionId)}
+                    onClick={() => onRemoveWant(want.cardPrintingId)}
                     className="p-1 text-muted-foreground hover:text-destructive transition-colors"
                     aria-label="Remove manual want"
                   >

@@ -44,7 +44,34 @@ export async function getPublicBinderData(userId: number) {
       )
     );
 
-  // 2. Calculate Looking For
+  // 2. Fetch Manual Wants — per-printing entries (D-04, D-05)
+  // Each manual want row is one tile with its own variantType from the joined printing.
+  const manualWantRows = await db
+    .select({
+      id: cardDefinitions.id,
+      name: cardDefinitions.name,
+      subtitle: cardDefinitions.subtitle,
+      type: cardDefinitions.type,
+      aspects: cardDefinitions.aspects,
+      traits: cardDefinitions.traits,
+      keywords: cardDefinitions.keywords,
+      arenas: cardDefinitions.arenas,
+      cost: cardDefinitions.cost,
+      power: cardDefinitions.power,
+      hp: cardDefinitions.hp,
+      rarity: cardPrintings.rarity,
+      setCode: cardPrintings.setCode,
+      collectorNumber: cardPrintings.collectorNumber,
+      frontArtUrl: cardPrintings.frontArtUrl,
+      variantType: cardPrintings.variantType,
+      lookingForQuantity: tradeManualWants.quantity,
+    })
+    .from(tradeManualWants)
+    .innerJoin(cardPrintings, eq(cardPrintings.id, tradeManualWants.cardPrintingId))
+    .innerJoin(cardDefinitions, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
+    .where(eq(tradeManualWants.userId, userId));
+
+  // 3. Calculate Looking For (auto-wants — card-definition level, D-03)
   // Inventory
   const inventory = await db
     .select({
@@ -53,19 +80,8 @@ export async function getPublicBinderData(userId: number) {
     })
     .from(userCollections)
     .where(eq(userCollections.userId, userId));
-  
-  const inventoryMap = new Map(inventory.map(i => [i.cardDefinitionId, i.count]));
 
-  // Manual Wants
-  const manualWants = await db
-    .select({
-      cardDefinitionId: tradeManualWants.cardDefinitionId,
-      quantity: tradeManualWants.quantity,
-    })
-    .from(tradeManualWants)
-    .where(eq(tradeManualWants.userId, userId));
-  
-  const manualWantsMap = new Map(manualWants.map(w => [w.cardDefinitionId, w.quantity]));
+  const inventoryMap = new Map(inventory.map(i => [i.cardDefinitionId, i.count]));
 
   // Exclusions
   const exclusions = await db
@@ -74,7 +90,7 @@ export async function getPublicBinderData(userId: number) {
     })
     .from(tradeExclusions)
     .where(eq(tradeExclusions.userId, userId));
-  
+
   const exclusionsSet = new Set(exclusions.map(e => e.cardDefinitionId));
 
   // Auto target from decks
@@ -86,7 +102,7 @@ export async function getPublicBinderData(userId: number) {
     })
     .from(decks)
     .where(eq(decks.userId, userId));
-  
+
   const autoTargetMap = new Map<number, number>();
 
   if (userDecks.length > 0) {
@@ -103,7 +119,7 @@ export async function getPublicBinderData(userId: number) {
           eq(deckCards.isSideboard, false)
         )
       );
-    
+
     for (const cq of cardQuantities) {
       const current = autoTargetMap.get(cq.cardDefinitionId) ?? 0;
       autoTargetMap.set(cq.cardDefinitionId, Math.max(current, cq.quantity));
@@ -120,30 +136,46 @@ export async function getPublicBinderData(userId: number) {
     }
   }
 
-  // Combine to find all card IDs that have Looking For > 0
-  const relevantCardIds = new Set<number>();
-  for (const id of manualWantsMap.keys()) relevantCardIds.add(id);
-  for (const id of autoTargetMap.keys()) relevantCardIds.add(id);
+  // Compute auto-want shortfalls (card-definition level, D-03)
+  const autoWantCardIds: number[] = [];
+  const autoWantQuantityMap = new Map<number, number>();
 
-  const lookingForList: any[] = [];
-  const cardsToFetch: number[] = [];
-
-  for (const cardId of relevantCardIds) {
+  for (const [cardId, autoTarget] of autoTargetMap.entries()) {
     const lf = calculateLookingFor(
-      autoTargetMap.get(cardId) ?? 0,
-      manualWantsMap.get(cardId) ?? 0,
+      autoTarget,
+      0,
       inventoryMap.get(cardId) ?? 0,
       exclusionsSet.has(cardId)
     );
     if (lf > 0) {
-      cardsToFetch.push(cardId);
-      lookingForList.push({ cardDefinitionId: cardId, lookingForQuantity: lf });
+      autoWantCardIds.push(cardId);
+      autoWantQuantityMap.set(cardId, lf);
     }
   }
 
-  // Fetch details for Looking For cards
-  if (cardsToFetch.length > 0) {
-    const cardDetails = await db
+  // Fetch Normal printing details for auto-want entries (D-03 — auto-wants join to Normal printing)
+  let autoWantEntries: Array<{
+    id: number;
+    name: string;
+    subtitle: string | null;
+    type: string;
+    aspects: string[];
+    traits: string[];
+    keywords: string[];
+    arenas: string[];
+    cost: number | null;
+    power: number | null;
+    hp: number | null;
+    rarity: string;
+    setCode: string;
+    collectorNumber: string;
+    frontArtUrl: string | null;
+    variantType: string;
+    lookingForQuantity: number;
+  }> = [];
+
+  if (autoWantCardIds.length > 0) {
+    const autoWantDetails = await db
       .select({
         id: cardDefinitions.id,
         name: cardDefinitions.name,
@@ -160,29 +192,32 @@ export async function getPublicBinderData(userId: number) {
         setCode: cardPrintings.setCode,
         collectorNumber: cardPrintings.collectorNumber,
         frontArtUrl: cardPrintings.frontArtUrl,
+        variantType: cardPrintings.variantType,
       })
       .from(cardDefinitions)
       .innerJoin(cardPrintings, eq(cardPrintings.cardDefinitionId, cardDefinitions.id))
       .where(
         and(
-          inArray(cardDefinitions.id, cardsToFetch),
+          inArray(cardDefinitions.id, autoWantCardIds),
           eq(cardPrintings.variantType, 'Normal')
         )
       );
-    
-    const detailsMap = new Map(cardDetails.map(d => [d.id, d]));
-    
-    return {
-      offerings,
-      lookingFor: lookingForList.map(lf => ({
-        ...detailsMap.get(lf.cardDefinitionId),
-        lookingForQuantity: lf.lookingForQuantity,
-      })).filter(lf => lf.id !== undefined)
-    };
+
+    autoWantEntries = autoWantDetails.map(d => ({
+      ...d,
+      lookingForQuantity: autoWantQuantityMap.get(d.id) ?? 1,
+    }));
   }
+
+  // 4. Combine manual want entries + auto-want entries (D-06)
+  // Every entry has variantType: manual wants use the printing's type; auto-wants use 'Normal'
+  const lookingFor = [
+    ...manualWantRows,
+    ...autoWantEntries,
+  ];
 
   return {
     offerings,
-    lookingFor: []
+    lookingFor,
   };
 }

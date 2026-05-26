@@ -11,16 +11,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { cardDefinitionId, quantity } = body;
+    const { cardPrintingId, quantity } = body;
 
-    if (cardDefinitionId === undefined || quantity === undefined) {
-      return new Response('Missing cardDefinitionId or quantity', { status: 400 });
+    if (cardPrintingId === undefined || quantity === undefined) {
+      return new Response('Missing cardPrintingId or quantity', { status: 400 });
     }
 
     if (quantity <= 0) {
-      await deleteManualWant(Number(session.user.id), cardDefinitionId);
+      await deleteManualWant(Number(session.user.id), cardPrintingId);
     } else {
-      await upsertManualWant(Number(session.user.id), cardDefinitionId, quantity);
+      await upsertManualWant(Number(session.user.id), cardPrintingId, quantity);
     }
 
     return Response.json({ success: true });
@@ -38,13 +38,13 @@ export async function DELETE(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const cardDefinitionId = searchParams.get('cardDefinitionId');
+    const cardPrintingId = searchParams.get('cardPrintingId');
 
-    if (!cardDefinitionId) {
-      return new Response('Missing cardDefinitionId', { status: 400 });
+    if (!cardPrintingId) {
+      return new Response('Missing cardPrintingId', { status: 400 });
     }
 
-    await deleteManualWant(Number(session.user.id), parseInt(cardDefinitionId, 10));
+    await deleteManualWant(Number(session.user.id), parseInt(cardPrintingId, 10));
 
     return Response.json({ success: true });
   } catch (error) {
