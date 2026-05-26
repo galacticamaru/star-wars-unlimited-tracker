@@ -2,7 +2,7 @@
 phase: 23
 plan: "03"
 subsystem: card-detail
-status: checkpoint
+status: complete
 tags:
   - card-detail
   - trade-offer
@@ -39,7 +39,7 @@ decisions:
 metrics:
   duration: "6 minutes"
   completed_at: "2026-05-26"
-  tasks_completed: 3
+  tasks_completed: 4
   tasks_total: 4
   files_created: 1
   files_modified: 2
@@ -51,9 +51,9 @@ metrics:
 
 ---
 
-## Status: CHECKPOINT — Task 4 (human-verify) pending
+## Status: COMPLETE — Task 4 (human-verify) APPROVED
 
-Tasks 1-3 committed. Task 4 requires human visual and functional verification of the rendered UI.
+Tasks 1-4 complete. Human operator confirmed: "Available for Trade" section renders below "Your Collection", +/- controls update optimistically and persist, zero rows stay visible, unauthenticated viewers see no trade UI.
 
 ---
 
@@ -104,14 +104,9 @@ None — plan executed exactly as written.
 
 ---
 
-## Task 4: Pending Human Verification
+## Task 4: Human Verification — APPROVED
 
-**Status:** AWAITING — checkpoint:human-verify not yet executed
-
-The human operator must:
-1. Run the dev server and navigate to a card detail page with multiple printings
-2. Confirm the "AVAILABLE FOR TRADE" section renders below "Your Collection"
-3. Test +/- buttons: optimistic update, persists after refresh
+**Status:** COMPLETE — checkpoint:human-verify passed
 4. Verify zero-quantity rows stay visible
 5. Verify unauthenticated users see no trade section
 6. Optionally cross-check trade data appears in `/binder/manage`
