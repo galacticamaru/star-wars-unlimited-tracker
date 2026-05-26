@@ -1,7 +1,7 @@
 ---
 phase: 23-binder-variant-completeness
 plan: "04"
-status: checkpoint
+status: complete
 subsystem: binder
 tags:
   - manage-binder
@@ -45,7 +45,7 @@ decisions:
   - "D-07/D-08: ManualWantsAddFlow posts { cardPrintingId, quantity: 1 } derived from variant chip selection"
 metrics:
   completed_date: "2026-05-26"
-  tasks_completed: 4
+  tasks_completed: 5
   tasks_total: 5
   files_created: 4
   files_modified: 2
@@ -55,9 +55,9 @@ metrics:
 
 **One-liner:** Collection-driven Manage Binder with owned-card grid (best-variant art), per-printing Sheet trade controls, and variant chip selector for manual wants.
 
-## Status: CHECKPOINT — Awaiting human verification (Task 5)
+## Status: COMPLETE — Human verification APPROVED (Task 5)
 
-Auto tasks 1-4 are complete and committed. Task 5 is a `checkpoint:human-verify` that requires the human operator to run end-to-end verification in the browser.
+All tasks complete. Human operator confirmed all 6 verification steps pass: owned-card grid, Sheet panel, variant chip selector, cross-page sync, and empty states.
 
 ## What Was Built
 
@@ -118,7 +118,7 @@ No new threat surface beyond what the plan's threat model covers:
 | 2 | VariantTradeSheet component | 530107a |
 | 3 | ManualWantsAddFlow component | 671bb0c |
 | 4 | ManageBinderPage + ManageWantsList rewire | 9847b14 |
-| 5 | Human-verify checkpoint | PENDING |
+| 5 | Human-verify checkpoint | APPROVED |
 
 ## Self-Check: PASSED
 
