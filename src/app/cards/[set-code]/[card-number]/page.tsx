@@ -5,6 +5,7 @@ import { ChevronLeft } from 'lucide-react';
 import { getCardByPrinting, getSameSetPrintingsWithCounts } from '@/db/queries/card-detail';
 import { upsertVariantCount } from '@/db/queries/collection';
 import { VariantCollectionSection } from '@/components/catalog/variant-collection-section';
+import { VariantTradeSection } from '@/components/catalog/variant-trade-section';
 import { buttonVariants } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CardImageSection } from '@/components/catalog/card-image-section';
@@ -75,6 +76,10 @@ export default async function CardDetailPage({
 
           {userId && printings.length > 0 && (
             <VariantCollectionSection printings={printings} />
+          )}
+
+          {userId && printings.length > 0 && (
+            <VariantTradeSection printings={printings} />
           )}
         </div>
 
