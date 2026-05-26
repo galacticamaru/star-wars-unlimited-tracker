@@ -2,7 +2,7 @@
 phase: 23-binder-variant-completeness
 plan: "02"
 subsystem: binder-ui
-status: checkpoint
+status: complete
 tags:
   - card-item
   - variant-badge
@@ -29,14 +29,14 @@ decisions:
 metrics:
   duration: "~10 minutes"
   completed: "2026-05-26T02:46:40Z"
-  tasks_completed: 1
-  tasks_pending: 1
+  tasks_completed: 2
+  tasks_pending: 0
   files_modified: 1
 ---
 
 # Phase 23 Plan 02: Extend CardItem Variant Badge to Want Mode — Summary
 
-**Status: CHECKPOINT — awaiting human visual verification (Task 2)**
+**Status: COMPLETE — human visual verification passed**
 
 **One-liner:** Extended `CardItem` variant badge gate from `isBinder` to `(isBinder || isWant)` so public binder Looking For tiles display variant type badges for non-Normal manual wants.
 
@@ -45,12 +45,6 @@ metrics:
 | Task | Name | Commit | Files |
 |------|------|--------|-------|
 | 1 | Extend CardItem variant badge to also render in `want` mode | 956f397 | src/components/catalog/card-item.tsx |
-
-## Tasks Pending
-
-| Task | Name | Status |
-|------|------|--------|
-| 2 | Visual verification on public binder Looking For section | Awaiting human verification |
 
 ## What Was Done
 
@@ -81,18 +75,13 @@ The `isWant` boolean was already present in scope (`const isWant = mode === 'wan
 
 None — plan executed exactly as written. The `isWant` boolean already existed in scope; the task note about adding it conditionally was not needed.
 
-## Checkpoint Pending
+## Checkpoint Result
 
-**Task 2: Visual verification on public binder Looking For section**
+**Task 2: Visual verification — APPROVED**
 
-The human operator needs to:
-1. Ensure dev server is running (`npm run dev`)
-2. Navigate to `/binder/<username>` (public binder URL)
-3. Verify that Looking For tiles for non-Normal manual wants show the variant badge top-left
-4. Verify that Normal manual wants and auto-wants do NOT show a badge
-5. Type "approved" to confirm
-
-See the plan's `<how-to-verify>` section in `23-02-PLAN.md` for full SQL setup steps if test data with non-Normal manual wants is needed.
+Human operator confirmed Looking For tiles render variant badges correctly per UI-SPEC Surface 1:
+- Non-Normal manual want tiles show the variant badge top-left (black/70 bg, white uppercase text)
+- Normal manual wants and auto-wants show no badge
 
 ## Threat Surface Scan
 
