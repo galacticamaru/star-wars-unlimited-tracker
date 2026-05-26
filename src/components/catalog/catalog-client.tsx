@@ -97,6 +97,15 @@ export function CatalogClient({
   }, [autoFilter, isAutoFilterOverridden]);
 
   const [search, setSearch] = useQueryState('q', parseAsString.withDefault('').withOptions({ shallow: true }));
+  const [searchInput, setSearchInput] = useState(search);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      void setSearch(searchInput || null);
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [searchInput, setSearch]);
+
   const [selectedSets, setSelectedSets] = useQueryState('sets', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
   const [selectedTypes, setSelectedTypes] = useQueryState('types', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
   const [selectedAspects, setSelectedAspects] = useQueryState('aspects', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
@@ -150,6 +159,7 @@ export function CatalogClient({
   );
 
   const handleClearAll = () => {
+    setSearchInput('');
     setSearch('');
     setSelectedSets([]);
     setSelectedTypes([]);
@@ -180,7 +190,7 @@ export function CatalogClient({
   };
 
   const sidebarProps = {
-    search, onSearchChange: setSearch,
+    search: searchInput, onSearchChange: setSearchInput,
     sets: filterOptions.sets,
     types: filterOptions.types,
     aspects: aspectOptions,
