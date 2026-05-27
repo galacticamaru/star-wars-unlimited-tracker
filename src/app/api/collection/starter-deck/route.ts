@@ -5,7 +5,7 @@ import { eq, and, inArray } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { starterDecks } from '@/data/starter-decks';
-import { incrementVariantCount, recomputeTotal } from '@/db/queries/collection';
+import { batchIncrementVariantCounts, batchRecomputeTotals } from '@/db/queries/collection';
 
 export async function POST(request: NextRequest) {
   try {
@@ -50,9 +50,10 @@ export async function POST(request: NextRequest) {
     // Build a lookup map: collectorNumber -> printing
     const printingByNumber = new Map(printings.map((p) => [p.collectorNumber, p]));
 
-    // Increment variant counts; collect distinct cardDefinitionIds for recomputeTotal
+    // Build batch items; collect distinct cardDefinitionIds for batchRecomputeTotals
     const affectedDefinitionIds = new Set<number>();
     let cardsAdded = 0;
+    const batchItems: Array<{ cardPrintingId: number; qtyToAdd: number }> = [];
 
     for (const card of deck.cards) {
       const printing = printingByNumber.get(card.collectorNumber);
@@ -60,15 +61,14 @@ export async function POST(request: NextRequest) {
         // Card not found in DB — skip silently (could be a data gap)
         continue;
       }
-      await incrementVariantCount(printing.id, card.qty, userId);
+      batchItems.push({ cardPrintingId: printing.id, qtyToAdd: card.qty });
       affectedDefinitionIds.add(printing.cardDefinitionId);
       cardsAdded += card.qty;
     }
 
-    // Recompute totals for all affected card definitions
-    for (const cardDefinitionId of affectedDefinitionIds) {
-      await recomputeTotal(userId, cardDefinitionId);
-    }
+    // Single batch upsert for all variant counts, then one batch recompute for totals
+    await batchIncrementVariantCounts(batchItems, userId);
+    await batchRecomputeTotals([...affectedDefinitionIds], userId);
 
     return Response.json({ cardsAdded });
   } catch (error) {
