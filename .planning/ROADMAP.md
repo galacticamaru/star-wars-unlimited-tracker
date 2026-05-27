@@ -6,7 +6,7 @@
 - ✅ **v2 Multi-User, Market, Decks & Trading** — Phases 6–10.1 (shipped 2026-05-12) · [Archive](milestones/v2-ROADMAP.md)
 - ✅ **v3 Catalog, Home & Binder Polish** — Phases 11–14 (shipped 2026-05-13) · [Archive](milestones/v3-ROADMAP.md)
 - ✅ **v4 Deck Builder & Collection Depth** — Phases 15–22 (shipped 2026-05-23) · [Archive](milestones/v4-ROADMAP.md)
-- 🚧 **v5 Trade Binder & Performance** — Phases 23–25 (in progress) · [Archive](milestones/v5-ROADMAP.md)
+- ✅ **v5 Trade Binder & Performance** — Phases 23–25.1 (shipped 2026-05-27) · [Archive](milestones/v5-ROADMAP.md)
 
 ## Phases
 
@@ -56,12 +56,12 @@ See [milestones/v4-ROADMAP.md](milestones/v4-ROADMAP.md) for full details.
 </details>
 
 <details open>
-<summary>🚧 v5 Trade Binder & Performance (Phases 23–25) — In Progress</summary>
+<summary>✅ v5 Trade Binder & Performance (Phases 23–25.1) — SHIPPED 2026-05-27</summary>
 
 - [x] **Phase 23: Binder Variant Completeness** — Looking For variant badges, Card Detail trade offer management, and collection-driven Manage Binder discovery (completed 2026-05-26)
 - [x] **Phase 24: Catalog & Page Load Performance** — Filter response ≤200ms, reduced LCP, and layout-shift-free image loading (completed 2026-05-26)
 - [x] **Phase 25: Operation Performance** — Progress feedback for Quick Add/CSV Import, timeout-proof bulk ops, and deck creation ≤500ms (completed 2026-05-27)
-- [ ] **Phase 25.1: Speed Insights Integration**
+- [x] **Phase 25.1: Speed Insights Integration** (completed 2026-05-27)
 
 See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
@@ -165,7 +165,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 **Plans:** 1 plan
 Plans:
 
-- [ ] 25.1-01-PLAN.md — Install @vercel/speed-insights and wire <SpeedInsights debug={...} /> into root layout (PERF-06)
+- [x] 25.1-01-PLAN.md — Install @vercel/speed-insights and wire <SpeedInsights debug={...} /> into root layout (PERF-06)
 
 ## Progress
 
@@ -191,4 +191,4 @@ Plans:
 | 23 | v5 | 4/4 | Complete    | 2026-05-26 |
 | 24 | v5 | 6/6 | Complete   | 2026-05-27 |
 | 25 | v5 | 3/3 | Complete    | 2026-05-27 |
-| 25.1 | v5 | 0/1 | Pending | — |
+| 25.1 | v5 | 1/1 | Complete | 2026-05-27 |
