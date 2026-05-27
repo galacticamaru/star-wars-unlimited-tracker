@@ -259,12 +259,9 @@ describe('CardGrid', () => {
     const options = vi.mocked(useVirtualizer).mock.calls[0][0];
     expect(typeof options.estimateSize).toBe('function');
 
-    // The column-aware estimateSize must NOT return the old fixed value of 160.
-    // In jsdom, fakeRef.current.clientWidth is 0 (DOM elements have no layout),
-    // so the defensive Math.max(100, ...) clamp returns exactly 100.
-    // This still proves the function is dynamic (not returning the old literal 160).
+    // In jsdom, fakeRef.current.clientWidth is 0, so || 1280 fallback fires.
+    // At 3 columns (jsdom default — matchMedia always returns false): Math.round(((1280 - 32) / 3) * 1.5) = 624
     const estimatedHeight = options.estimateSize(0);
-    expect(estimatedHeight).toBeGreaterThanOrEqual(100);
-    expect(estimatedHeight).not.toBe(160);
+    expect(estimatedHeight).toBe(624);
   });
 });

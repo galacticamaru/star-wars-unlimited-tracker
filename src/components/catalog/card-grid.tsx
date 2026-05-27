@@ -75,8 +75,9 @@ export function CardGrid({
     count: rowCount,
     getScrollElement: () => scrollContainerRef.current,
     estimateSize: () => {
-      const containerWidth = scrollContainerRef.current?.clientWidth ?? 1280;
-      return Math.max(100, Math.round(((containerWidth - 32) / columns) * 1.5));
+      const containerWidth = scrollContainerRef.current?.clientWidth || 1280;
+      const safeColumns = columns > 0 ? columns : 3;
+      return Math.max(100, Math.round(((containerWidth - 32) / safeColumns) * 1.5));
     },
     overscan: 3,
   });
