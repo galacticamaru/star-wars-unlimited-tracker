@@ -105,7 +105,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
   3. Card images below the fold load lazily and never cause layout shift — containers have fixed dimensions before images resolve
   4. The first visible row of card images loads with priority (no waiting behind below-fold images) and displays a blur placeholder or skeleton while the image fetches
 
-**Plans:** 5/5 plans complete
+**Plans:** 6/6 plans complete
 
 **Wave 0** *(test infrastructure — must complete before Wave 1)*
 
@@ -160,5 +160,5 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 21 | v4 | 4/4 | ✅ Complete | 2026-05-23 |
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
 | 23 | v5 | 4/4 | Complete    | 2026-05-26 |
-| 24 | v5 | 5/5 | Complete   | 2026-05-26 |
+| 24 | v5 | 6/6 | Complete   | 2026-05-27 |
 | 25 | v5 | 0/TBD | Not started | - |
