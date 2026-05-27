@@ -60,7 +60,7 @@ See [milestones/v4-ROADMAP.md](milestones/v4-ROADMAP.md) for full details.
 
 - [x] **Phase 23: Binder Variant Completeness** — Looking For variant badges, Card Detail trade offer management, and collection-driven Manage Binder discovery (completed 2026-05-26)
 - [x] **Phase 24: Catalog & Page Load Performance** — Filter response ≤200ms, reduced LCP, and layout-shift-free image loading (completed 2026-05-26)
-- [ ] **Phase 25: Operation Performance** — Progress feedback for Quick Add/CSV Import, timeout-proof bulk ops, and deck creation ≤500ms
+- [x] **Phase 25: Operation Performance** — Progress feedback for Quick Add/CSV Import, timeout-proof bulk ops, and deck creation ≤500ms (completed 2026-05-27)
 
 See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
@@ -136,7 +136,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
   2. Quick Add and CSV Import complete successfully for collections up to 1,000 cards without a timeout error, even on a slow connection
   3. After clicking "New Deck", the empty Deck Builder skeleton (with guided onboarding visible) appears within ≤500ms — no perceptible blank or loading state before onboarding renders
 
-**Plans:** 1/3 plans executed
+**Plans:** 3/3 plans complete
 
 **Wave 0** *(test infrastructure — must complete before Wave 1)*
 
@@ -144,8 +144,8 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 **Wave 1** *(parallel — no file overlap)*
 
-- [ ] 25-02-PLAN.md — Batch helpers in collection.ts + refactor starter-deck and CSV import routes to single-round-trip batch upserts (PERF-04 backend)
-- [ ] 25-03-PLAN.md — Collection page card-count progress text + decks/[id]/loading.tsx animate-pulse skeleton (PERF-04 UI + PERF-05)
+- [x] 25-02-PLAN.md — Batch helpers in collection.ts + refactor starter-deck and CSV import routes to single-round-trip batch upserts (PERF-04 backend)
+- [x] 25-03-PLAN.md — Collection page card-count progress text + decks/[id]/loading.tsx animate-pulse skeleton (PERF-04 UI + PERF-05)
 
 **UI hint**: yes
 
@@ -172,4 +172,4 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
 | 23 | v5 | 4/4 | Complete    | 2026-05-26 |
 | 24 | v5 | 6/6 | Complete   | 2026-05-27 |
-| 25 | v5 | 1/3 | In Progress|  |
+| 25 | v5 | 3/3 | Complete   | 2026-05-27 |
