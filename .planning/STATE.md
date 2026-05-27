@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v5
 milestone_name: Trade Binder & Performance
-status: complete
-last_updated: "2026-05-27T10:43:11.998Z"
-last_activity: 2026-05-27 -- Phase 25.1 plan 01 complete (v5 milestone done)
+status: "v5 milestone shipped — PR #18"
+last_updated: "2026-05-27T21:30:59.141Z"
+last_activity: "2026-05-28 -- v5 milestone shipped, PR #18"
 progress:
   total_phases: 5
   completed_phases: 5
@@ -26,8 +26,8 @@ See: .planning/PROJECT.md (updated 2026-05-23)
 
 Phase: 25.1
 Plan: 01 — Complete
-Status: v5 milestone complete
-Last activity: 2026-05-27 -- Phase 25.1 plan 01 complete (v5 milestone done)
+Status: v5 milestone shipped — PR #18
+Last activity: 2026-05-28 -- v5 milestone shipped, PR #18
 
 ## Performance Metrics
 
