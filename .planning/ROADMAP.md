@@ -136,7 +136,18 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
   2. Quick Add and CSV Import complete successfully for collections up to 1,000 cards without a timeout error, even on a slow connection
   3. After clicking "New Deck", the empty Deck Builder skeleton (with guided onboarding visible) appears within ≤500ms — no perceptible blank or loading state before onboarding renders
 
-**Plans:** TBD
+**Plans:** 3 plans
+
+**Wave 0** *(test infrastructure — must complete before Wave 1)*
+
+- [ ] 25-01-PLAN.md — Wave 0 RED test stubs for batch helpers, progress text, and loading skeleton (PERF-04 + PERF-05)
+
+**Wave 1** *(parallel — no file overlap)*
+
+- [ ] 25-02-PLAN.md — Batch helpers in collection.ts + refactor starter-deck and CSV import routes to single-round-trip batch upserts (PERF-04 backend)
+- [ ] 25-03-PLAN.md — Collection page card-count progress text + decks/[id]/loading.tsx animate-pulse skeleton (PERF-04 UI + PERF-05)
+
+**UI hint**: yes
 
 ## Progress
 
@@ -161,4 +172,4 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
 | 23 | v5 | 4/4 | Complete    | 2026-05-26 |
 | 24 | v5 | 6/6 | Complete   | 2026-05-27 |
-| 25 | v5 | 0/TBD | Not started | - |
+| 25 | v5 | 0/3 | Planned | - |
