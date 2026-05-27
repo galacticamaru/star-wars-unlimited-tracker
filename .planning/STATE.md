@@ -2,16 +2,15 @@
 gsd_state_version: 1.0
 milestone: v5
 milestone_name: Trade Binder & Performance
-status: milestone_complete
-last_updated: 2026-05-27T09:26:13.098Z
-last_activity: 2026-05-27 -- Phase 25 execution started
+status: executing
+last_updated: "2026-05-27T09:57:32.285Z"
+last_activity: 2026-05-27 -- Phase 25.1 planning complete
 progress:
-  total_phases: 3
-  completed_phases: 2
-  total_plans: 13
+  total_phases: 4
+  completed_phases: 3
+  total_plans: 14
   completed_plans: 13
-  percent: 67
-stopped_at: Milestone complete (Phase 25 was final phase)
+  percent: 75
 ---
 
 # Project State
@@ -27,8 +26,8 @@ See: .planning/PROJECT.md (updated 2026-05-23)
 
 Phase: 25
 Plan: Not started
-Status: Milestone complete
-Last activity: 2026-05-27
+Status: Ready to execute
+Last activity: 2026-05-27 -- Phase 25.1 planning complete
 
 ## Performance Metrics
 
@@ -54,3 +53,9 @@ Last activity: 2026-05-27
 | Tech Debt | Prestige Foil in VARIANT_OPTIONS + Serialized in VARIANT_PRECEDENCE | v5+ | v4 close |
 | Tech Debt | Catalog state not invalidated after card detail mutation | v5+ | v4 close |
 | Tech Debt | LAW spotlight deck 9 unknown cards (commented TODOs in starter-decks.ts) | v5+ | v4 close |
+
+## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 25.1 inserted after Phase 25: Speed Insights Integration (URGENT)

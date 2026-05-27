@@ -61,6 +61,7 @@ See [milestones/v4-ROADMAP.md](milestones/v4-ROADMAP.md) for full details.
 - [x] **Phase 23: Binder Variant Completeness** — Looking For variant badges, Card Detail trade offer management, and collection-driven Manage Binder discovery (completed 2026-05-26)
 - [x] **Phase 24: Catalog & Page Load Performance** — Filter response ≤200ms, reduced LCP, and layout-shift-free image loading (completed 2026-05-26)
 - [x] **Phase 25: Operation Performance** — Progress feedback for Quick Add/CSV Import, timeout-proof bulk ops, and deck creation ≤500ms (completed 2026-05-27)
+- [ ] **Phase 25.1: Speed Insights Integration**
 
 See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
@@ -123,6 +124,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 **Wave 3** *(final verification)*
 
 - [x] 24-05-PLAN.md - npm run build + full test suite + route handler cacheComponents compat
+
 **UI hint**: yes
 
 ### Phase 25: Operation Performance
@@ -149,6 +151,22 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 **UI hint**: yes
 
+### Phase 25.1: Speed Insights Integration (INSERTED)
+
+**Goal:** Install and configure @vercel/speed-insights to capture real-user performance metrics in production
+**Depends on:** Phase 25
+**Requirements:** PERF-06
+**Success Criteria** (what must be TRUE):
+
+  1. `@vercel/speed-insights` is listed in package.json dependencies and installed
+  2. The `<SpeedInsights />` component is rendered in the root layout (`app/layout.tsx`) so every page is instrumented
+  3. The app builds without errors and no TypeScript type errors are introduced
+
+**Plans:** 1 plan
+Plans:
+
+- [ ] 25.1-01-PLAN.md — Install @vercel/speed-insights and wire <SpeedInsights debug={...} /> into root layout (PERF-06)
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -173,3 +191,4 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 23 | v5 | 4/4 | Complete    | 2026-05-26 |
 | 24 | v5 | 6/6 | Complete   | 2026-05-27 |
 | 25 | v5 | 3/3 | Complete    | 2026-05-27 |
+| 25.1 | v5 | 0/1 | Pending | — |
