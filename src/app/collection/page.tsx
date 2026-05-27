@@ -22,6 +22,10 @@ export default function CollectionPage() {
   const [deckStatus, setDeckStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [deckResult, setDeckResult] = useState<{ cardsAdded: number; deckName: string } | null>(null);
 
+  // Card count state for progress feedback (PERF-04 D-05/D-06)
+  const [importCardCount, setImportCardCount] = useState<number>(0);
+  const [deckCardCount, setDeckCardCount] = useState<number>(0);
+
   useEffect(() => {
     // Fetch available sets to populate the selection dropdown
     fetch('/api/collection/sets')
@@ -51,7 +55,7 @@ export default function CollectionPage() {
       },
       complete: async (results) => {
         const normalized = normalizeRedditCsv(results.data, selectedSet);
-        
+        setImportCardCount(normalized.length);
         setStatus('uploading');
         try {
           const res = await fetch('/api/collection/import', {
@@ -81,6 +85,8 @@ export default function CollectionPage() {
     const deck = starterDecks.find((d) => d.id === selectedDeckId);
     if (!deck) return;
 
+    const totalQty = deck.cards.reduce((sum, c) => sum + c.qty, 0);
+    setDeckCardCount(totalQty);
     setDeckStatus('loading');
     setDeckResult(null);
     try {
@@ -101,6 +107,8 @@ export default function CollectionPage() {
       setDeckStatus('error');
     }
   };
+
+  const currentDeck = starterDecks.find((d) => d.id === selectedDeckId);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -161,12 +169,12 @@ export default function CollectionPage() {
         </div>
 
         {status === 'parsing' && <p className="text-sm font-medium animate-pulse">Parsing CSV...</p>}
-        {status === 'uploading' && <p className="text-sm font-medium animate-pulse">Syncing with database...</p>}
+        {status === 'uploading' && <p className="text-sm font-medium animate-pulse">Importing {importCardCount} cards...</p>}
         
         {status === 'success' && (
           <div className="flex items-center gap-2 text-green-600 font-semibold bg-green-50 px-4 py-2 rounded-lg">
             <CheckCircle2 className="size-5" />
-            Successfully imported {result?.count} cards for {selectedSet}!
+            Done! {result?.count} cards imported.
           </div>
         )}
 
@@ -210,7 +218,7 @@ export default function CollectionPage() {
             onClick={handleQuickAdd}
             disabled={deckStatus === 'loading' || !selectedDeckId}
           >
-            {deckStatus === 'loading' ? 'Adding...' : 'Add to Collection'}
+            {deckStatus === 'loading' ? `Adding ${deckCardCount} cards from ${currentDeck?.name ?? ''}...` : 'Add to Collection'}
           </Button>
         </div>
 
