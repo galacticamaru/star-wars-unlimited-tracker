@@ -104,6 +104,7 @@ describe('CardGrid', () => {
         { index: 0, key: 0, start: 0, size: 160 },
         { index: 1, key: 1, start: 160, size: 160 },
       ],
+      measureElement: vi.fn(),
     });
 
     const { container } = render(
@@ -131,6 +132,7 @@ describe('CardGrid', () => {
         { index: 1, key: 1, start: 160, size: 160 },
         { index: 2, key: 2, start: 320, size: 160 },
       ],
+      measureElement: vi.fn(),
     });
 
     const { container } = render(
@@ -158,6 +160,7 @@ describe('CardGrid', () => {
         { index: 1, key: 1, start: 160, size: 160 },
         { index: 2, key: 2, start: 320, size: 160 },
       ],
+      measureElement: vi.fn(),
     });
 
     const { container } = render(
@@ -184,6 +187,7 @@ describe('CardGrid', () => {
       getVirtualItems: () => [
         { index: 0, key: 0, start: 0, size: 160 },
       ],
+      measureElement: vi.fn(),
     });
 
     const { container } = render(
@@ -209,6 +213,7 @@ describe('CardGrid', () => {
       getVirtualItems: () => [
         { index: 0, key: 0, start: 0, size: 160 },
       ],
+      measureElement: vi.fn(),
     });
 
     const { container } = render(
@@ -224,5 +229,42 @@ describe('CardGrid', () => {
     // Outer wrapper must NOT be a CSS grid (Pitfall 5)
     expect(outerDiv.style.display).not.toBe('grid');
     expect(outerDiv.className).not.toMatch(/\bgrid\b/);
+  });
+
+  test('each rendered row has data-index attribute matching its virtualRow.index, and useVirtualizer is called with a column-aware estimateSize (not fixed 160)', () => {
+    (useVirtualizer as ReturnType<typeof vi.fn>).mockReturnValue({
+      getTotalSize: () => 600,
+      getVirtualItems: () => [
+        { index: 0, key: 0, start: 0, size: 200, end: 200, lane: 0 },
+        { index: 1, key: 1, start: 200, size: 200, end: 400, lane: 0 },
+        { index: 2, key: 2, start: 400, size: 200, end: 600, lane: 0 },
+      ],
+      measureElement: vi.fn(),
+    });
+
+    const { container } = render(
+      <CardGrid cards={makeCards(15)} collection={{}} scrollContainerRef={fakeRef} />
+    );
+
+    // Each rendered row must carry the data-index attribute
+    const rowsWithDataIndex = container.querySelectorAll('[data-index]');
+    expect(rowsWithDataIndex.length).toBe(3);
+
+    // data-index values must match the virtual row index values
+    expect(rowsWithDataIndex[0].getAttribute('data-index')).toBe('0');
+    expect(rowsWithDataIndex[1].getAttribute('data-index')).toBe('1');
+    expect(rowsWithDataIndex[2].getAttribute('data-index')).toBe('2');
+
+    // estimateSize must be a function (not a fixed literal)
+    const options = vi.mocked(useVirtualizer).mock.calls[0][0];
+    expect(typeof options.estimateSize).toBe('function');
+
+    // The column-aware estimateSize must NOT return the old fixed value of 160.
+    // In jsdom, fakeRef.current.clientWidth is 0 (DOM elements have no layout),
+    // so the defensive Math.max(100, ...) clamp returns exactly 100.
+    // This still proves the function is dynamic (not returning the old literal 160).
+    const estimatedHeight = options.estimateSize(0);
+    expect(estimatedHeight).toBeGreaterThanOrEqual(100);
+    expect(estimatedHeight).not.toBe(160);
   });
 });

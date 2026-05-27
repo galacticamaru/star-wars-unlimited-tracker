@@ -74,7 +74,10 @@ export function CardGrid({
   const rowVirtualizer = useVirtualizer({
     count: rowCount,
     getScrollElement: () => scrollContainerRef.current,
-    estimateSize: () => 160,
+    estimateSize: () => {
+      const containerWidth = scrollContainerRef.current?.clientWidth ?? 1280;
+      return Math.max(100, Math.round(((containerWidth - 32) / columns) * 1.5));
+    },
     overscan: 3,
   });
 
@@ -90,6 +93,8 @@ export function CardGrid({
         return (
           <div
             key={virtualRow.key}
+            data-index={virtualRow.index}
+            ref={rowVirtualizer.measureElement}
             style={{
               position: 'absolute',
               top: 0,
