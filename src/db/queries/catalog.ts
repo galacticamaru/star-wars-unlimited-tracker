@@ -1,9 +1,13 @@
 import { db } from '@/db';
-import { cardDefinitions, cardPrintings, userCollections } from '@/db/schema';
-import { eq, and, notIlike, asc, sql, desc, isNotNull, inArray } from 'drizzle-orm';
+import { cardDefinitions, cardPrintings } from '@/db/schema';
+import { eq, and, notIlike, asc, desc, isNotNull, inArray } from 'drizzle-orm';
 import type { PrintingArtMap } from '@/lib/catalog/select-best-variant';
+import { cacheTag, cacheLife } from 'next/cache';
 
-export async function getAllCards(userId?: number) {
+export async function getAllCards() {
+  'use cache'
+  cacheTag('cards');
+  cacheLife('days');
   return db
     .select({
       id: cardDefinitions.id,
@@ -24,7 +28,7 @@ export async function getAllCards(userId?: number) {
       backArtUrl: cardPrintings.backArtUrl,
       rarity: cardPrintings.rarity,
       variantType: cardPrintings.variantType,
-      printingId: cardPrintings.id,  // D-07
+      printingId: cardPrintings.id,
       frontText: cardDefinitions.frontText,
       backText: cardDefinitions.backText,
       epicAction: cardDefinitions.epicAction,
@@ -32,19 +36,11 @@ export async function getAllCards(userId?: number) {
       unique: cardDefinitions.unique,
       priceEur: cardDefinitions.priceEur,
       priceUsd: cardDefinitions.priceUsd,
-      collectionCount: sql<number>`COALESCE(${userCollections.count}, 0)`,
     })
     .from(cardDefinitions)
     .innerJoin(
       cardPrintings,
       eq(cardDefinitions.id, cardPrintings.cardDefinitionId)
-    )
-    .leftJoin(
-      userCollections,
-      and(
-        eq(cardDefinitions.id, userCollections.cardDefinitionId),
-        userId ? eq(userCollections.userId, userId) : sql`FALSE`
-      )
     )
     .where(
       and(
@@ -55,6 +51,9 @@ export async function getAllCards(userId?: number) {
 }
 
 export async function getFilterOptions() {
+  'use cache'
+  cacheTag('cards');
+  cacheLife('days');
   const sets = await db
     .selectDistinct({ setCode: cardPrintings.setCode })
     .from(cardPrintings)
@@ -88,6 +87,9 @@ export async function getFilterOptions() {
  * This is public catalog data — no user filter needed.
  */
 export async function getPrintingArtMap(): Promise<PrintingArtMap> {
+  'use cache'
+  cacheTag('cards');
+  cacheLife('days');
   const rows = await db
     .select({
       id: cardPrintings.id,

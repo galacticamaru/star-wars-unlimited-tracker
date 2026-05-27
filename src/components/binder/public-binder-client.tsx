@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { useQueryState, parseAsString, parseAsArrayOf } from 'nuqs';
 import { filterCards, type CardForFilter } from '@/lib/filter-cards';
 import { TopBar } from '@/components/catalog/top-bar';
@@ -117,6 +117,8 @@ export function PublicBinderClient({
     selectedVariants, onVariantsChange: setSelectedVariants,
   };
 
+  const scrollContainerRef = useRef<HTMLElement>(null);
+
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       <div className="px-4 lg:px-8 py-4 bg-muted/30 border-b border-border shrink-0">
@@ -127,8 +129,8 @@ export function PublicBinderClient({
         <div className="hidden md:block shrink-0">
           <SidebarFilters {...sidebarProps} />
         </div>
-        
-        <main className="flex-1 flex flex-col min-w-0 overflow-y-auto relative">
+
+        <main ref={scrollContainerRef} className="flex-1 flex flex-col min-w-0 overflow-y-auto relative">
           <div className="sticky top-0 z-40 bg-background md:hidden px-4 py-2 border-b border-border flex items-center justify-between">
             <MobileFilterSheet {...sidebarProps} />
           </div>
@@ -147,10 +149,11 @@ export function PublicBinderClient({
                       <span className="text-xs font-normal">{filteredOfferings.length} cards</span>
                     </h2>
                   </div>
-                  <CardGrid 
-                    cards={filteredOfferings} 
+                  <CardGrid
+                    cards={filteredOfferings}
                     collection={{}}
                     mode="binder"
+                    scrollContainerRef={scrollContainerRef}
                   />
                 </section>
               )}
@@ -163,10 +166,11 @@ export function PublicBinderClient({
                       <span className="text-xs font-normal">{filteredLookingFor.length} cards</span>
                     </h2>
                   </div>
-                  <CardGrid 
-                    cards={filteredLookingFor} 
+                  <CardGrid
+                    cards={filteredLookingFor}
                     collection={{}}
                     mode="want"
+                    scrollContainerRef={scrollContainerRef}
                   />
                 </section>
               )}

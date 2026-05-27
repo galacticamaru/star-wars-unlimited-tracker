@@ -26,6 +26,7 @@ interface CardItemProps {
   tradeQuantity?: number;  // used when mode='binder'
   variantType?: string;    // used when mode='binder' — shows badge for non-Normal variants
   lookingForQuantity?: number; // used when mode='want'
+  priority?: boolean;
 }
 
 export function CardItem({
@@ -46,7 +47,8 @@ export function CardItem({
   onDeckUpdate,
   tradeQuantity = 0,
   variantType,
-  lookingForQuantity = 0
+  lookingForQuantity = 0,
+  priority = false,
 }: CardItemProps) {
   const [loaded, setLoaded] = useState(false);
   // Use indexOf for robustness over edge-case multi-hyphen collector numbers
@@ -98,6 +100,7 @@ export function CardItem({
               alt={name}
               fill
               sizes="(max-width: 640px) 33vw, (max-width: 1024px) 20vw, (max-width: 1280px) 15vw, (max-width: 1536px) 12vw, 10vw"
+              priority={priority}
               className={cn(
                 'object-cover transition-opacity duration-300',
                 !loaded && 'opacity-0',

@@ -6,7 +6,7 @@
 - ✅ **v2 Multi-User, Market, Decks & Trading** — Phases 6–10.1 (shipped 2026-05-12) · [Archive](milestones/v2-ROADMAP.md)
 - ✅ **v3 Catalog, Home & Binder Polish** — Phases 11–14 (shipped 2026-05-13) · [Archive](milestones/v3-ROADMAP.md)
 - ✅ **v4 Deck Builder & Collection Depth** — Phases 15–22 (shipped 2026-05-23) · [Archive](milestones/v4-ROADMAP.md)
-- 🚧 **v5 Trade Binder & Performance** — Phases 23–25 (in progress) · [Archive](milestones/v5-ROADMAP.md)
+- ✅ **v5 Trade Binder & Performance** — Phases 23–25.1 (shipped 2026-05-27) · [Archive](milestones/v5-ROADMAP.md)
 
 ## Phases
 
@@ -56,11 +56,12 @@ See [milestones/v4-ROADMAP.md](milestones/v4-ROADMAP.md) for full details.
 </details>
 
 <details open>
-<summary>🚧 v5 Trade Binder & Performance (Phases 23–25) — In Progress</summary>
+<summary>✅ v5 Trade Binder & Performance (Phases 23–25.1) — SHIPPED 2026-05-27</summary>
 
 - [x] **Phase 23: Binder Variant Completeness** — Looking For variant badges, Card Detail trade offer management, and collection-driven Manage Binder discovery (completed 2026-05-26)
-- [ ] **Phase 24: Catalog & Page Load Performance** — Filter response ≤200ms, reduced LCP, and layout-shift-free image loading
-- [ ] **Phase 25: Operation Performance** — Progress feedback for Quick Add/CSV Import, timeout-proof bulk ops, and deck creation ≤500ms
+- [x] **Phase 24: Catalog & Page Load Performance** — Filter response ≤200ms, reduced LCP, and layout-shift-free image loading (completed 2026-05-26)
+- [x] **Phase 25: Operation Performance** — Progress feedback for Quick Add/CSV Import, timeout-proof bulk ops, and deck creation ≤500ms (completed 2026-05-27)
+- [x] **Phase 25.1: Speed Insights Integration** (completed 2026-05-27)
 
 See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
@@ -105,24 +106,25 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
   3. Card images below the fold load lazily and never cause layout shift — containers have fixed dimensions before images resolve
   4. The first visible row of card images loads with priority (no waiting behind below-fold images) and displays a blur placeholder or skeleton while the image fetches
 
-**Plans:** 5 plans
+**Plans:** 6/6 plans complete
 
 **Wave 0** *(test infrastructure — must complete before Wave 1)*
 
-- [ ] 24-01-PLAN.md - Wave 0 test stubs for CardGrid virtualization + getAllCards signature change
+- [x] 24-01-PLAN.md - Wave 0 test stubs for CardGrid virtualization + getAllCards signature change
 
 **Wave 1** *(parallel — independent file ownership)*
 
-- [ ] 24-02-PLAN.md - Search input 150ms debounce in CatalogClient (PERF-01)
-- [ ] 24-04-PLAN.md - RSC caching: use-cache directive + cacheTag, remove force-dynamic, drop userId from getAllCards (PERF-02)
+- [x] 24-02-PLAN.md - Search input 150ms debounce in CatalogClient (PERF-01)
+- [x] 24-04-PLAN.md - RSC caching: use-cache directive + cacheTag, remove force-dynamic, drop userId from getAllCards (PERF-02)
 
 **Wave 2** *(blocked on Wave 1 catalog-client.tsx ownership)*
 
-- [ ] 24-03-PLAN.md - CardGrid virtualization with @tanstack/react-virtual + image priority threshold (PERF-01 + PERF-03)
+- [x] 24-03-PLAN.md - CardGrid virtualization with @tanstack/react-virtual + image priority threshold (PERF-01 + PERF-03)
 
 **Wave 3** *(final verification)*
 
-- [ ] 24-05-PLAN.md - npm run build + full test suite + route handler cacheComponents compat
+- [x] 24-05-PLAN.md - npm run build + full test suite + route handler cacheComponents compat
+
 **UI hint**: yes
 
 ### Phase 25: Operation Performance
@@ -136,7 +138,34 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
   2. Quick Add and CSV Import complete successfully for collections up to 1,000 cards without a timeout error, even on a slow connection
   3. After clicking "New Deck", the empty Deck Builder skeleton (with guided onboarding visible) appears within ≤500ms — no perceptible blank or loading state before onboarding renders
 
-**Plans:** TBD
+**Plans:** 3/3 plans complete
+
+**Wave 0** *(test infrastructure — must complete before Wave 1)*
+
+- [x] 25-01-PLAN.md — Wave 0 RED test stubs for batch helpers, progress text, and loading skeleton (PERF-04 + PERF-05)
+
+**Wave 1** *(parallel — no file overlap)*
+
+- [x] 25-02-PLAN.md — Batch helpers in collection.ts + refactor starter-deck and CSV import routes to single-round-trip batch upserts (PERF-04 backend)
+- [x] 25-03-PLAN.md — Collection page card-count progress text + decks/[id]/loading.tsx animate-pulse skeleton (PERF-04 UI + PERF-05)
+
+**UI hint**: yes
+
+### Phase 25.1: Speed Insights Integration (INSERTED)
+
+**Goal:** Install and configure @vercel/speed-insights to capture real-user performance metrics in production
+**Depends on:** Phase 25
+**Requirements:** PERF-06
+**Success Criteria** (what must be TRUE):
+
+  1. `@vercel/speed-insights` is listed in package.json dependencies and installed
+  2. The `<SpeedInsights />` component is rendered in the root layout (`app/layout.tsx`) so every page is instrumented
+  3. The app builds without errors and no TypeScript type errors are introduced
+
+**Plans:** 1 plan
+Plans:
+
+- [x] 25.1-01-PLAN.md — Install @vercel/speed-insights and wire <SpeedInsights debug={...} /> into root layout (PERF-06)
 
 ## Progress
 
@@ -160,5 +189,6 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 21 | v4 | 4/4 | ✅ Complete | 2026-05-23 |
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
 | 23 | v5 | 4/4 | Complete    | 2026-05-26 |
-| 24 | v5 | 0/TBD | Not started | - |
-| 25 | v5 | 0/TBD | Not started | - |
+| 24 | v5 | 6/6 | Complete   | 2026-05-27 |
+| 25 | v5 | 3/3 | Complete    | 2026-05-27 |
+| 25.1 | v5 | 1/1 | Complete | 2026-05-27 |

@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { NavBar } from '@/components/nav-bar';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { CurrencyProvider } from '@/components/currency-context';
+import { Suspense } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const oxaniumHeading = Oxanium({subsets:['latin'],variable:'--font-heading'});
 
@@ -37,12 +39,17 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <NavBar />
+        <Suspense>
+          <NavBar />
+        </Suspense>
         <NuqsAdapter>
-          <CurrencyProvider>
-            {children}
-          </CurrencyProvider>
+          <Suspense>
+            <CurrencyProvider>
+              {children}
+            </CurrencyProvider>
+          </Suspense>
         </NuqsAdapter>
+        <SpeedInsights debug={process.env.NODE_ENV === 'development'} />
       </body>
     </html>
   );

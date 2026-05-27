@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v5
 milestone_name: Trade Binder & Performance
-status: "Phase 23 shipped — PR #17"
-last_updated: "2026-05-26T07:45:59.298Z"
-last_activity: 2026-05-26
+status: "v5 milestone shipped — PR #18"
+last_updated: "2026-05-27T21:30:59.141Z"
+last_activity: "2026-05-28 -- v5 milestone shipped, PR #18"
 progress:
-  total_phases: 2
-  completed_phases: 1
-  total_plans: 9
-  completed_plans: 4
-  percent: 44
+  total_phases: 5
+  completed_phases: 5
+  total_plans: 15
+  completed_plans: 15
+  percent: 100
 ---
 
 # Project State
@@ -24,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-05-23)
 
 ## Current Position
 
-Phase: 24
-Plan: Not started
-Status: Phase 23 shipped — PR #17
-Last activity: 2026-05-26
+Phase: 25.1
+Plan: 01 — Complete
+Status: v5 milestone shipped — PR #18
+Last activity: 2026-05-28 -- v5 milestone shipped, PR #18
 
 ## Performance Metrics
 
@@ -53,3 +53,10 @@ Last activity: 2026-05-26
 | Tech Debt | Prestige Foil in VARIANT_OPTIONS + Serialized in VARIANT_PRECEDENCE | v5+ | v4 close |
 | Tech Debt | Catalog state not invalidated after card detail mutation | v5+ | v4 close |
 | Tech Debt | LAW spotlight deck 9 unknown cards (commented TODOs in starter-decks.ts) | v5+ | v4 close |
+
+## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 25.1 inserted after Phase 25: Speed Insights Integration (URGENT)
+- Phase 25.1 complete: @vercel/speed-insights@2.0.0 wired in root layout; user must enable Speed Insights in Vercel dashboard post-deploy for PERF-06 to fully close

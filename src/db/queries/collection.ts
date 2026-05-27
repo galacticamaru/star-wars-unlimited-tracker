@@ -280,3 +280,115 @@ export async function recomputeTotal(userId: number, cardDefinitionId: number) {
       set: { count: Number(total), updatedAt: new Date() },
     });
 }
+
+// ---------------------------------------------------------------------------
+// Batch helpers — PERF-04: replace per-card sequential await loops with
+// single-round-trip batch Drizzle queries in Quick Add and CSV Import routes.
+// ---------------------------------------------------------------------------
+
+/**
+ * Batch variant of incrementVariantCount for Quick Add (additive semantics).
+ * Inserts multiple variant rows in a single INSERT ... VALUES (...) round-trip.
+ * On conflict, adds the incoming count to the existing count (count + EXCLUDED.count)
+ * — preserving the "stack on top of existing" Quick Add semantics.
+ *
+ * Analog: incrementVariantCount (lines 238–254) — single-row version.
+ * Empty-array guard: Drizzle throws on .values([]), so we return early.
+ */
+export async function batchIncrementVariantCounts(
+  items: Array<{ cardPrintingId: number; qtyToAdd: number }>,
+  userId: number
+) {
+  if (items.length === 0) return;
+  return db
+    .insert(userPrintingCollections)
+    .values(items.map(({ cardPrintingId, qtyToAdd }) => ({
+      userId,
+      cardPrintingId,
+      count: qtyToAdd,
+    })))
+    .onConflictDoUpdate({
+      target: [userPrintingCollections.userId, userPrintingCollections.cardPrintingId],
+      set: {
+        count: sql`${userPrintingCollections.count} + EXCLUDED.count`,
+        updatedAt: new Date(),
+      },
+    });
+}
+
+/**
+ * Batch variant of upsertVariantCount for CSV Import (overwrite semantics).
+ * Inserts multiple variant rows in a single INSERT ... VALUES (...) round-trip.
+ * On conflict, overwrites the existing count with the incoming value (EXCLUDED.count)
+ * — preserving the "replace with imported value" CSV Import semantics.
+ *
+ * Analog: upsertVariantCount (lines 222–231) — single-row version.
+ * Empty-array guard: Drizzle throws on .values([]), so we return early.
+ */
+export async function batchUpsertVariantCounts(
+  items: Array<{ cardPrintingId: number; count: number }>,
+  userId: number
+) {
+  if (items.length === 0) return;
+  return db
+    .insert(userPrintingCollections)
+    .values(items.map(({ cardPrintingId, count }) => ({
+      userId,
+      cardPrintingId,
+      count,
+    })))
+    .onConflictDoUpdate({
+      target: [userPrintingCollections.userId, userPrintingCollections.cardPrintingId],
+      set: { count: sql`EXCLUDED.count`, updatedAt: new Date() },
+    });
+}
+
+/**
+ * Batch variant of recomputeTotal for bulk operations.
+ * Replaces M sequential recomputeTotal calls (each 2 round-trips) with 2 round-trips total:
+ *   Step 1: SELECT cardDefinitionId, SUM(count) for ALL affected definitions in one query.
+ *   Step 2: Batch INSERT ... ON CONFLICT DO UPDATE all totals at once.
+ *
+ * Analog: recomputeTotal (lines 261–282) — single-definition version.
+ * Empty-array guard: returns early if cardDefinitionIds is empty.
+ * Zero-rows guard: if Step 1 returns 0 rows (no variant counts found), returns without INSERT.
+ *
+ * Used by both Quick Add and CSV Import after their respective batch upserts.
+ */
+export async function batchRecomputeTotals(
+  cardDefinitionIds: number[],
+  userId: number
+) {
+  if (cardDefinitionIds.length === 0) return;
+
+  // Step 1: SUM all variant counts per cardDefinition in one query (analog: recomputeTotal lines 264-273)
+  const sums = await db
+    .select({
+      cardDefinitionId: cardPrintings.cardDefinitionId,
+      total: sql<number>`COALESCE(SUM(${userPrintingCollections.count}), 0)`,
+    })
+    .from(userPrintingCollections)
+    .innerJoin(cardPrintings, eq(cardPrintings.id, userPrintingCollections.cardPrintingId))
+    .where(
+      and(
+        eq(userPrintingCollections.userId, userId),
+        inArray(cardPrintings.cardDefinitionId, cardDefinitionIds)
+      )
+    )
+    .groupBy(cardPrintings.cardDefinitionId);
+
+  if (sums.length === 0) return;
+
+  // Step 2: Batch upsert all totals (analog: recomputeTotal lines 275-282)
+  return db
+    .insert(userCollections)
+    .values(sums.map(r => ({
+      userId,
+      cardDefinitionId: r.cardDefinitionId,
+      count: Number(r.total),
+    })))
+    .onConflictDoUpdate({
+      target: [userCollections.userId, userCollections.cardDefinitionId],
+      set: { count: sql`EXCLUDED.count`, updatedAt: new Date() },
+    });
+}

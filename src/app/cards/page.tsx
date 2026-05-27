@@ -1,17 +1,9 @@
 import { getAllCards, getFilterOptions, getPrintingArtMap } from '@/db/queries/catalog';
 import { CatalogClient } from '@/components/catalog/catalog-client';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
-
-export const dynamic = 'force-dynamic';
 
 export default async function CatalogPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
   const [cards, filterOptions, printingArtMap] = await Promise.all([
-    getAllCards(session?.user.id ? Number(session.user.id) : undefined),
+    getAllCards(),
     getFilterOptions(),
     getPrintingArtMap(),
   ]);

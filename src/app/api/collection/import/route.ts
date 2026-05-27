@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { db } from '@/db';
 import { cardDefinitions, cardPrintings } from '@/db/schema';
 import { and, eq, inArray, or } from 'drizzle-orm';
-import { upsertVariantCount, recomputeTotal } from '@/db/queries/collection';
+import { batchUpsertVariantCounts, batchRecomputeTotals } from '@/db/queries/collection';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 
@@ -91,6 +91,7 @@ export async function POST(request: NextRequest) {
     const userId = Number(session.user.id);
     let processedCount = 0;
     const affectedDefinitions = new Set<number>();
+    const batchItems: Array<{ cardPrintingId: number; count: number }> = [];
 
     for (const item of payload) {
       const key = `${item.swudbId}|${item.variantType}`;
@@ -98,15 +99,14 @@ export async function POST(request: NextRequest) {
       if (!lookup) continue;
 
       const safeCount = Math.max(0, item.count);
-      await upsertVariantCount(lookup.printingId, safeCount, userId);
+      batchItems.push({ cardPrintingId: lookup.printingId, count: safeCount });
       affectedDefinitions.add(lookup.cardDefinitionId);
       processedCount++;
     }
 
-    // 3. Recompute totals for all affected card definitions.
-    for (const cardDefinitionId of affectedDefinitions) {
-      await recomputeTotal(userId, cardDefinitionId);
-    }
+    // 3. Single batch upsert for all variant counts, then one batch recompute for totals.
+    await batchUpsertVariantCounts(batchItems, userId);
+    await batchRecomputeTotals([...affectedDefinitions], userId);
 
     return Response.json({ success: true, count: processedCount });
   } catch (error) {

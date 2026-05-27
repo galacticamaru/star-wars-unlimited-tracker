@@ -9,8 +9,9 @@ A multi-user web app for Star Wars: Unlimited TCG players. Players track their c
 > **v3 shipped 2026-05-13.** New home page, sticky catalog sidebar, variant support, owned-only filter, and automatic trade wants.
 > **v4 shipped 2026-05-20.** Deck builder polish (type grouping, art, aspect panel, guided onboarding), per-variant collection tracking, catalog variant art, and starter deck quick-add.
 > **v4 gap closure complete 2026-05-23.** Per-variant trade offerings (Phase 21) and additional starter/spotlight deck lists (Phase 22) fill remaining REQ-BINDER-06 gap.
+> **v5 shipped 2026-05-27.** Binder variant completeness (BINDER-07/08/09), catalog & page load performance, bulk operation speed, and real-user Web Vitals telemetry (PERF-06) via Vercel Speed Insights.
 
-## Current Milestone: v5 Trade Binder & Performance
+## Milestone: v5 Trade Binder & Performance — COMPLETE
 
 **Goal:** Close the variant gap in the public binder's "Looking For" section, overhaul the add-to-trade workflow, extend card detail pages with a trade-offer section, and measurably improve catalog browsing performance.
 
@@ -74,6 +75,7 @@ See exactly which cards you own while building decks, and know instantly what yo
 - [ ] **PERF-02**: Page load speed improved — LCP and TTFB reduced for catalog and binder routes
 - [ ] **PERF-03**: Card image loading improved — lazy loading, no layout shift
 - [ ] **PERF-04**: Quick Add and CSV Import provide progress feedback and complete faster
+- ✓ **PERF-06**: Real-user Web Vitals captured via @vercel/speed-insights; every page instrumented; data flows to Vercel dashboard — Validated in Phase 25.1
 
 ### Out of Scope
 
@@ -137,4 +139,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-26 — Phase 23 complete: binder variant completeness (BINDER-07/08/09 all validated)*
+*Last updated: 2026-05-28 — v5 milestone complete: Phase 25.1 shipped (Speed Insights / PERF-06 validated)*

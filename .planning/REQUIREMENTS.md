@@ -25,6 +25,7 @@ Close the variant gap in the public binder's "Looking For" section, overhaul the
 - [ ] **PERF-03**: Card images load with no layout shift — lazy loading below fold, priority loading for first visible rows, blur placeholder or skeleton while loading
 - [ ] **PERF-04**: Quick Add (starter decks) and CSV Import provide real-time progress feedback (row count or percentage) and complete without timeout for collections up to 1,000 cards
 - [ ] **PERF-05**: Creating a new deck navigates to the Deck Builder empty skeleton in ≤500ms — no perceptible delay before the empty deck guided onboarding appears
+- [x] **PERF-06**: Real-user performance metrics (Web Vitals) are captured in production via @vercel/speed-insights — every page is instrumented and data flows to the Vercel dashboard
 
 ---
 
@@ -61,5 +62,6 @@ Close the variant gap in the public binder's "Looking For" section, overhaul the
 | PERF-01 | Phase 24 | — | — |
 | PERF-02 | Phase 24 | — | — |
 | PERF-03 | Phase 24 | — | — |
-| PERF-04 | Phase 25 | — | — |
-| PERF-05 | Phase 25 | — | — |
+| PERF-04 | Phase 25 | 25-01, 25-02, 25-03 | — |
+| PERF-05 | Phase 25 | 25-01, 25-03 | — |
+| PERF-06 | Phase 25.1 | 25.1-01 | 2026-05-27 |

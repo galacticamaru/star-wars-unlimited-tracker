@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { syncAllCards } from '@/lib/sync/upsert-cards';
 import { syncPrices } from '@/lib/sync/prices';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
@@ -21,9 +22,12 @@ export async function GET(request: NextRequest) {
     console.log('Starting price sync...');
     const priceResult = await syncPrices();
 
+    // Invalidate cards cache after successful sync (PERF-02)
+    revalidateTag('cards', 'max');
+
     const duration = (Date.now() - startTime) / 1000;
 
-    return Response.json({ 
+    return Response.json({
       success: true, 
       cards: cardResult,
       prices: priceResult,
