@@ -1,5 +1,39 @@
 # Milestones — Star Wars Unlimited Tracker
 
+## v5 Trade Binder & Performance — Shipped 2026-05-27
+
+**Phases:** 4 (23, 24, 25, 25.1)
+**Plans:** 15
+**Timeline:** 2026-05-25 → 2026-05-28 (4 days)
+**Requirements:** 9 addressed (BINDER-07/08/09, PERF-01–06); PERF-01–05 code-complete, post-deploy UAT pending
+**LOC delta:** +15,955 / −422 across 242 files
+
+### Delivered
+
+Looking For tiles now show variant badges on public binders (BINDER-07), card detail pages expose an "Available for Trade" section for per-variant trade offer management (BINDER-08), and the Manage Binder page was redesigned around collection-driven discovery with a VariantTradeSheet panel (BINDER-09). Catalog filter response reduced to ≤200ms via 150ms debounce + RSC caching; CardGrid virtualized with @tanstack/react-virtual eliminating layout shift. Bulk operations (Quick Add, CSV Import) refactored to single-round-trip batch upserts — eliminates Vercel 504 timeouts for 1,000-card collections, with live card-count progress text. New deck skeleton fires immediately via loading.tsx Suspense boundary. @vercel/speed-insights@2.0.0 wired into root layout for Web Vitals capture (PERF-06).
+
+### Key Accomplishments
+
+1. Phase 23: Variant badge UI on Looking For tiles + Card Detail "Available for Trade" section (BINDER-07/08/09) — complete with printing-level manual wants schema migration
+2. Phase 24: 150ms search debounce + RSC `use cache` + `cacheTag` on catalog — filter changes instant, warm LCP reduced (PERF-01/02)
+3. Phase 24: @tanstack/react-virtual CardGrid — windowed rendering + fixed-dimension containers eliminate CLS; first-row eager, below-fold lazy (PERF-03)
+4. Phase 25: `batchIncrementVariantCounts` + `batchUpsertVariantCounts` replace N+M Neon round-trips — no more 504 for 1,000 cards (PERF-04 backend)
+5. Phase 25: Live card-count progress text + animate-pulse deck skeleton via loading.tsx (PERF-04 UI + PERF-05)
+6. Phase 25.1 (INSERTED — urgent): @vercel/speed-insights@2.0.0 in root layout, 100% sample rate, all pages instrumented (PERF-06)
+
+### Post-Deploy UAT (acknowledged at close)
+
+- Phase 24: RSC cache warm-path + LCP measurement require preview deployment
+- Phase 25: Vercel timeout elimination + batch upsert semantics require live Neon DB
+- Phase 25.1: Web Vitals data flow requires Speed Insights enabled in Vercel dashboard
+
+### Archive
+
+- `.planning/milestones/v5-ROADMAP.md` — full phase details
+- `.planning/milestones/v5-REQUIREMENTS.md` — all requirements with outcomes
+
+---
+
 ## v1 MVP — Shipped 2026-05-07
 
 **Phases:** 7 (1, 2, 3, 4, 5, 5.1, 5.2)

@@ -9,19 +9,7 @@ A multi-user web app for Star Wars: Unlimited TCG players. Players track their c
 > **v3 shipped 2026-05-13.** New home page, sticky catalog sidebar, variant support, owned-only filter, and automatic trade wants.
 > **v4 shipped 2026-05-20.** Deck builder polish (type grouping, art, aspect panel, guided onboarding), per-variant collection tracking, catalog variant art, and starter deck quick-add.
 > **v4 gap closure complete 2026-05-23.** Per-variant trade offerings (Phase 21) and additional starter/spotlight deck lists (Phase 22) fill remaining REQ-BINDER-06 gap.
-> **v5 shipped 2026-05-27.** Binder variant completeness (BINDER-07/08/09), catalog & page load performance, bulk operation speed, and real-user Web Vitals telemetry (PERF-06) via Vercel Speed Insights.
-
-## Milestone: v5 Trade Binder & Performance — COMPLETE
-
-**Goal:** Close the variant gap in the public binder's "Looking For" section, overhaul the add-to-trade workflow, extend card detail pages with a trade-offer section, and measurably improve catalog browsing performance.
-
-**Target features:**
-- Looking For tiles on public binder show variant badges (mirrors v4 Available for Trade work)
-- Card Detail page gets an "Available for Trade" section — mark quantity, see current offer
-- Manage Binder UX overhaul — easier card discovery and add-to-trade flow
-- Catalog browsing performance — faster filter response and initial load
-- Page load speed (LCP / TTFB), image loading (lazy loading, layout shift)
-- Quick Add / CSV Import speed improvements
+> **v5 shipped 2026-05-27.** Binder variant completeness (BINDER-07/08/09), catalog & page load performance (RSC caching, CardGrid virtualization, 150ms debounce), bulk operation batch upserts (1k-card ops, no 504 timeouts), and real-user Web Vitals telemetry (PERF-06) via Vercel Speed Insights.
 
 ## Milestone: v4.0 Deck Builder & Collection Depth — COMPLETE
 
@@ -65,17 +53,19 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Catalog shows highest-owned variant art (Showcase > Hyperspace Foil > Hyperspace > Foil > Normal precedence) — v4 (REQ-COLLECT-08, Phase 18)
 - ✓ Quick-add pre-constructed deck cards to collection — 11 decks (6 starter + 5 spotlight), additive increment — v4 (REQ-CAT-04, Phase 18)
 - ✓ Variant-aware trade offerings — per-printing `user_trade_offerings` table; Foil/Showcase/etc. badge on public binder tiles — v4 gap closure (REQ-BINDER-06, Phase 21)
+- ✓ Looking For tiles show variant badges on public binder (Normal/Foil/Showcase/Hyperspace/Hyperspace Foil) — v5 (BINDER-07, Phase 23)
+- ✓ Card Detail page "Available for Trade" section — per-variant trade offer management with optimistic updates — v5 (BINDER-08, Phase 23)
+- ✓ Manage Binder redesigned around collection-driven discovery — VariantTradeSheet + ManualWantsAddFlow — v5 (BINDER-09, Phase 23)
+- ✓ Catalog filter response ≤200ms — 150ms debounce + RSC caching eliminates spinner on filter change — v5 (PERF-01, Phase 24)
+- ✓ Catalog RSC `use cache` + `cacheTag` — warm-cache LCP reduced; `getAllCards` no longer force-dynamic — v5 (PERF-02, Phase 24)
+- ✓ CardGrid virtualized with @tanstack/react-virtual — windowed rows, fixed-dimension containers, no CLS, first-row eager priority — v5 (PERF-03, Phase 24)
+- ✓ Bulk ops batch upserts — `batchIncrementVariantCounts` (Quick Add) + `batchUpsertVariantCounts` (CSV Import) replace N+M Neon round-trips; no 504 for 1,000 cards — v5 (PERF-04, Phase 25)
+- ✓ New deck skeleton via `loading.tsx` Suspense — animate-pulse skeleton fires within ~100ms on `/decks/[id]` navigation — v5 (PERF-05, Phase 25)
+- ✓ Real-user Web Vitals captured via @vercel/speed-insights@2.0.0 — all pages instrumented at 100% sample rate — v5 (PERF-06, Phase 25.1)
 
-### Active (v5)
+### Active (v6)
 
-- ✓ **BINDER-07**: Looking For tiles on public binder show variant type badge — Validated in Phase 23
-- ✓ **BINDER-08**: Card Detail page has "Available for Trade" section — mark quantity, view/edit current offer — Validated in Phase 23
-- ✓ **BINDER-09**: Manage Binder page — collection-driven discovery, VariantTradeSheet, manual-wants chip selector — Validated in Phase 23
-- [ ] **PERF-01**: Catalog filter response time measurably reduced (target: &lt;100ms on filter interaction)
-- [ ] **PERF-02**: Page load speed improved — LCP and TTFB reduced for catalog and binder routes
-- [ ] **PERF-03**: Card image loading improved — lazy loading, no layout shift
-- [ ] **PERF-04**: Quick Add and CSV Import provide progress feedback and complete faster
-- ✓ **PERF-06**: Real-user Web Vitals captured via @vercel/speed-insights; every page instrumented; data flows to Vercel dashboard — Validated in Phase 25.1
+(No active requirements — start /gsd-new-milestone to define v6 scope)
 
 ### Out of Scope
 
@@ -87,10 +77,10 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ## Context
 
-**Shipped v3:** 2026-05-13 | **v4 shipped:** 2026-05-20 (Phases 15–18 + 3 polish complete)
-**Stack:** Next.js 16 + TypeScript + Neon PostgreSQL + Drizzle ORM + Better Auth + shadcn/ui + base-ui + nuqs
-**Deployment:** Vercel (Hobby tier, daily cron syncs for cards and prices)
-**Codebase:** ~23,000 LOC TypeScript/TSX, 67 plans completed across 20 phases (incl. polish)
+**v5 shipped:** 2026-05-28 | PR #18 open (feat/v5-milestone → main); 4 phases, 15 plans, 111 commits
+**Stack:** Next.js 16 + TypeScript + Neon PostgreSQL + Drizzle ORM + Better Auth + shadcn/ui + base-ui + nuqs + @tanstack/react-virtual + @vercel/speed-insights
+**Deployment:** Vercel (Hobby tier, daily cron syncs for cards and prices; Speed Insights enabled post-merge)
+**Codebase:** ~38,000+ LOC TypeScript/TSX (est.), 82 plans completed across 26 phases (incl. decimal insertions)
 **Auth:** Better Auth (Email, Google, Discord) with per-user data isolation
 **Card data:** swu-db.com API auto-sync; PokéWallet API for market prices
 
@@ -118,6 +108,11 @@ See exactly which cards you own while building decks, and know instantly what yo
 | Base UI over Radix for Switch/Tooltip | Project constraint established in v3; consistent across components | ✓ Good |
 | auto-wants inline in getUserTradeData() | Keeps change self-contained; avoids premature abstraction | ✓ Good |
 | toggleExclusion reused for auto-want rows | No new API surface needed; existing endpoint handles both flows | ✓ Good |
+| RSC `use cache` drops userId from getAllCards | Enables RSC cache participation; personalised data loaded separately by client | ✓ Good |
+| CardGrid virtualized rows-only (not columns) | Preserves existing responsive CSS grid layout; windowing sufficient for performance gain | ✓ Good |
+| Batch upserts use different conflict strategies | Quick Add additive (`count + EXCLUDED.count`); CSV Import overwrite (`EXCLUDED.count`) — intentionally different semantics | ✓ Good |
+| Speed Insights 100% sample rate, no filters | Small-traffic app; full fidelity preferred over sampling cost savings at this scale | ✓ Good |
+| Phase 25.1 inserted urgently before milestone close | Speed Insights had minimal risk and was time-sensitive; decimal insertion clean mechanism for last-minute additions | ✓ Good |
 
 ## Constraints
 
@@ -139,4 +134,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-28 — v5 milestone complete: Phase 25.1 shipped (Speed Insights / PERF-06 validated)*
+*Last updated: 2026-05-28 after v5 milestone*

@@ -176,16 +176,72 @@
 4. **In-memory grouping beats two-pass DB strategies.** When a seeding algorithm requires cross-row coordination, do it in memory before touching the DB — simpler code, no timing issues, self-healing on re-run.
 5. **Milestone audit insertion phases are the right mechanism.** Both Phase 21 (schema migration gap) and Phase 22 (quick-add coverage) were discovered at audit and inserted cleanly. The pattern continues to pay off — audit early, insert late.
 
+## Milestone: v5 — Trade Binder & Performance
+
+**Shipped:** 2026-05-28
+**Phases:** 4 (23, 24, 25, 25.1) | **Plans:** 15
+
+---
+
+### What Was Built
+
+- Printing-level manual wants schema migration + Looking For variant badges on public binder tiles (Phase 23)
+- Card Detail "Available for Trade" section — auth-gated RSC component with optimistic PATCH wiring (Phase 23)
+- Manage Binder redesigned: collection-driven browse grid (`userCollections` count > 0), VariantTradeSheet panel, ManualWantsAddFlow chip selector (Phase 23)
+- 150ms search debounce on catalog filter input — eliminates mid-keystroke `filterCards` re-runs (Phase 24)
+- RSC `use cache` + `cacheTag` on `getAllCards` — drops `userId` and `force-dynamic`; warm-cache LCP reduced (Phase 24)
+- @tanstack/react-virtual CardGrid — windowed rows, fixed-dimension containers, no CLS, first-row eager priority loading (Phase 24)
+- `batchIncrementVariantCounts` (additive, Quick Add) + `batchUpsertVariantCounts` (overwrite, CSV Import) — eliminates N+M Neon round-trips; no 504 for 1,000 cards (Phase 25)
+- Live card-count progress text + `loading.tsx` animate-pulse skeleton for `/decks/[id]` navigation (Phase 25)
+- @vercel/speed-insights@2.0.0 in root layout — all pages instrumented, 100% sample rate, no exclusions (Phase 25.1, INSERTED)
+
+---
+
+### What Worked
+
+- **Wave-based parallelization held up across all phases** — Phase 24 had 6 plans across 4 waves with clear ownership boundaries; no merge conflicts despite parallel execution
+- **TDD Wave 0 for non-trivial batch logic** — writing RED stubs for `batchIncrementVariantCounts` before implementing it caught two semantic edge cases (additive vs overwrite) before any route code was written
+- **Decimal insertion for the Speed Insights urgency** — Phase 25.1 inserted after Phase 25 was complete; added one plan without renumbering or disrupting the milestone narrative; the mechanism continues to work cleanly
+- **RSC caching trade-off was surfaced explicitly during discuss-phase** — the decision to drop `userId` from `getAllCards` was documented before planning; the team knew exactly what personalised-data pattern would replace it
+- **Post-deploy UAT checklist in PR description** — making the `human_needed` items explicit in PR #18 means they survive milestone close and won't be forgotten post-merge
+
+---
+
+### What Was Inefficient
+
+- **Phase 24 had a gap-closure plan (24-06) discovered after Phase 24-05 build verification** — the `??` → `||` guard for `clientWidth=0` was a CR-01 code review finding that required a 6th plan after verification; a stricter pre-merge code review (or running the review agent before marking verification complete) would have caught it
+- **PERF-01–05 remain post-deploy unverified at milestone close** — all five requirements require a live Vercel + Neon environment to confirm; none could be verified from the codebase. No clear mechanism exists to re-trigger verification post-deploy; creating a GitHub issue or a post-deploy checklist card would formalize this
+- **`one_liner` frontmatter missing from most SUMMARY.md files** — the milestone.complete SDK query returned empty accomplishments because SUMMARY.md files don't have a structured `one_liner` field; accomplishments had to be extracted manually. Adding `one_liner` as a required field in the plan execution template would fix this
+
+---
+
+### Patterns Established
+
+- **`batchIncrementVariantCounts` vs `batchUpsertVariantCounts`** — same Drizzle `onConflictDoUpdate` shape but with `count + EXCLUDED.count` (additive) vs `EXCLUDED.count` (overwrite); the caller sets semantics at call site
+- **RSC personalisation split** — `getAllCards` returns unpersonalised data for RSC cache; a separate client request adds per-user collection counts; the split enables caching without sacrificing personalisation
+- **`loading.tsx` as the deck creation latency fix** — no streaming, no Suspense boundary in the page component; `loading.tsx` fires automatically on navigation and buys the skeleton for free
+- **Speed Insights `debug` prop pattern** — `debug={process.env.NODE_ENV === 'development'}` ensures the debug panel appears in dev but not production without a separate env variable
+
+---
+
+### Key Lessons
+
+1. **Code review before verification, not after.** Phase 24 discovered a correctness bug (CR-01) during the code review step that ran after `status: passed` verification. Running `/gsd-code-review` before marking verification complete would catch these earlier.
+2. **Post-deploy UAT needs a tracking mechanism at milestone close.** PERF-01–05 and PERF-06 (partial) all require live-environment confirmation. Treating `human_needed` status as a GitHub issue or deployment checklist item (not just a file status) would prevent them from being forgotten.
+3. **`one_liner` in SUMMARY.md frontmatter is load-bearing for tooling.** The `milestone.complete` SDK query extracted zero accomplishments; everything had to be written manually. Make `one_liner` a non-optional field in the plan exit step.
+4. **Wave 0 RED stubs pay for themselves.** Both Phases 24 and 25 used Wave 0 test stubs as the first plan; both phases had clean implementations with no test-coverage gaps discovered at verification. The overhead is two plans per phase; the payoff is structured TDD.
+5. **Decimal insertion is clean but the urgency signal needs to be earlier.** Phase 25.1 was inserted as "URGENT" after Phase 25 was already complete. Speed Insights had been in the backlog; surfacing it during the milestone discussion (not after all phases were done) would have slotted it into the original plan.
+
 ---
 
 ## Cross-Milestone Trends
 
-| Metric | v1 | v2 | v3 | v4 |
-|--------|-----|-----|-----|-----|
-| Phases | 7 (5 planned + 2 inserted) | 5 | 4 | 11 (6 planned + 5 inserted) |
-| Plans | 22 | 16 | 12 | 34 |
-| Duration | 5 days | 1 day | 1 day | 10 days |
-| LOC (approx) | ~4,757 TypeScript/TSX | ~8,000 | ~22,000 total | ~10,000 in src/ (27,000+ total) |
-| Functional bugs at audit | 2 (both fixed pre-ship) | 1 (10.1 binder shortfall) | 0 | 1 (Phase 19 schema gap → Phase 21) |
-| Insertion phases | 2 (5.1, 5.2) | 1 (10.1) | 0 | 5 (15.1, 16.1, 17.1, 21, 22) |
-| Requirements coverage | 15/15 | 12/12 | 10/12 (2 deferred by design) | 12/12 (2 docs gaps acknowledged) |
+| Metric | v1 | v2 | v3 | v4 | v5 |
+|--------|-----|-----|-----|-----|-----|
+| Phases | 7 (5 planned + 2 inserted) | 5 | 4 | 11 (6 planned + 5 inserted) | 4 (3 planned + 1 inserted) |
+| Plans | 22 | 16 | 12 | 34 | 15 |
+| Duration | 5 days | 1 day | 1 day | 10 days | 4 days |
+| LOC delta (approx) | ~4,757 added | ~3,200 added | ~14,000 total | ~10,000 in src/ | +15,955 / −422 |
+| Functional bugs at audit | 2 (both fixed pre-ship) | 1 (10.1 binder shortfall) | 0 | 1 (Phase 19 schema gap → Phase 21) | 1 (CR-01 clientWidth guard, Phase 24-06) |
+| Insertion phases | 2 (5.1, 5.2) | 1 (10.1) | 0 | 5 (15.1, 16.1, 17.1, 21, 22) | 1 (25.1) |
+| Requirements coverage | 15/15 | 12/12 | 10/12 (2 deferred by design) | 12/12 (2 docs gaps acknowledged) | 9/9 code-complete; 5/9 post-deploy UAT pending |
