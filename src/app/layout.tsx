@@ -6,6 +6,7 @@ import { NavBar } from '@/components/nav-bar';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { CurrencyProvider } from '@/components/currency-context';
 import { Suspense } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const oxaniumHeading = Oxanium({subsets:['latin'],variable:'--font-heading'});
 
@@ -48,6 +49,7 @@ export default function RootLayout({
             </CurrencyProvider>
           </Suspense>
         </NuqsAdapter>
+        <SpeedInsights debug={process.env.NODE_ENV === 'development'} />
       </body>
     </html>
   );
