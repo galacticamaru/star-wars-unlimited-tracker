@@ -61,5 +61,5 @@ Close the variant gap in the public binder's "Looking For" section, overhaul the
 | PERF-01 | Phase 24 | — | — |
 | PERF-02 | Phase 24 | — | — |
 | PERF-03 | Phase 24 | — | — |
-| PERF-04 | Phase 25 | — | — |
-| PERF-05 | Phase 25 | — | — |
+| PERF-04 | Phase 25 | 25-01, 25-02, 25-03 | — |
+| PERF-05 | Phase 25 | 25-01, 25-03 | — |

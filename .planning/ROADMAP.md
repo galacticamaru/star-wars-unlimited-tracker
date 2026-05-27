@@ -172,4 +172,4 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 | 22 | v4 | 3/3 | ✅ Complete | 2026-05-23 |
 | 23 | v5 | 4/4 | Complete    | 2026-05-26 |
 | 24 | v5 | 6/6 | Complete   | 2026-05-27 |
-| 25 | v5 | 3/3 | Complete   | 2026-05-27 |
+| 25 | v5 | 3/3 | Complete    | 2026-05-27 |
