@@ -1,146 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Star Wars Unlimited Tracker
+
+A web app for Star Wars: Unlimited TCG players to track their card collection, build legal decks, and manage public trade binders — all in one place.
+
+**v5 shipped 2026-05-27** · [Project docs](.planning/PROJECT.md)
+
+## Features
+
+- **Card Catalog** — Browse, search, and filter the full SWU card catalog with images, metadata, and variant art. Auto-syncs from swu-db.com daily.
+- **Collection Tracking** — Track owned copies per card and per variant (Normal, Foil, Showcase, Hyperspace, Serialized). Bulk-import via CSV.
+- **Deck Builder** — Build legal decks (1 Leader + 1 Base + 50-card main + 10-card sideboard) with owned-count overlay and shortfall highlights.
+- **Want List** — Per-deck and combined want lists showing exactly which cards and quantities you're missing.
+- **Trade Binder** — Public shareable binder at `/binder/[username]` with "Available for Trade" and "Looking For" sections, variant badges, and catalog filters.
+- **Market Pricing** — EUR/USD card prices and deck valuations via PokéWallet API.
+- **Auth** — Email, Google, and Discord sign-in via Better Auth, with per-user data isolation.
+
+## Tech Stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 16 + React 19 + TypeScript |
+| Database | Neon PostgreSQL (serverless) |
+| ORM | Drizzle ORM |
+| Auth | Better Auth |
+| UI | shadcn/ui + Base UI + Tailwind CSS v4 |
+| URL state | nuqs |
+| Testing | Vitest + Testing Library |
+| Deployment | Vercel (Hobby tier) |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 20+
+- A [Neon](https://neon.tech) PostgreSQL database
+- Better Auth credentials (see `.env.local` below)
+
+### Environment
+
+Create `.env.local` at the project root:
+
+```env
+DATABASE_URL=your_neon_connection_string
+BETTER_AUTH_SECRET=your_secret
+BETTER_AUTH_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+DISCORD_CLIENT_ID=...
+DISCORD_CLIENT_SECRET=...
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install and run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run db:push      # push schema to database
+npm run db:seed      # seed card data (optional, cron handles this in production)
+npm run dev          # start dev server at http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Script | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run test` | Run Vitest tests |
+| `npm run db:push` | Push Drizzle schema to database |
+| `npm run db:generate` | Generate migration files |
+| `npm run db:migrate` | Apply migrations |
+| `npm run db:studio` | Open Drizzle Studio |
+| `npm run db:seed` | Seed card data from swu-db.com |
 
-To learn more about Next.js, take a look at the following resources:
+## Routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Route | Description |
+|---|---|
+| `/` | Home page with hero and highest-value cards |
+| `/cards` | Full card catalog with filters |
+| `/cards/[set-code]/[card-number]` | Card detail with variant tracking and trade section |
+| `/collection` | Manage owned card counts |
+| `/decks` | Deck list |
+| `/decks/[id]` | Deck builder |
+| `/binder/[username]` | Public trade binder |
+| `/binder/manage` | Manage your trade offerings and wants |
+| `/(auth)/login` | Sign in |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture Notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-# Star Wars Unlimited Tracker
-
-## What This Is
-
-A single-user web app for Star Wars: Unlimited TCG players. Players track their card collection and build decks in one place — so they always know what they own while building decks and exactly what cards they still need to acquire. Replaces the fragmented workflow of a spreadsheet for collection tracking plus a separate deck-building tool (like SWUDB) that has no awareness of what you own.
-
-> **v1 shipped 2026-05-07.** Single-user personal tool (no auth). Full core loop delivered.
-> **v2 shipped 2026-05-12.** Multi-user (auth), market pricing, sideboard support, and public trade binders.
-
-## Current Milestone: v3.0 Catalog, Home & Binder Polish
-
-**Goal:** Modernize the user experience with a dedicated landing page, sticky catalog filtering, support for all card variants, and improved trade binder presentation.
-
-**Target features:**
-- **Catalog Evolution**: Sticky sidebar filters, variant support (Showcase, Prestige), and TS26 set support.
-- **Advanced Filters**: Owned-only filtering and market price thresholds in the deck builder.
-- **New Home Page**: Dedicated `/` route with Hero, CTAs, and a "Highest Value Cards" showcase.
-- **Trade Binder Polish**: Full-width public binders and improved management of automatic wants.
-
-## Core Value
-
-See exactly which cards you own while building decks, and know instantly what you're missing.
-
-## Requirements
-
-### Validated
-
-- ✓ Card catalog auto-syncs from swu-db.com API without manual intervention — v1 (CATALOG-04, Phase 1)
-- ✓ User can browse/search/filter the full card catalog with images and metadata — v1 (CATALOG-01, CATALOG-02, CATALOG-03, Phase 2)
-- ✓ User can track owned copy counts and update via search & click — v1 (COLLECT-01, COLLECT-02, Phase 3)
-- ✓ User can bulk-import collection from generic CSV or community Reddit SWU spreadsheet — v1 (COLLECT-03, CATALOG-04, Phase 3)
-- ✓ User can build legal decks (1 Leader + 1 Base + 50-card main deck) with owned-count overlay and shortfall highlights — v1 (DECK-01 through DECK-05, Phase 4)
-- ✓ User can view per-deck and combined want lists showing exact missing card quantities — v1 (WANT-01, WANT-02, Phase 5 + 5.1)
-- ✓ Catalog rarity filter actually filters results — v1 (Phase 5.2, closed audit gap)
-- ✓ **Auth & Multi-User**: User accounts with email/OAuth and data isolation — v2 (Phase 6)
-- ✓ **Market Pricing**: EUR/USD card prices and deck valuation via PokéWallet API — v2 (Phase 7)
-- ✓ **Sideboard Support**: 10-card sideboard with rules enforcement and cost curve overlay — v2 (Phase 9)
-- ✓ **Trade Binder**: Public shareable trade binders with catalog filters and "Looking For" lists — v2 (Phase 10 + 10.1)
-
-### Active (v3)
-
-- [ ] Sticky sidebar for catalog filters (REQ-CAT-02)
-- [ ] Support all card variants (REQ-CAT-01)
-- [ ] Owned-only deck builder filter (REQ-DECK-06)
-- [ ] Dedicated home page with High Value grid (REQ-HOME-01, REQ-HOME-02, REQ-HOME-03)
-- [ ] Full-width public trade binders (REQ-TRADE-06)
-
-### Out of Scope
-
-- Card trading / marketplace — out of scope, different product
-- Mobile native app — web-first; responsive design covers mobile browsers
-- Camera scanning (SCAN-01) — ML complexity; CSV/spreadsheet import covers collection migration
-- Price history charts — significant complexity, low value for a deck builder
-- Buy links / affiliate integration — different product
-
-## Context
-
-**Shipped v2:** 2026-05-12
-**Stack:** Next.js 16 + TypeScript + Neon PostgreSQL + Drizzle ORM + Better Auth + shadcn/ui + base-ui + nuqs
-**Deployment:** Vercel (Hobby tier, daily cron syncs for cards and prices)
-**Codebase**: ~21,000 LOC TypeScript/TSX, 38 plans completed across 12 phases
-**Auth**: Better Auth (Email, Google, Discord) with per-user data isolation
-**Card data**: swu-db.com API auto-sync; PokéWallet API for market prices
-
-**Architecture decisions held:**
-- Two-table model (card_definitions + card_printings) is non-negotiable
-- Better Auth for multi-tenant support
-- integer columns for prices (cents) to avoid floating point issues
-- Sideboard as boolean flag on deck_cards
-- Usernames for public binder slugs
-
-## Key Decisions
-
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Next.js full-stack | Single repo, simpler Vercel deployment, SSR for card browsing | ✓ Good |
-| Local PostgreSQL card cache | avoids proxying swu-db.com; sync job works, cache keeps catalog fast | ✓ Good |
-| Two-table card model | Separates card identity from print variants; enables variant tracking | ✓ Good |
-| nuqs for URL state | Snappy filters, shareable URLs, avoids useState proliferation | ✓ Good |
-| Better Auth | Industry standard, supports Email/OAuth, easy integration with Drizzle | ✓ Good |
-| Integer cents for prices | Avoids floating point precision issues in currency calculations | ✓ Good |
-| Phase 8 (DOTD) Abandonment | swustats.net API was unreliable; pivoting saved development time | ✓ Good |
-| Username slugs for binders | Improves social discoverability and shareable URL aesthetics | ✓ Good |
-
-## Constraints
-
-- **Vercel Hobby tier:** 1 cron job per day limit (multiplexed sync tasks)
-- **External API dependency:** swu-db.com (cards), PokéWallet (prices)
-
----
-
-## Evolution
-
-This document evolves at phase transitions and milestone boundaries.
-
-**After each phase transition** (via `/gsd-transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-
-**After each milestone** (via `/gsd-complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
-
----
-*Last updated: 2026-05-12 — v2 milestone shipped*
+- **Two-table card model** — `card_definitions` (identity) + `card_printings` (variants/sets) keeps card identity separate from print variants, enabling per-variant collection and trade tracking.
+- **integer cents for prices** — avoids floating point issues in currency math.
+- **nuqs for all filter state** — snappy filters, shareable URLs, no `useState` proliferation.
+- **Vercel daily cron** — multiplexes card sync and price sync into one job (Hobby tier limit).
+- **No `@radix-ui` imports** — Base UI (`@base-ui/react`) only for headless primitives.
