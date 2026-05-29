@@ -1,35 +1,41 @@
-# Requirements: v5 — Trade Binder & Performance
+# Requirements: Star Wars Unlimited Tracker
 
-> Milestone: v5
-> Created: 2026-05-23
-> Status: Active
+**Defined:** 2026-05-29
+**Core Value:** See exactly which cards you own while building decks, and know instantly what you're missing.
 
-## Milestone Goal
+## v6 Requirements
 
-Close the variant gap in the public binder's "Looking For" section, overhaul the add-to-trade workflow with card detail page integration, redesign the Manage Binder UX, and measurably improve catalog browsing and deck creation performance.
+Requirements for the v6 Mobile, Performance & Polish milestone. Phases continue from v5 (Phase 26+).
 
----
+### Mobile UX
 
-## Requirements
-
-### Trade Binder
-
-- [x] **BINDER-07**: User visiting a public binder sees variant type badges (Normal / Foil / Showcase / Hyperspace / Hyperspace Foil) on "Looking For" tiles — mirrors the v4 Available for Trade badge work (Phase 19/21)
-- [x] **BINDER-08**: Authenticated user can view and manage their trade offers directly from a Card Detail page — set quantity offered per variant, see current offer state, and toggle off — without navigating to Manage Binder
-- [x] **BINDER-09**: Manage Binder page redesigned so user can discover tradeable cards from their own collection (filtered/searchable list of owned cards) rather than navigating the full catalog to find cards to offer
+- [ ] **MOBILE-01**: User can access deck stats (card count, aspect breakdown, validity) on mobile via a bottom sheet that peeks with a summary and expands to show full sidebar content
+- [ ] **MOBILE-02**: Add/remove card buttons in the deck builder are tappable on touch screens (minimum 44px target size)
+- [ ] **MOBILE-03**: Deck builder toolbar and tabs display without overflow or clipping on screens below 480px wide
+- [ ] **MOBILE-04**: Existing desktop deck builder layout is fully preserved — no regression on md breakpoint and above
 
 ### Performance
 
-- [ ] **PERF-01**: Catalog filter interactions feel near-instant — filter changes reflect in ≤200ms without full page reload or visible spinner
-- [ ] **PERF-02**: Catalog and public binder pages have measurably reduced LCP — above-fold content visible faster on first load
-- [ ] **PERF-03**: Card images load with no layout shift — lazy loading below fold, priority loading for first visible rows, blur placeholder or skeleton while loading
-- [ ] **PERF-04**: Quick Add (starter decks) and CSV Import provide real-time progress feedback (row count or percentage) and complete without timeout for collections up to 1,000 cards
-- [ ] **PERF-05**: Creating a new deck navigates to the Deck Builder empty skeleton in ≤500ms — no perceptible delay before the empty deck guided onboarding appears
-- [x] **PERF-06**: Real-user performance metrics (Web Vitals) are captured in production via @vercel/speed-insights — every page is instrumented and data flows to the Vercel dashboard
+- [ ] **PERF-07**: `/decks` and `/decks/[id]` data fetches use per-user `cacheTag` with `revalidateTag` called in all deck mutation handlers (create, update, delete)
+- [ ] **PERF-08**: Card add/remove interactions in the deck builder use `startTransition` and `useDeferredValue` to prevent INP regressions
+- [ ] **PERF-09**: Vercel Speed Insights FCP/LCP/INP data for `/decks` routes is reviewed and specific identified regressions are resolved
+
+### Tech Debt
+
+- [ ] **DEBT-01**: `CollectionControls` component and its dead imports are removed from the codebase
+- [ ] **DEBT-03**: `Prestige Foil` added to `VARIANT_OPTIONS`; `Serialized` added to `VARIANT_PRECEDENCE`
+- [ ] **DEBT-04**: Catalog collection state re-fetches correctly after card detail page owned-count mutations (no stale overlay after returning to catalog)
 
 ---
 
 ## Future Requirements (Deferred)
+
+### Deferred from v6
+
+- **DEBT-02**: DeckBuilder Add Cards tab displays variant art via `getPrintingArtMap()` — deferred; more investigation needed on interaction with virtualized list
+- **DEBT-05**: LAW spotlight deck unknowns resolved (9 cards absent from DB, commented TODOs cleared) — deferred pending DB sync
+
+### Previously Deferred
 
 | ID | Description | Deferred At |
 |----|-------------|-------------|
@@ -42,26 +48,39 @@ Close the variant gap in the public binder's "Looking For" section, overhaul the
 
 ## Out of Scope
 
-| Item | Reason |
-|------|--------|
-| Trade request / messaging flow | Different product — social coordination layer out of scope |
-| Real-time price alerts | Significant backend complexity; not tied to core deck-building value |
-| Camera scanning | ML complexity; CSV import covers collection migration |
+| Feature | Reason |
+|---------|--------|
+| Drag-and-drop card ordering on mobile | Touch drag conflicts with scroll; tap +/- is the correct mobile pattern |
+| Bottom tab navigation bar on mobile | Scope risk; Sheet approach solves the core problem without restructuring navigation |
+| `use cache: remote` for deck queries | Requires Vercel paid Runtime Cache — not available on Hobby tier |
+| Card trading / marketplace | Different product |
 | Mobile native app | Web-first; responsive design covers mobile browsers |
-| Buy links / affiliate | Different product |
+| Camera scanning | ML complexity; CSV import covers collection migration |
 
 ---
 
 ## Traceability
 
-| Requirement | Phase | Plan(s) | Verified |
-|-------------|-------|---------|---------|
-| BINDER-07 | Phase 23 | — | — |
-| BINDER-08 | Phase 23 | — | — |
-| BINDER-09 | Phase 23 | — | — |
-| PERF-01 | Phase 24 | — | — |
-| PERF-02 | Phase 24 | — | — |
-| PERF-03 | Phase 24 | — | — |
-| PERF-04 | Phase 25 | 25-01, 25-02, 25-03 | — |
-| PERF-05 | Phase 25 | 25-01, 25-03 | — |
-| PERF-06 | Phase 25.1 | 25.1-01 | 2026-05-27 |
+Which phases cover which requirements. Updated during roadmap creation.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| MOBILE-01 | Phase 26 | Pending |
+| MOBILE-02 | Phase 26 | Pending |
+| MOBILE-03 | Phase 26 | Pending |
+| MOBILE-04 | Phase 26 | Pending |
+| PERF-07 | Phase 27 | Pending |
+| PERF-08 | Phase 27 | Pending |
+| PERF-09 | Phase 27 | Pending |
+| DEBT-01 | Phase 28 | Pending |
+| DEBT-03 | Phase 28 | Pending |
+| DEBT-04 | Phase 28 | Pending |
+
+**Coverage:**
+- v6 requirements: 10 total
+- Mapped to phases: 10
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-05-29*
+*Last updated: 2026-05-29 after initial definition*
