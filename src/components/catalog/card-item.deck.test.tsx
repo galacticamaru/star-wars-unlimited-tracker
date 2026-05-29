@@ -55,4 +55,6 @@ describe('CardItem Shortfall Logic', () => {
     const borderDiv = container.querySelector('.border-red-500');
     expect(borderDiv).not.toBeNull();
   });
+
+  it.todo('MOBILE-02: selector-mode overlay +/- buttons have class min-h-[44px] min-w-[44px] (replaces p-1)');
 });
