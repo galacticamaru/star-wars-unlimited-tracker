@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v5
-milestone_name: Trade Binder & Performance
-status: "v5 milestone shipped — PR #18"
-last_updated: "2026-05-27T21:30:59.141Z"
-last_activity: "2026-05-28 -- v5 milestone shipped, PR #18"
+milestone: v6
+milestone_name: Mobile, Performance & Polish
+status: planning
+last_updated: "2026-05-29T04:15:25.437Z"
+last_activity: 2026-05-29
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 15
-  completed_plans: 15
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -24,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-05-23)
 
 ## Current Position
 
-Phase: 25.1
-Plan: 01 — Complete
-Status: v5 milestone shipped — PR #18
-Last activity: 2026-05-28 -- v5 milestone shipped, PR #18
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-29 — Milestone v6 started
 
 ## Performance Metrics
 

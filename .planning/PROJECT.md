@@ -11,6 +11,16 @@ A multi-user web app for Star Wars: Unlimited TCG players. Players track their c
 > **v4 gap closure complete 2026-05-23.** Per-variant trade offerings (Phase 21) and additional starter/spotlight deck lists (Phase 22) fill remaining REQ-BINDER-06 gap.
 > **v5 shipped 2026-05-27.** Binder variant completeness (BINDER-07/08/09), catalog & page load performance, bulk operation speed, and real-user Web Vitals telemetry (PERF-06) via Vercel Speed Insights.
 
+## Current Milestone: v6 Mobile, Performance & Polish
+
+**Goal:** Make the deck builder usable on mobile, measurably improve /decks and /decks/[id] load times using real Speed Insights data, and clear the deferred tech debt backlog.
+
+**Target features:**
+- Deck builder mobile UX — fix sidebar overlap so cards can be tapped and added on touch screens without breaking the desktop three-tab layout
+- /decks + /decks/[id] performance — LCP, TTFB, and filter-response improvements matching v5's catalog work
+- Speed Insights-driven fixes — address specific FCP/LCP/INP regressions visible in the Vercel dashboard
+- Tech debt sweep — CollectionControls dead code, DeckBuilder variant art, Prestige Foil/Serialized gaps, catalog state invalidation, LAW deck unknowns
+
 ## Milestone: v5 Trade Binder & Performance — COMPLETE
 
 **Goal:** Close the variant gap in the public binder's "Looking For" section, overhaul the add-to-trade workflow, extend card detail pages with a trade-offer section, and measurably improve catalog browsing performance.
@@ -65,17 +75,26 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Catalog shows highest-owned variant art (Showcase > Hyperspace Foil > Hyperspace > Foil > Normal precedence) — v4 (REQ-COLLECT-08, Phase 18)
 - ✓ Quick-add pre-constructed deck cards to collection — 11 decks (6 starter + 5 spotlight), additive increment — v4 (REQ-CAT-04, Phase 18)
 - ✓ Variant-aware trade offerings — per-printing `user_trade_offerings` table; Foil/Showcase/etc. badge on public binder tiles — v4 gap closure (REQ-BINDER-06, Phase 21)
+- ✓ Looking For tiles on public binder show variant type badge — v5 (BINDER-07, Phase 23)
+- ✓ Card Detail page has "Available for Trade" section — mark quantity, view/edit current offer — v5 (BINDER-08, Phase 23)
+- ✓ Manage Binder page — collection-driven discovery, VariantTradeSheet, manual-wants chip selector — v5 (BINDER-09, Phase 23)
+- ✓ Catalog filter response time measurably reduced — search debounced, virtual list rendering — v5 (PERF-01, Phase 24)
+- ✓ Page load speed improved — LCP and TTFB reduced for catalog and binder routes — v5 (PERF-02, Phase 24)
+- ✓ Card image loading improved — lazy loading, no layout shift — v5 (PERF-03, Phase 24)
+- ✓ Quick Add and CSV Import provide progress feedback and complete faster — v5 (PERF-04, Phase 25)
+- ✓ Real-user Web Vitals captured via @vercel/speed-insights; every page instrumented — v5 (PERF-06, Phase 25.1)
 
-### Active (v5)
+### Active (v6)
 
-- ✓ **BINDER-07**: Looking For tiles on public binder show variant type badge — Validated in Phase 23
-- ✓ **BINDER-08**: Card Detail page has "Available for Trade" section — mark quantity, view/edit current offer — Validated in Phase 23
-- ✓ **BINDER-09**: Manage Binder page — collection-driven discovery, VariantTradeSheet, manual-wants chip selector — Validated in Phase 23
-- [ ] **PERF-01**: Catalog filter response time measurably reduced (target: &lt;100ms on filter interaction)
-- [ ] **PERF-02**: Page load speed improved — LCP and TTFB reduced for catalog and binder routes
-- [ ] **PERF-03**: Card image loading improved — lazy loading, no layout shift
-- [ ] **PERF-04**: Quick Add and CSV Import provide progress feedback and complete faster
-- ✓ **PERF-06**: Real-user Web Vitals captured via @vercel/speed-insights; every page instrumented; data flows to Vercel dashboard — Validated in Phase 25.1
+- [ ] **MOBILE-01**: Deck builder is fully usable on mobile — stats sidebar does not overlap content, cards can be tapped to add/remove
+- [ ] **MOBILE-02**: Mobile deck builder layout adapts without breaking the existing desktop three-tab experience
+- [ ] **PERF-07**: /decks and /decks/[id] pages have measurably improved LCP and TTFB (target: matched to catalog baseline)
+- [ ] **PERF-08**: Specific FCP/LCP/INP regressions identified in Vercel Speed Insights dashboard are resolved
+- [ ] **DEBT-01**: CollectionControls dead code removed (0 imports, calls deleted endpoint)
+- [ ] **DEBT-02**: DeckBuilder Add Cards tab displays variant art via getPrintingArtMap()
+- [ ] **DEBT-03**: Prestige Foil added to VARIANT_OPTIONS; Serialized added to VARIANT_PRECEDENCE
+- [ ] **DEBT-04**: Catalog collection state invalidates correctly after card detail page mutations
+- [ ] **DEBT-05**: LAW spotlight deck unknowns resolved (9 cards absent from DB, commented TODOs cleared)
 
 ### Out of Scope
 
@@ -139,4 +158,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-28 — v5 milestone complete: Phase 25.1 shipped (Speed Insights / PERF-06 validated)*
+*Last updated: 2026-05-29 — v6 milestone started: Mobile UX, Performance & Tech Debt*
