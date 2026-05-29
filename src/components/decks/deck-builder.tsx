@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Download, CheckCircle2, AlertCircle } from "lucide-react";
+import { Download, CheckCircle2, AlertCircle, ArrowLeft } from "lucide-react";
 import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 
@@ -320,15 +320,16 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
     <div className="flex h-[calc(100dvh-56px)] md:h-[calc(100svh-56px)] overflow-hidden">
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Toolbar */}
-        <div className="border-b bg-white p-4 flex justify-between items-center shadow-sm z-10">
-          <div className="flex items-center gap-4 flex-1">
-            <input 
-              value={state.name} 
+        <div className="border-b bg-white p-4 flex flex-col md:flex-row md:justify-between md:items-center shadow-sm z-10 gap-2">
+          {/* Row 1 (mobile) / Left group (desktop): deck name input + desktop-only tab group */}
+          <div className="flex items-center gap-2 flex-1 w-full">
+            <input
+              value={state.name}
               onChange={(e) => dispatch({ type: 'SET_NAME', payload: e.target.value })}
               className="text-2xl font-bold bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-slate-200 rounded px-1 w-full max-w-md"
               placeholder="Deck Name"
             />
-            <div className="flex bg-slate-100 rounded-lg p-1">
+            <div className="hidden md:flex bg-slate-100 rounded-lg p-1">
                 <Button
                     variant={view === 'editor' ? 'secondary' : 'ghost'}
                     size="sm"
@@ -355,7 +356,60 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 </Button>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+
+          {/* Row 2 (mobile-only): short-label tabs + icon-only Export + icon-only Back */}
+          <div className="flex md:hidden items-center justify-between w-full gap-2">
+            <div className="flex bg-slate-100 rounded-lg p-1">
+              <Button
+                variant={view === 'editor' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setView('editor')}
+                className={view === 'editor' ? 'bg-white shadow-sm' : ''}
+              >
+                Deck
+              </Button>
+              <Button
+                variant={view === 'catalog' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setView('catalog')}
+                className={view === 'catalog' ? 'bg-white shadow-sm' : ''}
+              >
+                Cards
+              </Button>
+              <Button
+                variant={view === 'want-list' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setView('want-list')}
+                className={view === 'want-list' ? 'bg-white shadow-sm' : ''}
+              >
+                Wants
+              </Button>
+            </div>
+            <div className="flex items-center gap-1">
+              <DropdownMenu>
+                <DropdownMenuTrigger className={buttonVariants({ variant: "outline", size: "icon" })} aria-label="Export deck">
+                  <Download className="w-4 h-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => window.open(`/api/decks/${state.id}/export?format=melee`, '_blank')}>
+                    Melee (.txt)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => window.open(`/api/decks/${state.id}/export?format=json`, '_blank')}>
+                    JSON (.json)
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button variant="outline" size="icon" aria-label="Go back" onClick={() => {
+                if (isDirty && !window.confirm('You have unsaved changes. Leave without saving?')) return;
+                router.push('/decks');
+              }}>
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Right group (desktop-only): Export dropdown + Back button */}
+          <div className="hidden md:flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger className={buttonVariants({ variant: "outline", size: "sm" })}>
                 <Download className="w-4 h-4 mr-2" /> Export

@@ -133,14 +133,21 @@ describe('DeckBuilder mobile layout', () => {
   });
 
   // MOBILE-03 — toolbar responsive two-row layout (D-06)
-  it.todo('MOBILE-03: toolbar root div has class "flex flex-col md:flex-row" (or equivalent two-row mobile layout)');
+  it('MOBILE-03: toolbar root div has class "flex flex-col md:flex-row" (or equivalent two-row mobile layout)', () => {
+    const { container } = render(<DeckBuilder {...minimalDeckProps} />);
+    const toolbar = container.querySelector('.border-b.bg-white');
+    expect(toolbar?.className).toContain('flex-col');
+    expect(toolbar?.className).toContain('md:flex-row');
+  });
 
   // MOBILE-04 — inline DeckSidebar hidden on mobile (D-05)
   it('MOBILE-04: inline DeckSidebar wrapper has class "hidden md:flex" so sidebar is desktop-only inline', () => {
     const { container } = render(<DeckBuilder {...minimalDeckProps} />);
-    const wrapper = container.querySelector('div.hidden.md\\:flex');
-    expect(wrapper).not.toBeNull();
-    // The wrapper should contain the DeckSidebar — check for the deck name heading
-    expect(wrapper!.textContent).toContain('Test Deck');
+    // Find the hidden md:flex wrapper that contains the DeckSidebar (identified by "Test Deck" text).
+    // There may be multiple hidden md:flex elements after Plan 04 adds the desktop tab group —
+    // use querySelectorAll and find the one with DeckSidebar content.
+    const wrappers = Array.from(container.querySelectorAll('div.hidden.md\\:flex'));
+    const sidebarWrapper = wrappers.find(el => el.textContent?.includes('Test Deck'));
+    expect(sidebarWrapper).not.toBeUndefined();
   });
 });
