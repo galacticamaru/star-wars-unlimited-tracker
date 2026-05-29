@@ -95,6 +95,7 @@ See exactly which cards you own while building decks, and know instantly what yo
 - [ ] **DEBT-03**: Prestige Foil added to VARIANT_OPTIONS; Serialized added to VARIANT_PRECEDENCE
 - [ ] **DEBT-04**: Catalog collection state invalidates correctly after card detail page mutations
 - [ ] **DEBT-05**: LAW spotlight deck unknowns resolved (9 cards absent from DB, commented TODOs cleared)
+- [ ] **PERF-10**: `/cards/[set]/[id]` card detail page has measurably improved FCP, LCP, and INP — Speed Insights regressions identified and resolved
 
 ### Out of Scope
 
