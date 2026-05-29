@@ -2,7 +2,7 @@
 
 import { useReducer, useState, useMemo, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { Card, DeckCard } from '@/lib/deck-validation';
+import { Card, DeckCard, validateDeck } from '@/lib/deck-validation';
 import { groupDeckCards } from '@/lib/deck-grouping';
 import { computeAutoFilter, computeAutoFilterLabel } from '@/lib/auto-filter';
 import { DeckSidebar } from './deck-sidebar';
@@ -16,7 +16,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Download } from "lucide-react";
+import { Download, CheckCircle2, AlertCircle } from "lucide-react";
+import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
+import { Badge } from '@/components/ui/badge';
 
 interface DeckState {
   id: number;
@@ -268,6 +270,16 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
     [sideboard]
   );
 
+  const totalMain = useMemo(
+    () => mainDeck.reduce((sum, item) => sum + item.quantity, 0),
+    [mainDeck]
+  );
+
+  const validation = useMemo(
+    () => validateDeck(leader, base, mainDeck, sideboard),
+    [leader, base, mainDeck, sideboard]
+  );
+
   const handleSave = async (isDraft: boolean) => {
     setIsSaving(true);
     setApiErrors([]);
@@ -304,7 +316,8 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   };
 
   return (
-    <div className="flex h-[calc(100svh-56px)] overflow-hidden">
+    <>
+    <div className="flex h-[calc(100dvh-56px)] md:h-[calc(100svh-56px)] overflow-hidden">
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Toolbar */}
         <div className="border-b bg-white p-4 flex justify-between items-center shadow-sm z-10">
@@ -602,23 +615,6 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
 
               </div>{/* end flex flex-row gap-6 items-start */}
 
-              {/* Mobile fixed bottom bar (D-13) — shown when hoveredCard is set via tap/focus */}
-              {hoveredCard && (
-                <div className="md:hidden fixed bottom-0 left-0 right-0 h-24 bg-white border-t z-50 flex items-center gap-4 px-4">
-                  {hoveredCard.frontArtUrl && (
-                    <div className="relative h-20 w-14 shrink-0 rounded overflow-hidden">
-                      <Image
-                        src={hoveredCard.frontArtUrl}
-                        alt={hoveredCard.name}
-                        fill
-                        sizes="56px"
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                  <span className="font-medium text-sm">{hoveredCard.name}</span>
-                </div>
-              )}
             </div>
           ) : (
             <WantListTab
@@ -634,17 +630,51 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
         </div>
       </div>
 
-      <DeckSidebar 
-        name={state.name}
-        leader={leader}
-        base={base}
-        mainDeck={mainDeck}
-        sideboard={sideboard}
-        isSaving={isSaving}
-        onSave={handleSave}
-        apiErrors={apiErrors}
-      />
+      <div className="hidden md:flex">
+        <DeckSidebar
+          name={state.name}
+          leader={leader}
+          base={base}
+          mainDeck={mainDeck}
+          sideboard={sideboard}
+          isSaving={isSaving}
+          onSave={handleSave}
+          apiErrors={apiErrors}
+        />
+      </div>
     </div>
+
+    <Sheet>
+      <SheetTrigger
+        render={<button className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-white border-t z-50 flex items-center gap-4 px-4 w-full text-left" aria-label="Open deck stats" />}
+      >
+        {validation.isValid ? (
+          <Badge className="bg-green-100 text-green-800 border-green-200">
+            <CheckCircle2 className="w-3 h-3 mr-1" /> Legal
+          </Badge>
+        ) : (
+          <Badge variant="destructive">
+            <AlertCircle className="w-3 h-3 mr-1" /> Illegal
+          </Badge>
+        )}
+        <span className="text-sm text-slate-600">{totalMain}/50 main · {sideboardTotal}/10 SB</span>
+      </SheetTrigger>
+      <SheetContent side="bottom" className="max-h-[80dvh] overflow-y-auto">
+        <div className="w-full">
+          <DeckSidebar
+            name={state.name}
+            leader={leader}
+            base={base}
+            mainDeck={mainDeck}
+            sideboard={sideboard}
+            isSaving={isSaving}
+            onSave={handleSave}
+            apiErrors={apiErrors}
+          />
+        </div>
+      </SheetContent>
+    </Sheet>
+    </>
   );
 }
 
