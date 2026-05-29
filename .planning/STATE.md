@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v6
 milestone_name: Mobile, Performance & Polish
-status: active
-last_updated: "2026-05-29T00:00:00.000Z"
-last_activity: 2026-05-29
+status: planning
+last_updated: "2026-05-29T05:05:26.370Z"
+last_activity: 2026-05-29 — v6 roadmap created; Phase 26 is the active phase
 progress:
-  total_phases: 3
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
