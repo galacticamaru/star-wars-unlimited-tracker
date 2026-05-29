@@ -57,7 +57,7 @@ Exceptions:
 | Heading | 24px (text-2xl) | 700 (bold) | 1.2 | Deck name input in toolbar |
 | Body | 16px (text-base) | 400 (regular) | 1.5 | Tab labels (desktop), sidebar stats text, card row labels |
 | Label | 14px (text-sm) | 400 (regular) | 1.5 | Sticky bar summary text (`"32/50 main · 2/10 SB"`), cost curve labels, toolbar secondary elements |
-| Caption | 12px (text-xs) | 500 (medium) | 1.4 | Badge text (Legal/Illegal), validation error messages, aspect chip labels |
+| Caption | 12px (text-xs) | 400 (regular) | 1.4 | Badge text (Legal/Illegal), validation error messages, aspect chip labels |
 
 Font family: `font-sans` (Nunito Sans) for all body/label/caption roles. `font-heading` (Oxanium) is available but NOT applied to deck builder UI elements in this phase — the deck name input uses `font-bold` within `font-sans`.
 
@@ -173,8 +173,8 @@ Note: The current toolbar uses `<Button>` elements styled as tabs (not the `Tabs
 | Error state: network | "Network error. Please try again." (existing — unchanged) |
 | Destructive confirmation: navigate away with unsaved changes | "You have unsaved changes. Leave without saving?" (existing browser `window.confirm` — unchanged) |
 | Export dropdown items | "Melee (.txt)" / "JSON (.json)" — existing, unchanged |
-| Mobile Back button | Icon-only on mobile (no label). Tooltip: not required (affordance is clear from ArrowLeft icon and navigation context). |
-| Mobile Export button | Icon-only on mobile (no label). Tooltip: not required (Download icon is universally understood). |
+| Mobile Back button | Icon-only on mobile (no visible label). Accessibility label: `aria-label="Go back"` on the button element. |
+| Mobile Export button | Icon-only on mobile (no visible label). Accessibility label: `aria-label="Export deck"` on the button element. |
 
 Source: CONTEXT.md specifics section, `src/components/decks/deck-builder.tsx`.
 
