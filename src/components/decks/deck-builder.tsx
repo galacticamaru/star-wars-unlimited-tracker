@@ -540,12 +540,12 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                                   </div>
                                 </div>
                                 <div className="flex gap-1">
-                                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: false } })}>-</Button>
-                                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: false } })}>+</Button>
+                                  <Button variant="outline" size="icon" className="h-11 w-11" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: false } })}>-</Button>
+                                  <Button variant="outline" size="icon" className="h-11 w-11" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: false } })}>+</Button>
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className="h-8 text-xs text-amber-600 border-amber-300 hover:bg-amber-50"
+                                    className="h-11 text-xs text-amber-600 border-amber-300 hover:bg-amber-50"
                                     onClick={() => handleMoveToSideboard(item.card.id)}
                                     disabled={sideboardTotal >= 10}
                                   >
@@ -595,12 +595,12 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                             </div>
                           </div>
                           <div className="flex gap-1">
-                            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: true } })}>-</Button>
-                            <Button variant="outline" size="icon" className="h-8 w-8" disabled={sideboardTotal >= 10} onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: true } })}>+</Button>
+                            <Button variant="outline" size="icon" className="h-11 w-11" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: true } })}>-</Button>
+                            <Button variant="outline" size="icon" className="h-11 w-11" disabled={sideboardTotal >= 10} onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: true } })}>+</Button>
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-8 text-xs text-indigo-600 border-indigo-300 hover:bg-indigo-50"
+                              className="h-11 text-xs text-indigo-600 border-indigo-300 hover:bg-indigo-50"
                               onClick={() => handleMoveToMain(item.card.id)}
                             >
                               Move to Main

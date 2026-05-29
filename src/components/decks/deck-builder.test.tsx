@@ -93,7 +93,44 @@ describe('DeckBuilder mobile layout', () => {
   });
 
   // MOBILE-02 — deck list quantity +/- buttons touch target (D-09, D-10)
-  it.todo('MOBILE-02: deck list quantity +/- buttons render with class "h-11 w-11" (NOT h-8 w-8)');
+  it('MOBILE-02: deck list quantity +/- buttons render with class "h-11 w-11" (NOT h-8 w-8)', () => {
+    const deckWithCard = {
+      ...minimalDeckProps,
+      initialDeck: {
+        ...minimalDeckProps.initialDeck,
+        cards: [{ cardDefinitionId: 100, quantity: 2, isSideboard: false }],
+      },
+      allCards: [{
+        id: 100,
+        swudbId: 'test-100',
+        name: 'Test Card',
+        subtitle: null,
+        type: 'Unit',
+        aspects: [],
+        arenas: [],
+        traits: [],
+        keywords: [],
+        cost: 1,
+        power: null,
+        hp: null,
+        setCode: 'SOR',
+        collectorNumber: 'SOR-100',
+        frontArtUrl: null,
+        backArtUrl: null,
+        rarity: 'Common',
+        frontText: null,
+        backText: null,
+        epicAction: null,
+        doubleSided: false,
+        unique: false,
+        priceEur: null,
+        priceUsd: null,
+      }],
+    };
+    const { container } = render(<DeckBuilder {...deckWithCard} />);
+    const h11Buttons = container.querySelectorAll('button.h-11.w-11');
+    expect(h11Buttons.length).toBeGreaterThanOrEqual(2);
+  });
 
   // MOBILE-03 — toolbar responsive two-row layout (D-06)
   it.todo('MOBILE-03: toolbar root div has class "flex flex-col md:flex-row" (or equivalent two-row mobile layout)');
