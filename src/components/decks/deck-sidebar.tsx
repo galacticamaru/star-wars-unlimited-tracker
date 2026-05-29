@@ -57,7 +57,7 @@ export function DeckSidebar({
   }).format(totalValue);
 
   return (
-    <div className="flex flex-col h-full bg-slate-50 border-l p-4 overflow-y-auto w-80">
+    <div className="flex flex-col h-auto md:h-full bg-slate-50 border-l p-4 overflow-y-auto w-80">
       <div className="mb-6">
         <h2 className="text-xl font-bold mb-2 truncate">{name}</h2>
         <div className="flex flex-col gap-2">
