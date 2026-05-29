@@ -194,7 +194,7 @@ Plans:
   4. The deck builder toolbar (deck name, tabs, Export, Back) displays fully and without overflow or clipping on screens below 480px wide
   5. Loading the deck builder on a desktop browser shows the same three-tab layout with inline stats sidebar that existed before this phase — zero desktop regression
 
-**Plans:** TBD
+**Plans:** 1/5 plans executed
 **UI hint**: yes
 
 ### Phase 27: /decks Route Performance
@@ -262,7 +262,7 @@ Plans:
 | 24 | v5 | 6/6 | Complete   | 2026-05-27 |
 | 25 | v5 | 3/3 | Complete    | 2026-05-27 |
 | 25.1 | v5 | 1/1 | Complete | 2026-05-27 |
-| 26 | v6 | 0/TBD | Not started | - |
+| 26 | v6 | 1/5 | In Progress|  |
 | 27 | v6 | 0/TBD | Not started | - |
 | 28 | v6 | 0/TBD | Not started | - |
 | 29 | v6 | 0/TBD | Not started | - |

@@ -9,10 +9,10 @@ Requirements for the v6 Mobile, Performance & Polish milestone. Phases continue 
 
 ### Mobile UX
 
-- [ ] **MOBILE-01**: User can access deck stats (card count, aspect breakdown, validity) on mobile via a bottom sheet that peeks with a summary and expands to show full sidebar content
-- [ ] **MOBILE-02**: Add/remove card buttons in the deck builder are tappable on touch screens (minimum 44px target size)
-- [ ] **MOBILE-03**: Deck builder toolbar and tabs display without overflow or clipping on screens below 480px wide
-- [ ] **MOBILE-04**: Existing desktop deck builder layout is fully preserved — no regression on md breakpoint and above
+- [x] **MOBILE-01**: User can access deck stats (card count, aspect breakdown, validity) on mobile via a bottom sheet that peeks with a summary and expands to show full sidebar content
+- [x] **MOBILE-02**: Add/remove card buttons in the deck builder are tappable on touch screens (minimum 44px target size)
+- [x] **MOBILE-03**: Deck builder toolbar and tabs display without overflow or clipping on screens below 480px wide
+- [x] **MOBILE-04**: Existing desktop deck builder layout is fully preserved — no regression on md breakpoint and above
 
 ### Performance
 
@@ -66,10 +66,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MOBILE-01 | Phase 26 | Pending |
-| MOBILE-02 | Phase 26 | Pending |
-| MOBILE-03 | Phase 26 | Pending |
-| MOBILE-04 | Phase 26 | Pending |
+| MOBILE-01 | Phase 26 | Complete |
+| MOBILE-02 | Phase 26 | Complete |
+| MOBILE-03 | Phase 26 | Complete |
+| MOBILE-04 | Phase 26 | Complete |
 | PERF-07 | Phase 27 | Pending |
 | PERF-08 | Phase 27 | Pending |
 | PERF-09 | Phase 27 | Pending |
