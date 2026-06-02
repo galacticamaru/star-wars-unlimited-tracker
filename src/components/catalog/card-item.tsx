@@ -142,7 +142,7 @@ export function CardItem({
                       e.stopPropagation();
                       onDeckUpdate?.(id, Math.max(0, deckCount - 1));
                     }}
-                    className="p-1 hover:bg-muted rounded-full transition-colors"
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-muted rounded-full transition-colors"
                     aria-label="Decrease deck count"
                   >
                     <Minus className="w-4 h-4" />
@@ -159,7 +159,7 @@ export function CardItem({
                       // Max 3 for non-leader/base cards (usually, but reducer handles logic)
                       onDeckUpdate?.(id, deckCount + 1);
                     }}
-                    className="p-1 hover:bg-muted rounded-full transition-colors"
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-muted rounded-full transition-colors"
                     aria-label="Increase deck count"
                   >
                     <Plus className="w-4 h-4" />

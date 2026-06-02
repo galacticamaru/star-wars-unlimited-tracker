@@ -7,6 +7,7 @@
 - ✅ **v3 Catalog, Home & Binder Polish** — Phases 11–14 (shipped 2026-05-13) · [Archive](milestones/v3-ROADMAP.md)
 - ✅ **v4 Deck Builder & Collection Depth** — Phases 15–22 (shipped 2026-05-23) · [Archive](milestones/v4-ROADMAP.md)
 - ✅ **v5 Trade Binder & Performance** — Phases 23–25.1 (shipped 2026-05-27) · [Archive](milestones/v5-ROADMAP.md)
+- 🔄 **v6 Mobile, Performance & Polish** — Phases 26–29 (active)
 
 ## Phases
 
@@ -55,15 +56,25 @@ See [milestones/v4-ROADMAP.md](milestones/v4-ROADMAP.md) for full details.
 
 </details>
 
-<details open>
+<details>
 <summary>✅ v5 Trade Binder & Performance (Phases 23–25.1) — SHIPPED 2026-05-27</summary>
 
 - [x] **Phase 23: Binder Variant Completeness** — Looking For variant badges, Card Detail trade offer management, and collection-driven Manage Binder discovery (completed 2026-05-26)
-- [x] **Phase 24: Catalog & Page Load Performance** — Filter response ≤200ms, reduced LCP, and layout-shift-free image loading (completed 2026-05-26)
-- [x] **Phase 25: Operation Performance** — Progress feedback for Quick Add/CSV Import, timeout-proof bulk ops, and deck creation ≤500ms (completed 2026-05-27)
+- [x] **Phase 24: Catalog & Page Load Performance** — Filter response ≤200ms, reduced LCP, and layout-shift-free image loading (completed 2026-05-26)
+- [x] **Phase 25: Operation Performance** — Progress feedback for Quick Add/CSV Import, timeout-proof bulk ops, and deck creation ≤500ms (completed 2026-05-27)
 - [x] **Phase 25.1: Speed Insights Integration** (completed 2026-05-27)
 
 See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
+
+</details>
+
+<details open>
+<summary>🔄 v6 Mobile, Performance & Polish (Phases 26–29) — ACTIVE</summary>
+
+- [ ] **Phase 26: Mobile Deck Builder UX** — Stats sidebar accessible via bottom sheet on mobile; touch targets and layout usable on screens below 480px wide
+- [x] **Phase 27: /decks Route Performance** — Per-user cache tagging, INP-safe card interactions, and Speed Insights-driven regression fixes for /decks routes (completed 2026-06-02)
+- [ ] **Phase 28: Tech Debt Sweep** — Dead code removed, variant enums completed, catalog invalidation verified
+- [ ] **Phase 29: Card Detail Page Performance** — FCP, LCP, and INP improvements for /cards/[set]/[id] driven by Speed Insights data
 
 </details>
 
@@ -167,6 +178,74 @@ Plans:
 
 - [x] 25.1-01-PLAN.md — Install @vercel/speed-insights and wire <SpeedInsights debug={...} /> into root layout (PERF-06)
 
+---
+
+### Phase 26: Mobile Deck Builder UX
+
+**Goal:** The deck builder is fully usable on a phone — stats are accessible without overlap, touch targets are large enough to tap, and the toolbar fits small screens — without changing the desktop experience at all
+**Depends on:** Phase 25.1 (v5 complete)
+**Requirements:** MOBILE-01, MOBILE-02, MOBILE-03, MOBILE-04
+**Success Criteria** (what must be TRUE):
+
+  1. On a phone-width screen (< 480px), a user can open a deck and tap a card to add it to the deck without the stats sidebar obscuring the card list
+  2. On a phone-width screen, a user can tap a visible stats summary (card count and valid/invalid badge) to expand the full stats panel — cost curve, aspect breakdown, and Save button are all reachable inside the panel
+  3. The +/- buttons on card rows are large enough to tap accurately on a touchscreen — no mis-tap on an adjacent target
+  4. The deck builder toolbar (deck name, tabs, Export, Back) displays fully and without overflow or clipping on screens below 480px wide
+  5. Loading the deck builder on a desktop browser shows the same three-tab layout with inline stats sidebar that existed before this phase — zero desktop regression
+
+**Plans:** 5/5 plans complete
+**UI hint**: yes
+
+### Phase 27: /decks Route Performance
+
+**Goal:** /decks and /decks/[id] load measurably faster for returning users, card add/remove interactions do not freeze the UI, and any FCP/LCP/INP regressions visible in Vercel Speed Insights are identified and resolved
+**Depends on:** Phase 26
+**Requirements:** PERF-07, PERF-08, PERF-09
+**Success Criteria** (what must be TRUE):
+
+  1. Navigating to /decks after a previous visit loads the deck list from cache — no redundant server round-trip when the user's decks have not changed
+  2. After creating, renaming, or deleting a deck, the /decks list reflects the change on the very next load — stale cache data is never shown
+  3. Tapping "Add card" or "Remove card" in the deck builder does not produce a visible freeze or jank — the UI remains responsive throughout the interaction
+  4. The Vercel Speed Insights dashboard has been reviewed for /decks route FCP, LCP, and INP data, specific regressions have been identified, and each identified regression has a corresponding fix applied in this phase
+
+**Plans:** 4/4 plans complete
+Plans:
+**Wave 1**
+
+- [x] 27-00-PLAN.md — Wave 0 test stubs: decks.test.ts, api-deck-revalidate.test.ts, deck-builder.test.tsx; retarget page.test.tsx to DecksClient (PERF-07/PERF-08)
+- [x] 27-01-PLAN.md — Per-user cacheTag on getDecks/getDeckWithCards + revalidateTag in POST/PATCH/DELETE + router.refresh in DecksClient (PERF-07)
+- [x] 27-02-PLAN.md — startTransition around handleDeckUpdate dispatches + router.refresh in handleSave (PERF-08 + PERF-07)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 27-03-PLAN.md — Speed Insights /decks review checkpoint + targeted fixes or D-10 catalog-parity fallback (PERF-09)
+
+### Phase 28: Tech Debt Sweep
+
+**Goal:** Dead code is removed, variant enum gaps that cause silent data errors are filled, and the catalog correctly reflects owned counts after returning from a card detail page
+**Depends on:** Phase 26
+**Requirements:** DEBT-01, DEBT-03, DEBT-04
+**Success Criteria** (what must be TRUE):
+
+  1. `CollectionControls` no longer exists anywhere in the codebase — no component file, no imports, no references
+  2. `Prestige Foil` appears as a selectable variant in any UI that lists variant options; `Serialized` is ranked correctly in the variant art precedence order
+  3. After updating owned counts on a card's detail page and navigating back to the catalog, the catalog's owned-count overlay shows the updated number — no stale state visible
+
+**Plans:** TBD
+
+### Phase 29: Card Detail Page Performance
+
+**Goal:** The `/cards/[set]/[id]` card detail page has measurably improved FCP, LCP, and INP — specific regressions identified via Vercel Speed Insights are resolved
+**Depends on:** Phase 27
+**Requirements:** PERF-10
+**Success Criteria** (what must be TRUE):
+
+  1. Vercel Speed Insights data for `/cards/[set]/[id]` has been reviewed and specific FCP, LCP, and INP regressions are identified
+  2. Each identified regression has a corresponding fix applied — no regression remains unaddressed
+  3. The card detail page builds without errors and the fix does not regress the trade offer, collection controls, or variant tracking sections
+
+**Plans:** TBD
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -192,3 +271,7 @@ Plans:
 | 24 | v5 | 6/6 | Complete   | 2026-05-27 |
 | 25 | v5 | 3/3 | Complete    | 2026-05-27 |
 | 25.1 | v5 | 1/1 | Complete | 2026-05-27 |
+| 26 | v6 | 5/5 | Complete   | 2026-05-29 |
+| 27 | v6 | 4/4 | Complete   | 2026-06-02 |
+| 28 | v6 | 0/TBD | Not started | - |
+| 29 | v6 | 0/TBD | Not started | - |

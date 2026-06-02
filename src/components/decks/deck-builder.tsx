@@ -1,8 +1,8 @@
 'use client';
 
-import { useReducer, useState, useMemo, useEffect, useRef } from 'react';
+import { useReducer, useState, useMemo, useEffect, useRef, startTransition } from 'react';
 import Image from 'next/image';
-import { Card, DeckCard } from '@/lib/deck-validation';
+import { Card, DeckCard, validateDeck } from '@/lib/deck-validation';
 import { groupDeckCards } from '@/lib/deck-grouping';
 import { computeAutoFilter, computeAutoFilterLabel } from '@/lib/auto-filter';
 import { DeckSidebar } from './deck-sidebar';
@@ -16,7 +16,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Download } from "lucide-react";
+import { Download, CheckCircle2, AlertCircle, ArrowLeft } from "lucide-react";
+import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
+import { Badge } from '@/components/ui/badge';
 
 interface DeckState {
   id: number;
@@ -245,13 +247,19 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
     if (!card) return;
 
     if (card.type === 'Leader') {
-        dispatch({ type: 'SET_LEADER', payload: quantity > 0 ? cardDefinitionId : null });
+        startTransition(() => {
+          dispatch({ type: 'SET_LEADER', payload: quantity > 0 ? cardDefinitionId : null });
+        });
         setIsAutoFilterOverridden(false);
     } else if (card.type === 'Base') {
-        dispatch({ type: 'SET_BASE', payload: quantity > 0 ? cardDefinitionId : null });
+        startTransition(() => {
+          dispatch({ type: 'SET_BASE', payload: quantity > 0 ? cardDefinitionId : null });
+        });
         setIsAutoFilterOverridden(false);
     } else {
-        dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId, quantity, isSideboard: false } });
+        startTransition(() => {
+          dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId, quantity, isSideboard: false } });
+        });
     }
   };
 
@@ -266,6 +274,16 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   const sideboardTotal = useMemo(
     () => sideboard.reduce((sum, item) => sum + item.quantity, 0),
     [sideboard]
+  );
+
+  const totalMain = useMemo(
+    () => mainDeck.reduce((sum, item) => sum + item.quantity, 0),
+    [mainDeck]
+  );
+
+  const validation = useMemo(
+    () => validateDeck(leader, base, mainDeck, sideboard),
+    [leader, base, mainDeck, sideboard]
   );
 
   const handleSave = async (isDraft: boolean) => {
@@ -286,6 +304,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
 
       if (res.ok) {
         cleanStateRef.current = { ...state, isDraft };
+        router.refresh();
         if (!isDraft) {
           router.push('/decks');
         }
@@ -304,18 +323,20 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
   };
 
   return (
-    <div className="flex h-[calc(100svh-56px)] overflow-hidden">
+    <>
+    <div className="flex h-[calc(100dvh-56px)] md:h-[calc(100svh-56px)] overflow-hidden">
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Toolbar */}
-        <div className="border-b bg-white p-4 flex justify-between items-center shadow-sm z-10">
-          <div className="flex items-center gap-4 flex-1">
-            <input 
-              value={state.name} 
+        <div className="border-b bg-white p-4 flex flex-col md:flex-row md:justify-between md:items-center shadow-sm z-10 gap-2">
+          {/* Row 1 (mobile) / Left group (desktop): deck name input + desktop-only tab group */}
+          <div className="flex items-center gap-2 flex-1 w-full">
+            <input
+              value={state.name}
               onChange={(e) => dispatch({ type: 'SET_NAME', payload: e.target.value })}
               className="text-2xl font-bold bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-slate-200 rounded px-1 w-full max-w-md"
               placeholder="Deck Name"
             />
-            <div className="flex bg-slate-100 rounded-lg p-1">
+            <div className="hidden md:flex bg-slate-100 rounded-lg p-1">
                 <Button
                     variant={view === 'editor' ? 'secondary' : 'ghost'}
                     size="sm"
@@ -342,7 +363,60 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                 </Button>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+
+          {/* Row 2 (mobile-only): short-label tabs + icon-only Export + icon-only Back */}
+          <div className="flex md:hidden items-center justify-between w-full gap-2">
+            <div className="flex bg-slate-100 rounded-lg p-1">
+              <Button
+                variant={view === 'editor' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setView('editor')}
+                className={view === 'editor' ? 'bg-white shadow-sm' : ''}
+              >
+                Deck
+              </Button>
+              <Button
+                variant={view === 'catalog' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setView('catalog')}
+                className={view === 'catalog' ? 'bg-white shadow-sm' : ''}
+              >
+                Cards
+              </Button>
+              <Button
+                variant={view === 'want-list' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setView('want-list')}
+                className={view === 'want-list' ? 'bg-white shadow-sm' : ''}
+              >
+                Wants
+              </Button>
+            </div>
+            <div className="flex items-center gap-1">
+              <DropdownMenu>
+                <DropdownMenuTrigger className={buttonVariants({ variant: "outline", size: "icon" })} aria-label="Export deck">
+                  <Download className="w-4 h-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => window.open(`/api/decks/${state.id}/export?format=melee`, '_blank')}>
+                    Melee (.txt)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => window.open(`/api/decks/${state.id}/export?format=json`, '_blank')}>
+                    JSON (.json)
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button variant="outline" size="icon" aria-label="Go back" onClick={() => {
+                if (isDirty && !window.confirm('You have unsaved changes. Leave without saving?')) return;
+                router.push('/decks');
+              }}>
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Right group (desktop-only): Export dropdown + Back button */}
+          <div className="hidden md:flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger className={buttonVariants({ variant: "outline", size: "sm" })}>
                 <Download className="w-4 h-4 mr-2" /> Export
@@ -527,12 +601,12 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                                   </div>
                                 </div>
                                 <div className="flex gap-1">
-                                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: false } })}>-</Button>
-                                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: false } })}>+</Button>
+                                  <Button variant="outline" size="icon" className="h-11 w-11" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: false } })}>-</Button>
+                                  <Button variant="outline" size="icon" className="h-11 w-11" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: false } })}>+</Button>
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className="h-8 text-xs text-amber-600 border-amber-300 hover:bg-amber-50"
+                                    className="h-11 text-xs text-amber-600 border-amber-300 hover:bg-amber-50"
                                     onClick={() => handleMoveToSideboard(item.card.id)}
                                     disabled={sideboardTotal >= 10}
                                   >
@@ -582,12 +656,12 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
                             </div>
                           </div>
                           <div className="flex gap-1">
-                            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: true } })}>-</Button>
-                            <Button variant="outline" size="icon" className="h-8 w-8" disabled={sideboardTotal >= 10} onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: true } })}>+</Button>
+                            <Button variant="outline" size="icon" className="h-11 w-11" onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity - 1, isSideboard: true } })}>-</Button>
+                            <Button variant="outline" size="icon" className="h-11 w-11" disabled={sideboardTotal >= 10} onClick={() => dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId: item.card.id, quantity: item.quantity + 1, isSideboard: true } })}>+</Button>
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-8 text-xs text-indigo-600 border-indigo-300 hover:bg-indigo-50"
+                              className="h-11 text-xs text-indigo-600 border-indigo-300 hover:bg-indigo-50"
                               onClick={() => handleMoveToMain(item.card.id)}
                             >
                               Move to Main
@@ -602,23 +676,6 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
 
               </div>{/* end flex flex-row gap-6 items-start */}
 
-              {/* Mobile fixed bottom bar (D-13) — shown when hoveredCard is set via tap/focus */}
-              {hoveredCard && (
-                <div className="md:hidden fixed bottom-0 left-0 right-0 h-24 bg-white border-t z-50 flex items-center gap-4 px-4">
-                  {hoveredCard.frontArtUrl && (
-                    <div className="relative h-20 w-14 shrink-0 rounded overflow-hidden">
-                      <Image
-                        src={hoveredCard.frontArtUrl}
-                        alt={hoveredCard.name}
-                        fill
-                        sizes="56px"
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                  <span className="font-medium text-sm">{hoveredCard.name}</span>
-                </div>
-              )}
             </div>
           ) : (
             <WantListTab
@@ -634,17 +691,51 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
         </div>
       </div>
 
-      <DeckSidebar 
-        name={state.name}
-        leader={leader}
-        base={base}
-        mainDeck={mainDeck}
-        sideboard={sideboard}
-        isSaving={isSaving}
-        onSave={handleSave}
-        apiErrors={apiErrors}
-      />
+      <div className="hidden md:flex">
+        <DeckSidebar
+          name={state.name}
+          leader={leader}
+          base={base}
+          mainDeck={mainDeck}
+          sideboard={sideboard}
+          isSaving={isSaving}
+          onSave={handleSave}
+          apiErrors={apiErrors}
+        />
+      </div>
     </div>
+
+    <Sheet>
+      <SheetTrigger
+        render={<button className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-white border-t z-50 flex items-center gap-4 px-4 w-full text-left" aria-label="Open deck stats" />}
+      >
+        {validation.isValid ? (
+          <Badge className="bg-green-100 text-green-800 border-green-200">
+            <CheckCircle2 className="w-3 h-3 mr-1" /> Legal
+          </Badge>
+        ) : (
+          <Badge variant="destructive">
+            <AlertCircle className="w-3 h-3 mr-1" /> Illegal
+          </Badge>
+        )}
+        <span className="text-sm text-slate-600">{totalMain}/50 main · {sideboardTotal}/10 SB</span>
+      </SheetTrigger>
+      <SheetContent side="bottom" className="max-h-[80dvh] overflow-y-auto">
+        <div className="w-full">
+          <DeckSidebar
+            name={state.name}
+            leader={leader}
+            base={base}
+            mainDeck={mainDeck}
+            sideboard={sideboard}
+            isSaving={isSaving}
+            onSave={handleSave}
+            apiErrors={apiErrors}
+          />
+        </div>
+      </SheetContent>
+    </Sheet>
+    </>
   );
 }
 

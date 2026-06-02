@@ -55,4 +55,13 @@ describe('CardItem Shortfall Logic', () => {
     const borderDiv = container.querySelector('.border-red-500');
     expect(borderDiv).not.toBeNull();
   });
+
+  it('MOBILE-02: selector-mode overlay +/- buttons have class min-h-[44px] min-w-[44px] (replaces p-1)', () => {
+    const { container } = render(<CardItem {...defaultProps} mode="selector" deckCount={1} />);
+    const buttons = Array.from(container.querySelectorAll('button'));
+    const touchTargetButtons = buttons.filter(
+      (btn) => btn.className.includes('min-h-[44px]') && btn.className.includes('min-w-[44px]')
+    );
+    expect(touchTargetButtons.length).toBeGreaterThanOrEqual(2);
+  });
 });
