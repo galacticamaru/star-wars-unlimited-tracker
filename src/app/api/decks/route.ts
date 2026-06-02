@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { getDecks, createDeck } from '@/db/queries/decks';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import { revalidateTag } from 'next/cache';
 
 export async function GET() {
   try {
@@ -32,7 +33,9 @@ export async function POST(request: NextRequest) {
       return new Response('Missing deck name', { status: 400 });
     }
 
-    const deck = await createDeck(name, Number(session.user.id));
+    const userId = Number(session.user.id);
+    const deck = await createDeck(name, userId);
+    revalidateTag(`decks-user-${userId}`, 'max');
     return Response.json(deck);
   } catch (error) {
     console.error('Failed to create deck:', error);
