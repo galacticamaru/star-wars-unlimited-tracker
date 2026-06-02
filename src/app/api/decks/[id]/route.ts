@@ -3,6 +3,7 @@ import { getDeckWithCards, updateDeck, deleteDeck, getCardsByDefinitionIds } fro
 import { validateDeck } from '@/lib/deck-validation';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(
   request: NextRequest,
@@ -112,6 +113,8 @@ export async function PATCH(
     }
 
     await updateDeck(deckId, userId, body);
+    revalidateTag(`deck-${deckId}-user-${userId}`, 'max');
+    revalidateTag(`decks-user-${userId}`, 'max');
 
     return Response.json({ success: true });
   } catch (error) {
@@ -137,7 +140,10 @@ export async function DELETE(
       return new Response('Invalid deck ID', { status: 400 });
     }
 
-    await deleteDeck(deckId, Number(session.user.id));
+    const userId = Number(session.user.id);
+    await deleteDeck(deckId, userId);
+    revalidateTag(`deck-${deckId}-user-${userId}`, 'max');
+    revalidateTag(`decks-user-${userId}`, 'max');
     return Response.json({ success: true });
   } catch (error) {
     console.error('Failed to delete deck:', error);
