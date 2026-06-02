@@ -41,10 +41,20 @@ export default function DeckBuilderLoading() {
                     <div className="aspect-[4/3] bg-slate-200 rounded-lg" />
                   </div>
                 </div>
-                {/* Empty deck placeholder — mirrors guided onboarding empty state */}
-                <div className="bg-white border rounded-lg shadow-sm p-12 text-center">
-                  <div className="h-4 w-24 bg-slate-200 rounded mx-auto mb-4" />
-                  <div className="h-8 w-28 bg-slate-200 rounded mx-auto" />
+                {/* Card list area skeleton — full-coverage block mirroring divide-y card rows */}
+                {/* This ensures the LCP candidate is a filled bg-slate-200 block rather than */}
+                {/* the below-fold empty-state text paragraph (which was the recorded LCP element) */}
+                <div className="bg-white border rounded-lg shadow-sm divide-y">
+                  {[0, 1, 2, 3].map((i) => (
+                    <div key={i} className="flex items-center gap-3 p-4">
+                      <div className="h-10 w-8 bg-slate-200 rounded shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 w-32 bg-slate-200 rounded" />
+                        <div className="h-3 w-20 bg-slate-200 rounded" />
+                      </div>
+                      <div className="h-6 w-12 bg-slate-200 rounded shrink-0" />
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
