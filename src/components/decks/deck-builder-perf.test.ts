@@ -22,27 +22,19 @@ describe('deck-builder startTransition (PERF-08)', () => {
 
   it('SET_LEADER dispatch is wrapped in a startTransition callback', () => {
     // The dispatch for SET_LEADER should occur inside startTransition(() => { ... })
-    const startTransitionIndex = source.indexOf('startTransition(');
-    const setLeaderIndex = source.indexOf("'SET_LEADER'");
-    // startTransition must appear before SET_LEADER
-    expect(startTransitionIndex).toBeGreaterThan(-1);
-    expect(setLeaderIndex).toBeGreaterThan(startTransitionIndex);
-    // Pattern must also exist
-    expect(source).toMatch(/startTransition\s*\(\s*\(\s*\)\s*=>/);
+    // Use regex to find startTransition wrapping the SET_LEADER dispatch call
+    // (indexOf comparison fails because 'SET_LEADER' also appears in the DeckAction type definition)
+    expect(source).toMatch(/startTransition\s*\(\s*\(\s*\)\s*=>\s*\{[^}]*'SET_LEADER'/s);
   });
 
   it('SET_BASE dispatch is wrapped in a startTransition callback', () => {
-    const startTransitionIndex = source.indexOf('startTransition(');
-    const setBaseIndex = source.indexOf("'SET_BASE'");
-    expect(startTransitionIndex).toBeGreaterThan(-1);
-    expect(setBaseIndex).toBeGreaterThan(startTransitionIndex);
+    // Use regex to find startTransition wrapping the SET_BASE dispatch call
+    expect(source).toMatch(/startTransition\s*\(\s*\(\s*\)\s*=>\s*\{[^}]*'SET_BASE'/s);
   });
 
   it('UPDATE_CARD dispatch is wrapped in a startTransition callback', () => {
-    const startTransitionIndex = source.indexOf('startTransition(');
-    const updateCardIndex = source.indexOf("'UPDATE_CARD'");
-    expect(startTransitionIndex).toBeGreaterThan(-1);
-    expect(updateCardIndex).toBeGreaterThan(startTransitionIndex);
+    // Use regex to find startTransition wrapping the UPDATE_CARD dispatch call
+    expect(source).toMatch(/startTransition\s*\(\s*\(\s*\)\s*=>\s*\{[^}]*'UPDATE_CARD'/s);
   });
 
   it('source contains at least 3 startTransition wrappers (one per dispatch type)', () => {

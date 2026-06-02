@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer, useState, useMemo, useEffect, useRef } from 'react';
+import { useReducer, useState, useMemo, useEffect, useRef, startTransition } from 'react';
 import Image from 'next/image';
 import { Card, DeckCard, validateDeck } from '@/lib/deck-validation';
 import { groupDeckCards } from '@/lib/deck-grouping';
@@ -247,13 +247,19 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
     if (!card) return;
 
     if (card.type === 'Leader') {
-        dispatch({ type: 'SET_LEADER', payload: quantity > 0 ? cardDefinitionId : null });
+        startTransition(() => {
+          dispatch({ type: 'SET_LEADER', payload: quantity > 0 ? cardDefinitionId : null });
+        });
         setIsAutoFilterOverridden(false);
     } else if (card.type === 'Base') {
-        dispatch({ type: 'SET_BASE', payload: quantity > 0 ? cardDefinitionId : null });
+        startTransition(() => {
+          dispatch({ type: 'SET_BASE', payload: quantity > 0 ? cardDefinitionId : null });
+        });
         setIsAutoFilterOverridden(false);
     } else {
-        dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId, quantity, isSideboard: false } });
+        startTransition(() => {
+          dispatch({ type: 'UPDATE_CARD', payload: { cardDefinitionId, quantity, isSideboard: false } });
+        });
     }
   };
 
