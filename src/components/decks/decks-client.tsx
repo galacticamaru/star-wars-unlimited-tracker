@@ -67,6 +67,7 @@ export function DecksClient({ initialDecks, initialWantList }: DecksClientProps)
 
       if (res.ok) {
         const deck = await res.json();
+        router.refresh();
         router.push(`/decks/${deck.id}`);
       }
     } catch (err) {
@@ -84,6 +85,7 @@ export function DecksClient({ initialDecks, initialWantList }: DecksClientProps)
 
       if (res.ok) {
         setDecks(decks.filter((d) => d.id !== id));
+        router.refresh();
       }
     } catch (err) {
       console.error('Failed to delete deck', err);
