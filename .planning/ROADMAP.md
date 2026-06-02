@@ -8,7 +8,6 @@
 - ✅ **v4 Deck Builder & Collection Depth** — Phases 15–22 (shipped 2026-05-23) · [Archive](milestones/v4-ROADMAP.md)
 - ✅ **v5 Trade Binder & Performance** — Phases 23–25.1 (shipped 2026-05-27) · [Archive](milestones/v5-ROADMAP.md)
 - 🔄 **v6 Mobile, Performance & Polish** — Phases 26–29 (active)
-- 🔄 **v6 Mobile, Performance & Polish** — Phases 26–28 (active)
 
 ## Phases
 
@@ -194,7 +193,7 @@ Plans:
   4. The deck builder toolbar (deck name, tabs, Export, Back) displays fully and without overflow or clipping on screens below 480px wide
   5. Loading the deck builder on a desktop browser shows the same three-tab layout with inline stats sidebar that existed before this phase — zero desktop regression
 
-**Plans:** 1/5 plans executed
+**Plans:** 5/5 plans complete
 **UI hint**: yes
 
 ### Phase 27: /decks Route Performance
@@ -209,7 +208,13 @@ Plans:
   3. Tapping "Add card" or "Remove card" in the deck builder does not produce a visible freeze or jank — the UI remains responsive throughout the interaction
   4. The Vercel Speed Insights dashboard has been reviewed for /decks route FCP, LCP, and INP data, specific regressions have been identified, and each identified regression has a corresponding fix applied in this phase
 
-**Plans:** TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 27-00-PLAN.md — Wave 0 test stubs: decks.test.ts, api-deck-revalidate.test.ts, deck-builder.test.tsx; retarget page.test.tsx to DecksClient (PERF-07/PERF-08)
+- [ ] 27-01-PLAN.md — Per-user cacheTag on getDecks/getDeckWithCards + revalidateTag in POST/PATCH/DELETE + router.refresh in DecksClient (PERF-07)
+- [ ] 27-02-PLAN.md — startTransition around handleDeckUpdate dispatches + router.refresh in handleSave (PERF-08 + PERF-07)
+- [ ] 27-03-PLAN.md — Speed Insights /decks review checkpoint + targeted fixes or D-10 catalog-parity fallback (PERF-09)
 
 ### Phase 28: Tech Debt Sweep
 
@@ -262,7 +267,7 @@ Plans:
 | 24 | v5 | 6/6 | Complete   | 2026-05-27 |
 | 25 | v5 | 3/3 | Complete    | 2026-05-27 |
 | 25.1 | v5 | 1/1 | Complete | 2026-05-27 |
-| 26 | v6 | 1/5 | In Progress|  |
+| 26 | v6 | 5/5 | Complete   | 2026-05-29 |
 | 27 | v6 | 0/TBD | Not started | - |
 | 28 | v6 | 0/TBD | Not started | - |
 | 29 | v6 | 0/TBD | Not started | - |
