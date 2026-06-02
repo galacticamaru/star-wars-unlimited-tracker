@@ -1,8 +1,12 @@
 import { db } from '@/db';
 import { decks, deckCards, cardDefinitions, cardPrintings } from '@/db/schema';
 import { eq, desc, inArray, and } from 'drizzle-orm';
+import { cacheTag, cacheLife } from 'next/cache';
 
 export async function getDecks(userId: number) {
+  'use cache';
+  cacheTag(`decks-user-${userId}`);
+  cacheLife('days');
   return db
     .select()
     .from(decks)
@@ -11,6 +15,9 @@ export async function getDecks(userId: number) {
 }
 
 export async function getDeckWithCards(deckId: number, userId: number) {
+  'use cache';
+  cacheTag(`deck-${deckId}-user-${userId}`);
+  cacheLife('days');
   const [deck] = await db
     .select()
     .from(decks)
