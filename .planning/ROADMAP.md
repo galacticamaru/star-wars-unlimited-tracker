@@ -208,13 +208,13 @@ Plans:
   3. Tapping "Add card" or "Remove card" in the deck builder does not produce a visible freeze or jank — the UI remains responsive throughout the interaction
   4. The Vercel Speed Insights dashboard has been reviewed for /decks route FCP, LCP, and INP data, specific regressions have been identified, and each identified regression has a corresponding fix applied in this phase
 
-**Plans:** 1/4 plans executed
+**Plans:** 3/4 plans executed
 Plans:
 **Wave 1**
 
 - [x] 27-00-PLAN.md — Wave 0 test stubs: decks.test.ts, api-deck-revalidate.test.ts, deck-builder.test.tsx; retarget page.test.tsx to DecksClient (PERF-07/PERF-08)
-- [ ] 27-01-PLAN.md — Per-user cacheTag on getDecks/getDeckWithCards + revalidateTag in POST/PATCH/DELETE + router.refresh in DecksClient (PERF-07)
-- [ ] 27-02-PLAN.md — startTransition around handleDeckUpdate dispatches + router.refresh in handleSave (PERF-08 + PERF-07)
+- [x] 27-01-PLAN.md — Per-user cacheTag on getDecks/getDeckWithCards + revalidateTag in POST/PATCH/DELETE + router.refresh in DecksClient (PERF-07)
+- [x] 27-02-PLAN.md — startTransition around handleDeckUpdate dispatches + router.refresh in handleSave (PERF-08 + PERF-07)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -272,6 +272,6 @@ Plans:
 | 25 | v5 | 3/3 | Complete    | 2026-05-27 |
 | 25.1 | v5 | 1/1 | Complete | 2026-05-27 |
 | 26 | v6 | 5/5 | Complete   | 2026-05-29 |
-| 27 | v6 | 1/4 | In Progress|  |
+| 27 | v6 | 3/4 | In Progress|  |
 | 28 | v6 | 0/TBD | Not started | - |
 | 29 | v6 | 0/TBD | Not started | - |
