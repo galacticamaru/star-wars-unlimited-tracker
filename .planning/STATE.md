@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-05-29)
 
 Phase: 27 (decks-route-performance) — SHIPPED (PR pending)
 Plan: 4 of 4 (all complete)
-Status: Phases 26 + 27 verified and shipped — feat/v6-phase-26-27 branch pushed, PR pending merge
+Status: Phases 26 + 27 verified and shipped — PR #19 open for review/merge
 Last activity: 2026-06-02 — Shipped Phase 26 + 27 via feat/v6-phase-26-27
 
 ```
