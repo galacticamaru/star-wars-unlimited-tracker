@@ -22,19 +22,24 @@ describe('deck-builder startTransition (PERF-08)', () => {
 
   it('SET_LEADER dispatch is wrapped in a startTransition callback', () => {
     // The dispatch for SET_LEADER should occur inside startTransition(() => { ... })
-    // Use regex to find startTransition wrapping the SET_LEADER dispatch call
+    // Use indexOf to find the startTransition wrapper in handleDeckUpdate (not in imports).
+    // indexOf comparison uses the dispatch call pattern, not the type definition pattern.
     // (indexOf comparison fails because 'SET_LEADER' also appears in the DeckAction type definition)
-    expect(source).toMatch(/startTransition\s*\(\s*\(\s*\)\s*=>\s*\{[^}]*'SET_LEADER'/s);
+    // Instead, find the index of startTransition(() => { ... dispatch({ type: 'SET_LEADER' pattern
+    const leaderTransitionMatch = source.match(/startTransition\s*\(\s*\(\s*\)\s*=>\s*\{[\s\S]*?'SET_LEADER'/);
+    expect(leaderTransitionMatch).not.toBeNull();
   });
 
   it('SET_BASE dispatch is wrapped in a startTransition callback', () => {
     // Use regex to find startTransition wrapping the SET_BASE dispatch call
-    expect(source).toMatch(/startTransition\s*\(\s*\(\s*\)\s*=>\s*\{[^}]*'SET_BASE'/s);
+    const baseTransitionMatch = source.match(/startTransition\s*\(\s*\(\s*\)\s*=>\s*\{[\s\S]*?'SET_BASE'/);
+    expect(baseTransitionMatch).not.toBeNull();
   });
 
   it('UPDATE_CARD dispatch is wrapped in a startTransition callback', () => {
     // Use regex to find startTransition wrapping the UPDATE_CARD dispatch call
-    expect(source).toMatch(/startTransition\s*\(\s*\(\s*\)\s*=>\s*\{[^}]*'UPDATE_CARD'/s);
+    const updateCardTransitionMatch = source.match(/startTransition\s*\(\s*\(\s*\)\s*=>\s*\{[\s\S]*?'UPDATE_CARD'/);
+    expect(updateCardTransitionMatch).not.toBeNull();
   });
 
   it('source contains at least 3 startTransition wrappers (one per dispatch type)', () => {

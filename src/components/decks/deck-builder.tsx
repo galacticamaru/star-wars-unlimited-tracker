@@ -304,6 +304,7 @@ export function DeckBuilder({ initialDeck, allCards, filterOptions }: DeckBuilde
 
       if (res.ok) {
         cleanStateRef.current = { ...state, isDraft };
+        router.refresh();
         if (!isDraft) {
           router.push('/decks');
         }
