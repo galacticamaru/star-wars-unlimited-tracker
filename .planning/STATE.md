@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v6
 milestone_name: milestone
 status: executing
-last_updated: "2026-06-02T07:01:48.054Z"
+last_updated: "2026-06-02T18:00:00Z"
 last_activity: 2026-06-02
 progress:
   total_phases: 4
@@ -24,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-05-29)
 
 ## Current Position
 
-Phase: 27 (decks-route-performance) — EXECUTING
-Plan: 3 of 4
-Status: Plans 01–03 complete — PERF-07, PERF-08, PERF-09 applied
-Last activity: 2026-06-02 -- Completed 27-03-PLAN.md (PERF-09 Speed Insights fixes, PATH A)
+Phase: 27 (decks-route-performance) — SHIPPED (PR pending)
+Plan: 4 of 4 (all complete)
+Status: Phases 26 + 27 verified and shipped — feat/v6-phase-26-27 branch pushed, PR pending merge
+Last activity: 2026-06-02 — Shipped Phase 26 + 27 via feat/v6-phase-26-27
 
 ```
 v6 Progress: [░░░░░░░░░░] 0% (0/3 phases)
