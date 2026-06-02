@@ -72,7 +72,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 <summary>🔄 v6 Mobile, Performance & Polish (Phases 26–29) — ACTIVE</summary>
 
 - [ ] **Phase 26: Mobile Deck Builder UX** — Stats sidebar accessible via bottom sheet on mobile; touch targets and layout usable on screens below 480px wide
-- [ ] **Phase 27: /decks Route Performance** — Per-user cache tagging, INP-safe card interactions, and Speed Insights-driven regression fixes for /decks routes
+- [x] **Phase 27: /decks Route Performance** — Per-user cache tagging, INP-safe card interactions, and Speed Insights-driven regression fixes for /decks routes (completed 2026-06-02)
 - [ ] **Phase 28: Tech Debt Sweep** — Dead code removed, variant enums completed, catalog invalidation verified
 - [ ] **Phase 29: Card Detail Page Performance** — FCP, LCP, and INP improvements for /cards/[set]/[id] driven by Speed Insights data
 
@@ -208,7 +208,7 @@ Plans:
   3. Tapping "Add card" or "Remove card" in the deck builder does not produce a visible freeze or jank — the UI remains responsive throughout the interaction
   4. The Vercel Speed Insights dashboard has been reviewed for /decks route FCP, LCP, and INP data, specific regressions have been identified, and each identified regression has a corresponding fix applied in this phase
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 **Wave 1**
 
@@ -218,7 +218,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 27-03-PLAN.md — Speed Insights /decks review checkpoint + targeted fixes or D-10 catalog-parity fallback (PERF-09)
+- [x] 27-03-PLAN.md — Speed Insights /decks review checkpoint + targeted fixes or D-10 catalog-parity fallback (PERF-09)
 
 ### Phase 28: Tech Debt Sweep
 
@@ -272,6 +272,6 @@ Plans:
 | 25 | v5 | 3/3 | Complete    | 2026-05-27 |
 | 25.1 | v5 | 1/1 | Complete | 2026-05-27 |
 | 26 | v6 | 5/5 | Complete   | 2026-05-29 |
-| 27 | v6 | 3/4 | In Progress|  |
+| 27 | v6 | 4/4 | Complete   | 2026-06-02 |
 | 28 | v6 | 0/TBD | Not started | - |
 | 29 | v6 | 0/TBD | Not started | - |

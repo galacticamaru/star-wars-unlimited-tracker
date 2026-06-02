@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6
 milestone_name: milestone
 status: executing
-last_updated: "2026-06-02T05:13:19.036Z"
-last_activity: 2026-06-02 -- Phase 27 execution started
+last_updated: "2026-06-02T07:01:48.054Z"
+last_activity: 2026-06-02
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
-  completed_plans: 5
-  percent: 25
+  completed_plans: 9
+  percent: 50
 ---
 
 # Project State
@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-05-29)
 ## Current Position
 
 Phase: 27 (decks-route-performance) — EXECUTING
-Plan: 1 of 4
-Status: Executing Phase 27
-Last activity: 2026-06-02 -- Phase 27 execution started
+Plan: 3 of 4
+Status: Plans 01–03 complete — PERF-07, PERF-08, PERF-09 applied
+Last activity: 2026-06-02 -- Completed 27-03-PLAN.md (PERF-09 Speed Insights fixes, PATH A)
 
 ```
 v6 Progress: [░░░░░░░░░░] 0% (0/3 phases)
@@ -44,6 +44,7 @@ v6 Progress: [░░░░░░░░░░] 0% (0/3 phases)
 | v3 Catalog & Polish | 4 | 12 | 1 day |
 | v4 Deck Builder & Collection | 11 | 34 | 10 days |
 | v5 Trade Binder & Performance | 4 | 14 | 4 days |
+| Phase 27 P03 | 10min | 1 tasks | 2 files |
 
 ## Deferred Items
 
@@ -75,3 +76,4 @@ v6 Progress: [░░░░░░░░░░] 0% (0/3 phases)
 - Speed Insights data is live: review Vercel dashboard for /decks FCP/LCP/INP before fixing (PERF-09 is data-driven)
 - Phase 27 depends on Phase 26 (save-flow testing surfaces missing `revalidateTag` calls)
 - Phase 28 depends on Phase 26 (DEBT-03 should land after Phase 26 merge to avoid conflicts on `deck-builder.tsx`)
+- PERF-09 PATH A complete: /decks very poor LCP fixed with streaming skeleton (loading.tsx); /decks/[id] very poor LCP fixed by strengthening card area skeleton; INP covered by Plan 02 startTransition — Base UI internals out of scope if INP persists
