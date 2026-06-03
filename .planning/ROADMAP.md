@@ -249,14 +249,14 @@ Plans:
   2. Each identified regression has a corresponding fix applied — no regression remains unaddressed
   3. The card detail page builds without errors and the fix does not regress the trade offer, collection controls, or variant tracking sections
 
-**Plans:** 5 plans
+**Plans:** 3/5 plans executed
 
 Plans:
 **Wave 1** *(parallel — exclusive file ownership)*
 
-- [ ] 29-01-PLAN.md — Split getCardByPrinting into cached public getCardDefinition + per-user cache on getSameSetPrintingsWithCounts; remove legacy hydration block (D-01, D-02, D-03)
-- [ ] 29-02-PLAN.md — Two-layer cache invalidation: revalidateTag in variant + trade routes, router.refresh() in both variant section components (D-04, D-05)
-- [ ] 29-03-PLAN.md — Card detail loading.tsx skeleton + replace invalid preload prop with priority on the above-fold image (D-06, D-07, D-08, D-09, D-10)
+- [x] 29-01-PLAN.md — Split getCardByPrinting into cached public getCardDefinition + per-user cache on getSameSetPrintingsWithCounts; remove legacy hydration block (D-01, D-02, D-03)
+- [x] 29-02-PLAN.md — Two-layer cache invalidation: revalidateTag in variant + trade routes, router.refresh() in both variant section components (D-04, D-05)
+- [x] 29-03-PLAN.md — Card detail loading.tsx skeleton + replace invalid preload prop with priority on the above-fold image (D-06, D-07, D-08, D-09, D-10)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -291,4 +291,4 @@ Plans:
 | 26 | v6 | 5/5 | Complete   | 2026-05-29 |
 | 27 | v6 | 4/4 | Complete   | 2026-06-02 |
 | 28 | v6 | 2/2 | Complete    | 2026-06-03 |
-| 29 | v6 | 0/TBD | Not started | - |
+| 29 | v6 | 3/5 | In Progress|  |
