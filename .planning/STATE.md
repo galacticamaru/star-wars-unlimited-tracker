@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v6
 milestone_name: milestone
-status: executing
-last_updated: "2026-06-03T07:58:49.596Z"
+status: shipped
+last_updated: "2026-06-03T00:00:00.000Z"
 last_activity: 2026-06-03
 progress:
   total_phases: 8
@@ -25,8 +25,8 @@ See: .planning/PROJECT.md (updated 2026-05-29)
 ## Current Position
 
 Phase: 29
-Plan: Not started
-Status: Executing Phase 29
+Plan: Complete
+Status: v6 shipped — PR pending merge (feat/v6-phase-26-27 → main)
 Last activity: 2026-06-03
 
 ```
