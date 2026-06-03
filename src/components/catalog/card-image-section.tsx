@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -16,9 +16,14 @@ interface CardImageSectionProps {
 export function CardImageSection({ name, type, frontArtUrl, backArtUrl }: CardImageSectionProps) {
   const isLeader = type.toLowerCase().includes('leader');
   const isBase = type.toLowerCase().includes('base');
-  
+
   const [showBack, setShowBack] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  // Track whether the user has triggered at least one toggle. On first paint (isToggling=false)
+  // we skip the opacity-fade so the LCP image is immediately opaque and the browser scores it
+  // as painted without the ~300 ms transition delay. The fade is preserved for subsequent
+  // leader-side / unit-side switches where it improves perceived quality without affecting LCP.
+  const isTogglingRef = useRef(false);
 
   // Determine display properties based on card type
   let displayUrl = frontArtUrl;
@@ -50,13 +55,16 @@ export function CardImageSection({ name, type, frontArtUrl, backArtUrl }: CardIm
     );
   }
 
+  // Only apply the opacity-fade during an explicit toggle (not on the initial LCP paint).
+  const showFade = isTogglingRef.current;
+
   return (
     <div className="w-full md:w-[320px] md:flex-shrink-0 flex flex-col gap-4">
-      <div 
+      <div
         className={cn(
           "relative w-full rounded-lg overflow-hidden bg-muted",
           currentAspect === '3/2' ? 'aspect-[3/2]' : 'aspect-[2/3]',
-          !loaded && 'animate-pulse'
+          showFade && !loaded && 'animate-pulse'
         )}
       >
         <Image
@@ -65,8 +73,9 @@ export function CardImageSection({ name, type, frontArtUrl, backArtUrl }: CardIm
           fill
           sizes="(max-width: 768px) 100vw, 320px"
           className={cn(
-            "object-cover transition-opacity duration-300",
-            !loaded && "opacity-0"
+            "object-cover",
+            showFade && "transition-opacity duration-300",
+            showFade && !loaded && "opacity-0"
           )}
           onLoad={() => setLoaded(true)}
           onError={() => setLoaded(true)}
@@ -76,14 +85,15 @@ export function CardImageSection({ name, type, frontArtUrl, backArtUrl }: CardIm
           preload={true}
         />
       </div>
-      
+
       {isLeader && backArtUrl && (
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => {
+            isTogglingRef.current = true;
             setShowBack(!showBack);
-            setLoaded(false); 
+            setLoaded(false);
           }}
           className="w-full font-heading"
         >
