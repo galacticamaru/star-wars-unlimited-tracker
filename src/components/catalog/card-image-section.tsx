@@ -72,8 +72,7 @@ export function CardImageSection({ name, type, frontArtUrl, backArtUrl }: CardIm
           onError={() => setLoaded(true)}
           // Use key to trigger reload/pulse on toggle
           key={displayUrl}
-          // @ts-ignore - custom attribute used in this project's Next.js 16 setup
-          preload={true}
+          priority
         />
       </div>
       
