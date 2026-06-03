@@ -39,7 +39,7 @@ export function VariantCollectionSection({ printings }: VariantCollectionSection
     // Capture previous value for rollback on server error (CR-03 / WR-01)
     const prev = counts[cardPrintingId] ?? 0;
 
-    // Optimistic UI update (fire-and-update pattern from CollectionControls)
+    // Optimistic UI update (fire-and-update pattern: update state immediately, roll back on error)
     setCounts(prev => ({ ...prev, [cardPrintingId]: val }));
 
     try {
@@ -52,6 +52,8 @@ export function VariantCollectionSection({ printings }: VariantCollectionSection
         // Roll back optimistic update on server error to keep UI in sync with DB
         setCounts(c => ({ ...c, [cardPrintingId]: prev }));
         console.error('Failed to update variant count:', await res.text());
+      } else {
+        router.refresh();
       }
     } catch (err) {
       // Roll back on network-level failure as well
@@ -64,7 +66,7 @@ export function VariantCollectionSection({ printings }: VariantCollectionSection
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
   return (
-    // Container — exact classes from UI-SPEC.md §Layout and existing CollectionControls wrapper
+    // Container — exact classes from UI-SPEC.md §Layout
     <div className="flex flex-col gap-2 p-4 bg-muted/50 rounded-lg border border-border">
       {/* Section label — uppercase via className (UI-SPEC §Copywriting Contract) */}
       <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">

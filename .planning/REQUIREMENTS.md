@@ -19,7 +19,7 @@ Requirements for the v6 Mobile, Performance & Polish milestone. Phases continue 
 - [ ] **PERF-07**: `/decks` and `/decks/[id]` data fetches use per-user `cacheTag` with `revalidateTag` called in all deck mutation handlers (create, update, delete)
 - [ ] **PERF-08**: Card add/remove interactions in the deck builder use `startTransition` and `useDeferredValue` to prevent INP regressions
 - [x] **PERF-09**: Vercel Speed Insights FCP/LCP/INP data for `/decks` routes is reviewed and specific identified regressions are resolved
-- [ ] **PERF-10**: `/cards/[set]/[id]` card detail page has measurably improved FCP, LCP, and INP — specific regressions identified via Speed Insights are resolved
+- [x] **PERF-10**: `/cards/[set]/[id]` card detail page has measurably improved FCP, LCP, and INP — specific regressions identified via Speed Insights are resolved
 
 ### Tech Debt
 
@@ -73,12 +73,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PERF-07 | Phase 27 | Pending |
 | PERF-08 | Phase 27 | Pending |
 | PERF-09 | Phase 27 | Complete |
-| PERF-10 | Phase 29 | Pending |
+| PERF-10 | Phase 29 | Complete |
 | DEBT-01 | Phase 28 | Pending |
 | DEBT-03 | Phase 28 | Pending |
 | DEBT-04 | Phase 28 | Pending |
 
 **Coverage:**
+
 - v6 requirements: 11 total
 - Mapped to phases: 11
 - Unmapped: 0 ✓

@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import { upsertVariantCount, recomputeTotal } from '@/db/queries/collection';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import { revalidateTag } from 'next/cache';
 
 export async function POST(request: NextRequest) {
   try {
@@ -54,6 +55,8 @@ export async function POST(request: NextRequest) {
     // Long-term fix requires a WebSocket Drizzle connection for transaction support.
     // In practice this is low-risk for single-user collection editing.
     await recomputeTotal(userId, printing.cardDefinitionId);
+
+    revalidateTag(`card-printings-${printing.cardDefinitionId}-user-${userId}`, 'max');
 
     return Response.json({ success: true });
   } catch (error) {

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v6
 milestone_name: milestone
-status: executing
-last_updated: "2026-06-02T18:00:00Z"
-last_activity: 2026-06-02
+status: shipped
+last_updated: "2026-06-03T00:00:00.000Z"
+last_activity: 2026-06-03
 progress:
-  total_phases: 4
-  completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
-  percent: 50
+  total_phases: 8
+  completed_phases: 8
+  total_plans: 30
+  completed_plans: 30
+  percent: 100
 ---
 
 # Project State
@@ -24,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-05-29)
 
 ## Current Position
 
-Phase: 27 (decks-route-performance) — SHIPPED (PR pending)
-Plan: 4 of 4 (all complete)
-Status: Phases 26 + 27 verified and shipped — PR #19 open for review/merge
-Last activity: 2026-06-02 — Shipped Phase 26 + 27 via feat/v6-phase-26-27
+Phase: 29
+Plan: Complete
+Status: v6 shipped — PR pending merge (feat/v6-phase-26-27 → main)
+Last activity: 2026-06-03
 
 ```
 v6 Progress: [░░░░░░░░░░] 0% (0/3 phases)

@@ -73,8 +73,8 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 - [ ] **Phase 26: Mobile Deck Builder UX** — Stats sidebar accessible via bottom sheet on mobile; touch targets and layout usable on screens below 480px wide
 - [x] **Phase 27: /decks Route Performance** — Per-user cache tagging, INP-safe card interactions, and Speed Insights-driven regression fixes for /decks routes (completed 2026-06-02)
-- [ ] **Phase 28: Tech Debt Sweep** — Dead code removed, variant enums completed, catalog invalidation verified
-- [ ] **Phase 29: Card Detail Page Performance** — FCP, LCP, and INP improvements for /cards/[set]/[id] driven by Speed Insights data
+- [x] **Phase 28: Tech Debt Sweep** — Dead code removed, variant enums completed, catalog invalidation verified (completed 2026-06-03)
+- [x] **Phase 29: Card Detail Page Performance** — FCP, LCP, and INP improvements for /cards/[set]/[id] driven by Speed Insights data (completed 2026-06-03)
 
 </details>
 
@@ -231,7 +231,12 @@ Plans:
   2. `Prestige Foil` appears as a selectable variant in any UI that lists variant options; `Serialized` is ranked correctly in the variant art precedence order
   3. After updating owned counts on a card's detail page and navigating back to the catalog, the catalog's owned-count overlay shows the updated number — no stale state visible
 
-**Plans:** TBD
+**Plans:** 2/2 plans complete
+Plans:
+**Wave 1** *(all three tech-debt items are independent — no file overlap)*
+
+- [x] 28-01-PLAN.md — Delete CollectionControls dead code + fill variant enum gaps (Prestige Foil option, Serialized precedence, schema comment) (DEBT-01, DEBT-03)
+- [x] 28-02-PLAN.md — Add pageshow BFCache re-fetch listener to CatalogClient for fresh owned-count overlay (DEBT-04)
 
 ### Phase 29: Card Detail Page Performance
 
@@ -244,7 +249,19 @@ Plans:
   2. Each identified regression has a corresponding fix applied — no regression remains unaddressed
   3. The card detail page builds without errors and the fix does not regress the trade offer, collection controls, or variant tracking sections
 
-**Plans:** TBD
+**Plans:** 5/5 plans complete
+
+Plans:
+**Wave 1** *(parallel — exclusive file ownership)*
+
+- [x] 29-01-PLAN.md — Split getCardByPrinting into cached public getCardDefinition + per-user cache on getSameSetPrintingsWithCounts; remove legacy hydration block (D-01, D-02, D-03)
+- [x] 29-02-PLAN.md — Two-layer cache invalidation: revalidateTag in variant + trade routes, router.refresh() in both variant section components (D-04, D-05)
+- [x] 29-03-PLAN.md — Card detail loading.tsx skeleton + replace invalid preload prop with priority on the above-fold image (D-06, D-07, D-08, D-09, D-10)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 29-04-PLAN.md — CHECKPOINT: user reviews Speed Insights for /cards/[set]/[id] and records FCP/LCP/INP findings (D-11 Wave 2a)
+- [x] 29-05-PLAN.md — Apply targeted fixes per recorded findings, or documented no-op close if insufficient data (D-11 Wave 2b, D-12)
 
 ## Progress
 
@@ -273,5 +290,5 @@ Plans:
 | 25.1 | v5 | 1/1 | Complete | 2026-05-27 |
 | 26 | v6 | 5/5 | Complete   | 2026-05-29 |
 | 27 | v6 | 4/4 | Complete   | 2026-06-02 |
-| 28 | v6 | 0/TBD | Not started | - |
-| 29 | v6 | 0/TBD | Not started | - |
+| 28 | v6 | 2/2 | Complete    | 2026-06-03 |
+| 29 | v6 | 5/5 | Complete    | 2026-06-03 |

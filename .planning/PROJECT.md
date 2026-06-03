@@ -95,7 +95,7 @@ See exactly which cards you own while building decks, and know instantly what yo
 - [ ] **DEBT-03**: Prestige Foil added to VARIANT_OPTIONS; Serialized added to VARIANT_PRECEDENCE
 - [ ] **DEBT-04**: Catalog collection state invalidates correctly after card detail page mutations
 - [ ] **DEBT-05**: LAW spotlight deck unknowns resolved (9 cards absent from DB, commented TODOs cleared)
-- [ ] **PERF-10**: `/cards/[set]/[id]` card detail page has measurably improved FCP, LCP, and INP — Speed Insights regressions identified and resolved
+- ✓ **PERF-10**: `/cards/[set]/[id]` card detail page — `getCardDefinition` cached on `cards` tag, per-user printings cached per-user, two-layer invalidation, loading skeleton, `priority` prop, and LCP opacity-transition fix — v6 (Phase 29)
 
 ### Out of Scope
 
@@ -110,7 +110,8 @@ See exactly which cards you own while building decks, and know instantly what yo
 **Shipped v3:** 2026-05-13 | **v4 shipped:** 2026-05-20 (Phases 15–18 + 3 polish complete)
 **Stack:** Next.js 16 + TypeScript + Neon PostgreSQL + Drizzle ORM + Better Auth + shadcn/ui + base-ui + nuqs
 **Deployment:** Vercel (Hobby tier, daily cron syncs for cards and prices)
-**Codebase:** ~23,000 LOC TypeScript/TSX, 67 plans completed across 20 phases (incl. polish)
+**Codebase:** ~23,000 LOC TypeScript/TSX, 72 plans completed across 29 phases (incl. polish)
+**Phase 29 complete 2026-06-03:** Card detail page performance — `getCardDefinition` cached on `cards` tag, per-user printings cached, loading skeleton, `priority` LCP hint, and opacity-transition guard (PERF-10)
 **Auth:** Better Auth (Email, Google, Discord) with per-user data isolation
 **Card data:** swu-db.com API auto-sync; PokéWallet API for market prices
 
@@ -159,4 +160,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-29 — v6 milestone started: Mobile UX, Performance & Tech Debt*
+*Last updated: 2026-06-03 — Phase 28 complete: tech debt sweep closed (DEBT-01, DEBT-03, DEBT-04)*
