@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v6
 milestone_name: milestone
-status: executing
-last_updated: "2026-06-02T18:00:00Z"
-last_activity: 2026-06-02
+status: verifying
+last_updated: "2026-06-03T01:11:14.158Z"
+last_activity: 2026-06-02 — Shipped Phase 26 + 27 via feat/v6-phase-26-27
 progress:
   total_phases: 4
   completed_phases: 2
