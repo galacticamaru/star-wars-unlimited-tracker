@@ -278,5 +278,5 @@ Plans:
 | 25.1 | v5 | 1/1 | Complete | 2026-05-27 |
 | 26 | v6 | 5/5 | Complete   | 2026-05-29 |
 | 27 | v6 | 4/4 | Complete   | 2026-06-02 |
-| 28 | v6 | 2/2 | Complete   | 2026-06-03 |
+| 28 | v6 | 2/2 | Complete    | 2026-06-03 |
 | 29 | v6 | 0/TBD | Not started | - |
