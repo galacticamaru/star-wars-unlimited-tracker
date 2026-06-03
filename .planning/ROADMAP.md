@@ -249,7 +249,19 @@ Plans:
   2. Each identified regression has a corresponding fix applied — no regression remains unaddressed
   3. The card detail page builds without errors and the fix does not regress the trade offer, collection controls, or variant tracking sections
 
-**Plans:** TBD
+**Plans:** 5 plans
+
+Plans:
+**Wave 1** *(parallel — exclusive file ownership)*
+
+- [ ] 29-01-PLAN.md — Split getCardByPrinting into cached public getCardDefinition + per-user cache on getSameSetPrintingsWithCounts; remove legacy hydration block (D-01, D-02, D-03)
+- [ ] 29-02-PLAN.md — Two-layer cache invalidation: revalidateTag in variant + trade routes, router.refresh() in both variant section components (D-04, D-05)
+- [ ] 29-03-PLAN.md — Card detail loading.tsx skeleton + replace invalid preload prop with priority on the above-fold image (D-06, D-07, D-08, D-09, D-10)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 29-04-PLAN.md — CHECKPOINT: user reviews Speed Insights for /cards/[set]/[id] and records FCP/LCP/INP findings (D-11 Wave 2a)
+- [ ] 29-05-PLAN.md — Apply targeted fixes per recorded findings, or documented no-op close if insufficient data (D-11 Wave 2b, D-12)
 
 ## Progress
 
