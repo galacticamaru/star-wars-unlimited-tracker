@@ -1,12 +1,16 @@
 import { db } from '@/db';
-import { cardDefinitions, cardPrintings, userCollections, userPrintingCollections, userTradeOfferings } from '@/db/schema';
+import { cardDefinitions, cardPrintings, userPrintingCollections, userTradeOfferings } from '@/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
+import { cacheTag, cacheLife } from 'next/cache';
 
 // Alias used to join the Normal printing independently of the requested variant
 const normalPrinting = alias(cardPrintings, 'normal_printing');
 
-export async function getCardByPrinting(setCode: string, cardNumber: string, userId?: number) {
+export async function getCardDefinition(setCode: string, cardNumber: string) {
+  'use cache'
+  cacheTag('cards');
+  cacheLife('days');
   // collectorNumber stored as "SOR-059" — reconstruct from URL route params
   const collectorNumber = `${setCode}-${cardNumber}`;
 
@@ -40,7 +44,6 @@ export async function getCardByPrinting(setCode: string, cardNumber: string, use
       artist: normalPrinting.artist,
       priceEur: cardDefinitions.priceEur,
       priceUsd: cardDefinitions.priceUsd,
-      collectionCount: sql<number>`COALESCE(${userCollections.count}, 0)`,
     })
     .from(cardPrintings)
     .innerJoin(cardDefinitions, eq(cardDefinitions.id, cardPrintings.cardDefinitionId))
@@ -50,13 +53,6 @@ export async function getCardByPrinting(setCode: string, cardNumber: string, use
         eq(normalPrinting.cardDefinitionId, cardDefinitions.id),
         eq(normalPrinting.setCode, cardPrintings.setCode),
         eq(normalPrinting.variantType, 'Normal')
-      )
-    )
-    .leftJoin(
-      userCollections,
-      and(
-        eq(cardDefinitions.id, userCollections.cardDefinitionId),
-        userId ? eq(userCollections.userId, userId) : sql`FALSE`
       )
     )
     .where(
@@ -80,8 +76,10 @@ export async function getCardByPrinting(setCode: string, cardNumber: string, use
 export async function getSameSetPrintingsWithCounts(
   cardDefinitionId: number,
   setCode: string,
-  userId?: number
+  userId: number
 ) {
+  'use cache'
+  cacheTag(`card-printings-${cardDefinitionId}-user-${userId}`);
   return db
     .select({
       id: cardPrintings.id,
