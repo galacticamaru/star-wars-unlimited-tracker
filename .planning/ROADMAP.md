@@ -231,7 +231,12 @@ Plans:
   2. `Prestige Foil` appears as a selectable variant in any UI that lists variant options; `Serialized` is ranked correctly in the variant art precedence order
   3. After updating owned counts on a card's detail page and navigating back to the catalog, the catalog's owned-count overlay shows the updated number — no stale state visible
 
-**Plans:** TBD
+**Plans:** 2 plans
+Plans:
+**Wave 1** *(all three tech-debt items are independent — no file overlap)*
+
+- [ ] 28-01-PLAN.md — Delete CollectionControls dead code + fill variant enum gaps (Prestige Foil option, Serialized precedence, schema comment) (DEBT-01, DEBT-03)
+- [ ] 28-02-PLAN.md — Add pageshow BFCache re-fetch listener to CatalogClient for fresh owned-count overlay (DEBT-04)
 
 ### Phase 29: Card Detail Page Performance
 
