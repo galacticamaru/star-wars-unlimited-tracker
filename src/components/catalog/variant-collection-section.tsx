@@ -52,6 +52,8 @@ export function VariantCollectionSection({ printings }: VariantCollectionSection
         // Roll back optimistic update on server error to keep UI in sync with DB
         setCounts(c => ({ ...c, [cardPrintingId]: prev }));
         console.error('Failed to update variant count:', await res.text());
+      } else {
+        router.refresh();
       }
     } catch (err) {
       // Roll back on network-level failure as well

@@ -54,6 +54,7 @@ export function VariantTradeSection({ printings, onQuantityChange }: VariantTrad
         console.error('Failed to update trade quantity:', await res.text());
       } else {
         onQuantityChange?.(cardPrintingId, val);
+        router.refresh();
       }
     } catch (err) {
       // Roll back on network-level failure as well
