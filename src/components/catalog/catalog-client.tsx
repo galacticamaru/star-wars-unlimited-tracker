@@ -69,16 +69,36 @@ export function CatalogClient({
   const { data: session } = authClient.useSession();
   const isAuthenticated = !!session;
 
+  // Shared helper: fetch the collection from the API and update state.
+  // Called from both the remount effect and the pageshow BFCache handler (DEBT-04).
+  const fetchCollection = () => {
+    fetch('/api/collection')
+      .then(res => res.json())
+      .then(data => setCollection(data))
+      .catch(err => console.error('Failed to load collection:', err));
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
-      fetch('/api/collection')
-        .then(res => res.json())
-        .then(data => setCollection(data))
-        .catch(err => console.error('Failed to load collection:', err));
+      fetchCollection();
     } else {
       setCollection({});
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // BFCache re-fetch (DEBT-04, D-07/D-08): when the browser restores this page from the back/forward
+  // cache (event.persisted === true), React does not remount, so the effect above does not re-run.
+  // This listener re-fetches the collection for authenticated users so the owned-count overlay is
+  // never stale after editing counts on the card detail page and pressing the device back button.
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted && isAuthenticated) {
+        fetchCollection();
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, [isAuthenticated]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-filter injection (Phase 16, D-01/D-02): when the parent passes an autoFilter and the user
   // has not yet manually overridden it, push the auto-filter values into our nuqs state.
