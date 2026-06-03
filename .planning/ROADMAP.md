@@ -74,7 +74,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 - [ ] **Phase 26: Mobile Deck Builder UX** — Stats sidebar accessible via bottom sheet on mobile; touch targets and layout usable on screens below 480px wide
 - [x] **Phase 27: /decks Route Performance** — Per-user cache tagging, INP-safe card interactions, and Speed Insights-driven regression fixes for /decks routes (completed 2026-06-02)
 - [x] **Phase 28: Tech Debt Sweep** — Dead code removed, variant enums completed, catalog invalidation verified (completed 2026-06-03)
-- [ ] **Phase 29: Card Detail Page Performance** — FCP, LCP, and INP improvements for /cards/[set]/[id] driven by Speed Insights data
+- [x] **Phase 29: Card Detail Page Performance** — FCP, LCP, and INP improvements for /cards/[set]/[id] driven by Speed Insights data (completed 2026-06-03)
 
 </details>
 
@@ -291,4 +291,4 @@ Plans:
 | 26 | v6 | 5/5 | Complete   | 2026-05-29 |
 | 27 | v6 | 4/4 | Complete   | 2026-06-02 |
 | 28 | v6 | 2/2 | Complete    | 2026-06-03 |
-| 29 | v6 | 5/5 | Complete   | 2026-06-03 |
+| 29 | v6 | 5/5 | Complete    | 2026-06-03 |
