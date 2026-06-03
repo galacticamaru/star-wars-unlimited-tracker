@@ -101,7 +101,7 @@ export const cardPrintings = pgTable(
     setCode: text('set_code').notNull(), // e.g., "SOR"
     collectorNumber: text('collector_number').notNull(), // e.g., "SOR-059" (constructed: Set + "-" + Number)
     rarity: text('rarity').notNull(), // "Common" | "Uncommon" | "Rare" | "Legendary" | "Special"
-    variantType: text('variant_type').notNull(), // "Normal" | "Foil" | "Hyperspace" | "Hyperspace Foil" | "Showcase"
+    variantType: text('variant_type').notNull(), // "Normal" | "Foil" | "Hyperspace" | "Hyperspace Foil" | "Showcase" | "Prestige" | "Prestige Foil" | "Serialized"
     frontArtUrl: text('front_art_url'), // https://cdn.swu-db.com/images/cards/SOR/059.png
     backArtUrl: text('back_art_url'), // Leader back art URL
     artist: text('artist'),

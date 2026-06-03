@@ -5,13 +5,14 @@
  * the art of the most premium variant they own. Count is only a tie-breaker
  * between variants at the same precedence level.
  *
- * Precedence: Prestige Foil(7) > Prestige(6) > Showcase(5) > Hyperspace Foil(4) > Hyperspace(3) > Foil(2) > Normal(1)
+ * Precedence: Serialized(8) > Prestige Foil(7) > Prestige(6) > Showcase(5) > Hyperspace Foil(4) > Hyperspace(3) > Foil(2) > Normal(1)
  * Unknown variant types are treated as 0 (lowest priority).
  */
 
 export type PrintingArtMap = Record<number, { variantType: string; frontArtUrl: string | null }>;
 
 export const VARIANT_PRECEDENCE: Record<string, number> = {
+  Serialized: 8,
   'Prestige Foil': 7,
   Prestige: 6,
   Showcase: 5,
