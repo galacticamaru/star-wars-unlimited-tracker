@@ -159,4 +159,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-29 — v6 milestone started: Mobile UX, Performance & Tech Debt*
+*Last updated: 2026-06-03 — Phase 28 complete: tech debt sweep closed (DEBT-01, DEBT-03, DEBT-04)*
