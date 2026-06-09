@@ -27,8 +27,6 @@ A web app for Star Wars: Unlimited TCG players to track their card collection, b
 | Testing | Vitest + Testing Library |
 | Deployment | Vercel (Hobby tier) |
 
-## Getting Started
-
 ### Prerequisites
 
 - Node.js 20+
