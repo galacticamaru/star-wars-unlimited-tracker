@@ -129,3 +129,64 @@ Per-variant collection tracking with +/- controls on card detail page, catalog v
 - `.planning/milestones/v4-ROADMAP.md` — full phase details
 - `.planning/milestones/v4-REQUIREMENTS.md` — all requirements with outcomes
 - `.planning/milestones/v4-MILESTONE-AUDIT.md` — pre-close gap audit
+
+---
+
+## v5 Trade Binder & Performance — Shipped 2026-05-27
+
+**Phases:** 4 (23, 24, 25, 25.1)
+**Plans:** 14
+**Timeline:** 2026-05-23 → 2026-05-27 (4 days)
+**Requirements:** BINDER-07, BINDER-08, BINDER-09, PERF-01 through PERF-06
+
+### Delivered
+
+Closed the variant gap across every binder surface, moved trade-offer management onto the card detail page, redesigned Manage Binder for collection-driven discovery, and made catalog browsing and bulk operations measurably faster — plus real-user performance instrumentation via Vercel Speed Insights.
+
+### Key Accomplishments
+
+1. Looking For tiles show per-variant badges matching Available-for-Trade styling; Card Detail page exposes full trade-offer management without a Manage Binder round-trip (Phase 23)
+2. Manage Binder browses and searches the user's own collection directly — no catalog navigation required (Phase 23)
+3. Catalog filter interactions ≤200ms via 150ms search debounce, RSC `use cache` + `cacheTag`, and `getAllCards` userId removal (Phase 24)
+4. CardGrid virtualization (`@tanstack/react-virtual`) with priority-loaded first row and layout-shift-free lazy images (Phase 24)
+5. Single-round-trip batch upserts for Quick Add / CSV Import with live progress feedback; New Deck skeleton ≤500ms (Phase 25)
+6. `@vercel/speed-insights@2.0.0` wired into the root layout for real-user FCP/LCP/INP capture (Phase 25.1, inserted)
+
+### Known Deferred Items at Close
+
+- PERF-06 fully closes only once Speed Insights is enabled in the Vercel dashboard post-deploy
+
+### Archive
+
+- `.planning/milestones/v5-ROADMAP.md` — full phase details
+
+---
+
+## v6 Mobile, Performance & Polish — Shipped 2026-06-03
+
+**Phases:** 4 (26, 27, 28, 29)
+**Plans:** 16
+**Timeline:** 2026-05-29 → 2026-06-03 (5 days)
+**Requirements:** MOBILE-01 through MOBILE-04, PERF-07 through PERF-10, DEBT-01, DEBT-03, DEBT-04
+
+### Delivered
+
+Made the deck builder fully usable on a phone without touching the desktop layout, cut FCP/LCP/INP regressions on the `/decks` and `/cards/[set]/[id]` routes using live Speed Insights data, and cleared the standing variant/dead-code tech debt.
+
+### Key Accomplishments
+
+1. Mobile deck builder: stats sidebar in a keyboard-safe bottom Sheet, 44px+ touch targets, overflow-free toolbar below 480px — zero desktop regression (Phase 26)
+2. Per-user `cacheTag` on `getDecks`/`getDeckWithCards` with `revalidateTag` in every deck mutation handler; `startTransition`-wrapped card interactions for INP safety (Phase 27)
+3. Two-layer cache invalidation pattern established — `revalidateTag()` for the Data Cache plus `router.refresh()` for the Router Cache after mutations (Phases 27, 29)
+4. `/decks` and `/decks/[id]` LCP fixed with streaming skeletons; regressions identified from the Speed Insights dashboard (Phase 27)
+5. Tech debt swept: `CollectionControls` dead code removed, `Prestige Foil` added to `VARIANT_OPTIONS`, `Serialized` ranked in `VARIANT_PRECEDENCE`, catalog owned-count overlay refresh verified (Phase 28)
+6. Card detail page split into cached public `getCardDefinition` + per-user counts, legacy hydration removed, LCP image priority fix (Phases 29-01, 29-03); targeted LCP opacity-transition fix (Phase 29-05)
+
+### Known Deferred Items at Close
+
+- DEBT-02: DeckBuilder Add Cards tab variant art — deferred, needs virtualized-list interaction investigation
+- DEBT-05: LAW spotlight deck 9 unknown cards — deferred pending DB sync
+
+### Archive
+
+- `.planning/milestones/v6-ROADMAP.md` — full phase details

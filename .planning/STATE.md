@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-05-29)
 
 Phase: 29
 Plan: Complete
-Status: v6 shipped — PR pending merge (feat/v6-phase-26-27 → main)
+Status: v6 shipped — merged to main (PR #20 feat/v6-phase-26-27)
 Last activity: 2026-06-03
 
 ```
-v6 Progress: [░░░░░░░░░░] 0% (0/3 phases)
+v6 Progress: [██████████] 100% (4/4 phases)
 ```
 
 ## Performance Metrics

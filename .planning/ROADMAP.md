@@ -7,7 +7,7 @@
 - ✅ **v3 Catalog, Home & Binder Polish** — Phases 11–14 (shipped 2026-05-13) · [Archive](milestones/v3-ROADMAP.md)
 - ✅ **v4 Deck Builder & Collection Depth** — Phases 15–22 (shipped 2026-05-23) · [Archive](milestones/v4-ROADMAP.md)
 - ✅ **v5 Trade Binder & Performance** — Phases 23–25.1 (shipped 2026-05-27) · [Archive](milestones/v5-ROADMAP.md)
-- 🔄 **v6 Mobile, Performance & Polish** — Phases 26–29 (active)
+- ✅ **v6 Mobile, Performance & Polish** — Phases 26–29 (shipped 2026-06-03) · [Archive](milestones/v6-ROADMAP.md)
 
 ## Phases
 
@@ -68,10 +68,10 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 </details>
 
-<details open>
-<summary>🔄 v6 Mobile, Performance & Polish (Phases 26–29) — ACTIVE</summary>
+<details>
+<summary>✅ v6 Mobile, Performance & Polish (Phases 26–29) — SHIPPED 2026-06-03</summary>
 
-- [ ] **Phase 26: Mobile Deck Builder UX** — Stats sidebar accessible via bottom sheet on mobile; touch targets and layout usable on screens below 480px wide
+- [x] **Phase 26: Mobile Deck Builder UX** — Stats sidebar accessible via bottom sheet on mobile; touch targets and layout usable on screens below 480px wide (completed 2026-05-29)
 - [x] **Phase 27: /decks Route Performance** — Per-user cache tagging, INP-safe card interactions, and Speed Insights-driven regression fixes for /decks routes (completed 2026-06-02)
 - [x] **Phase 28: Tech Debt Sweep** — Dead code removed, variant enums completed, catalog invalidation verified (completed 2026-06-03)
 - [x] **Phase 29: Card Detail Page Performance** — FCP, LCP, and INP improvements for /cards/[set]/[id] driven by Speed Insights data (completed 2026-06-03)
