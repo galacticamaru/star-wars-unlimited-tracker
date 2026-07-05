@@ -2,11 +2,15 @@
 gsd_state_version: 1.0
 milestone: v7
 milestone_name: Trade Binder Improvements
+current_phase: 30
+current_phase_name: Unified Search-Driven Add Flow
 status: planning
-last_updated: "2026-07-05T02:22:06.683Z"
+stopped_at: Phase 30 context gathered
+last_updated: "2026-07-05T22:51:55.189Z"
 last_activity: 2026-07-05
+last_activity_desc: ROADMAP.md created for v7 (Phases 30–33); Phase 33 gated pending deck lists + ASH catalog sync
 progress:
-  total_phases: 4
+  total_phases: 12
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -86,3 +90,9 @@ Progress: [░░░░░░░░░░] 0%
 - Phase 27 depends on Phase 26 (save-flow testing surfaces missing `revalidateTag` calls)
 - Phase 28 depends on Phase 26 (DEBT-03 should land after Phase 26 merge to avoid conflicts on `deck-builder.tsx`)
 - PERF-09 PATH A complete: /decks very poor LCP fixed with streaming skeleton (loading.tsx); /decks/[id] very poor LCP fixed by strengthening card area skeleton; INP covered by Plan 02 startTransition — Base UI internals out of scope if INP persists
+
+## Session
+
+**Last session:** 2026-07-05T22:51:55.179Z
+**Stopped at:** Phase 30 context gathered
+**Resume file:** .planning/phases/30-unified-search-driven-add-flow/30-CONTEXT.md
