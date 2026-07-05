@@ -1,39 +1,46 @@
 # Requirements: Star Wars Unlimited Tracker
 
-**Defined:** 2026-05-29
+**Defined:** 2026-07-05
 **Core Value:** See exactly which cards you own while building decks, and know instantly what you're missing.
 
-## v6 Requirements
+## v7 Requirements
 
-Requirements for the v6 Mobile, Performance & Polish milestone. Phases continue from v5 (Phase 26+).
+Requirements for the v7 Trade Binder Improvements milestone. Phases continue from v6 (Phase 30+).
 
-### Mobile UX
+### Unified Binder Add Flow
 
-- [x] **MOBILE-01**: User can access deck stats (card count, aspect breakdown, validity) on mobile via a bottom sheet that peeks with a summary and expands to show full sidebar content
-- [x] **MOBILE-02**: Add/remove card buttons in the deck builder are tappable on touch screens (minimum 44px target size)
-- [x] **MOBILE-03**: Deck builder toolbar and tabs display without overflow or clipping on screens below 480px wide
-- [x] **MOBILE-04**: Existing desktop deck builder layout is fully preserved — no regression on md breakpoint and above
+- [ ] **BINDER-10**: The Manage Binder page presents a single search-driven flow (replacing the separate "Add Cards" and "Add Manual Want" boxes) for putting cards into the binder
+- [ ] **BINDER-11**: The binder search queries the full card catalog and shows no results until the user enters a search term (no eager render of the collection on page load)
+- [ ] **BINDER-12**: From a search result, the user picks a specific variant (printing) and chooses its destination — trade binder or want
+- [ ] **BINDER-13**: "Add to trade binder" (set trade quantity) is available only for variants the user owns; unowned variants show the action disabled with a clear reason
+- [ ] **BINDER-14**: The user can add any card as a manual want from a search result, including cards not in their collection
 
-### Performance
+### Trade Profile
 
-- [ ] **PERF-07**: `/decks` and `/decks/[id]` data fetches use per-user `cacheTag` with `revalidateTag` called in all deck mutation handlers (create, update, delete)
-- [ ] **PERF-08**: Card add/remove interactions in the deck builder use `startTransition` and `useDeferredValue` to prevent INP regressions
-- [x] **PERF-09**: Vercel Speed Insights FCP/LCP/INP data for `/decks` routes is reviewed and specific identified regressions are resolved
-- [x] **PERF-10**: `/cards/[set]/[id]` card detail page has measurably improved FCP, LCP, and INP — specific regressions identified via Speed Insights are resolved
+- [ ] **BINDER-15**: The trade profile (username / binder URL) is reached via a profile button that opens a modal, instead of occupying the Manage Binder page permanently
+- [ ] **BINDER-16**: The user can set a public "trade note" (short free text) in the trade profile modal
+- [ ] **BINDER-17**: The public binder page displays the user's trade note
 
-### Tech Debt
+### Wants & Exclusions
 
-- [ ] **DEBT-01**: `CollectionControls` component and its dead imports are removed from the codebase
-- [ ] **DEBT-03**: `Prestige Foil` added to `VARIANT_OPTIONS`; `Serialized` added to `VARIANT_PRECEDENCE`
-- [ ] **DEBT-04**: Catalog collection state re-fetches correctly after card detail page owned-count mutations (no stale overlay after returning to catalog)
+- [ ] **BINDER-18**: The wants list shows deck-driven auto-wants and manually-added wants together in one list, visually distinguishing the two
+- [ ] **BINDER-19**: The user can hide (exclude) an auto-generated want and restore a previously excluded one
+- [ ] **BINDER-20**: The user can adjust the quantity of, or remove, a manual want from the wants list
+
+### Spotlight Decks (Ashes of the Empire)
+
+> **Gated:** deck lists to be supplied by the user, and both decks depend on the ASH ("Ashes of the Empire") set being present in the catalog DB via the swu-db.com sync. This category is scoped to its own phase, blocked until those inputs are ready.
+
+- [ ] **DECK-11**: The Luke Skywalker (ASH) Ashes of the Empire spotlight deck is available in Quick Add and adds its full card list to the user's collection
+- [ ] **DECK-12**: The Emperor Palpatine (ASH) Ashes of the Empire spotlight deck is available in Quick Add and adds its full card list to the user's collection
 
 ---
 
 ## Future Requirements (Deferred)
 
-### Deferred from v6
+### Carried from v6
 
-- **DEBT-02**: DeckBuilder Add Cards tab displays variant art via `getPrintingArtMap()` — deferred; more investigation needed on interaction with virtualized list
+- **DEBT-02**: DeckBuilder Add Cards tab displays variant art via `getPrintingArtMap()` — deferred; needs investigation on interaction with the virtualized list
 - **DEBT-05**: LAW spotlight deck unknowns resolved (9 cards absent from DB, commented TODOs cleared) — deferred pending DB sync
 
 ### Previously Deferred
@@ -51,39 +58,37 @@ Requirements for the v6 Mobile, Performance & Polish milestone. Phases continue 
 
 | Feature | Reason |
 |---------|--------|
-| Drag-and-drop card ordering on mobile | Touch drag conflicts with scroll; tap +/- is the correct mobile pattern |
-| Bottom tab navigation bar on mobile | Scope risk; Sheet approach solves the core problem without restructuring navigation |
-| `use cache: remote` for deck queries | Requires Vercel paid Runtime Cache — not available on Hobby tier |
+| Trade proposals / messaging between users | Different product surface; v7 is binder curation UX, not a trading marketplace |
+| Automatic want-vs-offer matching across users | Larger feature; not part of the manage-binder redesign |
 | Card trading / marketplace | Different product |
 | Mobile native app | Web-first; responsive design covers mobile browsers |
 | Camera scanning | ML complexity; CSV import covers collection migration |
 
----
-
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
+Which phases cover which requirements. Populated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MOBILE-01 | Phase 26 | Complete |
-| MOBILE-02 | Phase 26 | Complete |
-| MOBILE-03 | Phase 26 | Complete |
-| MOBILE-04 | Phase 26 | Complete |
-| PERF-07 | Phase 27 | Pending |
-| PERF-08 | Phase 27 | Pending |
-| PERF-09 | Phase 27 | Complete |
-| PERF-10 | Phase 29 | Complete |
-| DEBT-01 | Phase 28 | Pending |
-| DEBT-03 | Phase 28 | Pending |
-| DEBT-04 | Phase 28 | Pending |
+| BINDER-10 | TBD | Pending |
+| BINDER-11 | TBD | Pending |
+| BINDER-12 | TBD | Pending |
+| BINDER-13 | TBD | Pending |
+| BINDER-14 | TBD | Pending |
+| BINDER-15 | TBD | Pending |
+| BINDER-16 | TBD | Pending |
+| BINDER-17 | TBD | Pending |
+| BINDER-18 | TBD | Pending |
+| BINDER-19 | TBD | Pending |
+| BINDER-20 | TBD | Pending |
+| DECK-11 | TBD | Pending |
+| DECK-12 | TBD | Pending |
 
 **Coverage:**
-
-- v6 requirements: 11 total
-- Mapped to phases: 11
-- Unmapped: 0 ✓
+- v7 requirements: 13 total
+- Mapped to phases: 0 (roadmap pending)
+- Unmapped: 13 ⚠️
 
 ---
-*Requirements defined: 2026-05-29*
-*Last updated: 2026-05-29 — traceability confirmed after roadmap creation*
+*Requirements defined: 2026-07-05*
+*Last updated: 2026-07-05 after v7 milestone definition*
