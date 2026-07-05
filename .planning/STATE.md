@@ -1,37 +1,33 @@
 ---
 gsd_state_version: 1.0
-milestone: v6
-milestone_name: milestone
-status: shipped
-last_updated: "2026-06-03T00:00:00.000Z"
-last_activity: 2026-06-03
+milestone: v7
+milestone_name: Trade Binder Improvements
+status: planning
+last_updated: "2026-07-05T02:22:06.683Z"
+last_activity: 2026-07-05
 progress:
-  total_phases: 8
-  completed_phases: 8
-  total_plans: 30
-  completed_plans: 30
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-29)
+See: .planning/PROJECT.md (updated 2026-07-05)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus**: v6 — Mobile, Performance & Polish
+**Current focus**: v7 — Trade Binder Improvements
 
 ## Current Position
 
-Phase: 29
-Plan: Complete
-Status: v6 shipped — merged to main (PR #20 feat/v6-phase-26-27)
-Last activity: 2026-06-03
-
-```
-v6 Progress: [██████████] 100% (4/4 phases)
-```
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-07-05 — Milestone v7 started
 
 ## Performance Metrics
 

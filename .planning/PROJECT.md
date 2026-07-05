@@ -10,16 +10,28 @@ A multi-user web app for Star Wars: Unlimited TCG players. Players track their c
 > **v4 shipped 2026-05-20.** Deck builder polish (type grouping, art, aspect panel, guided onboarding), per-variant collection tracking, catalog variant art, and starter deck quick-add.
 > **v4 gap closure complete 2026-05-23.** Per-variant trade offerings (Phase 21) and additional starter/spotlight deck lists (Phase 22) fill remaining REQ-BINDER-06 gap.
 > **v5 shipped 2026-05-27.** Binder variant completeness (BINDER-07/08/09), catalog & page load performance, bulk operation speed, and real-user Web Vitals telemetry (PERF-06) via Vercel Speed Insights.
+> **v6 shipped 2026-06-03.** Mobile deck builder UX, /decks + /cards/[set]/[id] performance driven by Speed Insights, and a tech-debt sweep (dead code, variant enum gaps, catalog invalidation).
 
-## Current Milestone: v6 Mobile, Performance & Polish
+## Current Milestone: v7 Trade Binder Improvements
 
-**Goal:** Make the deck builder usable on mobile, measurably improve /decks and /decks/[id] load times using real Speed Insights data, and clear the deferred tech debt backlog.
+**Goal:** Make managing a trade binder fast and intuitive — collapse the separate Add Cards, Manual Wants, variant sheet, and exclusions surfaces into one search-driven flow, with a set-once profile tucked behind a modal.
 
 **Target features:**
-- Deck builder mobile UX — fix sidebar overlap so cards can be tapped and added on touch screens without breaking the desktop three-tab layout
-- /decks + /decks/[id] performance — LCP, TTFB, and filter-response improvements matching v5's catalog work
-- Speed Insights-driven fixes — address specific FCP/LCP/INP regressions visible in the Vercel dashboard
-- Tech debt sweep — CollectionControls dead code, DeckBuilder variant art, Prestige Foil/Serialized gaps, catalog state invalidation, LAW deck unknowns
+- Unified search-driven add flow — one search bar over the full catalog; search a card, pick a variant, then choose "Add to binder" (enabled only for variants you own) or "Add as want" (any card)
+- Search-first results — nothing renders until the user types; no eager load of the whole owned collection
+- Trade profile modal — behind a profile button (set-once); username/binder URL plus a new public "trade note" (e.g. "EU only, will ship")
+- Cleaner wants list — deck-driven auto-wants and manually-added wants coexist in one clearly-sectioned list; excluding an auto-want hides it (behaviour kept, presentation clarified)
+- Public binder surfaces the trade note
+
+## Milestone: v6 Mobile, Performance & Polish — COMPLETE
+
+**Shipped:** 2026-06-03 — Phases 26–29 (16 plans).
+
+**What shipped:**
+- Mobile deck builder UX — stats in a keyboard-safe bottom sheet, 44px touch targets, overflow-free toolbar below 480px, zero desktop regression (Phase 26)
+- /decks + /decks/[id] performance — per-user cache tags, startTransition card interactions, streaming skeletons (Phase 27)
+- Tech debt sweep — CollectionControls removed, Prestige Foil/Serialized enum gaps filled, catalog invalidation verified (Phase 28)
+- Card detail page performance — cached getCardDefinition, per-user printings, loading skeleton, LCP fixes (Phase 29)
 
 ## Milestone: v5 Trade Binder & Performance — COMPLETE
 
@@ -83,19 +95,25 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Card image loading improved — lazy loading, no layout shift — v5 (PERF-03, Phase 24)
 - ✓ Quick Add and CSV Import provide progress feedback and complete faster — v5 (PERF-04, Phase 25)
 - ✓ Real-user Web Vitals captured via @vercel/speed-insights; every page instrumented — v5 (PERF-06, Phase 25.1)
+- ✓ Deck builder fully usable on mobile — stats bottom sheet, tappable cards, no sidebar overlap, zero desktop regression — v6 (MOBILE-01, MOBILE-02, Phase 26)
+- ✓ /decks and /decks/[id] LCP/TTFB improved — per-user cache tags, startTransition interactions, streaming skeletons — v6 (PERF-07, PERF-08, Phase 27)
+- ✓ Tech debt swept — CollectionControls removed, Prestige Foil/Serialized enum gaps filled, catalog invalidation verified — v6 (DEBT-01, DEBT-03, DEBT-04, Phase 28)
+- ✓ `/cards/[set]/[id]` card detail page — cached `getCardDefinition`, per-user printings, loading skeleton, `priority` prop, LCP opacity-transition fix — v6 (PERF-10, Phase 29)
 
-### Active (v6)
+### Active (v7)
 
-- [ ] **MOBILE-01**: Deck builder is fully usable on mobile — stats sidebar does not overlap content, cards can be tapped to add/remove
-- [ ] **MOBILE-02**: Mobile deck builder layout adapts without breaking the existing desktop three-tab experience
-- [ ] **PERF-07**: /decks and /decks/[id] pages have measurably improved LCP and TTFB (target: matched to catalog baseline)
-- [ ] **PERF-08**: Specific FCP/LCP/INP regressions identified in Vercel Speed Insights dashboard are resolved
-- [ ] **DEBT-01**: CollectionControls dead code removed (0 imports, calls deleted endpoint)
-- [ ] **DEBT-02**: DeckBuilder Add Cards tab displays variant art via getPrintingArtMap()
-- [ ] **DEBT-03**: Prestige Foil added to VARIANT_OPTIONS; Serialized added to VARIANT_PRECEDENCE
-- [ ] **DEBT-04**: Catalog collection state invalidates correctly after card detail page mutations
-- [ ] **DEBT-05**: LAW spotlight deck unknowns resolved (9 cards absent from DB, commented TODOs cleared)
-- ✓ **PERF-10**: `/cards/[set]/[id]` card detail page — `getCardDefinition` cached on `cards` tag, per-user printings cached per-user, two-layer invalidation, loading skeleton, `priority` prop, and LCP opacity-transition fix — v6 (Phase 29)
+<!-- Finalized with REQ-IDs in REQUIREMENTS.md during milestone definition. -->
+
+- [ ] Unified search-driven binder add flow over the full catalog (add-to-binder gated on ownership; add-as-want for any card)
+- [ ] Search-first results — no cards shown until the user types
+- [ ] Trade profile modal behind a profile button — username + public trade note
+- [ ] Cleaner combined wants list — auto-wants + manual wants, exclusion hides auto-wants
+- [ ] Public binder displays the trade note
+
+### Deferred (carried from v6)
+
+- [ ] **DEBT-02**: DeckBuilder Add Cards tab displays variant art via getPrintingArtMap() — needs virtualized-list interaction investigation
+- [ ] **DEBT-05**: LAW spotlight deck unknowns resolved (9 cards absent from DB) — pending DB sync
 
 ### Out of Scope
 
@@ -160,4 +178,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-06-03 — Phase 28 complete: tech debt sweep closed (DEBT-01, DEBT-03, DEBT-04)*
+*Last updated: 2026-07-05 — v7 Trade Binder Improvements milestone started*
