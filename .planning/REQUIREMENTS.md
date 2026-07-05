@@ -70,25 +70,25 @@ Which phases cover which requirements. Populated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BINDER-10 | TBD | Pending |
-| BINDER-11 | TBD | Pending |
-| BINDER-12 | TBD | Pending |
-| BINDER-13 | TBD | Pending |
-| BINDER-14 | TBD | Pending |
-| BINDER-15 | TBD | Pending |
-| BINDER-16 | TBD | Pending |
-| BINDER-17 | TBD | Pending |
-| BINDER-18 | TBD | Pending |
-| BINDER-19 | TBD | Pending |
-| BINDER-20 | TBD | Pending |
-| DECK-11 | TBD | Pending |
-| DECK-12 | TBD | Pending |
+| BINDER-10 | Phase 30 | Pending |
+| BINDER-11 | Phase 30 | Pending |
+| BINDER-12 | Phase 30 | Pending |
+| BINDER-13 | Phase 30 | Pending |
+| BINDER-14 | Phase 30 | Pending |
+| BINDER-15 | Phase 31 | Pending |
+| BINDER-16 | Phase 31 | Pending |
+| BINDER-17 | Phase 31 | Pending |
+| BINDER-18 | Phase 32 | Pending |
+| BINDER-19 | Phase 32 | Pending |
+| BINDER-20 | Phase 32 | Pending |
+| DECK-11 | Phase 33 | Pending — Gated/Blocked |
+| DECK-12 | Phase 33 | Pending — Gated/Blocked |
 
 **Coverage:**
 - v7 requirements: 13 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13/13 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-07-05*
-*Last updated: 2026-07-05 after v7 milestone definition*
+*Last updated: 2026-07-05 after v7 ROADMAP.md creation (Phases 30–33)*

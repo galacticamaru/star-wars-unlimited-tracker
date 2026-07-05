@@ -8,6 +8,7 @@
 - ✅ **v4 Deck Builder & Collection Depth** — Phases 15–22 (shipped 2026-05-23) · [Archive](milestones/v4-ROADMAP.md)
 - ✅ **v5 Trade Binder & Performance** — Phases 23–25.1 (shipped 2026-05-27) · [Archive](milestones/v5-ROADMAP.md)
 - ✅ **v6 Mobile, Performance & Polish** — Phases 26–29 (shipped 2026-06-03) · [Archive](milestones/v6-ROADMAP.md)
+- 🚧 **v7 Trade Binder Improvements** — Phases 30–33 (in progress)
 
 ## Phases
 
@@ -77,6 +78,15 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 - [x] **Phase 29: Card Detail Page Performance** — FCP, LCP, and INP improvements for /cards/[set]/[id] driven by Speed Insights data (completed 2026-06-03)
 
 </details>
+
+### 🚧 v7 Trade Binder Improvements (Phases 30–33, in progress)
+
+**Milestone Goal:** Make managing a trade binder fast and intuitive — collapse the separate Add Cards, Manual Wants, variant sheet, and exclusions surfaces into one search-driven flow, with a set-once profile tucked behind a modal.
+
+- [ ] **Phase 30: Unified Search-Driven Add Flow** - One search bar over the full catalog replaces the separate Add Cards/Manual Want boxes; owned variants go to the trade binder, any variant can become a want
+- [ ] **Phase 31: Trade Profile Modal & Public Trade Note** - Username/binder URL moves behind a profile button modal; a new public trade note is settable and shown on the public binder
+- [ ] **Phase 32: Combined Wants & Exclusions List** - Deck-driven auto-wants and manually-added wants appear together in one clearly-sectioned list with exclude/restore and quantity controls
+- [ ] **Phase 33: Ashes of the Empire Spotlight Decks (GATED)** - Luke Skywalker and Emperor Palpatine ASH spotlight decks added to Quick Add — blocked on user-supplied deck lists and the ASH set syncing into the catalog DB
 
 ## Phase Details
 
@@ -263,6 +273,67 @@ Plans:
 - [x] 29-04-PLAN.md — CHECKPOINT: user reviews Speed Insights for /cards/[set]/[id] and records FCP/LCP/INP findings (D-11 Wave 2a)
 - [x] 29-05-PLAN.md — Apply targeted fixes per recorded findings, or documented no-op close if insufficient data (D-11 Wave 2b, D-12)
 
+### Phase 30: Unified Search-Driven Add Flow
+
+**Goal:** The Manage Binder page (`src/app/binder/manage/page.tsx`) replaces its separate "Add Cards to Binder" grid and "Add Manual Want" flow with a single search-driven flow over the full card catalog — a card search returns full-catalog matches (not just owned cards), the user picks a specific variant, and chooses "Add to trade binder" (only enabled for owned variants) or "Add as want" (any variant, owned or not)
+**Depends on:** Phase 29 (v6 complete)
+**Requirements:** BINDER-10, BINDER-11, BINDER-12, BINDER-13, BINDER-14
+**Success Criteria** (what must be TRUE):
+
+  1. On the Manage Binder page, the separate "Add Cards to Binder" grid and "Add Manual Want" box are gone, replaced by one search bar
+  2. No cards render below the search bar until the user types a search term — there is no eager load of the full collection or catalog on page mount
+  3. Search results are drawn from the full card catalog (including cards the user does not own), not only from `/api/collection/owned-cards`
+  4. Selecting a search result opens a variant picker; for an owned variant the user can choose "Add to trade binder" and set a trade quantity, and for any variant the user can choose "Add as want"
+  5. Attempting to add an unowned variant to the trade binder shows that action disabled with a visible reason (e.g. "You don't own this variant"), while "Add as want" remains available for the same variant
+
+**Plans:** TBD
+**UI hint**: yes
+
+### Phase 31: Trade Profile Modal & Public Trade Note
+
+**Goal:** The trade profile (username / binder URL), currently a permanent section on the Manage Binder page, moves behind a profile button that opens a modal; the modal gains a new public "trade note" free-text field, and the public binder page (`/binder/[username]`) displays that note to visitors
+**Depends on:** Phase 30
+**Requirements:** BINDER-15, BINDER-16, BINDER-17
+**Success Criteria** (what must be TRUE):
+
+  1. The Manage Binder page no longer shows the username/binder-URL section inline on the page; a profile button opens a modal containing that content instead
+  2. Inside the profile modal, the user can set and save a short public trade note (e.g. "EU only, will ship")
+  3. Visiting a user's public binder page (`/binder/[username]`) shows their trade note when one is set, and shows no broken UI when the note is empty
+
+**Plans:** TBD
+**UI hint**: yes
+
+### Phase 32: Combined Wants & Exclusions List
+
+**Goal:** `ManageWantsList` shows deck-driven auto-wants and manually-added wants (including wants added for cards outside the user's collection, per Phase 30) together in one clearly-sectioned list, keeps the existing exclude/restore behaviour for auto-wants, and adds quantity/removal controls for manual wants
+**Depends on:** Phase 30
+**Requirements:** BINDER-18, BINDER-19, BINDER-20
+**Success Criteria** (what must be TRUE):
+
+  1. The wants list displays auto-wants and manual wants together in one list, with a clear visual distinction between the two (e.g. section headers or badges) rather than two disconnected components
+  2. The user can hide (exclude) an auto-generated want and later restore a previously excluded auto-want — this behaviour is preserved from before the redesign
+  3. The user can change the quantity of a manual want, or remove it entirely, directly from the wants list without leaving the page
+
+**Plans:** TBD
+**UI hint**: yes
+
+### Phase 33: Ashes of the Empire Spotlight Decks (GATED / BLOCKED)
+
+**Status:** GATED / BLOCKED — do not start until both inputs below are available. This does not block Phases 30–32; the binder-redesign work ships independently of this phase, same as the deferred LAW spotlight deck (DEBT-05).
+**Blocked by:**
+  1. The user has not yet supplied the Luke Skywalker (ASH) and Emperor Palpatine (ASH) deck lists
+  2. The ASH ("Ashes of the Empire") set has not yet been synced into the catalog DB via the swu-db.com sync job — card rows the deck lists reference may not exist yet
+**Goal:** Add the Luke Skywalker (ASH) and Emperor Palpatine (ASH) Ashes of the Empire spotlight decks to Quick Add so a user can add either deck's full card list to their collection in one click, once the deck lists are supplied and the ASH set is present in the catalog
+**Depends on:** Nothing structurally (independent of Phases 30–32); gated on external inputs listed above — sequenced last in the milestone so it never blocks binder-redesign delivery
+**Requirements:** DECK-11, DECK-12
+**Success Criteria** (what must be TRUE):
+
+  1. The Luke Skywalker (ASH) spotlight deck appears as a Quick Add option and adds its full card list to the user's collection in one click
+  2. The Emperor Palpatine (ASH) spotlight deck appears as a Quick Add option and adds its full card list to the user's collection in one click
+  3. Every card referenced by both deck lists resolves against a real row in the catalog DB — no commented-out TODOs or "unknown card" gaps like the ones left by the deferred LAW spotlight deck (DEBT-05)
+
+**Plans:** TBD
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -292,3 +363,7 @@ Plans:
 | 27 | v6 | 4/4 | Complete   | 2026-06-02 |
 | 28 | v6 | 2/2 | Complete    | 2026-06-03 |
 | 29 | v6 | 5/5 | Complete    | 2026-06-03 |
+| 30. Unified Search-Driven Add Flow | v7 | 0/TBD | Not started | - |
+| 31. Trade Profile Modal & Public Trade Note | v7 | 0/TBD | Not started | - |
+| 32. Combined Wants & Exclusions List | v7 | 0/TBD | Not started | - |
+| 33. Ashes of the Empire Spotlight Decks | v7 | 0/TBD | Gated / Blocked | - |

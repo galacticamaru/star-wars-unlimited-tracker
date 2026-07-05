@@ -6,7 +6,7 @@ status: planning
 last_updated: "2026-07-05T02:22:06.683Z"
 last_activity: 2026-07-05
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -24,10 +24,12 @@ See: .planning/PROJECT.md (updated 2026-07-05)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 30 of 33 (Unified Search-Driven Add Flow)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-07-05 — Milestone v7 started
+Status: Ready to plan
+Last activity: 2026-07-05 — ROADMAP.md created for v7 (Phases 30–33); Phase 33 gated pending deck lists + ASH catalog sync
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -61,6 +63,17 @@ Last activity: 2026-07-05 — Milestone v7 started
 - Phase 25.1 complete: @vercel/speed-insights@2.0.0 wired in root layout; user must enable Speed Insights in Vercel dashboard post-deploy for PERF-06 to fully close
 - v6 roadmap defined 2026-05-29: Phases 26 (Mobile UX), 27 (/decks Performance), 28 (Tech Debt Sweep)
 - DEBT-02 and DEBT-05 deferred out of v6 scope: DEBT-02 needs more investigation on virtualized list interaction; DEBT-05 pending DB sync
+- v7 roadmap defined 2026-07-05: Phases 30 (Unified Search-Driven Add Flow), 31 (Trade Profile Modal & Public Trade Note), 32 (Combined Wants & Exclusions List), 33 (Ashes of the Empire Spotlight Decks — GATED)
+- Phase 33 is gated/blocked pending (a) user-supplied Luke Skywalker (ASH) and Emperor Palpatine (ASH) deck lists, and (b) the ASH set syncing into the catalog DB via swu-db.com — same blocker class as DEBT-05 (LAW spotlight deck); sequenced last so it never blocks Phases 30–32 shipping
+
+### Key Architectural Notes for v7
+
+- Manage Binder page (`src/app/binder/manage/page.tsx`) today has separate "Add Cards to Binder" grid, `ManualWantsAddFlow`, `VariantTradeSheet`, and `ManageWantsList` — Phase 30 collapses the first two into one search-driven flow
+- Existing manual wants are limited to owned cards (`/api/collection/owned-cards`); Phase 30 needs a full-catalog search query/endpoint since BINDER-11/14 require unowned cards to be searchable and want-able
+- Trade note (BINDER-16/17) needs a new user-level schema field — not yet in `src/db/schema.ts`
+- Username/binder-URL section is currently inline on the manage page; Phase 31 extracts it into a profile-button modal
+- Hold v6 per-user cache-tag + two-layer invalidation pattern (`revalidateTag()` + `router.refresh()`) for any new mutation endpoints in Phases 30–32
+- No @radix-ui imports — Base UI (@base-ui/react) + shadcn/ui only, per project constraint
 
 ### Key Architectural Notes for v6
 
