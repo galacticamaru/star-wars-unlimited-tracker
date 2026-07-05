@@ -1,224 +1,225 @@
----
-focus: concerns
-last_updated: 2026-05-28
----
+<!-- refreshed: 2026-07-05 -->
+# Codebase Concerns
 
-# CONCERNS
+**Analysis Date:** 2026-07-05
 
 ## Tech Debt
 
-**Hardcoded active-sets list in price sync:**
-- Severity: MEDIUM
-- Issue: `activeSets` in `syncPrices()` is a hardcoded string array. Every new card set release requires a code change and redeploy.
-- Files: `src/lib/sync/prices.ts` (line 59)
-- Impact: New set prices go unsync'd until a developer manually edits and deploys. Approx. 4-month release cadence.
-- Fix approach: Derive active set list from `cardPrintings.setCode` via a DB query, or read from a config table. The sets already exist in the DB after `syncAllCards` runs.
+### Large Complex Components
 
-**Naive USD→EUR currency conversion:**
-- Severity: MEDIUM
-- Issue: EUR prices are computed as `marketPrice * 0.92`. The 0.92 rate is hardcoded and never updated.
-- Files: `src/lib/sync/prices.ts` (line 51)
-- Impact: EUR display values drift from true market rates. No live exchange rate source is integrated.
-- Fix approach: Call a currency rate API (e.g., Frankfurter.app, fixer.io) during sync to get a current rate, or persist USD only and convert in the UI using a fetched rate.
+**Deck Builder State Management:**
+- **Issue**: `deck-builder.tsx` (742 lines) contains complex reducer logic with 6+ action types and nested state mutations
+- **Files**: `src/components/decks/deck-builder.tsx`
+- **Impact**: Difficult to reason about state transitions, hard to test individual branches, high risk of regression when modifying card move/update logic
+- **Fix approach**: Refactor into smaller hooks (`useDeckCards`, `useDeckLeaderBase`) with isolated state; extract reducer to separate file with unit tests for each action type
 
-**`Record<string, any>` dynamic update payload in deck queries:**
-- Severity: LOW
-- Issue: `updateDeck` in `src/db/queries/decks.ts` builds the Drizzle `.set()` payload as `Record<string, any>` (line 65), bypassing TypeScript's schema type-checking on the update columns.
-- Files: `src/db/queries/decks.ts` (lines 65–76)
-- Impact: A typo in a column name compiles without error but silently does nothing at runtime.
-- Fix approach: Build a strongly-typed Drizzle update object matching the `decks` table's column types.
+**Card Grid & Item Display:**
+- **Issue**: `card-item.tsx` (290 lines) and `card-grid.tsx` (268 lines) are large components mixing variant logic, trade state, and filtering
+- **Files**: `src/components/catalog/card-item.tsx`, `src/components/catalog/card-grid.tsx`
+- **Impact**: Difficult to modify variant display logic; changes to trade UI require touching grid logic
+- **Fix approach**: Extract variant-display logic into `<VariantBadge>` and `<VariantPriceDisplay>` sub-components; separate trade UI into `<TradeSection>` component
 
-**`any` types in deck PATCH validation handler:**
-- Severity: LOW
-- Issue: Multiple `.map((c: any) => ...)` and `.filter((c: any) => ...)` casts in the deck PATCH route lose the request body's type information.
-- Files: `src/app/api/decks/[id]/route.ts` (lines 84, 93–106)
-- Impact: Runtime errors on unexpected body shapes produce 500s with no schema validation feedback.
-- Fix approach: Define a `DeckCard` interface for the parsed body and validate it before use; use `zod` or manual checks.
+### Type Safety Issues
 
-**`any` type in CSV normalization input:**
-- Severity: LOW
-- Issue: `normalizeRedditCsv(rows: any[], ...)` accepts untyped PapaParse row objects. Column access is via string keys with no type guard.
-- Files: `src/lib/collection/normalize.ts` (line 12)
-- Impact: Silent misparse if PapaParse changes its row shape or a column is missing. Already partially mitigated by optional chaining (`row['Card #']?.toString()`).
-- Fix approach: Define a `SpreadsheetRow` interface and cast at the point of use, or add explicit column-presence checks.
+**Loose `any` Type Usage:**
+- **Issue**: Multiple uses of `any` type avoiding TypeScript strictness
+- **Files**: 
+  - `src/app/binder/[username]/page.tsx:24` — `mapToFilterable` param typed as `any`
+  - `src/app/api/decks/[id]/route.ts:85, 90, 91, 94-107` — card objects typed as `any` in validation
+  - `src/app/(auth)/login/page.tsx:29, 47, 62` — caught errors typed as `any`
+  - Test files: `src/components/home/hero-section.test.tsx`, `src/components/catalog/card-item.test.tsx` use `any` in mocks
+- **Impact**: TypeScript does not catch potential property access errors; refactoring is risky
+- **Fix approach**: Create proper types for all card and error objects; use strict mode in `tsconfig.json`; update test mocks to use typed generics instead of `any`
 
-**`mapToFilterable` casts binder data through `any`:**
-- Severity: LOW
-- Issue: The public binder RSC maps raw DB rows to `CardForFilter` via `(c: any)` with several hardcoded `null` placeholders (`backArtUrl: null`, `frontText: null`, etc.).
-- Files: `src/app/binder/[username]/page.tsx` (lines 24–52)
-- Impact: If the DB shape changes, the cast silently passes wrong values downstream. The hardcoded nulls mean card detail fields are always empty in binder context.
-- Fix approach: Derive `CardForFilter` from the exact DB query return type via Drizzle's type inference, eliminating the `any` cast.
+**Type Assertions with Unsafe Casts:**
+- **Issue**: `as unknown as Date` casting in test files bypasses type safety
+- **Files**: `src/app/decks/page.test.tsx:36, 83`
+- **Impact**: Tests don't validate actual data shapes used by components
+- **Fix approach**: Mock `toISOString()` on Date objects; avoid `unknown` cast by creating proper Date instances
 
-**OAuth provider credentials fall back to `"placeholder"` strings:**
-- Severity: MEDIUM
-- Issue: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` all fall back to the string `"placeholder"` when the env var is absent.
-- Files: `src/lib/auth.ts` (lines 23–28)
-- Impact: In a misconfigured environment (missing env vars), social login attempts silently use invalid credentials rather than failing fast at startup. Better-auth may produce confusing OAuth errors at runtime.
-- Fix approach: Remove the `|| "placeholder"` fallbacks. If the env var is absent at startup, throw and exit. Social providers should be conditionally registered only when credentials are present.
+### Error Response Inconsistency
 
-**Legacy data hydration block in card detail page:**
-- Severity: LOW
-- Issue: The card detail RSC contains a one-time migration shim that checks for users with a non-zero collection total but zero per-variant rows and silently upserts a variant count on every page load.
-- Files: `src/app/cards/[set-code]/[card-number]/page.tsx` (lines 40–48)
-- Impact: Adds a conditional upsert DB write on every card detail page load for affected legacy users. This was a one-time migration — it can be removed once all production users have been migrated.
-- Fix approach: Run a one-time migration script against production, then remove the shim from the page.
+**Mixed Error Response Formats:**
+- **Issue**: API endpoints return plain text errors instead of JSON, breaking API client error handling
+- **Files**: Most of `src/app/api/*/route.ts` files use `new Response('Error message', { status: 400 })`
+- **Examples**:
+  - `src/app/api/collection/route.ts:10` returns `'Unauthorized'` (text/plain)
+  - `src/app/api/binder/route.ts:12` returns `new NextResponse("Unauthorized")` (correct JSON)
+- **Impact**: Client error handling expecting `res.json()` will fail when catching errors; inconsistent error shapes make debugging harder
+- **Fix approach**: Create helper `apiError(status, message)` that returns JSON; use throughout all API routes with consistent `{ error: string }` shape
 
-**Duplicate filter constant definitions:**
-- Severity: LOW
-- Issue: `TRAIT_OPTIONS`, `KEYWORD_OPTIONS`, `RARITY_OPTIONS`, `COST_OPTIONS`, `ARENA_OPTIONS` are defined identically in two separate files.
-- Files: `src/components/catalog/catalog-client.tsx` (lines 34–53), `src/components/binder/public-binder-client.tsx` (lines 24–43)
-- Impact: Adding a new trait or keyword requires edits in two places. Lists are already out of sync for new sets not yet represented.
-- Fix approach: Extract to a shared `src/lib/filter-constants.ts` and import from both components.
+## Test Coverage Gaps
+
+**API Routes Lack Tests:**
+- **Issue**: 17 API route files exist but only 2 have explicit tests; most business logic endpoints untested
+- **Files**: 
+  - Tested: `src/app/api/collection/collection-shape.test.ts`
+  - Untested: `src/app/api/decks/[id]/route.ts`, `src/app/api/binder/wants/route.ts`, `src/app/api/trade/route.ts`, `src/app/api/want-list/route.ts`, and 12 others
+- **Impact**: Silent failures possible in deck updates, collection mutations, binder changes; regression risk on refactoring
+- **Fix approach**: Add integration tests for critical endpoints: POST `/api/decks`, PATCH `/api/decks/[id]`, POST `/api/collection/variants`, POST `/api/binder/wants`; mock database layer; test auth and authorization checks
+
+**Database Query Modules Partially Tested:**
+- **Issue**: Some query files have no tests; complex multi-table queries are not integration-tested
+- **Files**:
+  - Tested: `src/db/queries/collection.test.ts`, `src/db/queries/catalog.test.ts`, `src/db/queries/decks.test.ts`
+  - Untested: `src/db/queries/binder.ts`, `src/db/queries/trade.ts`, `src/db/queries/card-detail.ts`
+- **Impact**: Complex queries like `getPublicBinderData()` (multi-table join) may silently return wrong shape if refactored
+- **Fix approach**: Add integration tests for `binder.ts` (test public/private filtering), `trade.ts` (test variant trade quantity logic), `card-detail.ts` (test variant precedence)
+
+**UI Components Mostly Untested:**
+- **Issue**: Large interactive components have no unit tests
+- **Files**: 
+  - `src/components/decks/deck-builder.tsx` — no tests
+  - `src/components/decks/deck-sidebar.tsx` (220 lines) — no tests
+  - `src/components/binder/manage-wants-list.tsx` (212 lines) — no tests
+  - `src/components/catalog/sidebar-filters.tsx` (208 lines) — no tests
+- **Impact**: Deck builder refactoring is risky; filter behavior changes are not caught; modal/sheet state bugs may go unnoticed
+- **Fix approach**: Add tests for `DeckBuilder` reducer actions; test `SidebarFilters` query string updates with `nuqs`; test `ManageWantsList` CRUD operations
+
+## Client-Side Auth Issues
+
+**Unprotected Route with Client-Side Auth Check:**
+- **Issue**: `/binder/manage` is not listed in `proxy.ts` matcher, relies only on client-side `authClient.useSession()` check
+- **Files**: 
+  - Route: `src/app/binder/manage/page.tsx` (client component)
+  - Middleware: `src/proxy.ts:8` (only protects `/collection`, `/decks`)
+- **Impact**: Page briefly renders before auth check completes; data loads via API which does auth-check, but page is visible to unauthenticated users for a moment; poor UX on page refresh while logged out
+- **Fix approach**: Add `/binder/manage/:path*` to `proxy.ts` matcher to server-side redirect unauthenticated users; wrap page content in `<Suspense>` with loading boundary
+
+## Security Concerns
+
+**OAuth Placeholder Credentials in Code:**
+- **Issue**: Fallback credentials "placeholder" for Google and Discord OAuth if env vars missing
+- **Files**: `src/lib/auth.ts:23-28`
+- **Impact**: Non-fatal (will fail auth attempt, not leak credentials) but poor security practice; could confuse developers
+- **Fix approach**: Throw error in auth.ts if secrets not set; validate env vars at startup rather than fallback to placeholders
+
+**No Rate Limiting on API Endpoints:**
+- **Issue**: All endpoints accept unlimited requests; collection import accepts up to 1000 items per request
+- **Files**: All `src/app/api/*/route.ts` files; `src/app/api/collection/import/route.ts:48` allows MAX_IMPORT_ITEMS
+- **Impact**: Possible DOS attack; malicious user could spam collection updates, deck mutations, or trade offers
+- **Fix approach**: Add rate limiting middleware (Vercel Rate Limiting or custom Redis-backed); implement per-user request quotas
+
+## Known Issues from Roadmap
+
+### DEBT-02: Deck Builder Missing Variant Art
+
+- **Issue**: DeckBuilder "Add Cards" tab does not display variant art for cards (e.g., Showcase, Foil versions)
+- **Files**: `src/components/decks/deck-builder.tsx` (cards shown with fallback art, no variant selector)
+- **Impact**: Users building decks cannot see what variant they're adding; mismatches their owned variant
+- **Fix approach**: Implement `getPrintingArtMap()` call to fetch per-printing variant art; render variant chips in card selector with images
+
+### DEBT-05: LAW Spotlight Deck Missing Cards
+
+- **Issue**: LAW spotlight deck (`Spotlight - Kessel Run`) contains 9 cards not in database (absent from swu-db.com export or sync)
+- **Files**: `src/data/starter-decks.ts` — cards marked with TODO comments
+- **Impact**: Quick-add for LAW deck silently skips missing cards; user's collection is incomplete; deck validation fails
+- **Fix approach**: Audit swu-db.com API for LAW set exports; contact swu-db maintainers if cards missing; add fallback error handling in `syncAllCards()` to log missing card warnings
+
+### MOBILE-01/02: Deck Builder Not Mobile-Friendly
+
+- **Issue**: Sidebar stats panel overlaps card list on mobile; three-tab layout breaks on small screens
+- **Files**: `src/components/decks/deck-builder.tsx`, `src/components/decks/deck-sidebar.tsx`
+- **Impact**: Mobile users cannot tap cards to add/remove; poor usability on phones
+- **Fix approach**: Implement responsive layout: stack sidebar below on mobile (<768px); hide sidebar on "Add Cards" tab until card selected; use sheet/modal for stats on mobile
+
+### PERF-07/08: /decks and /decks/[id] Page Load Performance
+
+- **Issue**: Pages have worse LCP/TTFB than catalog (Phase 29 improvements not applied)
+- **Files**: `src/app/decks/page.tsx`, `src/app/decks/[id]/page.tsx`
+- **Impact**: Users experience slow page loads when switching between decks and catalog
+- **Fix approach**: Apply Phase 29 optimizations (getDecks/getDeckWithCards caching on `decks` tag, loading skeleton, priority image hints); measure before/after with Vercel Speed Insights
+
+## Performance Bottlenecks
+
+### Console Logging in Production
+
+- **Issue**: `console.error`, `console.log`, `console.warn` statements throughout codebase; no structured logging
+- **Files**: Found in 29 locations across API routes, pages, and components
+- **Impact**: Logs are visible in browser DevTools; no production observability; errors silently logged with no alerting
+- **Fix approach**: Replace console calls with structured logger (Winston, Pino, or Vercel's log integration); send errors to Sentry or similar error tracking service
+
+### External API Sync Without Timeouts or Retries
+
+- **Issue**: `syncAllCards()` and `syncPrices()` fetch from swu-db.com and PokéWallet without timeout or retry logic
+- **Files**: `src/lib/sync/upsert-cards.ts`, `src/lib/sync/prices.ts`
+- **Impact**: If external API is slow, cron job hangs or times out silently; card data may not update for days; users see stale prices
+- **Fix approach**: Add fetch timeout (5s), exponential backoff retry (3 attempts), and explicit error return in sync job with logged failure reason
+
+## Fragile Areas
+
+### Complex Deck Validation & Shortfall Logic
+
+- **Issue**: `validateDeck()` has multiple hardcoded rules (1 leader, 1 base, 50-card main, 10-card sideboard); shortfall logic mixes deck-driven wants and manual wants
+- **Files**: `src/lib/deck-validation.ts` (159 lines), `src/lib/want-list.ts`
+- **Impact**: Hard to add new deck formats (e.g., "Sealed" variant); "Manual Wants" vs. auto-wants logic is confusing
+- **Fix approach**: Extract validation rules into config object (e.g., `DeckFormat.CONSTRUCTED = { leader: 1, base: 1, mainDeck: 50, sideboard: 10 }`); clarify in comments that manual wants override auto-wants, not supplement them
+
+### Variant Selection Logic
+
+- **Issue**: Multiple variant precedence definitions exist; not all file edits update them consistently
+- **Files**: 
+  - `src/lib/catalog/select-best-variant.ts:8-23` — VARIANT_PRECEDENCE (defines priority)
+  - `src/components/catalog/variant-filter.tsx:11` — VARIANT_OPTIONS (UI list)
+  - `src/db/schema.ts:104` — comment lists all types
+- **Impact**: New variant (e.g., "Prestige Foil" or "Serialized") could be missed in one file, leading to inconsistent display or filtering
+- **Fix approach**: Define single source of truth in `src/lib/variants.ts` with `VARIANT_TYPES`, `VARIANT_PRECEDENCE`, and `VARIANT_OPTIONS` all imported from there; add compile-time check that all variant types in database schema exist in `VARIANT_PRECEDENCE`
+
+### User Data Deletion & Cascade
+
+- **Issue**: No documented cascade delete behavior; deleting a user may leave orphaned records
+- **Files**: `src/db/schema.ts` — foreign keys defined but cascade rules not visible
+- **Impact**: If user is deleted, their decks, collections, and trade offers may remain in database consuming storage and confusing queries
+- **Fix approach**: Add explicit `.onDelete('cascade')` to all user-scoped foreign keys; write integration test that deletes a user and asserts all child records are removed
+
+## Scaling Limits
+
+### Vercel Hobby Tier: 1 Cron Job Per Day
+
+- **Issue**: Both card sync AND price sync run in single `/api/cron/sync-cards` endpoint due to Vercel Hobby limit
+- **Files**: `src/app/api/cron/sync-cards/route.ts:19-23` (sequential execution)
+- **Impact**: If card sync takes >5 min (rate limits), price sync won't run that day; prices become stale
+- **Fix approach**: Move to paid tier (Pro) if cron frequency needed; or split into two separate jobs with scheduling; or implement client-triggered sync on specific pages
+
+### Database Connection Pooling
+
+- **Issue**: Neon HTTP pooled connections require `process.exit(0)` in scripts or they hang
+- **Files**: `scripts/seed.ts`, sync scripts use Neon HTTP driver
+- **Impact**: Scripts may hang indefinitely if exit not called; CI/CD pipelines timeout
+- **Fix approach**: Add `process.exit(0)` to all seed/sync scripts; document in LEARNINGS.md
+
+## Missing Critical Features
+
+### Missing Variant Support in Places
+
+- **Issue**: DeckBuilder doesn't show variant selection; card detail shows variants but deck builder doesn't track which variant was added
+- **Files**: `src/components/decks/deck-builder.tsx`, `src/db/schema.ts` (deck_cards only stores cardDefinitionId, not printing)
+- **Impact**: Users don't know which variant they're adding to deck; can't track "I own Foil but added Normal to deck"
+- **Fix approach**: Add `cardPrintingId` column to `deck_cards` table; update DeckBuilder to show variant chip selector; update deck export to include variant info
+
+### No Error Recovery in Bulk Operations
+
+- **Issue**: CSV import processes all items sequentially; if item 500/1000 fails, remaining items not processed
+- **Files**: `src/app/api/collection/import/route.ts:91-110` (batch upsert)
+- **Impact**: Large imports may partially fail silently; user doesn't know which cards failed to import
+- **Fix approach**: Collect errors during batch processing; return `{ success: 950, errors: [ {item: 500, reason: "..."} ] }`; show errors in UI
+
+## Test Coverage Gaps
+
+### Untested Authorization Checks
+
+- **Issue**: No tests verify that User A cannot access/modify User B's data
+- **Files**: No integration tests in `__tests__/` or `*.test.ts` for multi-user scenarios
+- **Impact**: Authorization bypass could go unnoticed; SQL injection on user filtering could leak data
+- **Fix approach**: Add `src/db/queries/__tests__/auth.test.ts` with tests like `test("User A cannot see User B's decks")` using two mock users
+
+### Missing Edge Case Tests
+
+- **Issue**: No tests for boundary conditions (empty deck, max sideboard, 0 cost cards, negative counts)
+- **Files**: Validation logic in `src/lib/deck-validation.test.ts` is incomplete
+- **Impact**: Edge cases could slip through; malicious client could send `{ quantity: -5 }` and create invalid state
+- **Fix approach**: Add property-based tests using `fast-check` for quantity validation; add boundary tests for deck size limits
 
 ---
 
-## Performance
-
-**Image optimization disabled:**
-- Severity: HIGH
-- Problem: `unoptimized: true` in `next.config.ts` disables Vercel's automatic WebP/AVIF conversion and resizing for all card images. Cards are served as full-size PNGs.
-- Files: `next.config.ts` (line 13). Comment on line 12 names the cause: "Vercel Image Transformations quota exhausted".
-- Cause: The Vercel Hobby plan quota for image transformations was exhausted.
-- Improvement path: Re-enable optimization after quota reset. If quota is a recurring constraint, proxy through Cloudinary or Imgix. This is the single largest loading performance gap; card images dominate payload size.
-
-**Sequential DB writes in `upsertCards` sync loop:**
-- Severity: MEDIUM
-- Problem: `upsertCards` issues one `INSERT ... ON CONFLICT` per card printing inside a `for...of` loop over `variants`. For a set with 200 cards × 3 variants = 600 sequential Neon HTTP round-trips per set.
-- Files: `src/lib/sync/upsert-cards.ts` (lines 144–173)
-- Cause: Each variant in the group is upserted individually to obtain the `def.id` from the preceding definition upsert.
-- Improvement path: Batch-collect all `cardPrintings` values across the entire set and insert in a single `.values([...])` call after all definitions are upserted. The v5 batch pattern from `src/db/queries/collection.ts` provides the template.
-
-**Sequential per-deck leader/base resolution in `getDeckCardsForUser`:**
-- Severity: MEDIUM
-- Problem: `getDeckCardsForUser` calls `resolvePrinting(defId)` inside a `for...of` loop over every deck × 2 (leader + base). A user with 10 decks triggers up to 20 sequential DB queries just for leader/base art.
-- Files: `src/db/queries/decks.ts` (lines 276–298)
-- Cause: Each `resolvePrinting` call is a separate `await db.select()`.
-- Improvement path: Collect all non-null leader/base definition IDs across all decks, fetch in a single `inArray` query, then map in memory.
-
-**Sequential per-set price sync with artificial 1s delay:**
-- Severity: LOW
-- Problem: `syncPrices` iterates over 7 active sets sequentially with a 1-second sleep between each.
-- Files: `src/lib/sync/prices.ts` (lines 65–104)
-- Cause: Self-imposed rate limit guard with no documented API rate limit from swu-db.com.
-- Improvement path: Use `Promise.allSettled` for parallel fetching. If a rate limit is confirmed, use a smaller delay or a proper rate-limiter.
-
-**`revalidateTag` called with wrong signature:**
-- Severity: MEDIUM
-- Problem: `revalidateTag('cards', 'max')` is called in the cron sync route. The `revalidateTag` API takes a single string tag name; passing `'max'` as a second argument is silently ignored (it is not a valid parameter in Next.js 16).
-- Files: `src/app/api/cron/sync-cards/route.ts` (line 26)
-- Cause: Possible confusion with `cacheLife` options or an incorrect API reference.
-- Improvement path: Call `revalidateTag('cards')` with only one argument. Verify the cache is actually being busted after sync by checking card data freshness post-sync.
-
----
-
-## Security
-
-**TOCTOU hazard on variant count + total recompute:**
-- Severity: MEDIUM
-- Risk: The `/api/collection/variants` route does `upsertVariantCount` then `recomputeTotal` as two sequential awaits without a transaction. A concurrent request for the same card between the two awaits produces an intermediate (stale) total in `user_collections`.
-- Files: `src/app/api/collection/variants/route.ts` (lines 37–56). The hazard is documented inline as `WR-02`.
-- Current mitigation: Comment documents the hazard; marked "low risk in practice for single-user collection editing."
-- Recommendations: Migrate this route to use Drizzle with a WebSocket/Pool connection (which supports transactions) instead of the HTTP driver. Until then, the hazard remains accepted technical debt. Do not introduce additional callers of the sequential pattern.
-
-**No rate limiting on collection mutation endpoints:**
-- Severity: MEDIUM
-- Risk: `/api/collection/variants`, `/api/collection/import`, `/api/collection/starter-deck`, `/api/trade`, `/api/binder/wants` accept unlimited authenticated requests. A malicious or buggy client can flood the DB.
-- Files: All mutation routes in `src/app/api/`
-- Current mitigation: `/api/collection/import` caps at `MAX_IMPORT_ITEMS = 2000`. No per-minute request rate limit exists on any route.
-- Recommendations: Add Vercel edge rate limiting (via middleware) or an in-memory sliding-window counter for mutation routes. At minimum, protect `/api/collection/variants` which is called on every card count change.
-
-**No input validation on deck name:**
-- Severity: LOW
-- Risk: `POST /api/decks` passes `body.name` directly to `createDeck` after only a truthy check (`if (!name)`). There is no length cap or content validation.
-- Files: `src/app/api/decks/route.ts` (lines 29–34), `src/db/queries/decks.ts` (line 36)
-- Current mitigation: DB schema stores `name` as `text` (unbounded length); PostgreSQL will accept arbitrarily long strings.
-- Recommendations: Add a max-length check (e.g., 100 characters) and trim whitespace before insert.
-
-**Trade quantity not validated as integer:**
-- Severity: LOW
-- Risk: `/api/trade` PATCH passes `Math.max(0, tradeQuantity)` without an `isFinite` or `Number.isInteger` check. A float like `1.5` is stored as-is.
-- Files: `src/app/api/trade/route.ts` (line 23)
-- Current mitigation: DB column is `integer`, so Neon/Drizzle will coerce or error on insert.
-- Recommendations: Add `Math.floor()` and `Number.isFinite()` validation matching the pattern in `/api/collection/variants/route.ts` (lines 33–35).
-
-**`cardPrintingId` not validated as positive integer in binder/wants routes:**
-- Severity: LOW
-- Risk: Both `POST /api/binder/wants` and `DELETE /api/binder/wants` accept `cardPrintingId` from the request body/query string without type or range validation (only a presence check).
-- Files: `src/app/api/binder/wants/route.ts` (lines 16–17, 43)
-- Current mitigation: Drizzle enforces integer type at the DB layer; a non-integer string would cause a query error caught by the try/catch.
-- Recommendations: Add `typeof cardPrintingId !== 'number'` and `Number.isFinite(cardPrintingId)` guards matching the pattern in `/api/collection/variants/route.ts`.
-
----
-
-## Architecture
-
-**Dual denormalized totals — `userCollections.count` vs sum of `userPrintingCollections`:**
-- Severity: MEDIUM
-- Issue: Two tables track the same data: `user_collections.count` holds a pre-aggregated total, while `user_printing_collections` holds per-variant counts. `recomputeTotal` / `batchRecomputeTotals` must be called after every variant mutation to keep them in sync. These are currently sequential awaits (no transaction) over the HTTP driver.
-- Files: `src/db/schema.ts` (lines 117–147), `src/db/queries/collection.ts` (lines 261–394)
-- Impact: Any code path that mutates `user_printing_collections` without calling `recomputeTotal` leaves `user_collections` stale. This has already caused the `WR-02` race condition.
-- Fix approach: Long-term: remove `user_collections.count` and always derive totals from `user_printing_collections` on read (with a DB view or aggregating query). Near-term: use a Neon WebSocket/Pool connection for transactions in mutation routes.
-
-**Public binder page loads all cards for `getFilterOptions` on every render:**
-- Severity: LOW
-- Issue: `PublicBinderPage` calls `getFilterOptions()` (a cached DB query) alongside `getPublicBinderData()`. The filter options are used to populate sidebar dropdowns even when the binder may contain only a handful of cards.
-- Files: `src/app/binder/[username]/page.tsx` (lines 19–22)
-- Impact: Minor — `getFilterOptions` is cached via `cacheTag('cards')`. No immediate perf concern, but the binder sidebar shows the full global set/type filter lists rather than filtering to the binder owner's card sets.
-- Fix approach: Derive filter options from the binder cards client-side (as `catalog-client.tsx` does for `aspectOptions`) to show only relevant filter values.
-
-**`getDeckCardsForUser` loads all decks then resolves leaders/bases serially:**
-- Severity: MEDIUM
-- Issue: Step 4 of `getDeckCardsForUser` calls `resolvePrinting(defId)` in a `for...of` loop over `[leaderCardDefinitionId, baseCardDefinitionId]` for every deck. With N decks, this is up to 2N sequential awaits.
-- Files: `src/db/queries/decks.ts` (lines 276–298)
-- Impact: The `/api/want-list` endpoint (used by Want List tab in deck builder) is slow for users with many decks.
-- Fix approach: Collect all unique leader/base definition IDs, run a single `inArray` query, then map results in memory (same pattern as `batchRecomputeTotals`).
-
-**`getUserTradeData` and `getPublicBinderData` duplicate auto-wants logic:**
-- Severity: LOW
-- Issue: The 6-step auto-wants shortfall computation (fetch decks → build autoTargetMap → fetch inventory → compute shortfall → fetch card names) is implemented almost identically in both `src/db/queries/trade.ts` (lines 55–174) and `src/db/queries/binder.ts` (lines 96–222).
-- Files: `src/db/queries/trade.ts`, `src/db/queries/binder.ts`
-- Impact: Bug fixes or logic changes must be applied to both. The implementations are already slightly divergent (e.g., `trade.ts` returns `isExcluded` flag; `binder.ts` filters out excluded items).
-- Fix approach: Extract a shared `computeAutoWants(userId)` helper in `src/lib/binder-logic.ts` or `src/db/queries/auto-wants.ts` and call it from both query modules.
-
----
-
-## Missing Coverage
-
-**No error boundary components:**
-- Severity: MEDIUM
-- What's missing: Zero `error.tsx` files in any route segment. No React error boundary wraps the catalog grid, deck builder, or binder pages.
-- Files: Entire `src/app/` tree (checked — no `error.tsx` files found)
-- Risk: An unhandled client-side throw (e.g., from a bad API response, failed image load handler, or filter logic error) will crash the entire page to a white screen with no recovery UI.
-- Priority: HIGH for the catalog and deck builder pages, which have the most client-side state.
-
-**`it.todo` stubs in browser/integration tests:**
-- Severity: MEDIUM
-- What's not tested: `src/components/catalog/card-item.browser.test.tsx` and `src/components/catalog/catalog-client.browser.test.tsx` — behavior tests for the most-used interactive components.
-- Files: `src/components/catalog/card-item.browser.test.tsx`, `src/components/catalog/catalog-client.browser.test.tsx`
-- Risk: Regressions in card image loading, count increment/decrement, and filter interaction go undetected until manual testing.
-- Priority: MEDIUM
-
-**No test coverage for sync error paths:**
-- Severity: MEDIUM
-- What's not tested: `syncAllCards` and `syncPrices` error handling (fetch failures, partial set failures, malformed API responses).
-- Files: `src/lib/sync/upsert-cards.ts`, `src/lib/sync/prices.ts`
-- Risk: A swu-db.com API change or outage could silently corrupt or freeze the card database with no automated detection.
-- Priority: MEDIUM
-
-**No test for the `/api/binder` route or `getUserTradeData`:**
-- Severity: LOW
-- What's not tested: The trade data assembly query (auto-wants shortfall computation, 6 sequential queries per call) has no unit or integration test.
-- Files: `src/db/queries/trade.ts`, `src/app/api/binder/route.ts`
-- Risk: Shortfall calculation bugs (e.g., off-by-one in `calculateLookingFor`, or incorrect max-across-decks aggregation) are only caught manually.
-- Priority: LOW
-
-**No test for the `/api/collection/import` route chunking logic:**
-- Severity: LOW
-- What's not tested: The 500-item chunk loop in `POST /api/collection/import` and the `OR` condition simulation for multi-column lookup. The chunking path is never exercised in tests.
-- Files: `src/app/api/collection/import/route.ts` (lines 54–88)
-- Risk: An off-by-one or incorrect `or(...conditions)` spread could silently drop items in imports over 500 cards.
-- Priority: LOW
-
----
-
-*Concerns audit: 2026-05-28*
+*Concerns audit: 2026-07-05*

@@ -1,344 +1,337 @@
----
-focus: quality
-last_updated: 2026-05-28
----
 # Testing Patterns
 
-**Analysis Date:** 2026-05-28
+**Analysis Date:** 2026-07-05
 
 ## Test Framework
 
 **Runner:**
-- Vitest 4.1.5
+- Vitest v4.1.5
 - Config: `vitest.config.mts`
-- Plugins: `@vitejs/plugin-react`, `vite-tsconfig-paths`
+- Environment plugin: `@vitejs/plugin-react`
 
 **Assertion Library:**
-- Vitest built-in `expect` (Jest-compatible API)
-
-**Supporting libraries:**
-- `@testing-library/react` 16.3.2 — component rendering and DOM queries
-- `@testing-library/dom` 10.4.1 — DOM utilities
-- `jsdom` 29.1.1 — browser environment simulation
+- Vitest built-in expect API
+- Testing Library (React): `@testing-library/react` v16.3.2
+- DOM utilities: `@testing-library/dom` v10.4.1
 
 **Run Commands:**
 ```bash
-npm test                      # Run all tests (vitest)
-npx vitest --watch            # Watch mode
-npx vitest --coverage         # Coverage report (no coverage script in package.json)
+npm test              # Run all tests
+npm test -- --watch  # Watch mode (inferred from vitest behavior)
+npm test -- --coverage  # Coverage report (use vitest --coverage)
 ```
-
-## Vitest Configuration
-
-```typescript
-// vitest.config.mts
-export default defineConfig({
-  plugins: [tsconfigPaths(), react()],
-  test: {
-    environment: 'node',      // default — pure Node environment
-    globals: true,            // describe/it/expect available globally
-    passWithNoTests: true,    // CI does not fail when no tests are found
-  },
-});
-```
-
-The default environment is `node`. Files that render React components override to `jsdom` via a per-file directive.
 
 ## Test File Organization
 
-**Location:** All test files are co-located with their source files. There is no separate `tests/` or `__tests__` top-level directory in the current codebase.
+**Location:**
+- Co-located with source files in same directory
+- Naming: `[name].test.ts` or `[name].test.tsx`
 
-**Naming conventions:**
-- `[name].test.ts` — pure logic/utility tests
-- `[name].test.tsx` — React component tests (jsdom required)
-- `[name].browser.test.tsx` — stub/placeholder tests for browser-only behavior
-- `[name].deck.test.tsx` — component tests scoped to a specific mode (e.g., `card-item.deck.test.tsx`)
+**Structure by Type:**
+- Utility functions: `src/lib/[name].test.ts`
+- React components: `src/components/[path]/[name].test.tsx`
+- API routes: `src/app/api/[path]/[name].test.ts`
+- Pages: `src/app/[path]/page.test.tsx`
 
-**Actual test file inventory:**
-```
-src/app/api/collection/collection-shape.test.ts
-src/app/collection/page.test.tsx
-src/app/decks/[id]/loading.test.tsx
-src/app/decks/page.test.tsx
-src/components/catalog/card-grid.test.tsx
-src/components/catalog/card-item.browser.test.tsx   (all it.todo stubs)
-src/components/catalog/card-item.deck.test.tsx
-src/components/catalog/card-item.test.tsx
-src/components/catalog/catalog-client.browser.test.tsx  (all it.todo stubs)
-src/components/home/hero-section.test.tsx
-src/components/home/high-value-grid.test.tsx
-src/db/queries/catalog.test.ts                       (all it.todo stubs)
-src/db/queries/collection.test.ts                   (mix: 3 real + it.todo)
-src/lib/auto-filter.test.ts
-src/lib/binder-logic.test.ts
-src/lib/collection/normalize.test.ts
-src/lib/deck-validation.test.ts
-src/lib/export.test.ts
-src/lib/filter-cards.test.ts
-src/lib/sync/prices.test.ts
-```
-
-## Environment Directives
-
-Tests declare their environment via a comment at the top of the file (before imports):
-
-```typescript
-// Node environment (default — no directive needed, but sometimes stated explicitly):
-// @vitest-environment node
-
-// JSdom environment (required for React rendering):
-// @vitest-environment jsdom
-// OR as JSDoc:
-/** @vitest-environment jsdom */
-```
-
-- Use `node` for pure logic, DB query stubs, and API helpers.
-- Use `jsdom` for any test that calls `render()` from `@testing-library/react`.
+**Examples:**
+- `src/lib/filter-cards.ts` → `src/lib/filter-cards.test.ts`
+- `src/components/nav-bar.tsx` → `src/components/nav-bar.test.tsx`
+- `src/app/collection/page.tsx` → `src/app/collection/page.test.tsx`
 
 ## Test Structure
 
-**Suite organization:**
-```typescript
-import { describe, it, expect } from 'vitest';
+**Basic Suite Organization:**
 
-describe('featureName', () => {
-  describe('subScenario', () => {     // nested describe for variants
-    it('does the specific thing', () => {
-      // Arrange
-      const input = makeCard({ id: 1 });
-      // Act
-      const result = filterCards([input], filters);
-      // Assert
-      expect(result).toHaveLength(1);
+For utility functions (`src/lib/binder-logic.test.ts`):
+```typescript
+import { describe, it, expect } from "vitest";
+import { calculateLookingFor } from "./binder-logic";
+
+describe("Trade Binder Logic", () => {
+  describe("calculateLookingFor", () => {
+    it("should return shortfall when only autoTarget is provided", () => {
+      expect(calculateLookingFor(3, 0, 1, false)).toBe(2);
+    });
+
+    it("should return 0 when inventory meets or exceeds autoTarget", () => {
+      expect(calculateLookingFor(3, 0, 3, false)).toBe(0);
+      expect(calculateLookingFor(3, 0, 5, false)).toBe(0);
     });
   });
 });
 ```
 
-**Mix of `describe`+`it` and flat `test`:**
-- `describe` + `it` is the standard for logic-heavy modules.
-- Flat `test(...)` is used in some component tests: `hero-section.test.tsx`, `card-item.test.tsx`, `high-value-grid.test.tsx`.
-- Both styles are acceptable; match the existing style of the file being extended.
+**For React Components** (`src/components/home/hero-section.test.tsx`):
+```typescript
+/**
+ * @vitest-environment jsdom
+ */
+import { expect, test, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
 
-**Lifecycle hooks:**
-- `beforeEach` used to clear mocks: `vi.clearAllMocks()` and reset global fetch.
-- No `afterEach` or `afterAll` observed.
+vi.mock('next/link', () => ({
+  default: ({ children, href, className }: { children: React.ReactNode; href: string; className?: string }) => (
+    <a href={href} className={className}>{children}</a>
+  ),
+}));
+
+import { HeroSection } from './hero-section';
+
+test('renders h1 with exact locked title', () => {
+  render(<HeroSection />);
+  expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
+    'Star Wars Unlimited Card Database and Deck Builder'
+  );
+});
+```
+
+**Patterns:**
+- Use `describe()` blocks to group related tests
+- Use `it()` for individual test cases (or `test()` for single assertions)
+- One assertion per test when testing a single behavior
+- Multiple assertions allowed for related behaviors on same object
 
 ## Mocking
 
-**Framework:** Vitest built-in `vi`
+**Framework:** vitest `vi.mock()`
 
-**Mocking Next.js modules (required for all component tests):**
+**React Component Mocking Pattern:**
 ```typescript
-vi.mock('next/image', () => ({
-  default: (props: any) => <img {...props} />,
-}));
-
 vi.mock('next/link', () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
+  default: ({ children, href, className }: { children: React.ReactNode; href: string; className?: string }) => (
+    <a href={href} className={className}>{children}</a>
   ),
 }));
 
-vi.mock('next/navigation', () => ({
-  useRouter: vi.fn(),
-}));
-```
-
-**Mocking DB modules (to prevent live DB calls in CI):**
-```typescript
-vi.mock('@/db', () => {
-  const throwIfCalled = () => {
-    throw new Error('db was called unexpectedly — empty-array guard failed');
-  };
-  return {
-    db: { insert: throwIfCalled, select: throwIfCalled, execute: throwIfCalled },
-  };
-});
-```
-
-**Mocking fetch:**
-```typescript
-global.fetch = vi.fn();
-// Per-test setup:
-(global.fetch as any).mockResolvedValueOnce({
-  ok: true,
-  json: async () => ({ cardsAdded: 55, deckName: 'Luke Skywalker (SOR)' }),
-});
-```
-
-**Mocking UI components and icons:**
-```typescript
-vi.mock('lucide-react', () => ({
-  Plus: () => <div data-testid="plus-icon" />,
-  Minus: () => <div data-testid="minus-icon" />,
+vi.mock('@/lib/utils', () => ({
+  cn: (...args: any[]) => args.filter(Boolean).join(' '),
 }));
 
 vi.mock('@/components/ui/button', () => ({
-  Button: ({ children, onClick, disabled }: ...) => (
-    <button onClick={onClick} disabled={disabled}>{children}</button>
-  ),
+  buttonVariants: ({ variant, size }: { variant?: string; size?: string }) =>
+    [variant, size].filter(Boolean).join(' '),
 }));
 ```
 
-**What to mock:**
-- `next/image`, `next/link`, `next/navigation` in all component tests — these require a Next.js runtime.
-- Database modules (`@/db`, `@/db/queries/*`) when testing logic that calls them but live DB is unavailable.
-- `global.fetch` when testing components that call fetch.
-- `lucide-react` icons and shadcn/base-ui components when not under test.
+**What to Mock:**
+- External framework modules (next/link, next/navigation)
+- UI component libraries when rendering logic is complex
+- Expensive operations (API calls, large computations)
 
-**What NOT to mock:**
-- Pure logic functions being tested (`filterCards`, `validateDeck`, `calculateLookingFor`).
-- The `cn()` utility — mock it only when its output would break the test; otherwise use `(...args) => args.filter(Boolean).join(' ')`.
+**What NOT to Mock:**
+- Utility functions like `cn()` from `@/lib/utils` — mock but keep simple
+- Component children in parent tests
+- Pure business logic functions
 
-## Test Data Factories
+**Environment-Specific Mocking:**
+- Node environment (utilities, business logic): `// @vitest-environment node` at file top
+- jsdom environment (React components): `/** @vitest-environment jsdom */` at file top
 
-The codebase uses a consistent factory function pattern in test files. Factories define complete default objects and accept `Partial<T>` overrides:
+## Fixtures and Factories
 
+**Test Data Factories:**
+
+Use factory functions to create consistent test data. Pattern from `src/lib/filter-cards.test.ts`:
 ```typescript
-// Pattern used across filter-cards.test.ts, auto-filter.test.ts, deck-validation.test.ts
 const makeCard = (overrides: Partial<CardForFilter> = {}): CardForFilter => {
   const defaults: CardForFilter = {
     id: 1,
     swudbId: 'SOR-001',
     name: 'Luke Skywalker',
+    subtitle: null,
     type: 'Unit',
     aspects: ['Heroism'],
     arenas: ['Ground'],
     traits: ['REBEL'],
     keywords: [],
     cost: 3,
-    // ... all required fields
+    power: null,
+    hp: null,
+    rarity: 'Common',
+    setCode: 'SOR',
+    collectorNumber: 'SOR-001',
+    frontArtUrl: 'https://cdn.swu.db.com/images/cards/SOR/001.webp',
+    backArtUrl: null,
+    frontText: null,
+    backText: null,
+    epicAction: null,
+    doubleSided: false,
+    unique: false,
+    priceEur: null,
+    priceUsd: null,
   };
   return { ...defaults, ...overrides };
 };
 ```
 
-**Rules:**
-- Factory functions are defined at the top of the test file (not inside `describe` blocks).
-- Default values should be representative, valid domain objects.
-- Call `makeCard({ id: 2, name: 'Vader' })` to create variations — never mutate the defaults object.
-- No central factory registry — each test file defines its own factory for its domain type.
-
-## Stub / Placeholder Tests (it.todo)
-
-Several test files contain only `it.todo(...)` entries. These are deliberate "Wave 0 stubs" — they declare intended test coverage before implementation:
-
+**Filter State Factory** (`src/lib/filter-cards.test.ts`):
 ```typescript
-// src/db/queries/catalog.test.ts
-describe('getAllCards()', () => {
-  it.todo('returns an array of card objects (no userId parameter)');
-  it.todo('excludes cards whose type contains "token" (case-insensitive)');
-});
+const emptyFilters: FilterState = {
+  search: '',
+  selectedSets: [],
+  selectedTypes: [],
+  selectedAspects: [],
+  selectedArenas: [],
+  selectedTraits: [],
+  selectedRarities: [],
+  selectedKeywords: [],
+  selectedCosts: [],
+};
 ```
 
-**Policy:** `it.todo` tests do NOT cause the test run to fail (Vitest marks them as skipped). The `passWithNoTests: true` config means a file with only `it.todo` stubs also passes CI.
+**Factory Patterns:**
+- Default values defined in factory function
+- Overrides passed as object parameter with `Partial<Type>`
+- Spread operator merges defaults with overrides: `{ ...defaults, ...overrides }`
+- Use descriptive factory names: `makeCard()`, `createCard()`
 
-**Stub file markers:** Files with only stubs include a comment header identifying them: `// Wave 0 stub — covers <REQUIREMENT-ID>`.
-
-Files that are all-stub (no executable assertions):
-- `src/components/catalog/card-item.browser.test.tsx`
-- `src/components/catalog/catalog-client.browser.test.tsx`
-- `src/db/queries/catalog.test.ts`
-
-Files with a mix of stubs and real tests:
-- `src/db/queries/collection.test.ts` — 3 real empty-guard tests + DB integration stubs
-- `src/app/collection/page.test.tsx` — 2 real fetch-mock tests + PapaParse stubs
-
-## Test Types
-
-**Pure logic / unit tests (node environment):**
-- `src/lib/filter-cards.test.ts` — exhaustive filter permutation coverage
-- `src/lib/binder-logic.test.ts` — arithmetic edge cases
-- `src/lib/deck-validation.test.ts` — SWU deck rules
-- `src/lib/auto-filter.test.ts` — aspect union logic
-- `src/lib/collection/normalize.test.ts` — CSV normalization
-- `src/lib/export.test.ts` — Melee format serialization
-- `src/lib/sync/prices.test.ts` — price mapping and currency conversion
-- `src/app/api/collection/collection-shape.test.ts` — collection map builder
-
-**Component / rendering tests (jsdom environment):**
-- `src/components/catalog/card-item.test.tsx` — mode-based badge/count rendering
-- `src/components/catalog/card-item.deck.test.tsx` — shortfall display in selector mode
-- `src/components/catalog/card-grid.test.tsx` — virtualized row rendering, priority image threshold
-- `src/components/home/hero-section.test.tsx` — locked heading text, CTA links
-- `src/components/home/high-value-grid.test.tsx` — price formatting, tile links
-- `src/app/decks/page.test.tsx` — CRUD flow with mocked fetch
-- `src/app/collection/page.test.tsx` — Quick Add loading/success states
-- `src/app/decks/[id]/loading.test.tsx` — skeleton structure + source code assertions
-
-**DB integration tests (all it.todo — require live Neon connection):**
-- `src/db/queries/catalog.test.ts`
-- `src/db/queries/collection.test.ts` (partial)
-
-**E2E tests:** Not implemented. Playwright and Cypress are not installed. Manual smoke testing referenced in comments as the substitute for browser-only and live-DB scenarios.
+**Location:**
+- Define factories at top of test file
+- Keep factories simple (just object creation)
+- Use random IDs when needed to avoid collisions: `id: Math.floor(Math.random() * 1000)`
 
 ## Coverage
 
-**Enforcement:** No coverage thresholds configured in `vitest.config.mts` or `package.json`.
+**Requirements:** Not enforced globally
 
-**Covered well:**
-- Pure logic in `src/lib/` — filter logic, validation, binder math, export formatting, price sync
-- Collection shape builder
-- Core component rendering modes (`CardItem`, `HeroSection`, `HighValueGrid`, `CardGrid`)
+**View Coverage:**
+- Run: `npm test -- --coverage` (vitest built-in)
+- Configure in `vitest.config.mts` if threshold enforcement needed
 
-**Coverage gaps:**
-- All DB query functions — tested only via `it.todo` stubs; require a live Neon connection
-- `CatalogClient` search/filter UI — fully stubbed, requires real Next.js router
-- CSV import flow (PapaParse callback path) — stubs only; requires File object control
-- All API route handlers under `src/app/api/` — no route handler tests in the current file inventory
-- Binder components: `src/components/binder/` has no test files
+**Test Coverage Goals:**
+- Business logic: aim for 80%+
+- React components: focus on user interactions, not implementation
+- Utility functions: 90%+ (pure functions are critical)
+
+## Test Types
+
+**Unit Tests:**
+- Scope: Single function or component in isolation
+- Approach: Test inputs and outputs, edge cases, error conditions
+- Examples:
+  - `calculateLookingFor()` with various parameter combinations
+  - `filterCards()` with different filter states
+  - `validateDeck()` with invalid/valid deck configurations
+- Location: `src/lib/[name].test.ts`
+
+**Integration Tests:**
+- Scope: Multiple functions working together or component + mocked deps
+- Approach: Test workflows and data transformations across modules
+- Example: `filterCards()` + collection map + filter state all together
+- Pattern: Multiple factories, multiple arrange steps, validate combined behavior
+- Location: Same `.test.ts` file, separate `describe()` block
+
+**Component Tests:**
+- Scope: React component rendering and user interaction
+- Approach: Render component, query by role/label, assert DOM state
+- Examples:
+  - `HeroSection` renders heading with correct text
+  - `NavBar` links to correct routes
+  - Form validation shows errors
+- Location: `src/components/[path]/[name].test.tsx`
+- Use `@testing-library/react` utilities: `render()`, `screen.getByRole()`, `screen.getByText()`
+
+**No E2E Tests:**
+- Not present in this codebase
+- Would use Playwright/Cypress if added
 
 ## Common Patterns
 
-**Async component testing with fetch:**
+**Async Testing:**
 ```typescript
-beforeEach(() => {
-  vi.clearAllMocks();
-  global.fetch = vi.fn().mockResolvedValue({
-    ok: true,
-    json: async () => ['SOR', 'SHD'],
+it('should handle async operations correctly', async () => {
+  const result = await someAsyncFunction();
+  expect(result).toBeDefined();
+});
+```
+
+**Error Testing:**
+```typescript
+it('should throw on invalid input', () => {
+  expect(() => calculateLookingFor(-1, 0, 0, false)).toThrow();
+});
+```
+
+**Multiple Assertions on Same Object** (from `src/lib/filter-cards.test.ts`):
+```typescript
+it('filters by variant (multiple related assertions)', () => {
+  const cards = [
+    makeCard({ id: 1, variantType: 'Normal' }),
+    makeCard({ id: 2, variantType: 'Foil' }),
+    makeCard({ id: 3, variantType: 'Hyperspace Foil' }),
+  ];
+  const result = filterCards(cards, { ...emptyFilters, selectedVariants: ['Foil', 'Hyperspace Foil'] });
+  expect(result).toHaveLength(2);
+  expect(result.map(c => c.id)).toEqual(expect.arrayContaining([2, 3]));
+});
+```
+
+**Testing Array/Object Results** (from `src/lib/auto-filter.test.ts`):
+```typescript
+it('deduplicates overlapping aspects between leader and base', () => {
+  const leader = createCard({ type: 'Leader', aspects: ['Command'] });
+  const base = createCard({ type: 'Base', aspects: ['Command'] });
+  const result = computeAutoFilter(leader, base);
+  expect(result!.aspects).toEqual(['Command']);
+});
+```
+
+**Testing Edge Cases:**
+- Empty inputs: `[]`, `{}`, `null`, `undefined`
+- Boundary values: 0, negative, very large numbers
+- Special cases: Swarming Vulture Droid exception (15 copies instead of 3)
+- Example from `src/lib/filter-cards.test.ts`:
+  ```typescript
+  it('handles cases where everything is zero', () => {
+    expect(calculateLookingFor(0, 0, 0, false)).toBe(0);
   });
-});
+  ```
 
-it('shows success after fetch resolves', async () => {
-  render(<CollectionPage />);
-  await waitFor(() => {
-    expect(screen.getByText(/Added \d+ cards/i)).toBeDefined();
-  });
-});
-```
-
-**Source file assertions (unique pattern in loading.test.tsx):**
+**Type Safety in Tests:**
 ```typescript
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import type { CardForFilter, FilterState } from './filter-cards';
 
-it('loading.tsx does not import next/headers', () => {
-  const source = readFileSync(join(process.cwd(), 'src/app/decks/[id]/loading.tsx'), 'utf-8');
-  expect(source).not.toContain("from 'next/headers'");
-});
+const makeCard = (overrides: Partial<CardForFilter> = {}): CardForFilter => {
+  // ...
+};
 ```
-Use this pattern to assert structural constraints on server components that must not call dynamic APIs.
 
-**Mocking `window` globals for jsdom:**
+## Vitest Configuration
+
+**File:** `vitest.config.mts`
+
 ```typescript
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: vi.fn().mockImplementation((query: string) => ({
-    matches: false,
-    media: query,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import tsconfigPaths from 'vite-tsconfig-paths';
+
+export default defineConfig({
+  plugins: [tsconfigPaths(), react()],
+  test: {
+    environment: 'node',
+    globals: true,           // describe/it/expect available globally
+    passWithNoTests: true,   // Don't fail if no tests found
+  },
 });
-window.confirm = vi.fn().mockReturnValue(true);
 ```
 
-**Testing virtualized components:**
-Mock `@tanstack/react-virtual`'s `useVirtualizer` to return a deterministic set of virtual rows. Inspect rendered DOM item count, `data-index` attributes, and inline styles rather than testing virtualizer internals.
+**Key Settings:**
+- `environment: 'node'` by default; override with `@vitest-environment jsdom` for React tests
+- `globals: true` allows `describe()`, `it()`, `expect()` without imports (optional, but current codebase imports them explicitly)
+- `passWithNoTests: true` prevents test runs from failing when no tests exist
+
+## Testing Best Practices in This Codebase
+
+1. **Co-locate tests with source** — easier to maintain, encourages comprehensive testing
+2. **Use factories for test data** — reduces duplication, improves readability
+3. **Test behavior, not implementation** — focus on inputs/outputs for functions, user interactions for components
+4. **Mock external dependencies** — keep tests fast and deterministic
+5. **Group related tests** — use nested `describe()` blocks
+6. **Name tests descriptively** — test names should explain the scenario and expected outcome
+7. **One concept per test** — easier to debug failures and understand what broke
+8. **Keep tests simple** — if test is complex, the code under test is probably too complex
 
 ---
 
-*Testing analysis: 2026-05-28*
+*Testing analysis: 2026-07-05*

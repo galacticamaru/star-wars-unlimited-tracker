@@ -1,115 +1,172 @@
----
-focus: tech
-last_updated: 2026-05-28
----
 # External Integrations
 
-**Analysis Date:** 2026-05-28
+**Analysis Date:** 2026-07-05
 
 ## APIs & External Services
 
-**Star Wars Unlimited Card Data:**
-- SWU-DB API (`https://api.swu-db.com`) — card definitions, set lists, and market pricing
-  - SDK/Client: Native `fetch` (no SDK)
-  - Endpoints used:
-    - `GET /sets` — fetch all set metadata
-    - `GET /cards/{setId}` — fetch all cards for a set (returns `{ data: SWUCard[] }`)
-    - `GET /cards/search?q=set:{setCode}&format=json` — fetch cards with pricing (returns array directly)
+**Card Database & Pricing:**
+- SWU-DB (Star Wars Unlimited Database) - Card definitions, printings, and market prices
+  - Endpoint: `https://api.swu-db.com`
+  - Used by: `src/lib/sync/upsert-cards.ts`, `src/lib/sync/prices.ts`
+  - Endpoints:
+    - `GET /sets` - Fetch all active card sets
+    - `GET /cards/{setId}` - Fetch cards for a specific set
+    - `GET /cards/search?q=set:{setCode}&format=json` - Search cards by set for pricing
+  - Data flow:
+    - Card sync (daily cron): Fetches set definitions and card details, upserts into `cardDefinitions` and `cardPrintings` tables
+    - Price sync (daily cron): Fetches pricing data for active sets (SOR, SHD, TWI, JTL, SEC, LAW, IBH), converts USD to EUR using 0.92 exchange rate
   - Auth: None (public API)
-  - Implementation: `src/lib/sync/upsert-cards.ts`, `src/lib/sync/prices.ts`
-  - Rate limiting: 1-second delay between set price fetches (self-imposed)
 
-**Card Images:**
-- SWU-DB CDN (`https://cdn.swu-db.com`) — source for all card artwork
-  - Access: Next.js `<Image>` component with remote pattern allowlist
-  - Config: `next.config.ts` (`remotePatterns`, `minimumCacheTTL: 2678400`, `unoptimized: true`)
-
-**Market Pricing (secondary):**
-- PokéWallet API — referenced by `POKEMON_API_KEY` env var in `.env.example`
-  - Status: Key present in env template; no active usage found in `src/` at time of analysis
+**Performance Analytics:**
+- Vercel Speed Insights - Web Vitals monitoring
+  - Library: `@vercel/speed-insights` v2.0.0
+  - Implementation: `src/app/layout.tsx`
+  - Collects: Core Web Vitals metrics
+  - Debug mode enabled in development
 
 ## Data Storage
 
 **Databases:**
-- Neon (Serverless PostgreSQL)
-  - Connection: `DATABASE_URL` env var (pooled connection string)
-  - Client: Drizzle ORM (`drizzle-orm/neon-serverless`) + `@neondatabase/serverless` Pool
-  - WebSocket: `ws` package injected via `neonConfig.webSocketConstructor = ws` in `src/db/index.ts`
-  - Schema: `src/db/schema.ts`
-  - Queries: `src/db/queries/`
+- Neon PostgreSQL Serverless
+  - Connection: `DATABASE_URL` environment variable (required)
+  - Client: `@neondatabase/serverless` v1.1.0 with WebSocket support
+  - Connection pool: Node.js Pool from `@neondatabase/serverless`
+  - ORM: Drizzle ORM v0.45.2
+  - Location: `src/db/index.ts` (main database instance)
+  - Schema: `src/db/schema.ts` (PostgreSQL tables)
+
+**Tables:**
+- `user` - User authentication records
+- `session` - Active user sessions
+- `account` - OAuth account links
+- `verification` - Email verification tokens
+- `cardDefinitions` - Card catalog (all unique cards)
+- `cardPrintings` - Card print variants (foil, hyperspace, etc.)
+- `userCollections` - User card inventory
+- `decks` - Saved deck lists
+- `binder` - Binder settings per user
+- `wantList` - User want list for trading
+- `tradeHistory` - Trade records between users
 
 **File Storage:**
-- None (no S3/Blob/R2 integration detected)
+- Local filesystem only (no cloud storage integration)
+- Public assets served from `public/` directory
 
 **Caching:**
-- Next.js data cache: `revalidateTag('cards', 'max')` called after cron sync (`src/app/api/cron/sync-cards/route.ts`)
-- Next.js image cache: controlled via `next.config.ts` `minimumCacheTTL`
+- Next.js built-in caching (via `next.config.ts`)
+  - Image cache TTL: 2678400 seconds (31 days) for `cdn.swu-db.com`
+  - Tag-based revalidation on card/price sync (tags: `'cards'`)
+  - Component caching enabled
 
 ## Authentication & Identity
 
 **Auth Provider:**
-- Better Auth 1.6.9
-  - Server config: `src/lib/auth.ts`
-  - Client config: `src/lib/auth-client.ts`
-  - Database adapter: `drizzleAdapter` with `pg` provider
-  - Auth tables: `user`, `session`, `account`, `verification` (all in `src/db/schema.ts`)
-  - Plugin: `username()` (allows username-based login)
-  - Strategies:
-    - Email/password (enabled)
-    - Google OAuth (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`)
-    - Discord OAuth (`DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`)
-  - API route: `src/app/api/auth/[...all]/route.ts`
-  - Hook: First-user data migration in `databaseHooks.user.create.after` (migrates seeded data to new user)
+- Custom via Better Auth v1.6.9
+  - Implementation: `src/lib/auth.ts` (server-side setup)
+  - Client: `src/lib/auth-client.ts` (browser-side integration)
+
+**Social Login Providers:**
+- Google OAuth
+  - Client ID: `GOOGLE_CLIENT_ID` environment variable
+  - Client Secret: `GOOGLE_CLIENT_SECRET` environment variable
+- Discord OAuth
+  - Client ID: `DISCORD_CLIENT_ID` environment variable
+  - Client Secret: `DISCORD_CLIENT_SECRET` environment variable
+
+**Authentication Methods:**
+- Email/Password - Native email registration and login
+- OAuth - Google and Discord
+- Username/Display Name - Custom profile via Better Auth username plugin
+
+**Session Management:**
+- Database-backed sessions (PostgreSQL)
+- Session table: `session` with `token`, `userId`, `expiresAt`
+- Cookie-based session tokens (checked via `getSessionCookie()` in middleware)
+- Middleware: `src/proxy.ts` protects routes `/collection` and `/decks` with session check
+
+**Authorization:**
+- Route protection via middleware in `src/proxy.ts`
+- Protected routes: `/collection/*`, `/decks/*` (require active session)
 
 ## Monitoring & Observability
 
-**Performance:**
-- Vercel Speed Insights (`@vercel/speed-insights` 2.0.0) — client-side performance metrics
-
 **Error Tracking:**
-- None detected (no Sentry, Datadog, or equivalent)
+- None (console.error used in code)
 
 **Logs:**
-- `console.log` / `console.error` in server-side sync functions (`src/lib/sync/upsert-cards.ts`, `src/lib/sync/prices.ts`)
+- Console logging only
+  - Error logs: `src/app/api/cron/sync-cards/route.ts`, `src/lib/sync/prices.ts`
+  - Debug output: Cron job timing and sync results
+
+**Web Vitals:**
+- Vercel Speed Insights (performance only, not error tracking)
 
 ## CI/CD & Deployment
 
 **Hosting:**
-- Vercel (Next.js serverless deployment)
+- Vercel (Next.js native platform)
+
+**Cron Jobs:**
+- Vercel Crons (`vercel.json`)
+  - Job: `/api/cron/sync-cards`
+  - Schedule: Daily at 06:00 UTC (`0 6 * * *`)
+  - Authorization: `CRON_SECRET` header (Bearer token required)
+  - Tasks:
+    1. Sync card definitions and printings from SWU-DB
+    2. Sync card prices (USD to EUR conversion)
+    3. Invalidate cache tag `'cards'`
 
 **CI Pipeline:**
-- No `.github/workflows/` directory detected; Vercel GitHub integration handles preview and production deploys
-
-**Scheduled Jobs:**
-- Vercel Cron: `GET /api/cron/sync-cards` — runs daily at 06:00 UTC
-  - Defined in `vercel.json`
-  - Auth: `Authorization: Bearer {CRON_SECRET}` header check in route handler
-  - Actions: syncs card definitions then prices from SWU-DB API, then revalidates `'cards'` cache tag
+- None detected (no GitHub Actions, Jenkins, etc.)
 
 ## Environment Configuration
 
 **Required env vars:**
-- `DATABASE_URL` — Neon PostgreSQL pooled connection string
-- `CRON_SECRET` — 32-char hex secret for cron endpoint auth
-- `BETTER_AUTH_URL` — base URL for auth callbacks (e.g. `http://localhost:3000`)
-- `BETTER_AUTH_SECRET` — secret for auth token signing
-- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth credentials
-- `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` — Discord OAuth credentials
-- `POKEMON_API_KEY` — PokéWallet API key (purpose unclear, no active usage found)
+- `DATABASE_URL` - Neon PostgreSQL connection string (mandatory)
+- `CRON_SECRET` - Authorization token for Vercel cron endpoints (for daily sync)
+- `GOOGLE_CLIENT_ID` - Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
+- `DISCORD_CLIENT_ID` - Discord OAuth app ID
+- `DISCORD_CLIENT_SECRET` - Discord OAuth app secret
+
+**Optional env vars:**
+- `NEXT_PUBLIC_APP_URL` - Base URL for auth redirect (defaults to request origin)
+- `NODE_ENV` - Development/production (used for Speed Insights debug mode)
+- `BETTER_AUTH_URL` - Override auth base URL (fallback after NEXT_PUBLIC_APP_URL)
 
 **Secrets location:**
-- Development: `.env.local` (not committed; see `.env.example`)
-- Production: Vercel Environment Variables dashboard
+- Vercel Environment Variables dashboard (for production)
+- `.env.local` file (for local development, not in git)
+
+## Data Synchronization
+
+**Card & Price Sync:**
+- Source: SWU-DB API
+- Frequency: Daily at 06:00 UTC (Vercel Cron)
+- Endpoint: `GET /api/cron/sync-cards`
+- Process:
+  1. Fetch all active sets from SWU-DB
+  2. For each set, fetch card definitions and upsert to `cardDefinitions` and `cardPrintings`
+  3. Fetch current market prices and update `priceUsd` and `priceEur` columns
+  4. Invalidate Next.js cache tag `'cards'`
+- Execution: `src/lib/sync/upsert-cards.ts` and `src/lib/sync/prices.ts`
+- Error handling: Catch and log errors, return 500 on failure
 
 ## Webhooks & Callbacks
 
 **Incoming:**
-- `src/app/api/auth/[...all]/route.ts` — Better Auth catch-all handler (OAuth callbacks, session management)
-- `src/app/api/cron/sync-cards/route.ts` — Vercel Cron trigger endpoint (`GET`, bearer-token protected)
+- Cron webhook: `/api/cron/sync-cards` (triggered by Vercel Crons)
 
 **Outgoing:**
-- None detected
+- OAuth callbacks: Handled by Better Auth (Google, Discord redirects)
+
+## Third-Party CDN
+
+**Image CDN:**
+- `cdn.swu-db.com` - Hosts card artwork images
+- Currently serving unoptimized (Vercel Image Transformations quota exhausted as of 2026-06-04)
+- Optimization settings: 75% quality, 31-day cache TTL
 
 ---
 
-*Integration audit: 2026-05-28*
+*Integration audit: 2026-07-05*

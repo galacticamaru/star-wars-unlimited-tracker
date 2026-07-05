@@ -1,144 +1,294 @@
----
-focus: quality
-last_updated: 2026-05-28
----
 # Coding Conventions
 
-**Analysis Date:** 2026-05-28
+**Analysis Date:** 2026-07-05
 
 ## Naming Patterns
 
 **Files:**
-- React components: `kebab-case.tsx` — e.g., `card-item.tsx`, `hero-section.tsx`, `catalog-client.tsx`
-- Utility/logic modules: `kebab-case.ts` — e.g., `filter-cards.ts`, `binder-logic.ts`, `deck-validation.ts`
-- Next.js API routes: `route.ts` inside segment directories — e.g., `src/app/api/collection/route.ts`
-- Test files co-located with source, suffixed `.test.ts` / `.test.tsx`
-- Browser/jsdom-specific tests use an extra qualifier segment: `card-item.browser.test.tsx`, `card-item.deck.test.tsx`
-- Drizzle schema: `src/db/schema.ts` (single file)
-- DB query files: `src/db/queries/<domain>.ts` — e.g., `catalog.ts`, `collection.ts`
+- kebab-case for all files
+- Examples: `nav-bar.tsx`, `deck-validation.ts`, `filter-cards.test.ts`, `currency-context.tsx`
+- Exception: No special naming for test files; suffix with `.test.ts` or `.test.tsx`
 
-**Functions and variables:**
-- All identifiers use `camelCase` — functions, variables, hooks, callbacks
-- Boolean variables use `is`/`has` prefixes: `isSelector`, `isReadOnly`, `hasShortfall`, `isHorizontal`
-- Event handlers use `on` prefix with PascalCase subject: `onUpdateCount`, `onDeckUpdate`, `onFilterManualChange`
-- Module-level constants use `SCREAMING_SNAKE_CASE`: `RARITY_OPTIONS`, `COST_OPTIONS`, `ARENA_OPTIONS`, `KEYWORD_OPTIONS`
+**Functions:**
+- camelCase for all function names
+- Start with action verb when appropriate: `calculate*`, `compute*`, `validate*`, `filter*`, `map*`
+- Examples: `calculateLookingFor()`, `filterCards()`, `computeAutoFilter()`, `validateDeck()`, `mapPriceData()`
 
-**Types and interfaces:**
-- Interfaces use `PascalCase` with the `Interface` suffix omitted: `CardItemProps`, `FilterState`, `CardForFilter`, `ValidationResult`
-- Exported type names are descriptive domain nouns: `CollectionMap`, `ExportDeck`, `AutoFilter`, `SWUDBCard`
-- Props interfaces are named `<ComponentName>Props` and defined immediately before the component
-- Type-only imports use `import type { ... }`: `import type { CollectionMap } from '@/app/api/collection/collection-shape'`
+**Variables:**
+- camelCase for constants, parameters, and local variables
+- All caps with underscores only for module-level constants
+- Example: `const NAV_LINKS = [...]`
 
-**React components:**
-- Named exports for all non-page components: `export function CardItem(...)`, `export function HeroSection(...)`
-- Next.js page/layout/loading files use default exports as required by the framework: `export default function RootLayout(...)`, `export default async function HomePage()`
-- Component names use `PascalCase`
+**Components (React):**
+- PascalCase for all React components
+- Examples: `NavBar`, `CurrencyProvider`, `HeroSection`, `CardGrid`, `DeckBuilder`
 
-**DB schema (Drizzle):**
-- Table names use snake_case string literals: `pgTable('user', ...)`, `pgTable('card_printing', ...)`
-- Column definitions use camelCase JS names mapped to snake_case DB columns: `emailVerified: boolean('email_verified')`
+**Types & Interfaces:**
+- PascalCase for all type definitions
+- Use `interface` for object shapes (component props, data structures)
+- Use `type` for unions, aliases, and complex type definitions
+- Examples: `Card`, `FilterState`, `ValidationResult`, `CurrencyContextType`, `AutoFilter`
+
+**Directories:**
+- kebab-case for feature directories
+- Examples: `src/lib`, `src/components`, `src/app`, `src/data`, `src/db`
 
 ## Code Style
 
 **Formatting:**
-- No Prettier config detected. Formatting is not enforced by a dedicated formatter.
-- Single quotes for string literals in most `src/` files; double quotes appear in some files (`layout.tsx`, `utils.ts`) — mixed, no enforced standard.
-- Semicolons used consistently throughout.
-- 2-space indentation throughout.
-- Trailing commas in multi-line objects and function parameter lists.
+- ESLint with Next.js core-web-vitals and TypeScript configurations
+- No custom Prettier config; uses ESLint defaults
+- Indentation: 2 spaces (standard Next.js)
 
 **Linting:**
-- ESLint 9 via `eslint.config.mjs` using flat config API (`defineConfig`).
-- Rule sets: `eslint-config-next/core-web-vitals` + `eslint-config-next/typescript`.
-- No custom rule overrides beyond the default Next.js+TypeScript config.
-- One known suppression in `src/components/catalog/card-image-section.tsx:75` with `// @ts-ignore` for a custom Next.js 16 attribute.
+- ESLint v9 with `eslint-config-next/core-web-vitals` and `eslint-config-next/typescript`
+- Configuration file: `eslint.config.mjs`
+- Run with: `npm run lint`
+- No custom linting rules beyond Next.js/TypeScript standards
 
-## TypeScript Strictness
-
-- `strict: true` in `tsconfig.json` — enables all strict checks (`strictNullChecks`, `noImplicitAny`, `strictFunctionTypes`, etc.).
-- `isolatedModules: true` — each file must be independently type-checkable.
-- `noEmit: true` — TypeScript is type-check only; build is handled by Next.js.
-- `moduleResolution: "bundler"` — modern resolution compatible with Vite/Next.js 16.
-- Nullable fields are modelled explicitly as `string | null` or `number | null` — not `undefined` for absent DB values.
-- Optional interface fields use `?`: `variantType?: string`, `selectedVariants?: string[] | null`.
-- `any` is used only in test mock factories (e.g., `(props: any)` in `vi.mock` callbacks) — not in production code.
+**TypeScript:**
+- Strict mode enabled: `strict: true`
+- Target ES2017, module: esnext
+- Always use type annotations for function parameters and return types
+- Examples:
+  ```typescript
+  export function calculateLookingFor(
+    autoTarget: number,
+    manualTarget: number,
+    currentInventory: number,
+    isExcluded: boolean
+  ): number {
+    // ...
+  }
+  ```
 
 ## Import Organization
 
-**Order (observed pattern):**
-1. External packages (React, Next.js, third-party): `import { useState } from 'react'`
-2. Internal absolute imports via `@/` alias: `import { cn } from '@/lib/utils'`
-3. Relative sibling imports: `import { CardGrid } from './card-grid'`
+**Order (in this sequence):**
+1. React/Node standard library (`import React, { ... } from 'react'`, `import { ... } from 'node:...`)
+2. Next.js imports (`import Link from 'next/link'`, `import { useRouter } from 'next/navigation'`)
+3. Third-party packages (`import Papa from 'papaparse'`, `import { ... } from 'clsx'`)
+4. Icon libraries (`import { ChevronLeft, Upload, ... } from 'lucide-react'`)
+5. Local imports with `@` alias (`import { cn } from '@/lib/utils'`, `import { Button } from '@/components/ui/button'`)
 
-**Path alias:**
-- `@/*` maps to `src/*` — defined in `tsconfig.json` and resolved in Vitest via `vite-tsconfig-paths`.
-- Use `@/` for all cross-directory imports; use relative paths only for siblings in the same directory.
+**Path Aliases:**
+- `@/*` maps to `./src/*` (defined in `tsconfig.json`)
+- Always use `@/` for imports from src, never relative paths like `../../../`
 
-**Type-only imports:**
-- `import type { ... }` is used consistently for types that are not used as runtime values.
+**Example from `src/app/collection/page.tsx`:**
+```typescript
+'use client'
 
-## CSS Approach
-
-- **Tailwind CSS v4** via `@tailwindcss/postcss`. No separate `tailwind.config.*` file — design tokens are configured in `src/app/globals.css` via `@theme inline` blocks.
-- `tw-animate-css` imported for animation utilities.
-- `shadcn` component library (`shadcn/tailwind.css`) provides base design tokens.
-- `cn()` from `src/lib/utils.ts` (wraps `clsx` + `tailwind-merge`) is the canonical helper for composing conditional class strings. Use it everywhere instead of template literals.
-- Arbitrary Tailwind values are used for layout constraints: `h-[calc(100svh-56px)]`, `aspect-[2/3]`.
-- No CSS Modules or styled-components — all styling is utility-class-based.
-- Dark mode via `@custom-variant dark (&:is(.dark *))` — class-based, not `prefers-color-scheme`.
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Papa from 'papaparse';
+import { normalizeRedditCsv } from '@/lib/collection/normalize';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ChevronLeft, Upload, CheckCircle2, AlertCircle, PackagePlus } from 'lucide-react';
+import Link from 'next/link';
+import { starterDecks } from '@/data/starter-decks';
+```
 
 ## Error Handling
 
-**API routes pattern:**
+**Pattern:**
+- Use try-catch blocks for async operations and uncertain code paths
+- Throw `new Error()` with descriptive messages
+- Always include error context in catch blocks
+- Log errors with `console.error()` before handling UI state
+
+**Examples from `src/app/collection/page.tsx`:**
 ```typescript
-export async function GET() {
-  try {
-    // ...
-    return Response.json(data);
-  } catch (error) {
-    console.error('Failed to fetch collection:', error);
-    return new Response('Internal Server Error', { status: 500 });
-  }
+try {
+  const res = await fetch('/api/collection/import', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(normalized),
+  });
+  
+  if (!res.ok) throw new Error('Upload failed');
+  
+  const data = await res.json();
+  setResult(data);
+  setStatus('success');
+} catch (err) {
+  console.error(err);
+  setStatus('error');
 }
 ```
-- Use `Response.json()` for success (not `NextResponse.json`).
-- Use `new Response('Message', { status: NNN })` for error responses.
-- Always log with `console.error('Failed to <verb> <noun>:', error)` before returning.
 
-**Client code:**
-- Check `response.ok` before parsing JSON in fetch calls.
-- No global error boundary observed; errors are handled locally per component.
+**Pattern for API Routes** (`src/app/api/`):
+```typescript
+try {
+  // business logic
+  return Response.json({ /* data */ });
+} catch (error) {
+  console.error(error);
+  return new Response('Internal Server Error', { status: 500 });
+}
+```
+
+**Status State Pattern:**
+- Use state to track async operation status: `'idle' | 'loading' | 'success' | 'error'`
+- Initialize to `'idle'`
+- Update to `'loading'` before async call
+- Update to `'success'` or `'error'` in finally block
+- Render UI conditionally based on status
+
+**Missing Data:**
+- Early return if required data is missing: `if (!data) return;`
+- Return default values for optional data: `const value = item?.property ?? defaultValue`
 
 ## Logging
 
-**Framework:** `console` only — no logging library.
+**Framework:** console (no structured logging library)
 
-**Pattern:** `console.error('Failed to <verb> <noun>:', error)` in catch blocks.
+**Patterns:**
+- Use `console.error()` for errors and exceptions
+- Use `console.log()` sparingly; mainly for debugging
+- No info/warn/debug levels; just error and log
+- Always include context: `console.error('Failed to load sets:', err)`
+
+**Example:**
+```typescript
+.catch(err => console.error('Failed to load sets:', err));
+```
 
 ## Comments
 
-**When to comment:**
-- Inline comments explain non-obvious business rules, often referencing requirement codes: `// D-05`, `// REQ-COLLECT-08`, `// PERF-04`.
-- JSDoc on exported functions that implement non-trivial logic: `calculateLookingFor`, `validateDeck`.
-- `// Wave 0 stub` / `// Wave N implementation` comments in test files mark placeholder tests and their delivery tier.
-- Comments note intentional workarounds: `// @ts-ignore - custom attribute used in this project's Next.js 16 setup`.
-- Do not write comments that merely restate what the code does.
+**When to Comment:**
+- Document complex business logic or rules (e.g., Swarming Vulture Droid special case)
+- Explain why code does something non-obvious (not what it does)
+- Mark known limitations or edge cases
+- Link to related code or references
+
+**JSDoc/TSDoc:**
+- Use JSDoc for public functions
+- Include `@param` and `@returns` tags
+- Include description of business logic where relevant
+
+**Example from `src/lib/binder-logic.ts`:**
+```typescript
+/**
+ * Calculates the quantity of a card the user is "Looking For" in their trade binder.
+ * 
+ * The logic merges auto-calculated requirements from decks with manual user wants,
+ * subtracts current inventory, and respects explicit exclusions.
+ * 
+ * @param autoTarget The quantity required by the user's decks (max quantity in any single deck)
+ * @param manualTarget The quantity manually requested by the user for their trade binder
+ * @param currentInventory The quantity the user already owns in their collection
+ * @param isExcluded Whether the user has explicitly excluded this card from their "Looking For" list
+ * @returns The quantity of the card the user is seeking (0 if none or excluded)
+ */
+export function calculateLookingFor(
+  autoTarget: number,
+  manualTarget: number,
+  currentInventory: number,
+  isExcluded: boolean
+): number {
+  // ...
+}
+```
+
+**Inline Comments:**
+- Use for non-obvious business rules
+- Example from `src/lib/deck-validation.ts`:
+  ```typescript
+  // Track quantities for 3-copy limit
+  const isSwarmingVultureDroid = card.swudbId === 'JTL-256';
+  const maxAllowed = isSwarmingVultureDroid ? 15 : 3;
+  ```
 
 ## Function Design
 
-**Size:** Keep functions focused on one responsibility. Helpers extracted as private functions when reused (e.g., `formatMeleeLine` in `src/lib/export.ts`).
+**Size:**
+- Aim for functions under 50 lines
+- Break down large functions into smaller helpers
+- Extract nested functions when they become complex
 
-**Parameters:** Use object destructuring for component props. Pure utility functions use positional arguments when arity is ≤4 (e.g., `calculateLookingFor(autoTarget, manualTarget, currentInventory, isExcluded)`).
+**Parameters:**
+- Maximum 4-5 parameters; use objects for larger parameter sets
+- Always provide type annotations
+- Use nullable types (`| null`) for optional data, not `undefined`
+- Example: `Card | null`, not `Card | undefined`
 
-**Return values:** Explicit types. Nullable returns use `T | null`, not `undefined` (except where optional chaining naturally returns `undefined`).
+**Return Values:**
+- Always specify return type
+- Return objects/arrays instead of multiple return values
+- Use descriptive return types (e.g., `ValidationResult`, not `{ errors: []; warnings: [] }`)
+
+**Example from `src/lib/filter-cards.ts`:**
+```typescript
+export function filterCards(
+  cards: CardForFilter[],
+  filters: FilterState,
+  collection: CollectionMap = {}
+): CardForFilter[] {
+  // implementation
+}
+```
 
 ## Module Design
 
 **Exports:**
-- Named exports throughout all non-page files.
-- No barrel `index.ts` files in `src/lib/` or `src/components/` — import directly from the specific file.
-- DB query modules export individual async functions; schema exports named table constants from `src/db/schema.ts`.
+- Explicitly export functions and types (not `export *`)
+- Export interfaces alongside functions that use them
+- Keep module focused on single responsibility
 
-**'use client' directive:**
-- Client components declare `'use client'` as the very first line, before any imports: `catalog-client.tsx`, `card-item.tsx`, `currency-context.tsx`.
-- Server components (pages, layouts, data-fetching async components) have no directive.
+**Barrel Files:**
+- Not commonly used in this codebase
+- Import directly from source files using full paths
+
+**Example from `src/lib/filter-cards.ts`:**
+```typescript
+export interface FilterState {
+  // ...
+}
+
+export interface CardForFilter {
+  // ...
+}
+
+export function filterCards(
+  cards: CardForFilter[],
+  filters: FilterState,
+  collection: CollectionMap = {}
+): CardForFilter[] {
+  // ...
+}
+```
+
+## React Component Patterns
+
+**Functional Components Only:**
+- All components are functional components with hooks
+- Use `'use client'` directive for client-side components at the top of file
+
+**Props Pattern:**
+- Define inline prop types as interfaces
+- Use destructuring in function signature
+- Example:
+  ```typescript
+  export function CurrencyProvider({ children }: { children: React.ReactNode }) {
+    // ...
+  }
+  ```
+
+**Context Hooks:**
+- Always validate context usage with throw error if used outside provider
+- Example from `src/components/currency-context.tsx`:
+  ```typescript
+  export function useCurrency() {
+    const context = useContext(CurrencyContext);
+    if (context === undefined) {
+      throw new Error('useCurrency must be used within a CurrencyProvider');
+    }
+    return context;
+  }
+  ```
+
+---
+
+*Convention analysis: 2026-07-05*

@@ -1,266 +1,394 @@
----
-focus: arch
-last_updated: 2026-05-28
----
-<!-- refreshed: 2026-05-28 -->
+<!-- refreshed: 2026-07-05 -->
 # Architecture
 
-**Analysis Date:** 2026-05-28
+**Analysis Date:** 2026-07-05
 
 ## System Overview
 
 ```text
-┌──────────────────────────────────────────────────────────────────┐
-│                     Browser (Client Components)                  │
-│  CatalogClient  DecksClient  ManageBinderPage  PublicBinderClient │
-│  `src/components/catalog/`  `src/components/decks/`              │
-│  `src/app/binder/manage/page.tsx`  `src/components/binder/`      │
-└────────┬──────────────┬───────────────┬──────────────────────────┘
-         │ fetch()      │ authClient.*  │ nuqs (URL state)
-         ▼              ▼               ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                    Next.js App Router (Server)                    │
-│  RSC Pages (async)              Route Handlers (API)             │
-│  `src/app/*/page.tsx`           `src/app/api/**/route.ts`        │
-│  — DB queries direct            — auth.api.getSession() guard    │
-│  — serialize plain objects      — JSON responses                 │
-└────────┬─────────────────────────────────────────────────────────┘
-         │ Drizzle ORM
-         ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                    Data Layer (`src/db/`)                        │
-│  schema.ts (table definitions)   queries/ (query functions)      │
-│  index.ts  (Neon pool + drizzle client singleton)                │
-└────────┬─────────────────────────────────────────────────────────┘
-         │ @neondatabase/serverless WebSocket pool
-         ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                   Neon PostgreSQL (external)                     │
-└──────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                           Client Layer                               │
+│  React 19 / Next.js 16 Components (TSX) + shadcn/ui                  │
+│  • CatalogClient, DecksClient, BinderClient                          │
+│  • CardGrid, SidebarFilters, VariantSections                         │
+└──────────┬───────────────────────────────────────────────────────────┘
+           │ API calls (GET/POST)
+           │ Query params (nuqs)
+           ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                       Next.js Server Layer                            │
+│  Server Components (RSC) + API Routes                                │
+│  • src/app/ — Pages fetch data, serialize to plain objects           │
+│  • src/app/api/ — Endpoints for auth, mutations, data export         │
+└──────────┬───────────────────────────────────────────────────────────┘
+           │ Queries via Drizzle ORM
+           │ Auth checks (better-auth)
+           │ Business logic (src/lib)
+           ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                       Data Access Layer                               │
+│  src/db/queries/ + src/lib/* — Type-safe DB queries & transformations│
+│  • catalog.ts — Card lookups, filters, prices                        │
+│  • collection.ts — User ownership, variants, counts                  │
+│  • decks.ts, binder.ts, trade.ts — Feature-specific queries          │
+│  • Business logic: filtering, validation, calculations               │
+└──────────┬───────────────────────────────────────────────────────────┘
+           │ SQL (Neon serverless)
+           ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                      PostgreSQL (Neon)                               │
+│  • cardDefinitions — Base card data (name, type, cost, etc.)         │
+│  • cardPrintings — Variants (Normal, Foil, Hyperspace) with art URLs│
+│  • userCollections — Count totals by user & definition               │
+│  • userPrintingCollections — Counts per variant per user             │
+│  • decks, userTradeOfferings, wantListEntries — Features             │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Component Responsibilities
 
 | Component | Responsibility | File |
 |-----------|----------------|------|
-| RootLayout | Font setup, NavBar, NuqsAdapter, CurrencyProvider, SpeedInsights | `src/app/layout.tsx` |
-| NavBar | Client-side nav with auth session display, sign-out | `src/components/nav-bar.tsx` |
-| CurrencyProvider | React context for EUR/USD preference via localStorage | `src/components/currency-context.tsx` |
-| CatalogPage (RSC) | Fetches all cards + filter options + art map, passes to CatalogClient | `src/app/cards/page.tsx` |
-| CatalogClient | Filter state (nuqs URL params), collection fetch, card grid render | `src/components/catalog/catalog-client.tsx` |
-| CardDetailPage (RSC) | Fetches card + user printings, hydrates legacy collection data | `src/app/cards/[set-code]/[card-number]/page.tsx` |
-| DecksPage (RSC) | Auth-protected; fetches deck list + want list for the user | `src/app/decks/page.tsx` |
-| DeckPage (RSC) | Auth-protected; fetches full deck + all cards for builder | `src/app/decks/[id]/page.tsx` |
-| DeckBuilder | useReducer deck state, auto-filter, embedded card browser | `src/components/decks/deck-builder.tsx` |
-| CollectionPage | Client-only; CSV upload flow + starter deck quick-add | `src/app/collection/page.tsx` |
-| ManageBinderPage | Client-only; trade offerings + wants + exclusions management | `src/app/binder/manage/page.tsx` |
-| PublicBinderPage (RSC) | Fetches public binder data by username slug | `src/app/binder/[username]/page.tsx` |
-| DB schema | All 11 table definitions | `src/db/schema.ts` |
-| DB index | Neon serverless pool + drizzle client singleton | `src/db/index.ts` |
-| Auth (server) | better-auth instance with Drizzle adapter | `src/lib/auth.ts` |
-| Auth (client) | better-auth React client for session hooks | `src/lib/auth-client.ts` |
+| **Pages (RSC)** | Server-fetch data, serialize, pass to client components | `src/app/*/page.tsx` |
+| **CatalogClient** | Card listing, filtering, variant selection (client state) | `src/components/catalog/catalog-client.tsx` |
+| **DecksClient** | Deck list, deck builder, card validation | `src/components/decks/decks-client.tsx` |
+| **BinderClient** | Binder editing, trade offer management, collection display | `src/components/binder/*` |
+| **CardGrid** | Virtualized card rendering, pagination | `src/components/catalog/card-grid.tsx` |
+| **DB Queries** | Typed, reusable database access functions | `src/db/queries/*.ts` |
+| **Business Logic** | Filtering, calculations, normalization | `src/lib/*.ts` |
+| **API Routes** | HTTP endpoints for mutations and data export | `src/app/api/*/route.ts` |
+| **Auth** | better-auth configuration, session management | `src/lib/auth.ts` |
 
 ## Pattern Overview
 
-**Overall:** RSC-first data loading with "serialize then hand off" to Client Components
+**Overall:** Server-Driven Client Application with Serialization Boundary
 
 **Key Characteristics:**
-- RSC pages query the database directly — no intermediate API layer for initial page loads
-- RSC pages serialize Drizzle results to plain objects before passing as props; Date objects never cross the RSC→Client boundary
-- Client components fetch their own user-specific data via `fetch('/api/...')` inside `useEffect` (e.g., `CatalogClient` fetches collection on mount)
-- URL state is managed with `nuqs` — all catalog/binder filter state lives in the URL, not component state
-- Deck card state is managed with `useReducer` in `DeckBuilder` — the most complex local state in the app
-- Auth is handled by `better-auth` on both server (`auth.api.getSession`) and client (`authClient.useSession`)
+- Server Components fetch and serialize data before RSC→Client boundary
+- Client components manage UI state (filters, selections) via nuqs URL params
+- API routes handle mutations with session validation
+- Type-safe database layer via Drizzle ORM
+- Multi-level data ownership (card definition → printing → user collection)
 
 ## Layers
 
-**App Router Pages (`src/app/`):**
-- Purpose: Route entry points; RSC pages load data, client pages own their data lifecycle
-- Location: `src/app/`
-- Contains: `page.tsx`, `layout.tsx`, `loading.tsx` files; API route handlers under `src/app/api/`
-- Depends on: `src/db/queries/`, `src/lib/`, `src/components/`
-- Used by: Browser via Next.js router
+**Server Components (RSC Layer):**
+- Purpose: Fetch initial data, authenticate user, serialize for client
+- Location: `src/app/*/page.tsx` (all page files)
+- Contains: Async server components that call DB queries
+- Depends on: `src/db/queries/*`, `src/lib/*` (auth, business logic)
+- Used by: Client components (passed as props or context)
+- Example: `src/app/decks/page.tsx` fetches decks + want list, passes to `<DecksClient>`
 
-**Components (`src/components/`):**
-- Purpose: UI rendering; split into feature-domain folders
-- Location: `src/components/`
-- Contains: Client Components (`'use client'`) and a few pure presentation components
-- Depends on: `src/lib/`, `src/components/ui/`
-- Used by: `src/app/*/page.tsx`
+**Client Components (UI Layer):**
+- Purpose: Render UI, manage filter state, handle user interactions
+- Location: `src/components/*` (all client components marked with `'use client'`)
+- Contains: React hooks, event handlers, conditional rendering
+- Depends on: API endpoints, shadcn/ui primitives, utility functions
+- Used by: Server pages, other client components
+- Example: `src/components/catalog/catalog-client.tsx` filters cards, calls `/api/collection/variants` to update counts
 
-**DB Queries (`src/db/queries/`):**
-- Purpose: Typed Drizzle query functions; one file per domain
-- Location: `src/db/queries/`
-- Contains: `catalog.ts`, `collection.ts`, `decks.ts`, `binder.ts`, `trade.ts`, `card-detail.ts`
-- Depends on: `src/db/index.ts`, `src/db/schema.ts`
-- Used by: RSC pages, API route handlers, `src/lib/` functions
+**API Routes (HTTP Endpoint Layer):**
+- Purpose: Handle mutations, export data, manage authenticated operations
+- Location: `src/app/api/*/route.ts`
+- Contains: GET/POST handlers, auth checks, transaction coordination
+- Depends on: DB queries, auth service, business logic
+- Used by: Client components (fetch calls), cron jobs
+- Example: `src/app/api/collection/variants/route.ts` updates user's variant counts
 
-**Lib (`src/lib/`):**
-- Purpose: Pure business logic, auth setup, and domain utilities
-- Location: `src/lib/`
-- Contains: `filter-cards.ts`, `binder-logic.ts`, `deck-validation.ts`, `deck-grouping.ts`, `want-list.ts`, `auto-filter.ts`, `export.ts`, `auth.ts`, `auth-client.ts`, `sync/`, `catalog/`
-- Depends on: `src/db/` (only `auth.ts` and `want-list.ts`), `src/app/api/collection/collection-shape.ts`
-- Used by: Components, API routes, RSC pages
+**Database Query Layer:**
+- Purpose: Type-safe, reusable database operations
+- Location: `src/db/queries/*.ts`
+- Contains: Drizzle queries for each feature (catalog, collection, decks, binder, trade)
+- Depends on: Drizzle ORM, schema definitions
+- Used by: Server pages, API routes, business logic functions
+- Example: `src/db/queries/collection.ts` joins user collections with card metadata
 
-**UI Primitives (`src/components/ui/`):**
-- Purpose: shadcn/ui base components
-- Location: `src/components/ui/`
-- Contains: `badge.tsx`, `button.tsx`, `card.tsx`, `dropdown-menu.tsx`, `input.tsx`, `label.tsx`, `sheet.tsx`, `switch.tsx`, `tabs.tsx`, `tooltip.tsx`
-- Depends on: Radix UI primitives, `src/lib/utils.ts` (`cn` helper)
-- Used by: All feature components
+**Business Logic Layer:**
+- Purpose: Filtering, calculations, transformations independent of persistence
+- Location: `src/lib/*.ts` (excluding auth)
+- Contains: Pure functions, utility helpers, validation logic
+- Depends on: Type definitions (no direct DB access in most cases)
+- Used by: Server pages, API routes, components
+- Examples:
+  - `src/lib/filter-cards.ts` — Apply user filters to card list
+  - `src/lib/binder-logic.ts` — Calculate "Looking For" quantities
+  - `src/lib/deck-validation.ts` — Validate deck legality
+
+**Authentication & Authorization:**
+- Purpose: Session management, user identity, protected routes
+- Location: `src/lib/auth.ts`, `src/lib/auth-client.ts`, `src/proxy.ts`
+- Pattern: better-auth with Drizzle adapter, Google/Discord OAuth, email/password
+- Middleware: `src/proxy.ts` guards `/collection` and `/decks` routes
+- Example: API routes check session via `auth.api.getSession({ headers })`
 
 ## Data Flow
 
-### Catalog Page Load (RSC Path)
+### Primary Request Path: Catalog Page Load
 
-1. `CatalogPage` RSC (`src/app/cards/page.tsx`) awaits `getAllCards()`, `getFilterOptions()`, `getPrintingArtMap()` in parallel
-2. `getAllCards()` (`src/db/queries/catalog.ts`) runs a Drizzle JOIN of `card_definitions` + `card_printings`, tagged `'use cache'` with `cacheTag('cards')` and `cacheLife('days')`
-3. RSC serializes results to plain objects, stripping Date columns
-4. `CatalogClient` (`src/components/catalog/catalog-client.tsx`) receives cards as props; initializes nuqs URL filter state
-5. On mount (if authenticated), `CatalogClient` fetches `GET /api/collection` to load the `CollectionMap`
-6. `filterCards()` (`src/lib/filter-cards.ts`) runs client-side on every filter change using `useMemo`
-7. `CardGrid` renders filtered cards with collection overlay badges
+1. User navigates to `/cards` → `src/app/cards/page.tsx` (Server Component)
+2. Page fetches in parallel:
+   - `getAllCards()` from `src/db/queries/catalog.ts` — All card definitions with printings
+   - `getFilterOptions()` — Available filter choices (sets, types, aspects)
+   - `getPrintingArtMap()` — Best art variant per card definition
+3. Server serializes cards to plain objects (strips timestamps, selects needed fields)
+4. Page renders `<CatalogClient cards={plainCards} filterOptions={...} />`
+5. Client component (`src/components/catalog/catalog-client.tsx`):
+   - Initializes filter state from URL query params (nuqs)
+   - `useMemo` applies `filterCards()` from `src/lib/filter-cards.ts`
+   - Renders `<CardGrid>` with filtered cards
+   - User selects filters → URL query params update → useMemo re-runs → grid updates
 
-### Collection Count Mutation
+### Secondary Flow: Collection Management (Mutation)
 
-1. User clicks +/- in `VariantCollectionSection` (`src/components/catalog/variant-collection-section.tsx`)
-2. `POST /api/collection/variants` (`src/app/api/collection/variants/route.ts`) receives `{ cardPrintingId, count }`
-3. Route validates inputs (ASVS pattern), extracts `userId` from session only
-4. `upsertVariantCount()` writes to `user_printing_collections`
-5. `recomputeTotal()` sums all variant counts and writes aggregate to `user_collections`
-6. Response returns `{ success: true }`; component updates local display state
+1. User selects card variant in collection UI
+2. Client component calls `POST /api/collection/variants` with card printing ID + count
+3. API route (`src/app/api/collection/variants/route.ts`):
+   - Validates session via `auth.api.getSession()`
+   - Calls `updateCardPrintingCount()` from `src/db/queries/collection.ts`
+   - Mutation updates `userPrintingCollections` table
+   - Returns updated counts
+4. Client component updates local state and re-renders
 
-### Deck Builder Flow
+### Trade Binder Flow
 
-1. `DeckPage` RSC (`src/app/decks/[id]/page.tsx`) fetches deck + all cards + filter options in parallel
-2. `DeckBuilder` (`src/components/decks/deck-builder.tsx`) initializes `useReducer` with `DeckState`
-3. Card additions dispatch `UPDATE_CARD` actions; saves call `PATCH /api/decks/[id]`
-4. `computeAutoFilter()` (`src/lib/auto-filter.ts`) derives aspect/type filter from the selected leader + base
-5. `CatalogClient` is embedded in `mode='selector'` — `onDeckUpdate` callback bridges catalog tile clicks to deck state
+1. User edits binder via `/binder/manage` → `src/app/binder/manage/page.tsx`
+2. Page fetches user's binder data: `getOwnedCardDefinitions()` + trade offerings
+3. `<BinderClient>` renders editable sections:
+   - Collection (what they own) — from `userCollections` + `userPrintingCollections`
+   - Exclusions (cards to hide from want list) — from `binderExclusions`
+   - Trade offerings (cards they're offering) — from `userTradeOfferings`
+4. User updates → POST to `/api/binder/*` endpoints → DB mutations
+5. Data flow driven by `calculateLookingFor()` in `src/lib/binder-logic.ts`:
+   - Merges deck requirements (auto-target) with manual wants
+   - Subtracts current inventory
+   - Respects exclusions
 
-### Card Sync (Cron)
+### Deck Management Flow
 
-1. Vercel cron hits `GET /api/cron/sync-cards` daily at 06:00 UTC (configured in `vercel.json`)
-2. Bearer token from `CRON_SECRET` env var is validated; missing/mismatched → 401
-3. `syncAllCards()` (`src/lib/sync/upsert-cards.ts`) fetches from swu-db.com API, upserts `card_definitions` + `card_printings`
-4. `syncPrices()` (`src/lib/sync/prices.ts`) updates price columns on `card_definitions`
-5. `revalidateTag('cards', 'max')` invalidates the entire Next.js catalog cache
+1. User navigates to `/decks` → `src/app/decks/page.tsx`
+2. Page fetches:
+   - `getDecks(userId)` — User's saved decks
+   - `getWantList(userId)` — Cards wanted by any deck (for binder integration)
+3. `<DecksClient>` allows:
+   - Create new deck → calls `POST /api/decks`
+   - Edit deck → calls `POST /api/decks/[id]` with card list
+   - Delete deck → calls `DELETE /api/decks/[id]`
+   - Validation via `validateDeck()` in `src/lib/deck-validation.ts`
+4. Deck editor uses embedded `<CatalogClient mode="selector">` with `deckCounts` prop
+5. User's changes update via `onDeckUpdate` callback → state → re-render
 
-**State Management Summary:**
-- URL state: filter params via `nuqs` (`CatalogClient`, `PublicBinderClient`)
-- Local `useState`: collection map (fetched in `CatalogClient`), binder trade data, form upload states
-- `useReducer`: deck card state in `DeckBuilder`
-- React Context: currency preference (`CurrencyProvider` via `src/components/currency-context.tsx`)
-- No global state library (no Zustand, Redux, or Jotai)
+**State Management:**
+- **URL Query Params**: Filter state (search, aspects, costs) via nuqs
+  - Persists filter settings across navigation
+  - Enables deep linking to filtered results
+- **React Hooks**: Local UI state (selected tab, modal open/close, loading)
+  - Component-level state for modal dialogs, expanding sections
+- **API State**: Collection counts, deck contents fetched from server
+  - Mutations cause client-side state updates + potential re-fetch
+- **No global state library**: Keep logic in server + pass serialized data to client
 
 ## Key Abstractions
 
-**CollectionMap:**
-- Purpose: Typed map of `cardDefinitionId → { total, variants: { cardPrintingId: count } }`
-- Definition: `src/app/api/collection/collection-shape.ts`
-- Pattern: Always read `.total` for aggregate count; `.variants[printingId]` for per-variant count
-
 **CardForFilter:**
-- Purpose: Shared card type used by catalog, binder, and deck selector
-- Definition: `src/lib/filter-cards.ts`
-- Pattern: All card-list features pass this type to `filterCards()`
+- Purpose: Shape for cards passed through filter pipeline
+- Examples: `src/components/catalog/catalog-client.tsx`, `src/lib/filter-cards.ts`
+- Pattern: Interface with id, name, type, aspects, cost, price, etc. + variant info
+- Used in: Catalog filtering, deck building, binder variants
 
-**AutoFilter:**
-- Purpose: Computed filter preset for the deck builder card browser
-- Definition: `src/lib/auto-filter.ts`
-- Pattern: `computeAutoFilter(leader, base)` → `AutoFilter | null`; injected into `CatalogClient` via props; user override signal passed back via `onFilterManualChange` callback
+**OwnedCard / OwnedCardPrinting:**
+- Purpose: User's collection view with per-variant granularity
+- Examples: `src/db/queries/collection.ts`
+- Pattern: Owned definition aggregates owned printing variants (Normal, Foil, Hyperspace)
+- Used in: Binder display, collection import, variant chips
+
+**CollectionMap:**
+- Purpose: Efficient lookup of user's counts by definition and printing
+- Shape: `{ [cardDefinitionId]: { total, variants: { [cardPrintingId]: count } } }`
+- Location: `src/app/api/collection/collection-shape.ts`
+- Used by: Client-side UI to display "you own 2" without re-fetching
+
+**FilterState:**
+- Purpose: Encapsulate all filter options
+- Fields: search, selectedSets, selectedTypes, selectedAspects, selectedArenas, selectedTraits, selectedRarities, selectedKeywords, selectedCosts, selectedVariants, ownedOnly
+- Location: `src/lib/filter-cards.ts`
+- Used in: Catalog client, URL params binding
 
 **PrintingArtMap:**
-- Purpose: Map of `cardPrintingId → { variantType, frontArtUrl }` for client-side variant art resolution
-- Definition: `src/lib/catalog/select-best-variant.ts`
-- Pattern: Loaded once by the catalog RSC, passed to client; `selectBestVariantArtUrl()` picks the best-precedence owned variant art
+- Purpose: Map from card definition ID to best art variant (URL + type)
+- Location: `src/lib/catalog/select-best-variant.ts`
+- Pattern: Selects highest-precedence variant per definition (e.g., Foil > Normal)
+- Used in: Card grid display, variant section headers
 
 ## Entry Points
 
-**Home (`/`):**
-- Location: `src/app/page.tsx`
-- Triggers: All visitors
-- Responsibilities: RSC; loads top 10 cards by USD price via `getTopCardsByPrice(10)`, renders hero + high-value grid
+**Public Pages:**
+- `/` — Home page (`src/app/page.tsx`)
+  - Triggers: Direct navigation or bookmark
+  - Responsibilities: Display featured cards, top prices
 
-**Catalog (`/cards`):**
-- Location: `src/app/cards/page.tsx`
-- Triggers: Navigation to `/cards`
-- Responsibilities: RSC; loads all cards + filter metadata + art map; hands off to `CatalogClient`
+- `/cards` — Card catalog (`src/app/cards/page.tsx`)
+  - Triggers: Navigation via nav bar or deep link
+  - Responsibilities: Fetch all cards, pass to CatalogClient with filters
 
-**Card Detail (`/cards/[set-code]/[card-number]`):**
-- Location: `src/app/cards/[set-code]/[card-number]/page.tsx`
-- Triggers: Card tile click in catalog
-- Responsibilities: RSC; loads card + printings with collection counts; includes legacy variant hydration logic
+- `/login` — Authentication (`src/app/(auth)/login/page.tsx`)
+  - Triggers: Unauthenticated access to protected routes (redirected by proxy)
+  - Responsibilities: OAuth buttons, email/password form
 
-**Decks List (`/decks`):**
-- Location: `src/app/decks/page.tsx`
-- Triggers: Auth-required navigation
-- Responsibilities: RSC; redirects unauthenticated users to `/login`; loads deck list + computed want list
+**Protected Pages:**
+- `/collection` — Collection import & management (`src/app/collection/page.tsx`)
+  - Requires: User session
+  - Triggers: Authenticated user navigation
+  - Responsibilities: CSV import, starter deck quick-add, set selection
 
-**Deck Builder (`/decks/[id]`):**
-- Location: `src/app/decks/[id]/page.tsx`
-- Triggers: Auth-required; deck row click in `DecksClient`
-- Responsibilities: RSC; redirects unauthenticated; loads full deck + all cards for builder
+- `/decks` — Deck management (`src/app/decks/page.tsx`)
+  - Requires: User session
+  - Triggers: Authenticated user navigation
+  - Responsibilities: List decks, deck editor (with embedded catalog selector)
 
-**Login (`/login`):**
-- Location: `src/app/(auth)/login/page.tsx`
-- Triggers: Unauthenticated users; redirects from protected pages
-- Responsibilities: Client component; email/password + Google/Discord OAuth via `authClient`
+- `/binder/[username]` — Public binder view (`src/app/binder/[username]/page.tsx`)
+  - Requires: None (public)
+  - Responsibilities: Display user's trade binder
 
-**Auth Handler (`/api/auth/[...all]`):**
-- Location: `src/app/api/auth/[...all]/route.ts`
-- Triggers: better-auth internal session/OAuth callbacks
-- Responsibilities: Delegates all handling to `auth.handler`
+- `/binder/manage` — Personal binder editor (`src/app/binder/manage/page.tsx`)
+  - Requires: User session
+  - Triggers: Binder owner navigation
+  - Responsibilities: Edit exclusions, trade offerings, view collection
 
-**Cron Sync (`/api/cron/sync-cards`):**
-- Location: `src/app/api/cron/sync-cards/route.ts`
-- Triggers: Vercel cron at 06:00 UTC daily
-- Responsibilities: Bearer-auth guarded; syncs cards + prices from swu-db.com; invalidates cache tag
+**API Entry Points:**
+- `POST /api/auth/*` — better-auth endpoints
+  - Signup, login, OAuth callback, logout
+- `GET /api/collection` — User's collection counts
+- `POST /api/collection/variants` — Update variant count
+- `POST /api/collection/import` — Bulk CSV import
+- `POST /api/decks` — Create/update deck
+- `DELETE /api/decks/[id]` — Delete deck
+- `GET /api/binder/wants` — Public trade wants list
 
 ## Architectural Constraints
 
-- **Serialization boundary:** Drizzle returns `Date` objects for `timestamp` columns; RSC pages MUST map to plain objects before passing props to client components — see `src/app/cards/page.tsx` (`plainCards` mapping pattern)
-- **Next.js params are a Promise:** In this Next.js version, `params` is `Promise<{...}>` — pages MUST `await params` before destructuring (documented at `src/app/cards/[set-code]/[card-number]/page.tsx:16`)
-- **Route protection via proxy function:** There is no `middleware.ts`; protection for `/collection` and `/decks` uses `src/proxy.ts` (exported `proxy` function + `config.matcher`); auth guards are also enforced inside each RSC page
-- **Neon HTTP driver — no transactions:** The `Pool` + `drizzle` setup in `src/db/index.ts` uses the Neon serverless HTTP driver which does NOT support transactions; multi-step mutations are sequential awaits with documented TOCTOU risk (see `src/app/api/collection/variants/route.ts:52`)
-- **Global cache tag:** All card queries use `cacheTag('cards')`; cron sync invalidates the entire catalog cache with one `revalidateTag` call
-- **`cacheComponents: true`** is set in `next.config.ts` — PPR/component caching is active
+- **Threading:** Single-threaded event loop (Node.js/Vercel). Database operations are async/await, no Worker Threads.
+- **Global state:** Auth session is per-request via better-auth. Database pool is module-level singleton (`src/db/index.ts`). No other mutable global state.
+- **Circular imports:** None detected. Layer dependencies flow downward: Pages → Queries → Schema.
+- **RSC boundary:** No Date objects, complex nested structures, or function references across server→client. Always serialize to plain objects explicitly.
+- **Type safety:** Full TypeScript strict mode. Drizzle provides type-safe queries (no string-based SQL).
+- **Database:** Read-only Neon connection string expected in `DATABASE_URL` env var. No migrations run at deploy time (managed separately via drizzle-kit).
 
 ## Anti-Patterns
 
-### Passing Date objects across the RSC→Client boundary
+### Passing Unserializable Objects Across RSC Boundary
 
-**What happens:** Drizzle `timestamp` columns return `Date` objects; if passed directly as RSC props, Next.js throws a serialization error.
-**Why it's wrong:** Non-serializable objects cannot cross the server→client prop boundary.
-**Do this instead:** Map to plain objects in the RSC page before returning JSX, selecting only needed primitive columns. See `src/app/cards/page.tsx` (`plainCards` pattern).
+**What happens:** Server component returns a Drizzle result with Date columns. Client component tries to use it. Serialization fails.
 
-### Reading userId from the request body
+**Why it's wrong:** Next.js serializes props between server and client. Date objects, functions, Symbols cannot cross this boundary. Results in runtime errors in client components.
 
-**What happens:** A route handler reads `userId` from `request.json()` body instead of from the session.
-**Why it's wrong:** Any authenticated user can forge another user's ID, breaking access control.
-**Do this instead:** Always derive `const userId = Number(session.user.id)` after `auth.api.getSession()`. See `src/app/api/collection/variants/route.ts`.
+**Do this instead:** In server pages, map Drizzle results to plain objects with only needed fields:
+```typescript
+// src/app/cards/page.tsx
+const cards = await getAllCards(); // Returns Drizzle rows with timestamps
+const plainCards = cards.map(c => ({
+  id: c.id,
+  name: c.name,
+  // ... explicitly list non-Date fields
+}));
+return <CatalogClient cards={plainCards} />;
+```
 
-### Including nuqs setters in useEffect dependency arrays
+### Using Query Params for Complex State
 
-**What happens:** nuqs setter function references change on every render; including them in a `useEffect` dep array alongside filter values creates an infinite re-render loop.
-**Why it's wrong:** Effect fires → sets state → re-renders → setter reference changes → effect fires again.
-**Do this instead:** Omit setter functions from the dep array and suppress the lint rule. See `src/components/catalog/catalog-client.tsx` lines 88–98.
+**What happens:** Trying to encode deck list, filter state, and sorting order all in URL params. URL becomes very long and hard to debug.
+
+**Why it's wrong:** URL params have size limits and become hard to parse/maintain.
+
+**Do this instead:** Use URL params only for simple, user-facing filters (search, aspects, costs) via nuqs. Keep deck/collection state in form submissions or API responses:
+```typescript
+// OK: Simple filters in URL
+const [search] = useQueryState('q'); // ?q=kylo
+// NOT OK: Entire deck list in URL
+// const [deckList] = useQueryState('cards'); // ?cards=1,2,3,4,5,6...
+```
+
+### Missing User ID Validation in API Routes
+
+**What happens:** API route updates user data without checking that `session.user.id` matches the ID in the request.
+
+**Why it's wrong:** Users could mutate other users' data. Potential security issue.
+
+**Do this instead:** Always validate session user ID matches the target user:
+```typescript
+// src/app/api/collection/variants/route.ts
+const session = await auth.api.getSession({ headers });
+if (!session) return new Response('Unauthorized', { status: 401 });
+
+const userId = Number(session.user.id);
+// Then only update data for this userId
+await updateCardPrintingCount(userId, cardPrintingId, count);
+```
+
+### Mixing Business Logic into Components
+
+**What happens:** Filter logic, calculations, or data transformations happen inside client components.
+
+**Why it's wrong:** Logic becomes hard to test, reuse, and type safely. Repeated code across components.
+
+**Do this instead:** Extract to `src/lib/*.ts` functions:
+```typescript
+// src/lib/binder-logic.ts — pure function, easy to test
+export function calculateLookingFor(autoTarget, manualTarget, inventory, isExcluded) {
+  // ...
+}
+
+// Then use in components
+const lookingFor = calculateLookingFor(deckQty, manualQty, ownedQty, excluded);
+```
 
 ## Error Handling
 
-**Strategy:** Route handlers return typed HTTP error responses; RSC pages use `notFound()` and `redirect()`; client components use local status state with inline error UI.
+**Strategy:** Try-catch in API routes, error boundaries in components, console logging in dev
 
 **Patterns:**
-- Route handlers: `try/catch` → `console.error` + `new Response('...', { status: 500 })` for server errors; inline `if (!session) return new Response('Unauthorized', { status: 401 })` before any query
-- RSC pages: `notFound()` for unknown resources, `redirect('/login')` for unauthenticated access
-- Client components: `status` state machine (`'idle' | 'parsing' | 'uploading' | 'success' | 'error'`) with conditional inline error UI
+- API routes catch errors and return HTTP error status (400, 401, 500)
+- Server pages let errors propagate (Next.js error boundary catches them)
+- Client components use error boundary or state to show fallback UI
+- Async operations check response.ok before parsing JSON
+- Database errors logged to console with context (file, operation, userId)
+
+**Examples:**
+```typescript
+// src/app/api/collection/route.ts
+export async function GET() {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) return new Response('Unauthorized', { status: 401 });
+    
+    const rows = await getUserCollection(Number(session.user.id));
+    return Response.json(buildCollectionMap(rows));
+  } catch (error) {
+    console.error('Failed to fetch collection:', error);
+    return new Response('Internal Server Error', { status: 500 });
+  }
+}
+```
 
 ## Cross-Cutting Concerns
 
-**Logging:** `console.error` in all route handler catch blocks; `console.log` in cron route for sync progress milestones
-**Validation:** Input validation in route handlers before DB calls — see `src/app/api/collection/variants/route.ts` for the V5 ASVS pattern (type checks, `isNaN`, `Number.isFinite`, floor/ceiling on numeric inputs)
-**Authentication:** Server: `auth.api.getSession({ headers: await headers() })` in every protected route handler and RSC page. Client: `authClient.useSession()` hook. Cookie-based proxy: `src/proxy.ts`
+**Logging:** 
+- Development: `console.log/error` in server and client
+- Production: Errors logged to Vercel (captured by Vercel Speed Insights)
+- No centralized logging service currently integrated
+
+**Validation:**
+- Database schema enforces non-null, unique constraints
+- Business logic validates input (e.g., `validateDeck()`)
+- API routes return 400 on invalid input
+- Client-side form validation for UX (not security)
+
+**Authentication:**
+- better-auth middleware on API routes
+- Middleware proxy (`src/proxy.ts`) guards `/collection` and `/decks`
+- Redirect to `/login` for unauthenticated access to protected routes
+- Session stored in secure HTTP-only cookie
 
 ---
 
-*Architecture analysis: 2026-05-28*
+*Architecture analysis: 2026-07-05*
