@@ -286,10 +286,10 @@ Plans:
   4. Selecting a search result opens a variant picker; for an owned variant the user can choose "Add to trade binder" and set a trade quantity, and for any variant the user can choose "Add as want"
   5. Attempting to add an unowned variant to the trade binder shows that action disabled with a visible reason (e.g. "You don't own this variant"), while "Add as want" remains available for the same variant
 
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 **Wave 1**
 
-- [ ] 30-01-PLAN.md — Ownership-gated trade section, new always-available want section, and server-side trade-ownership enforcement on /api/trade
+- [x] 30-01-PLAN.md — Ownership-gated trade section, new always-available want section, and server-side trade-ownership enforcement on /api/trade
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -377,7 +377,7 @@ Plans:
 | 27 | v6 | 4/4 | Complete   | 2026-06-02 |
 | 28 | v6 | 2/2 | Complete    | 2026-06-03 |
 | 29 | v6 | 5/5 | Complete    | 2026-06-03 |
-| 30. Unified Search-Driven Add Flow | v7 | 0/3 | Not started | - |
+| 30. Unified Search-Driven Add Flow | v7 | 1/3 | In Progress|  |
 | 31. Trade Profile Modal & Public Trade Note | v7 | 0/TBD | Not started | - |
 | 32. Combined Wants & Exclusions List | v7 | 0/TBD | Not started | - |
 | 33. Ashes of the Empire Spotlight Decks | v7 | 0/TBD | Gated / Blocked | - |
