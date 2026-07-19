@@ -144,3 +144,13 @@ None - no external service configuration required.
 ---
 *Phase: 30-unified-search-driven-add-flow*
 *Completed: 2026-07-19*
+
+## Self-Check: PASSED
+
+- FOUND: src/components/catalog/variant-want-section.tsx
+- FOUND: .planning/phases/30-unified-search-driven-add-flow/30-01-SUMMARY.md
+- FOUND: .planning/phases/30-unified-search-driven-add-flow/deferred-items.md
+- FOUND commit: 51235ab
+- FOUND commit: 1d910e2
+- FOUND commit: 24538ef
+- FOUND commit: b9b840e
