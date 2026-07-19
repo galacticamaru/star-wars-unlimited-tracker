@@ -5,8 +5,8 @@ milestone_name: Trade Binder Improvements
 current_phase: 30
 current_phase_name: Unified Search-Driven Add Flow
 status: planning
-stopped_at: Phase 30 context gathered
-last_updated: "2026-07-05T22:51:55.189Z"
+stopped_at: Phase 30 UI-SPEC approved
+last_updated: "2026-07-19T00:13:17.284Z"
 last_activity: 2026-07-05
 last_activity_desc: ROADMAP.md created for v7 (Phases 30–33); Phase 33 gated pending deck lists + ASH catalog sync
 progress:
@@ -93,6 +93,6 @@ Progress: [░░░░░░░░░░] 0%
 
 ## Session
 
-**Last session:** 2026-07-05T22:51:55.179Z
-**Stopped at:** Phase 30 context gathered
-**Resume file:** .planning/phases/30-unified-search-driven-add-flow/30-CONTEXT.md
+**Last session:** 2026-07-19T00:13:17.271Z
+**Stopped at:** Phase 30 UI-SPEC approved
+**Resume file:** .planning/phases/30-unified-search-driven-add-flow/30-UI-SPEC.md
