@@ -287,9 +287,18 @@ Plans:
   5. Attempting to add an unowned variant to the trade binder shows that action disabled with a visible reason (e.g. "You don't own this variant"), while "Add as want" remains available for the same variant
 
 **Plans:** 3 plans
+**Wave 1**
+
 - [ ] 30-01-PLAN.md — Ownership-gated trade section, new always-available want section, and server-side trade-ownership enforcement on /api/trade
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 30-02-PLAN.md — Extend VariantTradeSheet to list all variants with both trade (gated) and want steppers
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 30-03-PLAN.md — Rework Manage Binder page into one lazy catalog-backed search; delete both legacy add surfaces
+
 **UI hint**: yes
 
 ### Phase 31: Trade Profile Modal & Public Trade Note
@@ -324,8 +333,10 @@ Plans:
 
 **Status:** GATED / BLOCKED — do not start until both inputs below are available. This does not block Phases 30–32; the binder-redesign work ships independently of this phase, same as the deferred LAW spotlight deck (DEBT-05).
 **Blocked by:**
+
   1. The user has not yet supplied the Luke Skywalker (ASH) and Emperor Palpatine (ASH) deck lists
   2. The ASH ("Ashes of the Empire") set has not yet been synced into the catalog DB via the swu-db.com sync job — card rows the deck lists reference may not exist yet
+
 **Goal:** Add the Luke Skywalker (ASH) and Emperor Palpatine (ASH) Ashes of the Empire spotlight decks to Quick Add so a user can add either deck's full card list to their collection in one click, once the deck lists are supplied and the ASH set is present in the catalog
 **Depends on:** Nothing structurally (independent of Phases 30–32); gated on external inputs listed above — sequenced last in the milestone so it never blocks binder-redesign delivery
 **Requirements:** DECK-11, DECK-12
