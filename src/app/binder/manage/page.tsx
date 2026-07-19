@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { ManageTradeCard } from '@/components/binder/manage-trade-card';
 import { ManageWantsList } from '@/components/binder/manage-wants-list';
@@ -12,6 +12,11 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { Loader2, Search, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import {
+  mergeCatalogWithOwnership,
+  filterSearchCards,
+  type CatalogRow,
+} from '@/lib/binder/merge-search-cards';
 
 interface Offering {
   cardPrintingId: number;
@@ -78,6 +83,14 @@ export default function ManageBinderPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Lazy first-keystroke catalog + owned-cards load (D-01/D-02): nothing catalog/collection-related
+  // is fetched on mount — only /api/binder (Trade Offerings + ManageWantsList) loads eagerly.
+  const [catalogRows, setCatalogRows] = useState<CatalogRow[]>([]);
+  const [catalogLoading, setCatalogLoading] = useState(false);
+  const [catalogError, setCatalogError] = useState(false);
+  const [debouncedTerm, setDebouncedTerm] = useState('');
+  const hasFetchedCatalogRef = useRef(false);
+
   // Sheet state: which card tile was clicked
   const [sheetCard, setSheetCard] = useState<OwnedCard | null>(null);
   const sheetOpen = sheetCard !== null;
@@ -92,16 +105,9 @@ export default function ManageBinderPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [binderRes, ownedRes] = await Promise.all([
-          fetch('/api/binder'),
-          fetch('/api/collection/owned-cards'),
-        ]);
-        const [binderData, ownedData] = await Promise.all([
-          binderRes.json(),
-          ownedRes.json(),
-        ]);
+        const binderRes = await fetch('/api/binder');
+        const binderData = await binderRes.json();
         setTradeData(binderData);
-        setOwnedCards(ownedData);
       } catch (err) {
         console.error('Failed to load binder data:', err);
       } finally {
@@ -115,6 +121,64 @@ export default function ManageBinderPage() {
       setIsLoading(false);
     }
   }, [session, isPending]);
+
+  // 150ms debounce on the search term (matches the catalog page's search feel, PERF-01).
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedTerm(searchTerm);
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Fetches the full catalog + owned cards exactly once, in parallel, on the first
+  // keystroke that reaches the 2-char search gate (D-01). Re-callable on error (Retry).
+  const fetchCatalogAndOwned = async () => {
+    hasFetchedCatalogRef.current = true;
+    setCatalogLoading(true);
+    setCatalogError(false);
+    try {
+      const [catalogRes, ownedRes] = await Promise.all([
+        fetch('/api/cards/all'),
+        fetch('/api/collection/owned-cards'),
+      ]);
+      if (!catalogRes.ok || !ownedRes.ok) {
+        throw new Error('Failed to load catalog or owned cards');
+      }
+      const [catalogData, ownedData] = await Promise.all([
+        catalogRes.json(),
+        ownedRes.json(),
+      ]);
+      setCatalogRows(catalogData);
+      setOwnedCards(ownedData);
+    } catch (err) {
+      console.error('Failed to load catalog:', err);
+      hasFetchedCatalogRef.current = false; // allow retry
+      setCatalogError(true);
+    } finally {
+      setCatalogLoading(false);
+    }
+  };
+
+  // Search input change handler: updates the term immediately (debounced above) and
+  // triggers the fetched-once catalog+owned load the first time 2+ chars are reached.
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    if (value.trim().length >= 2 && !hasFetchedCatalogRef.current) {
+      fetchCatalogAndOwned();
+    }
+  };
+
+  // Merges the full catalog with per-user ownership/trade/want data into one card
+  // per definition (D-03) — unowned cards remain searchable.
+  const mergedCards = useMemo(
+    () => mergeCatalogWithOwnership(catalogRows, ownedCards, tradeData?.manualWants ?? []),
+    [catalogRows, ownedCards, tradeData?.manualWants]
+  );
+
+  const { results: searchResults, wasTruncated } = useMemo(
+    () => filterSearchCards(mergedCards, debouncedTerm),
+    [mergedCards, debouncedTerm]
+  );
 
   // Re-fetches only /api/binder; used by ManualWantsAddFlow after adding a want
   const refreshTradeData = async () => {
@@ -222,11 +286,21 @@ export default function ManageBinderPage() {
               )
             };
           } else {
-            // Find card info from ownedCards
-            const card = ownedCards.find(c =>
+            // Find card info from ownedCards first, then fall back to the merged
+            // catalog dataset — a not-owned variant being wanted for the first time
+            // won't be in ownedCards, but will be in mergedCards once the catalog
+            // has loaded (D-01).
+            const ownedCard = ownedCards.find(c =>
               c.printings.some(p => p.id === cardPrintingId)
             );
-            const printing = card?.printings.find(p => p.id === cardPrintingId);
+            const ownedPrinting = ownedCard?.printings.find(p => p.id === cardPrintingId);
+            const mergedCard = mergedCards.find(c =>
+              c.printings.some(p => p.id === cardPrintingId)
+            );
+            const mergedPrinting = mergedCard?.printings.find(p => p.id === cardPrintingId);
+
+            const card = ownedCard ?? mergedCard;
+            const printing = ownedPrinting ?? mergedPrinting;
             if (!card || !printing) return prev;
             return {
               ...prev,
@@ -265,13 +339,16 @@ export default function ManageBinderPage() {
             ),
           };
         } else {
-          const card = ownedCards.find(c => c.cardDefinitionId === cardDefinitionId);
-          if (!card) return prev;
+          // Source name/subtitle from autoWants (already carries both per cardDefinitionId)
+          // instead of ownedCards, so exclusions work before any search has loaded owned
+          // cards (D-01 — owned-cards fetch is now deferred to the first keystroke).
+          const autoWant = prev.autoWants?.find(w => w.cardDefinitionId === cardDefinitionId);
+          if (!autoWant) return prev;
           return {
             ...prev,
             exclusions: [
               ...prev.exclusions,
-              { cardDefinitionId, name: card.name, subtitle: card.subtitle },
+              { cardDefinitionId, name: autoWant.name, subtitle: autoWant.subtitle },
             ],
             autoWants: prev.autoWants?.map(w =>
               w.cardDefinitionId === cardDefinitionId ? { ...w, isExcluded: true } : w
@@ -355,7 +432,7 @@ export default function ManageBinderPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
+                  onChange={e => handleSearchChange(e.target.value)}
                   placeholder="Search your collection..."
                   className="pl-9"
                 />
