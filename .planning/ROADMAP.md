@@ -83,7 +83,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 **Milestone Goal:** Make managing a trade binder fast and intuitive — collapse the separate Add Cards, Manual Wants, variant sheet, and exclusions surfaces into one search-driven flow, with a set-once profile tucked behind a modal.
 
-- [x] **Phase 30: Unified Search-Driven Add Flow** - One search bar over the full catalog replaces the separate Add Cards/Manual Want boxes; owned variants go to the trade binder, any variant can become a want (completed 2026-07-19)
+- [ ] **Phase 30: Unified Search-Driven Add Flow** - One search bar over the full catalog replaces the separate Add Cards/Manual Want boxes; owned variants go to the trade binder, any variant can become a want (all plans executed 2026-07-19; pending UAT)
 - [ ] **Phase 31: Trade Profile Modal & Public Trade Note** - Username/binder URL moves behind a profile button modal; a new public trade note is settable and shown on the public binder
 - [ ] **Phase 32: Combined Wants & Exclusions List** - Deck-driven auto-wants and manually-added wants appear together in one clearly-sectioned list with exclude/restore and quantity controls
 - [ ] **Phase 33: Ashes of the Empire Spotlight Decks (GATED)** - Luke Skywalker and Emperor Palpatine ASH spotlight decks added to Quick Add — blocked on user-supplied deck lists and the ASH set syncing into the catalog DB
