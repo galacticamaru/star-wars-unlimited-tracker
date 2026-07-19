@@ -155,3 +155,15 @@ None - no external service configuration required.
 ---
 *Phase: 30-unified-search-driven-add-flow*
 *Completed: 2026-07-19*
+
+## Self-Check: PASSED
+
+- FOUND: src/lib/binder/merge-search-cards.ts
+- FOUND: src/lib/binder/merge-search-cards.test.ts
+- FOUND: manual-wants-add-flow.tsx correctly deleted
+- FOUND: .planning/phases/30-unified-search-driven-add-flow/30-03-SUMMARY.md
+- FOUND commit: b3ebd91
+- FOUND commit: 7231a84
+- FOUND commit: ed75a28
+- FOUND commit: e17d63c
+- FOUND commit: 0875070
