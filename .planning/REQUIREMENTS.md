@@ -9,9 +9,9 @@ Requirements for the v7 Trade Binder Improvements milestone. Phases continue fro
 
 ### Unified Binder Add Flow
 
-- [ ] **BINDER-10**: The Manage Binder page presents a single search-driven flow (replacing the separate "Add Cards" and "Add Manual Want" boxes) for putting cards into the binder
-- [ ] **BINDER-11**: The binder search queries the full card catalog and shows no results until the user enters a search term (no eager render of the collection on page load)
-- [ ] **BINDER-12**: From a search result, the user picks a specific variant (printing) and chooses its destination — trade binder or want
+- [x] **BINDER-10**: The Manage Binder page presents a single search-driven flow (replacing the separate "Add Cards" and "Add Manual Want" boxes) for putting cards into the binder
+- [x] **BINDER-11**: The binder search queries the full card catalog and shows no results until the user enters a search term (no eager render of the collection on page load)
+- [x] **BINDER-12**: From a search result, the user picks a specific variant (printing) and chooses its destination — trade binder or want
 - [x] **BINDER-13**: "Add to trade binder" (set trade quantity) is available only for variants the user owns; unowned variants show the action disabled with a clear reason
 - [x] **BINDER-14**: The user can add any card as a manual want from a search result, including cards not in their collection
 
@@ -70,9 +70,9 @@ Which phases cover which requirements. Populated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BINDER-10 | Phase 30 | Pending |
-| BINDER-11 | Phase 30 | Pending |
-| BINDER-12 | Phase 30 | Pending |
+| BINDER-10 | Phase 30 | Complete |
+| BINDER-11 | Phase 30 | Complete |
+| BINDER-12 | Phase 30 | Complete |
 | BINDER-13 | Phase 30 | Complete |
 | BINDER-14 | Phase 30 | Complete |
 | BINDER-15 | Phase 31 | Pending |
