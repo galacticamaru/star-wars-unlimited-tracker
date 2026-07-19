@@ -3,12 +3,14 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { VariantCollectionSection } from '@/components/catalog/variant-collection-section';
 import { VariantTradeSection } from '@/components/catalog/variant-trade-section';
+import { VariantWantSection } from '@/components/catalog/variant-want-section';
 
 interface SheetPrinting {
   id: number;
   variantType: string;
   ownedCount: number;
   tradeQuantity: number;
+  quantity: number;
 }
 
 interface VariantTradeSheetProps {
@@ -18,6 +20,7 @@ interface VariantTradeSheetProps {
   cardSubtitle: string | null;
   printings: SheetPrinting[];
   onTradeQuantityChange: (cardPrintingId: number, tradeQuantity: number) => void;
+  onWantQuantityChange: (cardPrintingId: number, quantity: number) => void;
 }
 
 export function VariantTradeSheet({
@@ -27,6 +30,7 @@ export function VariantTradeSheet({
   cardSubtitle,
   printings,
   onTradeQuantityChange,
+  onWantQuantityChange,
 }: VariantTradeSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -41,13 +45,17 @@ export function VariantTradeSheet({
         </SheetHeader>
 
         {printings.length === 0 ? (
-          <p className="px-6 py-4 text-sm text-muted-foreground">No owned printings to display.</p>
+          <p className="px-6 py-4 text-sm text-muted-foreground">No printings found for this card.</p>
         ) : (
           <div className="px-6 py-6 flex flex-col gap-6">
             <VariantCollectionSection printings={printings} />
             <VariantTradeSection
               printings={printings}
               onQuantityChange={onTradeQuantityChange}
+            />
+            <VariantWantSection
+              printings={printings}
+              onQuantityChange={onWantQuantityChange}
             />
           </div>
         )}
