@@ -129,7 +129,7 @@ describe('Trade Binder APIs', () => {
     it('upserts manual want', async () => {
       const request = new NextRequest('http://localhost/api/binder/wants', {
         method: 'POST',
-        body: JSON.stringify({ cardDefinitionId: 202, quantity: 3 }),
+        body: JSON.stringify({ cardPrintingId: 202, quantity: 3 }),
       });
 
       const response = await wantsPOST(request);
@@ -143,7 +143,7 @@ describe('Trade Binder APIs', () => {
     it('deletes manual want if quantity is 0', async () => {
       const request = new NextRequest('http://localhost/api/binder/wants', {
         method: 'POST',
-        body: JSON.stringify({ cardDefinitionId: 202, quantity: 0 }),
+        body: JSON.stringify({ cardPrintingId: 202, quantity: 0 }),
       });
 
       const response = await wantsPOST(request);
