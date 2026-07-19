@@ -99,13 +99,13 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ /decks and /decks/[id] LCP/TTFB improved — per-user cache tags, startTransition interactions, streaming skeletons — v6 (PERF-07, PERF-08, Phase 27)
 - ✓ Tech debt swept — CollectionControls removed, Prestige Foil/Serialized enum gaps filled, catalog invalidation verified — v6 (DEBT-01, DEBT-03, DEBT-04, Phase 28)
 - ✓ `/cards/[set]/[id]` card detail page — cached `getCardDefinition`, per-user printings, loading skeleton, `priority` prop, LCP opacity-transition fix — v6 (PERF-10, Phase 29)
+- ✓ Unified search-driven binder add flow — one "Add Cards & Wants" card over the full catalog; add-to-binder gated on ownership (server-enforced 403), add-as-want for any card; old Add Cards grid + Manual Wants box removed — v7 (Phase 30)
+- ✓ Search-first results — nothing fetched/rendered until the user types 2 chars; catalog + owned-cards fetched once (debounced, retryable) on first qualifying keystroke — v7 (Phase 30)
 
 ### Active (v7)
 
 <!-- Finalized with REQ-IDs in REQUIREMENTS.md during milestone definition. -->
 
-- [ ] Unified search-driven binder add flow over the full catalog (add-to-binder gated on ownership; add-as-want for any card)
-- [ ] Search-first results — no cards shown until the user types
 - [ ] Trade profile modal behind a profile button — username + public trade note
 - [ ] Cleaner combined wants list — auto-wants + manual wants, exclusion hides auto-wants
 - [ ] Public binder displays the trade note
@@ -157,6 +157,9 @@ See exactly which cards you own while building decks, and know instantly what yo
 | Base UI over Radix for Switch/Tooltip | Project constraint established in v3; consistent across components | ✓ Good |
 | auto-wants inline in getUserTradeData() | Keeps change self-contained; avoids premature abstraction | ✓ Good |
 | toggleExclusion reused for auto-want rows | No new API surface needed; existing endpoint handles both flows | ✓ Good |
+| Server-side ownership gate on PATCH /api/trade (gates only on tradeQuantity > 0) | Defence-in-depth behind the client disable; clearing an offering must always succeed. Hardened with numeric-type validation (CR-01) to close a NaN-bypass | ✓ Good — Phase 30 |
+| VariantWantSection as a twin of VariantTradeSection | Wants are unrestricted by ownership (D-06); a parallel component avoids overloading the trade stepper's gating logic | ✓ Good — Phase 30 |
+| Sheet printings re-derived live from mergedCards each render | Keeps ownedCount/tradeQuantity/quantity fresh while the sheet is open instead of freezing tile-click snapshot | ✓ Good — Phase 30 |
 
 ## Constraints
 
@@ -178,4 +181,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-07-05 — v7 Trade Binder Improvements milestone started*
+*Last updated: 2026-07-19 after Phase 30 (unified search-driven add flow)*
