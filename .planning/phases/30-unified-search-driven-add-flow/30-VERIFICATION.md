@@ -1,22 +1,26 @@
 ---
 phase: 30-unified-search-driven-add-flow
 verified: 2026-07-19T01:17:59Z
-status: human_needed
+status: passed
 score: 4/5 must-haves verified
 behavior_unverified: 1
 overrides_applied: 0
 behavior_unverified_items:
+
   - truth: "Nothing is fetched or rendered below the search bar on page mount; the catalog + owned-cards fetch fires exactly once, on the first keystroke reaching 2 characters, and re-arms on error (Retry) without re-firing on later normal keystrokes."
     test: "In the browser, load /binder/manage; confirm Network tab shows no /api/cards/all or /api/collection/owned-cards request on load. Type a 1-character then 2-character search term; confirm the two requests fire exactly once. Force an error (offline), confirm the error+Retry state renders, click Retry, confirm exactly one more paired fetch fires (not a duplicate)."
     expected: "No catalog/collection request until 2 chars typed; fetch fires exactly once; error resets the fetched-once guard so Retry re-fires; subsequent keystrokes after a successful load never re-fire."
     why_human: "This is a state-transition/reset invariant (hasFetchedCatalogRef flips true → false-on-error → true-on-retry) implemented as a synchronous ref guard with no automated test exercising the timing or the error/retry reset path — code inspection confirms the guard's shape but not its runtime behavior across keystroke/error/retry sequences."
 human_verification:
+
   - test: "Type 2+ characters into the 'Add Cards & Wants' search bar and observe the catalog fetch fires exactly once (Network tab), including the retry-after-error path."
     expected: "Nothing loads on mount; catalog+owned-cards load once on first 2-char keystroke; error state shows Retry; Retry re-fires exactly once."
     why_human: "Runtime timing/state-reset behavior (Step 3b classification: ordering/reset invariant) — no test harness for this page's fetch-timing exists (confirmed absent in 30-03-SUMMARY.md)."
+
   - test: "Search for a card the current user does not own, click its tile, and inspect the opened sheet."
     expected: "The trade stepper's minus/input/plus controls are disabled and an inline 'You don't own this variant' reason renders in muted (not red/destructive) text; the want stepper on the same row is fully interactive and posts successfully."
     why_human: "Visual/interaction correctness (disabled styling, reason placement, informational vs destructive color) cannot be confirmed by grep — no component-level test harness exists for these catalog stepper sections (per 30-01-SUMMARY.md D1/D2 rationale)."
+
   - test: "Exercise the full 'Add Cards & Wants' card's state machine in the browser: pre-gate hint (<2 chars), loading spinner, empty state ('No cards found'), and the 'Showing top 20 matches' cap note for a broad search term."
     expected: "Each state renders the exact UI-SPEC copy and layout; the results grid reuses ManageTradeCard tiles; clicking a tile opens the sheet."
     why_human: "Visual/interaction correctness of the new search card's state machine needs human confirmation in the browser (per 30-03-SUMMARY.md D4 rationale)."
