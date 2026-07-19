@@ -125,3 +125,11 @@ None - no external service configuration required.
 ---
 *Phase: 30-unified-search-driven-add-flow*
 *Completed: 2026-07-19*
+
+## Self-Check: PASSED
+
+- FOUND: src/components/binder/variant-trade-sheet.tsx
+- FOUND: .planning/phases/30-unified-search-driven-add-flow/30-02-SUMMARY.md
+- FOUND commit: ecc032c
+- FOUND commit: 5ac8287
+- FOUND commit: eb886d3
