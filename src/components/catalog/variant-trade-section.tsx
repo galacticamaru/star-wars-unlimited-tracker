@@ -12,6 +12,7 @@ interface Printing {
   variantType: string;
   collectorNumber?: string;
   tradeQuantity: number;
+  ownedCount: number;
 }
 
 interface VariantTradeSectionProps {
@@ -74,6 +75,8 @@ export function VariantTradeSection({ printings, onQuantityChange }: VariantTrad
       {/* Per-variant rows — one per printing, zero rows remain visible (D-10) */}
       {printings.map(printing => {
         const count = counts[printing.id] ?? 0;
+        // Ownership gate — trade stepper only interactive for owned variants (D-06 / BINDER-13)
+        const isOwned = printing.ownedCount > 0;
         return (
           <div key={printing.id} className="flex items-center gap-2">
             {/* Variant type label — w-28 ensures alignment across rows */}
@@ -81,12 +84,12 @@ export function VariantTradeSection({ printings, onQuantityChange }: VariantTrad
               {printing.variantType}
             </span>
 
-            {/* Minus button — disabled at 0 (UI-SPEC §Surface 2) */}
+            {/* Minus button — disabled at 0 or when unowned (UI-SPEC §Surface 2 / D-06) */}
             <Button
               variant="outline"
               size="icon"
               onClick={() => updateVariant(printing.id, count - 1)}
-              disabled={count === 0}
+              disabled={count === 0 || !isOwned}
               aria-label={`Decrease ${printing.variantType} trade quantity`}
             >
               <Minus className="size-4" />
@@ -99,6 +102,7 @@ export function VariantTradeSection({ printings, onQuantityChange }: VariantTrad
               onChange={(e) => updateVariant(printing.id, parseInt(e.target.value, 10) || 0)}
               className="w-16 text-center font-bold"
               aria-label={`${printing.variantType} trade quantity`}
+              disabled={!isOwned}
             />
 
             {/* Plus button */}
@@ -107,6 +111,7 @@ export function VariantTradeSection({ printings, onQuantityChange }: VariantTrad
               size="icon"
               onClick={() => updateVariant(printing.id, count + 1)}
               aria-label={`Increase ${printing.variantType} trade quantity`}
+              disabled={!isOwned}
             >
               <Plus className="size-4" />
             </Button>
@@ -116,6 +121,11 @@ export function VariantTradeSection({ printings, onQuantityChange }: VariantTrad
               <span className="text-sm font-bold text-primary">Trading</span>
             ) : (
               <span className="text-sm font-normal text-muted-foreground">Not trading</span>
+            )}
+
+            {/* Unowned-variant reason — informational, not destructive (D-06 / UI-SPEC §Copywriting Contract) */}
+            {!isOwned && (
+              <span className="text-xs text-muted-foreground">You don&apos;t own this variant</span>
             )}
           </div>
         );
