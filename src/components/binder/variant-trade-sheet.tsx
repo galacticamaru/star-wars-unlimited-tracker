@@ -9,6 +9,7 @@ interface SheetPrinting {
   variantType: string;
   ownedCount: number;
   tradeQuantity: number;
+  quantity: number;
 }
 
 interface VariantTradeSheetProps {
@@ -18,6 +19,7 @@ interface VariantTradeSheetProps {
   cardSubtitle: string | null;
   printings: SheetPrinting[];
   onTradeQuantityChange: (cardPrintingId: number, tradeQuantity: number) => void;
+  onWantQuantityChange: (cardPrintingId: number, quantity: number) => void;
 }
 
 export function VariantTradeSheet({

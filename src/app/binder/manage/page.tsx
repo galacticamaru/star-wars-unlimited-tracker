@@ -478,10 +478,14 @@ export default function ManageBinderPage() {
         cardSubtitle={sheetCard?.subtitle ?? null}
         printings={
           sheetCard
-            ? sheetCard.printings.filter(p => p.ownedCount > 0)
+            ? sheetCard.printings.filter(p => p.ownedCount > 0).map(p => ({
+                ...p,
+                quantity: tradeData?.manualWants.find(w => w.cardPrintingId === p.id)?.quantity ?? 0,
+              }))
             : []
         }
         onTradeQuantityChange={updateTradeQuantity}
+        onWantQuantityChange={updateWantQuantity}
       />
     </div>
   );
