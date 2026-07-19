@@ -12,8 +12,8 @@ Requirements for the v7 Trade Binder Improvements milestone. Phases continue fro
 - [ ] **BINDER-10**: The Manage Binder page presents a single search-driven flow (replacing the separate "Add Cards" and "Add Manual Want" boxes) for putting cards into the binder
 - [ ] **BINDER-11**: The binder search queries the full card catalog and shows no results until the user enters a search term (no eager render of the collection on page load)
 - [ ] **BINDER-12**: From a search result, the user picks a specific variant (printing) and chooses its destination — trade binder or want
-- [ ] **BINDER-13**: "Add to trade binder" (set trade quantity) is available only for variants the user owns; unowned variants show the action disabled with a clear reason
-- [ ] **BINDER-14**: The user can add any card as a manual want from a search result, including cards not in their collection
+- [x] **BINDER-13**: "Add to trade binder" (set trade quantity) is available only for variants the user owns; unowned variants show the action disabled with a clear reason
+- [x] **BINDER-14**: The user can add any card as a manual want from a search result, including cards not in their collection
 
 ### Trade Profile
 
@@ -73,8 +73,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | BINDER-10 | Phase 30 | Pending |
 | BINDER-11 | Phase 30 | Pending |
 | BINDER-12 | Phase 30 | Pending |
-| BINDER-13 | Phase 30 | Pending |
-| BINDER-14 | Phase 30 | Pending |
+| BINDER-13 | Phase 30 | Complete |
+| BINDER-14 | Phase 30 | Complete |
 | BINDER-15 | Phase 31 | Pending |
 | BINDER-16 | Phase 31 | Pending |
 | BINDER-17 | Phase 31 | Pending |
@@ -85,6 +85,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | DECK-12 | Phase 33 | Pending — Gated/Blocked |
 
 **Coverage:**
+
 - v7 requirements: 13 total
 - Mapped to phases: 13/13 ✓
 - Unmapped: 0

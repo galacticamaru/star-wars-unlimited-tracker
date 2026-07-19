@@ -3,8 +3,8 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { upsertTradeOffering } from '@/db/queries/trade';
 import { db } from '@/db';
-import { cardPrintings } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { cardPrintings, userPrintingCollections } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
 import { revalidateTag } from 'next/cache';
 
 export async function PATCH(request: NextRequest) {
@@ -22,11 +22,31 @@ export async function PATCH(request: NextRequest) {
     }
 
     const userId = Number(session.user.id);
+    const requestedQuantity = Math.max(0, tradeQuantity);
+
+    // T-30-01: server-side authorization — a trade offering can only be set for a
+    // printing the user actually owns. Clearing (quantity 0) is always allowed.
+    if (requestedQuantity > 0) {
+      const [ownedRow] = await db
+        .select({ count: userPrintingCollections.count })
+        .from(userPrintingCollections)
+        .where(
+          and(
+            eq(userPrintingCollections.userId, userId),
+            eq(userPrintingCollections.cardPrintingId, cardPrintingId)
+          )
+        )
+        .limit(1);
+
+      if (!ownedRow || ownedRow.count <= 0) {
+        return new Response('You do not own this printing', { status: 403 });
+      }
+    }
 
     await upsertTradeOffering(
       userId,
       cardPrintingId,
-      Math.max(0, tradeQuantity)
+      requestedQuantity
     );
 
     // Look up cardDefinitionId for this printing (needed for cache invalidation)
