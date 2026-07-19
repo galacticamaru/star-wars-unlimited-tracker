@@ -83,7 +83,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 **Milestone Goal:** Make managing a trade binder fast and intuitive — collapse the separate Add Cards, Manual Wants, variant sheet, and exclusions surfaces into one search-driven flow, with a set-once profile tucked behind a modal.
 
-- [ ] **Phase 30: Unified Search-Driven Add Flow** - One search bar over the full catalog replaces the separate Add Cards/Manual Want boxes; owned variants go to the trade binder, any variant can become a want
+- [x] **Phase 30: Unified Search-Driven Add Flow** - One search bar over the full catalog replaces the separate Add Cards/Manual Want boxes; owned variants go to the trade binder, any variant can become a want (completed 2026-07-19)
 - [ ] **Phase 31: Trade Profile Modal & Public Trade Note** - Username/binder URL moves behind a profile button modal; a new public trade note is settable and shown on the public binder
 - [ ] **Phase 32: Combined Wants & Exclusions List** - Deck-driven auto-wants and manually-added wants appear together in one clearly-sectioned list with exclude/restore and quantity controls
 - [ ] **Phase 33: Ashes of the Empire Spotlight Decks (GATED)** - Luke Skywalker and Emperor Palpatine ASH spotlight decks added to Quick Add — blocked on user-supplied deck lists and the ASH set syncing into the catalog DB
@@ -286,7 +286,7 @@ Plans:
   4. Selecting a search result opens a variant picker; for an owned variant the user can choose "Add to trade binder" and set a trade quantity, and for any variant the user can choose "Add as want"
   5. Attempting to add an unowned variant to the trade binder shows that action disabled with a visible reason (e.g. "You don't own this variant"), while "Add as want" remains available for the same variant
 
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 **Wave 1**
 
 - [x] 30-01-PLAN.md — Ownership-gated trade section, new always-available want section, and server-side trade-ownership enforcement on /api/trade
@@ -297,7 +297,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 30-03-PLAN.md — Rework Manage Binder page into one lazy catalog-backed search; delete both legacy add surfaces
+- [x] 30-03-PLAN.md — Rework Manage Binder page into one lazy catalog-backed search; delete both legacy add surfaces
 
 **UI hint**: yes
 
@@ -377,7 +377,7 @@ Plans:
 | 27 | v6 | 4/4 | Complete   | 2026-06-02 |
 | 28 | v6 | 2/2 | Complete    | 2026-06-03 |
 | 29 | v6 | 5/5 | Complete    | 2026-06-03 |
-| 30. Unified Search-Driven Add Flow | v7 | 2/3 | In Progress|  |
+| 30. Unified Search-Driven Add Flow | v7 | 3/3 | Complete   | 2026-07-19 |
 | 31. Trade Profile Modal & Public Trade Note | v7 | 0/TBD | Not started | - |
 | 32. Combined Wants & Exclusions List | v7 | 0/TBD | Not started | - |
 | 33. Ashes of the Empire Spotlight Decks | v7 | 0/TBD | Gated / Blocked | - |
