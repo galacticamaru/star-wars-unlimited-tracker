@@ -17,12 +17,22 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     const { cardPrintingId, tradeQuantity } = body;
 
-    if (cardPrintingId === undefined || tradeQuantity === undefined) {
-      return new Response('Missing cardPrintingId or tradeQuantity', { status: 400 });
+    // Validate types, not just presence: a non-numeric tradeQuantity would make
+    // Math.max(0, tradeQuantity) NaN, and `NaN > 0` is false — which would skip the
+    // ownership check below and still persist an offering (T-30-01 authorization bypass).
+    if (
+      typeof cardPrintingId !== 'number' ||
+      !Number.isInteger(cardPrintingId) ||
+      cardPrintingId <= 0 ||
+      typeof tradeQuantity !== 'number' ||
+      !Number.isInteger(tradeQuantity) ||
+      tradeQuantity < 0
+    ) {
+      return new Response('Missing or invalid cardPrintingId or tradeQuantity', { status: 400 });
     }
 
     const userId = Number(session.user.id);
-    const requestedQuantity = Math.max(0, tradeQuantity);
+    const requestedQuantity = tradeQuantity;
 
     // T-30-01: server-side authorization — a trade offering can only be set for a
     // printing the user actually owns. Clearing (quantity 0) is always allowed.

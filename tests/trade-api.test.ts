@@ -91,6 +91,33 @@ describe('Trade Binder APIs', () => {
       expect(upsertTradeOffering).not.toHaveBeenCalled();
     });
 
+    it('rejects a non-numeric tradeQuantity with 400 and never bypasses the ownership check (CR-01)', async () => {
+      const request = new NextRequest('http://localhost/api/trade', {
+        method: 'PATCH',
+        // A non-numeric quantity previously made Math.max(0, q) NaN, so `NaN > 0`
+        // was false and the ownership check was skipped while still persisting.
+        body: JSON.stringify({ cardPrintingId: 101, tradeQuantity: 'x' }),
+      });
+
+      const response = await tradePATCH(request);
+
+      expect(response.status).toBe(400);
+      expect(upsertTradeOffering).not.toHaveBeenCalled();
+      expect((db.select as any).mock.calls.length).toBe(0);
+    });
+
+    it('rejects a non-numeric cardPrintingId with 400 (CR-01)', async () => {
+      const request = new NextRequest('http://localhost/api/trade', {
+        method: 'PATCH',
+        body: JSON.stringify({ cardPrintingId: 'abc', tradeQuantity: 5 }),
+      });
+
+      const response = await tradePATCH(request);
+
+      expect(response.status).toBe(400);
+      expect(upsertTradeOffering).not.toHaveBeenCalled();
+    });
+
     it('allows clearing an offering (tradeQuantity 0) without an ownership check', async () => {
       const printingLimit = vi.fn().mockResolvedValue([{ cardDefinitionId: 9 }]);
       const printingWhere = vi.fn().mockReturnValue({ limit: printingLimit });

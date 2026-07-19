@@ -13,11 +13,13 @@ files_reviewed_list:
   - src/lib/binder/merge-search-cards.test.ts
   - tests/trade-api.test.ts
 findings:
-  critical: 1
+  critical: 0
   warning: 3
   info: 3
-  total: 7
+  total: 6
 status: issues_found
+resolved:
+  - CR-01 — fixed in commit (numeric type validation on /api/trade; regression tests added)
 ---
 
 # Phase 30: Code Review Report
