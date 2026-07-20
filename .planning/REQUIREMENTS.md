@@ -31,8 +31,8 @@ Requirements for the v7 Trade Binder Improvements milestone. Phases continue fro
 
 > **Gated:** deck lists to be supplied by the user, and both decks depend on the ASH ("Ashes of the Empire") set being present in the catalog DB via the swu-db.com sync. This category is scoped to its own phase, blocked until those inputs are ready.
 
-- [ ] **DECK-11**: The Luke Skywalker (ASH) Ashes of the Empire spotlight deck is available in Quick Add and adds its full card list to the user's collection
-- [ ] **DECK-12**: The Emperor Palpatine (ASH) Ashes of the Empire spotlight deck is available in Quick Add and adds its full card list to the user's collection
+- [x] **DECK-11**: The Luke Skywalker (ASH) Ashes of the Empire spotlight deck is available in Quick Add and adds its full card list to the user's collection
+- [x] **DECK-12**: The Emperor Palpatine (ASH) Ashes of the Empire spotlight deck is available in Quick Add and adds its full card list to the user's collection
 
 ---
 
@@ -81,8 +81,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | BINDER-18 | Phase 32 | Complete |
 | BINDER-19 | Phase 32 | Complete |
 | BINDER-20 | Phase 32 | Complete |
-| DECK-11 | Phase 33 | Pending — Gated/Blocked |
-| DECK-12 | Phase 33 | Pending — Gated/Blocked |
+| DECK-11 | Phase 33 | Complete (implemented directly; verified in DB) |
+| DECK-12 | Phase 33 | Complete (implemented directly; verified in DB) |
 
 **Coverage:**
 

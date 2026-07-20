@@ -3,18 +3,18 @@ gsd_state_version: 1.0
 milestone: v7
 milestone_name: Trade Binder Improvements
 current_phase: 33
-current_phase_name: GATED / BLOCKED
-status: executing
-stopped_at: Phase 32 context gathered
+current_phase_name: Ashes of the Empire Spotlight Decks (complete)
+status: milestone-complete
+stopped_at: Phase 33 complete — v7 fully implemented
 last_updated: "2026-07-20T14:25:16.309Z"
 last_activity: 2026-07-20
-last_activity_desc: Phase 32 complete, transitioned to Phase 33
+last_activity_desc: Phase 33 complete (ASH spotlight decks, implemented directly) — v7 milestone (30–33) fully implemented
 progress:
   total_phases: 12
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 10
   completed_plans: 10
-  percent: 25
+  percent: 33
 ---
 
 # Project State
@@ -28,12 +28,12 @@ See: .planning/PROJECT.md (updated 2026-07-19)
 
 ## Current Position
 
-Phase: 33 — Ashes of the Empire Spotlight Decks (GATED / BLOCKED)
-Plan: Not started (blocked on user deck lists + ASH set sync)
-Status: Phase 32 complete; Phase 33 gated — awaiting inputs
-Last activity: 2026-07-20 — Phase 32 complete, transitioned to Phase 33
+Phase: 33 — Ashes of the Empire Spotlight Decks (COMPLETE, implemented directly)
+Plan: N/A — implemented directly in src/data/starter-decks.ts (no GSD plan/execute/verify cycle)
+Status: v7 milestone (Phases 30–33) fully implemented — ready to ship / complete milestone
+Last activity: 2026-07-20 — Phase 33 complete (ASH spotlight decks); v7 done
 
-Progress: [██░░░░░░░░] 25% (3/12 phases)
+Progress: [███░░░░░░░] 33% (4/12 phases) · v7 milestone complete
 
 ## Performance Metrics
 

@@ -86,7 +86,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 - [x] **Phase 30: Unified Search-Driven Add Flow** - One search bar over the full catalog replaces the separate Add Cards/Manual Want boxes; owned variants go to the trade binder, any variant can become a want (all plans executed 2026-07-19; pending UAT) (completed 2026-07-19)
 - [x] **Phase 31: Trade Profile Modal & Public Trade Note** - Username/binder URL moves behind a profile button modal; a new public trade note is settable and shown on the public binder (completed 2026-07-20)
 - [x] **Phase 32: Combined Wants & Exclusions List** - Deck-driven auto-wants and manually-added wants appear together in one clearly-sectioned list with exclude/restore and quantity controls (BINDER-19 orphaned-exclusion regression found in verification and closed via gap-closure plan 32-03; completed 2026-07-20)
-- [ ] **Phase 33: Ashes of the Empire Spotlight Decks (GATED)** - Luke Skywalker and Emperor Palpatine ASH spotlight decks added to Quick Add — blocked on user-supplied deck lists and the ASH set syncing into the catalog DB
+- [x] **Phase 33: Ashes of the Empire Spotlight Decks** - Luke Skywalker and Emperor Palpatine ASH spotlight decks added to Quick Add (implemented directly by the user in starter-decks.ts; both gates cleared — deck lists supplied, ASH set synced; verified: all 50 cards resolve to Normal printings in the DB, legal 1+1+50 structure) (completed 2026-07-20)
 
 ## Phase Details
 
@@ -352,13 +352,15 @@ Plans:
 
 **UI hint**: yes
 
-### Phase 33: Ashes of the Empire Spotlight Decks (GATED / BLOCKED)
+### Phase 33: Ashes of the Empire Spotlight Decks (COMPLETE)
 
-**Status:** GATED / BLOCKED — do not start until both inputs below are available. This does not block Phases 30–32; the binder-redesign work ships independently of this phase, same as the deferred LAW spotlight deck (DEBT-05).
-**Blocked by:**
+**Status:** COMPLETE (2026-07-20) — implemented directly by the user (deck lists hand-authored into `src/data/starter-decks.ts`), not via the GSD plan→execute→verify flow. Both former gates are now cleared and the result was verified.
+**Former gates (both cleared):**
 
-  1. The user has not yet supplied the Luke Skywalker (ASH) and Emperor Palpatine (ASH) deck lists
-  2. The ASH ("Ashes of the Empire") set has not yet been synced into the catalog DB via the swu-db.com sync job — card rows the deck lists reference may not exist yet
+  1. ✓ Deck lists supplied — Luke Skywalker (ASH) and Emperor Palpatine (ASH) added to `starterDecks`
+  2. ✓ ASH set synced — all 50 distinct referenced cards resolve to Normal-variant printings in the catalog DB (verified 2026-07-20)
+
+**Verification:** each deck is a legal SWU list (1 leader + 1 base + 50 main-deck cards); `tsc`/`eslint` clean on the changed file; all `collectorNumber`s resolve via `/api/collection/starter-deck` (no silent skips).
 
 **Goal:** Add the Luke Skywalker (ASH) and Emperor Palpatine (ASH) Ashes of the Empire spotlight decks to Quick Add so a user can add either deck's full card list to their collection in one click, once the deck lists are supplied and the ASH set is present in the catalog
 **Depends on:** Nothing structurally (independent of Phases 30–32); gated on external inputs listed above — sequenced last in the milestone so it never blocks binder-redesign delivery
@@ -403,4 +405,4 @@ Plans:
 | 30. Unified Search-Driven Add Flow | v7 | 3/3 | Complete    | 2026-07-19 |
 | 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete    | 2026-07-20 |
 | 32. Combined Wants & Exclusions List | v7 | 3/3 | Complete    | 2026-07-20 |
-| 33. Ashes of the Empire Spotlight Decks | v7 | 0/TBD | Gated / Blocked | - |
+| 33. Ashes of the Empire Spotlight Decks | v7 | Direct | Complete    | 2026-07-20 |
