@@ -5,10 +5,11 @@ import { authClient } from '@/lib/auth-client';
 import { ManageTradeCard } from '@/components/binder/manage-trade-card';
 import { ManageWantsList } from '@/components/binder/manage-wants-list';
 import { VariantTradeSheet } from '@/components/binder/variant-trade-sheet';
+import { ProfileModal } from '@/components/binder/profile-modal';
 import { Input } from '@/components/ui/input';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
-import { Loader2, Search, ExternalLink } from 'lucide-react';
+import { Loader2, Search, ExternalLink, UserCog } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import {
@@ -76,8 +77,7 @@ interface OwnedCard {
 
 export default function ManageBinderPage() {
   const { data: session, isPending } = authClient.useSession();
-  const [username, setUsername] = useState('');
-  const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [tradeData, setTradeData] = useState<TradeData | null>(null);
   const [ownedCards, setOwnedCards] = useState<OwnedCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -96,12 +96,6 @@ export default function ManageBinderPage() {
   const [sheetCard, setSheetCard] = useState<MergedCard | null>(null);
   const sheetOpen = sheetCard !== null;
   const closeSheet = () => setSheetCard(null);
-
-  useEffect(() => {
-    if (session?.user) {
-      setUsername(session.user.username || '');
-    }
-  }, [session?.user?.username]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -180,15 +174,6 @@ export default function ManageBinderPage() {
     () => filterSearchCards(mergedCards, debouncedTerm),
     [mergedCards, debouncedTerm]
   );
-
-  const handleUpdateUsername = async () => {
-    setIsUpdatingUsername(true);
-    await authClient.updateUser({
-      username: username.toLowerCase().trim(),
-      displayUsername: username.trim()
-    });
-    setIsUpdatingUsername(false);
-  };
 
   const updateTradeQuantity = async (cardPrintingId: number, tradeQuantity: number) => {
     const res = await fetch('/api/trade', {
@@ -360,43 +345,24 @@ export default function ManageBinderPage() {
           <h1 className="text-3xl font-bold tracking-tight">Manage Trade Binder</h1>
           <p className="text-muted-foreground">Curate your public trade offerings and wants.</p>
         </div>
-        {publicUrl && (
-          <Link href={publicUrl} target="_blank" className={cn(buttonVariants({ variant: "outline" }))}>
-            View Public Binder <ExternalLink className="ml-2 w-4 h-4" />
-          </Link>
-        )}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setProfileOpen(true)}
+            className={cn(buttonVariants({ variant: "outline" }))}
+          >
+            <UserCog className="mr-2 w-4 h-4" /> Trade Profile
+          </button>
+          {publicUrl && (
+            <Link href={publicUrl} target="_blank" className={cn(buttonVariants({ variant: "outline" }))}>
+              View Public Binder <ExternalLink className="ml-2 w-4 h-4" />
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Trade Profile</CardTitle>
-              <CardDescription>Set your public username for your binder URL.</CardDescription>
-            </CardHeader>
-            <CardContent className="flex gap-4">
-              <div className="flex-1">
-                <Input
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
-                  placeholder="Choose a username..."
-                />
-                {publicUrl && (
-                  <p className="text-[10px] mt-1 text-muted-foreground">
-                    Your binder will be at: swu-tracker.com/binder/{session.user.username}
-                  </p>
-                )}
-              </div>
-              <Button
-                onClick={handleUpdateUsername}
-                disabled={isUpdatingUsername || username === (session.user.username || '')}
-              >
-                {isUpdatingUsername && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-                Update
-              </Button>
-            </CardContent>
-          </Card>
-
           {/* Add Cards & Wants — unified catalog search (BINDER-10/11/12, D-01 through D-08) */}
           <Card>
             <CardHeader>
@@ -543,6 +509,13 @@ export default function ManageBinderPage() {
         }
         onTradeQuantityChange={updateTradeQuantity}
         onWantQuantityChange={updateWantQuantity}
+      />
+
+      <ProfileModal
+        open={profileOpen}
+        onOpenChange={setProfileOpen}
+        currentUsername={session.user.username ?? ''}
+        currentTradeNote={session.user.tradeNote ?? ''}
       />
     </div>
   );
