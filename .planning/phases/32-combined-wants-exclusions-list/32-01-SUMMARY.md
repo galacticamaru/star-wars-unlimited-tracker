@@ -140,3 +140,7 @@ Each task was committed atomically:
 ---
 *Phase: 32-combined-wants-exclusions-list*
 *Completed: 2026-07-20*
+
+## Self-Check: PASSED
+
+All claimed files exist on disk and all claimed commit hashes (90939a5, 22cd4fb, af8428c) are present in git history.
