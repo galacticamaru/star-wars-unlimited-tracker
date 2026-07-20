@@ -1,5 +1,30 @@
 # Milestones — Star Wars Unlimited Tracker
 
+## v7 Trade Binder Improvements (Shipped: 2026-07-20)
+
+**Phases completed:** 4 phases (30–33), 10 plans (+ Phase 33 implemented directly), 23 tasks
+**Closeout:** override closeout — Phase 33 was hand-implemented (no GSD plan/verify cycle); shipped via squashed code-only PR #21 into `main`.
+
+**Key accomplishments:**
+
+- Ownership-gated `VariantTradeSection`, a new always-available `VariantWantSection` twin, and a server-side `userPrintingCollections` ownership check on `PATCH /api/trade` that closes a broken-access-control gap (T-30-01).
+- `VariantTradeSheet` now composes `VariantCollectionSection`, the ownership-gated `VariantTradeSection`, and the new always-available `VariantWantSection`, with a `quantity` field and `onWantQuantityChange` handler threaded through the prop contract.
+- The Manage Binder page now runs one lazy, catalog-backed search — `mergeCatalogWithOwnership`/`filterSearchCards` merge the full catalog with per-user ownership/trade/want data on the first 2-char keystroke, replacing the owned-only "Add Cards to Binder" grid and the sidebar "Add Manual Want" box, and the extended `VariantTradeSheet` now receives every printing (owned and unowned) instead of an ownership-filtered subset.
+- Nullable `trade_note` column live in Neon, paired with a Better Auth `additionalField` (`required: false`) and typed end-to-end via `inferAdditionalFields`, unblocking the modal write path and public read path.
+- Centered `Dialog` modal shell and `Textarea` field added to `src/components/ui/`, both mirroring existing `Sheet`/`Input` conventions on the Base UI `@base-ui/react/dialog` primitive with zero new dependencies.
+- `ProfileModal` composes the Plan 02 Dialog/Textarea primitives into a single Save Profile flow (username + ≤140-char trade note via one `authClient.updateUser` call), and the Manage Binder page now opens it from a header button instead of a permanent inline Card.
+- Extended `getUserIdByUsername` to carry `tradeNote` alongside `id`, and rendered it as an XSS-safe, zero-footprint-when-empty callout on the public `/binder/[username]` page — closing BINDER-17.
+- Collapsed ManageWantsList's three disconnected sections (Manual Wants / standalone Exclusions / Automatic Wants) into one "Looking For" list with two labeled sections — Deck Wants on top, Manual Wants below — preserving every existing exclude/restore and quantity/remove control.
+- Human sign-off confirming the redesigned "Looking For" list satisfies BINDER-18/19/20 as observable UI behavior in the running app.
+- Reintroduced the full `exclusions` array into `ManageWantsList`, rendering exclusions whose card fell out of `autoWants` as dimmed, restorable rows at the bottom of Deck Wants — closing the BINDER-19 regression without reintroducing a standalone Exclusions section.
+- Added the Luke Skywalker (ASH) and Emperor Palpatine (ASH) spotlight decks to Quick Add — each a legal 1 leader + 1 base + 50 main-deck list; all 50 distinct cards verified to resolve to Normal-variant printings in the catalog DB (Phase 33, implemented directly, DECK-11/DECK-12).
+
+### Known Deferred Items at Close
+
+- Stale trade availability after collection add on `/binder/manage` — adding a card to the collection via the variant sheet doesn't make it tradeable until a page reload (client-side `ownedCards` not refreshed; no `onOwnedCountChange` callback). Root-caused; tracked as a pending todo (`ui`).
+
+---
+
 ## v1 MVP — Shipped 2026-05-07
 
 **Phases:** 7 (1, 2, 3, 4, 5, 5.1, 5.2)

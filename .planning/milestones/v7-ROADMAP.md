@@ -8,7 +8,7 @@
 - ✅ **v4 Deck Builder & Collection Depth** — Phases 15–22 (shipped 2026-05-23) · [Archive](milestones/v4-ROADMAP.md)
 - ✅ **v5 Trade Binder & Performance** — Phases 23–25.1 (shipped 2026-05-27) · [Archive](milestones/v5-ROADMAP.md)
 - ✅ **v6 Mobile, Performance & Polish** — Phases 26–29 (shipped 2026-06-03) · [Archive](milestones/v6-ROADMAP.md)
-- ✅ **v7 Trade Binder Improvements** — Phases 30–33 (shipped 2026-07-20) · [Archive](milestones/v7-ROADMAP.md)
+- 🚧 **v7 Trade Binder Improvements** — Phases 30–33 (in progress)
 
 ## Phases
 
@@ -79,19 +79,14 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 </details>
 
-<details>
-<summary>✅ v7 Trade Binder Improvements (Phases 30–33) — SHIPPED 2026-07-20</summary>
+### 🚧 v7 Trade Binder Improvements (Phases 30–33, in progress)
 
 **Milestone Goal:** Make managing a trade binder fast and intuitive — collapse the separate Add Cards, Manual Wants, variant sheet, and exclusions surfaces into one search-driven flow, with a set-once profile tucked behind a modal.
 
-- [x] **Phase 30: Unified Search-Driven Add Flow** — one catalog search replaces the Add Cards grid + Manual Wants box; owned variants go to the trade binder, any variant can become a want (completed 2026-07-19)
-- [x] **Phase 31: Trade Profile Modal & Public Trade Note** — username/binder URL behind a profile modal; new public trade note settable and shown on the public binder (completed 2026-07-20)
-- [x] **Phase 32: Combined Wants & Exclusions List** — one two-section Looking For list (Deck Wants / Manual Wants) with inline exclude/restore incl. orphaned exclusions and manual quantity/remove; BINDER-19 regression closed via gap plan 32-03 (completed 2026-07-20)
-- [x] **Phase 33: Ashes of the Empire Spotlight Decks** — Luke Skywalker (ASH) & Emperor Palpatine (ASH) decks added to Quick Add; implemented directly, all 50 cards verified in the catalog DB (completed 2026-07-20)
-
-Shipped via squashed code-only PR #21 into `main`. See [milestones/v7-ROADMAP.md](milestones/v7-ROADMAP.md) for full phase details.
-
-</details>
+- [x] **Phase 30: Unified Search-Driven Add Flow** - One search bar over the full catalog replaces the separate Add Cards/Manual Want boxes; owned variants go to the trade binder, any variant can become a want (all plans executed 2026-07-19; pending UAT) (completed 2026-07-19)
+- [x] **Phase 31: Trade Profile Modal & Public Trade Note** - Username/binder URL moves behind a profile button modal; a new public trade note is settable and shown on the public binder (completed 2026-07-20)
+- [x] **Phase 32: Combined Wants & Exclusions List** - Deck-driven auto-wants and manually-added wants appear together in one clearly-sectioned list with exclude/restore and quantity controls (BINDER-19 orphaned-exclusion regression found in verification and closed via gap-closure plan 32-03; completed 2026-07-20)
+- [x] **Phase 33: Ashes of the Empire Spotlight Decks** - Luke Skywalker and Emperor Palpatine ASH spotlight decks added to Quick Add (implemented directly by the user in starter-decks.ts; both gates cleared — deck lists supplied, ASH set synced; verified: all 50 cards resolve to Normal printings in the DB, legal 1+1+50 structure) (completed 2026-07-20)
 
 ## Phase Details
 

@@ -102,14 +102,25 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ Unified search-driven binder add flow — one "Add Cards & Wants" card over the full catalog; add-to-binder gated on ownership (server-enforced 403), add-as-want for any card; old Add Cards grid + Manual Wants box removed — v7 (Phase 30)
 - ✓ Search-first results — nothing fetched/rendered until the user types 2 chars; catalog + owned-cards fetched once (debounced, retryable) on first qualifying keystroke — v7 (Phase 30)
 - ✓ Combined Looking For list — deck-driven auto-wants and manual wants in one two-section list (Deck Wants over Manual Wants, no standalone Exclusions section); inline exclude/restore for auto-wants including orphaned exclusions; manual-want quantity stepper + remove — v7 (BINDER-18, BINDER-19, BINDER-20, Phase 32; BINDER-19 orphaned-exclusion regression closed via gap plan 32-03)
+- ✓ Trade profile modal & public trade note — username/binder URL behind a profile-button modal; new user-level `trade_note` (schema migration 0006) settable and rendered XSS-safe on the public binder — v7 (Phase 31)
+- ✓ Ashes of the Empire spotlight decks — Luke Skywalker (ASH) & Emperor Palpatine (ASH) in Quick Add, each a legal 1 leader + 1 base + 50 main-deck list; all 50 cards verified in the catalog DB — v7 (DECK-11, DECK-12, Phase 33)
 
-### Active (v7)
+### Active
 
-<!-- Finalized with REQ-IDs in REQUIREMENTS.md during milestone definition. -->
+<!-- v7 fully shipped 2026-07-20 — all items moved to Validated above. Next milestone's Active items are defined via /gsd-new-milestone. -->
 
-- [ ] Trade profile modal behind a profile button — username + public trade note
+_None — v7 shipped. Start the next milestone with `/gsd-new-milestone`._
+
+<details>
+<summary>v7 items (all validated 2026-07-20)</summary>
+
+- [x] Trade profile modal behind a profile button — username + public trade note — validated in Phase 31
 - [x] Cleaner combined wants list — auto-wants + manual wants, exclusion hides auto-wants — validated in Phase 32
-- [ ] Public binder displays the trade note
+- [x] Public binder displays the trade note — validated in Phase 31
+- [x] Unified search-driven add flow — validated in Phase 30
+- [x] ASH spotlight decks in Quick Add — validated in Phase 33
+
+</details>
 
 ### Deferred (carried from v6)
 
@@ -182,4 +193,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-07-20 after Phase 32 (combined wants & exclusions list)*
+*Last updated: 2026-07-20 after v7 Trade Binder Improvements milestone (Phases 30–33, shipped)*
