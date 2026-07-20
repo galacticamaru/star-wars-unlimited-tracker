@@ -482,11 +482,9 @@ export default function ManageBinderPage() {
         <div className="space-y-6">
           <ManageWantsList
             wants={tradeData?.manualWants || []}
-            exclusions={tradeData?.exclusions || []}
             autoWants={tradeData?.autoWants || []}
             onUpdateWantQuantity={updateWantQuantity}
             onRemoveWant={(id) => updateWantQuantity(id, 0)}
-            onRemoveExclusion={(id) => toggleExclusion(id, false)}
             onToggleExclusion={toggleExclusion}
           />
         </div>
