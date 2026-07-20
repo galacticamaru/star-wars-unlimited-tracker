@@ -338,8 +338,14 @@ Plans:
   3. The user can change the quantity of a manual want, or remove it entirely, directly from the wants list without leaving the page
 
 **Plans:** 2 plans
+**Wave 1**
+
 - [ ] 32-01-PLAN.md — Redesign ManageWantsList into one two-section list (Deck Wants + Manual Wants), remove standalone Exclusions, align parent invocation
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 32-02-PLAN.md — Human-verify the combined list (layout, exclude→restore round trip, manual quantity/remove)
+
 **UI hint**: yes
 
 ### Phase 33: Ashes of the Empire Spotlight Decks (GATED / BLOCKED)
