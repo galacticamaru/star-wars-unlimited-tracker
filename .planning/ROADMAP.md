@@ -337,10 +337,10 @@ Plans:
   2. The user can hide (exclude) an auto-generated want and later restore a previously excluded auto-want — this behaviour is preserved from before the redesign
   3. The user can change the quantity of a manual want, or remove it entirely, directly from the wants list without leaving the page
 
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 **Wave 1**
 
-- [ ] 32-01-PLAN.md — Redesign ManageWantsList into one two-section list (Deck Wants + Manual Wants), remove standalone Exclusions, align parent invocation
+- [x] 32-01-PLAN.md — Redesign ManageWantsList into one two-section list (Deck Wants + Manual Wants), remove standalone Exclusions, align parent invocation
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -398,5 +398,5 @@ Plans:
 | 29 | v6 | 5/5 | Complete    | 2026-06-03 |
 | 30. Unified Search-Driven Add Flow | v7 | 3/3 | Complete    | 2026-07-19 |
 | 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete    | 2026-07-20 |
-| 32. Combined Wants & Exclusions List | v7 | 0/TBD | Not started | - |
+| 32. Combined Wants & Exclusions List | v7 | 1/2 | In Progress|  |
 | 33. Ashes of the Empire Spotlight Decks | v7 | 0/TBD | Gated / Blocked | - |
