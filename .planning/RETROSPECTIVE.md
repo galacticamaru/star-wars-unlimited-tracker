@@ -178,6 +178,45 @@
 
 ---
 
+## Milestone: v7 — Trade Binder Improvements
+
+**Shipped:** 2026-07-20
+**Phases:** 4 (30–33) | **Plans:** 10 (+ Phase 33 implemented directly)
+
+---
+
+### What Was Built
+
+- Unified search-driven binder add flow — one catalog search replaces the Add Cards grid + Manual Wants box; ownership-gated add-to-trade, want-any-card (Phase 30)
+- Trade profile modal + public trade note — `trade_note` schema migration, Base UI Dialog/Textarea primitives, XSS-safe public callout (Phase 31)
+- Combined Looking For list — one two-section list (Deck Wants / Manual Wants), inline exclude/restore incl. orphaned exclusions, manual quantity/remove (Phase 32)
+- ASH spotlight decks (Luke, Palpatine) in Quick Add — legal 1+1+50 lists, all cards verified in DB (Phase 33)
+
+---
+
+### What Worked
+
+- **Goal-backward verification caught a real regression** — Phase 32's happy-path human UAT passed, but the verifier (corroborated by code review) found the BINDER-19 orphaned-exclusion regression the UAT missed; gap plan 32-03 closed it before ship. The verify step earned its keep.
+- **DB-level verification of hand-authored data** — Phase 33's decks were checked against the live catalog (all 50 cards resolve) rather than trusting the deck lists, catching the exact failure class (silent skips) that DEBT-05's LAW deck hit.
+- **Squashed code-only PR** kept the review diff to 27 real files instead of ~90 commits of planning churn.
+
+### What Was Inefficient
+
+- **Phase 33 bypassed the GSD flow** — implemented directly, so it has no plan/summary/verification artifacts and forced an override closeout + manual tracking. Fine for a trivial data addition, but it fragments the milestone record.
+- **Local `main` diverged from `origin/main`** — committing 98 commits (code + `.planning`) locally then shipping a squashed code-only PR left the two histories divergent; needs a deliberate reconciliation.
+
+### Patterns Established
+
+- Orphaned-state surfacing: when two independent queries can diverge (`autoWants` vs `exclusions`), render the orphaned subset client-side rather than assuming set membership.
+- Code-only PR branch off `origin/main` with `.planning/` excluded — clean review surface while keeping planning history local.
+
+### Key Lessons
+
+- A passing human UAT is not a passing phase — automated goal-backward verification and UAT catch different failure classes; run both.
+- Verify hand-authored reference data against the source of truth (DB), not just its shape.
+
+---
+
 ## Cross-Milestone Trends
 
 | Metric | v1 | v2 | v3 | v4 |
