@@ -19,15 +19,15 @@ describe('Binder Queries', () => {
   });
 
   describe('getUserIdByUsername', () => {
-    it('resolves a username to a userId', async () => {
-      const mockLimit = vi.fn().mockResolvedValue([{ id: 123 }]);
+    it('resolves a username to its { id, tradeNote } row', async () => {
+      const mockLimit = vi.fn().mockResolvedValue([{ id: 123, tradeNote: null }]);
       const mockWhere = vi.fn().mockReturnValue({ limit: mockLimit });
       const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
       (db.select as any).mockReturnValue({ from: mockFrom });
 
       const result = await getUserIdByUsername('testuser');
 
-      expect(result).toBe(123);
+      expect(result).toEqual({ id: 123, tradeNote: null });
       expect(mockWhere).toHaveBeenCalled();
     });
 

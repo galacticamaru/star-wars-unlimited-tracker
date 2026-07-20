@@ -18,6 +18,7 @@ export const user = pgTable('user', {
   image: text('image'),
   username: text('username').unique(),
   displayUsername: text('display_username'),
+  tradeNote: text('trade_note'),
   createdAt: timestamp('created_at').notNull(),
   updatedAt: timestamp('updated_at').notNull(),
 });

@@ -3,8 +3,8 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { upsertTradeOffering } from '@/db/queries/trade';
 import { db } from '@/db';
-import { cardPrintings } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { cardPrintings, userPrintingCollections } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
 import { revalidateTag } from 'next/cache';
 
 export async function PATCH(request: NextRequest) {
@@ -17,16 +17,46 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     const { cardPrintingId, tradeQuantity } = body;
 
-    if (cardPrintingId === undefined || tradeQuantity === undefined) {
-      return new Response('Missing cardPrintingId or tradeQuantity', { status: 400 });
+    // Validate types, not just presence: a non-numeric tradeQuantity would make
+    // Math.max(0, tradeQuantity) NaN, and `NaN > 0` is false — which would skip the
+    // ownership check below and still persist an offering (T-30-01 authorization bypass).
+    if (
+      typeof cardPrintingId !== 'number' ||
+      !Number.isInteger(cardPrintingId) ||
+      cardPrintingId <= 0 ||
+      typeof tradeQuantity !== 'number' ||
+      !Number.isInteger(tradeQuantity) ||
+      tradeQuantity < 0
+    ) {
+      return new Response('Missing or invalid cardPrintingId or tradeQuantity', { status: 400 });
     }
 
     const userId = Number(session.user.id);
+    const requestedQuantity = tradeQuantity;
+
+    // T-30-01: server-side authorization — a trade offering can only be set for a
+    // printing the user actually owns. Clearing (quantity 0) is always allowed.
+    if (requestedQuantity > 0) {
+      const [ownedRow] = await db
+        .select({ count: userPrintingCollections.count })
+        .from(userPrintingCollections)
+        .where(
+          and(
+            eq(userPrintingCollections.userId, userId),
+            eq(userPrintingCollections.cardPrintingId, cardPrintingId)
+          )
+        )
+        .limit(1);
+
+      if (!ownedRow || ownedRow.count <= 0) {
+        return new Response('You do not own this printing', { status: 403 });
+      }
+    }
 
     await upsertTradeOffering(
       userId,
       cardPrintingId,
-      Math.max(0, tradeQuantity)
+      requestedQuantity
     );
 
     // Look up cardDefinitionId for this printing (needed for cache invalidation)
