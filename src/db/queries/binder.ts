@@ -5,11 +5,11 @@ import { calculateLookingFor } from '@/lib/binder-logic';
 
 export async function getUserIdByUsername(username: string) {
   const [u] = await db
-    .select({ id: user.id })
+    .select({ id: user.id, tradeNote: user.tradeNote })
     .from(user)
     .where(eq(user.username, username.toLowerCase()))
     .limit(1);
-  return u?.id ?? null;
+  return u ?? null;
 }
 
 export async function getPublicBinderData(userId: number) {
