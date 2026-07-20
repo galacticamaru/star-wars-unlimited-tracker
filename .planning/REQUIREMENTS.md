@@ -23,9 +23,9 @@ Requirements for the v7 Trade Binder Improvements milestone. Phases continue fro
 
 ### Wants & Exclusions
 
-- [ ] **BINDER-18**: The wants list shows deck-driven auto-wants and manually-added wants together in one list, visually distinguishing the two
-- [ ] **BINDER-19**: The user can hide (exclude) an auto-generated want and restore a previously excluded one
-- [ ] **BINDER-20**: The user can adjust the quantity of, or remove, a manual want from the wants list
+- [x] **BINDER-18**: The wants list shows deck-driven auto-wants and manually-added wants together in one list, visually distinguishing the two
+- [x] **BINDER-19**: The user can hide (exclude) an auto-generated want and restore a previously excluded one
+- [x] **BINDER-20**: The user can adjust the quantity of, or remove, a manual want from the wants list
 
 ### Spotlight Decks (Ashes of the Empire)
 
@@ -78,9 +78,9 @@ Which phases cover which requirements. Populated during roadmap creation.
 | BINDER-15 | Phase 31 | Complete |
 | BINDER-16 | Phase 31 | Complete |
 | BINDER-17 | Phase 31 | Complete |
-| BINDER-18 | Phase 32 | Pending |
-| BINDER-19 | Phase 32 | Pending |
-| BINDER-20 | Phase 32 | Pending |
+| BINDER-18 | Phase 32 | Complete |
+| BINDER-19 | Phase 32 | Complete |
+| BINDER-20 | Phase 32 | Complete |
 | DECK-11 | Phase 33 | Pending — Gated/Blocked |
 | DECK-12 | Phase 33 | Pending — Gated/Blocked |
 

@@ -402,5 +402,5 @@ Plans:
 | 29 | v6 | 5/5 | Complete    | 2026-06-03 |
 | 30. Unified Search-Driven Add Flow | v7 | 3/3 | Complete    | 2026-07-19 |
 | 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete    | 2026-07-20 |
-| 32. Combined Wants & Exclusions List | v7 | 3/3 | Complete   | 2026-07-20 |
+| 32. Combined Wants & Exclusions List | v7 | 3/3 | Complete    | 2026-07-20 |
 | 33. Ashes of the Empire Spotlight Decks | v7 | 0/TBD | Gated / Blocked | - |
