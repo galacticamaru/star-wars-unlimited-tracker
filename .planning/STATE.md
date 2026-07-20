@@ -24,16 +24,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-19)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus**: Phase 31 — Trade Profile Modal & Public Trade Note
+**Current focus**: Phase 33 — Ashes of the Empire Spotlight Decks (GATED / BLOCKED)
 
 ## Current Position
 
 Phase: 33 — Ashes of the Empire Spotlight Decks (GATED / BLOCKED)
-Plan: Not started
-Status: Executing Phase 32
+Plan: Not started (blocked on user deck lists + ASH set sync)
+Status: Phase 32 complete; Phase 33 gated — awaiting inputs
 Last activity: 2026-07-20 — Phase 32 complete, transitioned to Phase 33
 
-Progress: [█░░░░░░░░░] 8% (1/12 phases)
+Progress: [██░░░░░░░░] 25% (3/12 phases)
 
 ## Performance Metrics
 
