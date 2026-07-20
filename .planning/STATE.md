@@ -4,16 +4,16 @@ milestone: v7
 milestone_name: Trade Binder Improvements
 current_phase: 31
 current_phase_name: Trade Profile Modal & Public Trade Note
-status: ready_to_plan
-stopped_at: Phase 31 UI-SPEC approved
-last_updated: "2026-07-20T09:00:11.804Z"
-last_activity: 2026-07-19
-last_activity_desc: Phase 30 complete, transitioned to Phase 31
+status: executing
+stopped_at: Completed 31-02-PLAN.md
+last_updated: "2026-07-20T09:31:38.359Z"
+last_activity: 2026-07-20
+last_activity_desc: Phase 31 execution started
 progress:
   total_phases: 12
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 7
+  completed_plans: 4
   percent: 8
 ---
 
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-07-19)
 
 ## Current Position
 
-Phase: 31 — Trade Profile Modal & Public Trade Note
-Plan: Not started
-Status: Ready to plan Phase 31
-Last activity: 2026-07-19 — Phase 30 complete, transitioned to Phase 31
+Phase: 31 (Trade Profile Modal & Public Trade Note) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-07-20 — Phase 31 execution started
 
 Progress: [█░░░░░░░░░] 8% (1/12 phases)
 
@@ -47,6 +47,7 @@ Progress: [█░░░░░░░░░] 8% (1/12 phases)
 | v4 Deck Builder & Collection | 11 | 34 | 10 days |
 | v5 Trade Binder & Performance | 4 | 14 | 4 days |
 | Phase 27 P03 | 10min | 1 tasks | 2 files |
+| Phase 31 P02 | 5min | 2 tasks | 2 files |
 
 ## Deferred Items
 
@@ -93,6 +94,11 @@ Progress: [█░░░░░░░░░] 8% (1/12 phases)
 
 ## Session
 
-**Last session:** 2026-07-20T09:00:11.793Z
-**Stopped at:** Phase 31 UI-SPEC approved
-**Resume file:** .planning/phases/31-trade-profile-modal-public-trade-note/31-UI-SPEC.md
+**Last session:** 2026-07-20T09:31:38.354Z
+**Stopped at:** Completed 31-02-PLAN.md
+**Resume file:** None
+
+## Decisions
+
+- [Phase 31]: Dialog mirrors sheet.tsx export shape verbatim (Root/Trigger/Close/Content/Header/Footer/Title/Description) for consistency across modal shells
+- [Phase 31]: Textarea wraps a native <textarea> directly (no Base UI textarea primitive exists) styled off input.tsx's class string

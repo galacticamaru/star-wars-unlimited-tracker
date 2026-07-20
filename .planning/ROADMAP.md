@@ -312,12 +312,12 @@ Plans:
   2. Inside the profile modal, the user can set and save a short public trade note (e.g. "EU only, will ship")
   3. Visiting a user's public binder page (`/binder/[username]`) shows their trade note when one is set, and shows no broken UI when the note is empty
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 Plans:
 **Wave 1** *(parallel — no file overlap)*
 
 - [ ] 31-01-PLAN.md — Auth field + storage foundation: `trade_note` column, `additionalFields.tradeNote`, typed client, [BLOCKING] Neon push (BINDER-16/17)
-- [ ] 31-02-PLAN.md — UI primitives: centered Base UI `Dialog` + native `Textarea` (BINDER-15/16)
+- [x] 31-02-PLAN.md — UI primitives: centered Base UI `Dialog` + native `Textarea` (BINDER-15/16)
 
 **Wave 2** *(blocked on Wave 1)*
 
@@ -389,6 +389,6 @@ Plans:
 | 28 | v6 | 2/2 | Complete    | 2026-06-03 |
 | 29 | v6 | 5/5 | Complete    | 2026-06-03 |
 | 30. Unified Search-Driven Add Flow | v7 | 3/3 | Complete    | 2026-07-19 |
-| 31. Trade Profile Modal & Public Trade Note | v7 | 0/4 | Planned | - |
+| 31. Trade Profile Modal & Public Trade Note | v7 | 1/4 | In Progress|  |
 | 32. Combined Wants & Exclusions List | v7 | 0/TBD | Not started | - |
 | 33. Ashes of the Empire Spotlight Decks | v7 | 0/TBD | Gated / Blocked | - |

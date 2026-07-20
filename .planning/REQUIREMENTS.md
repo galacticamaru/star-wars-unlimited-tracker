@@ -17,8 +17,8 @@ Requirements for the v7 Trade Binder Improvements milestone. Phases continue fro
 
 ### Trade Profile
 
-- [ ] **BINDER-15**: The trade profile (username / binder URL) is reached via a profile button that opens a modal, instead of occupying the Manage Binder page permanently
-- [ ] **BINDER-16**: The user can set a public "trade note" (short free text) in the trade profile modal
+- [x] **BINDER-15**: The trade profile (username / binder URL) is reached via a profile button that opens a modal, instead of occupying the Manage Binder page permanently
+- [x] **BINDER-16**: The user can set a public "trade note" (short free text) in the trade profile modal
 - [ ] **BINDER-17**: The public binder page displays the user's trade note
 
 ### Wants & Exclusions
@@ -75,8 +75,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | BINDER-12 | Phase 30 | Complete |
 | BINDER-13 | Phase 30 | Complete |
 | BINDER-14 | Phase 30 | Complete |
-| BINDER-15 | Phase 31 | Pending |
-| BINDER-16 | Phase 31 | Pending |
+| BINDER-15 | Phase 31 | Complete |
+| BINDER-16 | Phase 31 | Complete |
 | BINDER-17 | Phase 31 | Pending |
 | BINDER-18 | Phase 32 | Pending |
 | BINDER-19 | Phase 32 | Pending |
