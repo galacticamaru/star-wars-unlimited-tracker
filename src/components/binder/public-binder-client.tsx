@@ -2,6 +2,7 @@
 
 import { useMemo, useRef } from 'react';
 import { useQueryState, parseAsString, parseAsArrayOf } from 'nuqs';
+import { MessageSquareText } from 'lucide-react';
 import { filterCards, type CardForFilter } from '@/lib/filter-cards';
 import { TopBar } from '@/components/catalog/top-bar';
 import { SidebarFilters } from '@/components/catalog/sidebar-filters';
@@ -19,6 +20,7 @@ interface PublicBinderClientProps {
   offerings: CardForFilter[];
   lookingFor: CardForFilter[];
   filterOptions: FilterOptions;
+  tradeNote?: string | null;
 }
 
 const RARITY_OPTIONS = ['(C) Common', '(U) Uncommon', '(R) Rare', '(L) Legendary'];
@@ -42,11 +44,12 @@ const TRAIT_OPTIONS = [
   'UNDERWORLD', 'VEHICLE', 'WALKER', 'WEAPON', 'WOOKIEE'
 ];
 
-export function PublicBinderClient({ 
-  username, 
-  offerings, 
-  lookingFor, 
-  filterOptions 
+export function PublicBinderClient({
+  username,
+  offerings,
+  lookingFor,
+  filterOptions,
+  tradeNote,
 }: PublicBinderClientProps) {
   const [search, setSearch] = useQueryState('q', parseAsString.withDefault('').withOptions({ shallow: true }));
   const [selectedSets, setSelectedSets] = useQueryState('sets', parseAsArrayOf(parseAsString).withDefault([]).withOptions({ shallow: true }));
@@ -124,6 +127,16 @@ export function PublicBinderClient({
       <div className="px-4 lg:px-8 py-4 bg-muted/30 border-b border-border shrink-0">
         <h1 className="text-2xl font-bold font-heading">{username.toUpperCase()}&apos;s Trade Binder</h1>
       </div>
+
+      {tradeNote && (
+        <div
+          data-testid="trade-note-callout"
+          className="px-4 lg:px-8 py-2 bg-muted/20 border-b border-border text-sm text-muted-foreground"
+        >
+          <MessageSquareText className="size-3.5 inline-block mr-1.5 align-text-bottom" />
+          {tradeNote}
+        </div>
+      )}
 
       <div className="flex flex-1 min-h-0 w-full overflow-hidden">
         <div className="hidden md:block shrink-0">
