@@ -85,7 +85,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 - [x] **Phase 30: Unified Search-Driven Add Flow** - One search bar over the full catalog replaces the separate Add Cards/Manual Want boxes; owned variants go to the trade binder, any variant can become a want (all plans executed 2026-07-19; pending UAT) (completed 2026-07-19)
 - [x] **Phase 31: Trade Profile Modal & Public Trade Note** - Username/binder URL moves behind a profile button modal; a new public trade note is settable and shown on the public binder (completed 2026-07-20)
-- [ ] **Phase 32: Combined Wants & Exclusions List** - Deck-driven auto-wants and manually-added wants appear together in one clearly-sectioned list with exclude/restore and quantity controls (verification gaps_found 2026-07-20 — BINDER-19 orphaned-exclusion regression; gap-closure planned)
+- [x] **Phase 32: Combined Wants & Exclusions List** - Deck-driven auto-wants and manually-added wants appear together in one clearly-sectioned list with exclude/restore and quantity controls (verification gaps_found 2026-07-20 — BINDER-19 orphaned-exclusion regression; gap-closure planned) (completed 2026-07-20)
 - [ ] **Phase 33: Ashes of the Empire Spotlight Decks (GATED)** - Luke Skywalker and Emperor Palpatine ASH spotlight decks added to Quick Add — blocked on user-supplied deck lists and the ASH set syncing into the catalog DB
 
 ## Phase Details
@@ -337,7 +337,7 @@ Plans:
   2. The user can hide (exclude) an auto-generated want and later restore a previously excluded auto-want — this behaviour is preserved from before the redesign
   3. The user can change the quantity of a manual want, or remove it entirely, directly from the wants list without leaving the page
 
-**Plans:** 3 plans (2 complete, 1 gap-closure planned)
+**Plans:** 3/3 plans complete
 **Wave 1**
 
 - [x] 32-01-PLAN.md — Redesign ManageWantsList into one two-section list (Deck Wants + Manual Wants), remove standalone Exclusions, align parent invocation
@@ -348,7 +348,7 @@ Plans:
 
 **Gap closure** *(closes 32-VERIFICATION.md BINDER-19 orphaned-exclusion regression)*
 
-- [ ] 32-03-PLAN.md — Re-thread the full exclusions array into ManageWantsList; render orphaned exclusions (card no longer in autoWants) as dimmed restorable rows in Deck Wants without reintroducing a standalone Exclusions section
+- [x] 32-03-PLAN.md — Re-thread the full exclusions array into ManageWantsList; render orphaned exclusions (card no longer in autoWants) as dimmed restorable rows in Deck Wants without reintroducing a standalone Exclusions section
 
 **UI hint**: yes
 
@@ -402,5 +402,5 @@ Plans:
 | 29 | v6 | 5/5 | Complete    | 2026-06-03 |
 | 30. Unified Search-Driven Add Flow | v7 | 3/3 | Complete    | 2026-07-19 |
 | 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete    | 2026-07-20 |
-| 32. Combined Wants & Exclusions List | v7 | 2/2 | Complete   | 2026-07-20 |
+| 32. Combined Wants & Exclusions List | v7 | 3/3 | Complete   | 2026-07-20 |
 | 33. Ashes of the Empire Spotlight Decks | v7 | 0/TBD | Gated / Blocked | - |
