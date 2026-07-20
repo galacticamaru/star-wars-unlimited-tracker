@@ -84,7 +84,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 **Milestone Goal:** Make managing a trade binder fast and intuitive — collapse the separate Add Cards, Manual Wants, variant sheet, and exclusions surfaces into one search-driven flow, with a set-once profile tucked behind a modal.
 
 - [x] **Phase 30: Unified Search-Driven Add Flow** - One search bar over the full catalog replaces the separate Add Cards/Manual Want boxes; owned variants go to the trade binder, any variant can become a want (all plans executed 2026-07-19; pending UAT) (completed 2026-07-19)
-- [ ] **Phase 31: Trade Profile Modal & Public Trade Note** - Username/binder URL moves behind a profile button modal; a new public trade note is settable and shown on the public binder
+- [x] **Phase 31: Trade Profile Modal & Public Trade Note** - Username/binder URL moves behind a profile button modal; a new public trade note is settable and shown on the public binder (completed 2026-07-20)
 - [ ] **Phase 32: Combined Wants & Exclusions List** - Deck-driven auto-wants and manually-added wants appear together in one clearly-sectioned list with exclude/restore and quantity controls
 - [ ] **Phase 33: Ashes of the Empire Spotlight Decks (GATED)** - Luke Skywalker and Emperor Palpatine ASH spotlight decks added to Quick Add — blocked on user-supplied deck lists and the ASH set syncing into the catalog DB
 
@@ -312,7 +312,7 @@ Plans:
   2. Inside the profile modal, the user can set and save a short public trade note (e.g. "EU only, will ship")
   3. Visiting a user's public binder page (`/binder/[username]`) shows their trade note when one is set, and shows no broken UI when the note is empty
 
-**Plans:** 2/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 **Wave 1** *(parallel — no file overlap)*
 
@@ -321,8 +321,8 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 31-03-PLAN.md — Profile modal + manage-page header button; inline Trade Profile card removed (BINDER-15/16)
-- [ ] 31-04-PLAN.md — Public trade-note callout: query returns `tradeNote`, RSC passes it, conditional XSS-safe callout (BINDER-17)
+- [x] 31-03-PLAN.md — Profile modal + manage-page header button; inline Trade Profile card removed (BINDER-15/16)
+- [x] 31-04-PLAN.md — Public trade-note callout: query returns `tradeNote`, RSC passes it, conditional XSS-safe callout (BINDER-17)
 
 **UI hint**: yes
 
@@ -389,6 +389,6 @@ Plans:
 | 28 | v6 | 2/2 | Complete    | 2026-06-03 |
 | 29 | v6 | 5/5 | Complete    | 2026-06-03 |
 | 30. Unified Search-Driven Add Flow | v7 | 3/3 | Complete    | 2026-07-19 |
-| 31. Trade Profile Modal & Public Trade Note | v7 | 2/4 | In Progress|  |
+| 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete   | 2026-07-20 |
 | 32. Combined Wants & Exclusions List | v7 | 0/TBD | Not started | - |
 | 33. Ashes of the Empire Spotlight Decks | v7 | 0/TBD | Gated / Blocked | - |
