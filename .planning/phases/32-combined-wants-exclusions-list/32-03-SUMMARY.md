@@ -122,3 +122,13 @@ None - plan executed exactly as written.
 ---
 *Phase: 32-combined-wants-exclusions-list*
 *Completed: 2026-07-20*
+
+## Self-Check: PASSED
+
+All claimed files and commits verified present:
+- `src/components/binder/manage-wants-list.tsx` — FOUND
+- `src/app/binder/manage/page.tsx` — FOUND
+- `.planning/phases/32-combined-wants-exclusions-list/32-03-SUMMARY.md` — FOUND
+- Commit `f63fc4a` — FOUND
+- Commit `b5ed88a` — FOUND
+- Commit `e3e1ab5` — FOUND
