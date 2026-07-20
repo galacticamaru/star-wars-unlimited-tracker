@@ -5,15 +5,15 @@ milestone_name: Trade Binder Improvements
 current_phase: 31
 current_phase_name: Trade Profile Modal & Public Trade Note
 status: executing
-stopped_at: Completed 31-02-PLAN.md
-last_updated: "2026-07-20T09:31:38.359Z"
+stopped_at: Completed 31-01-PLAN.md
+last_updated: "2026-07-20T09:39:53.573Z"
 last_activity: 2026-07-20
 last_activity_desc: Phase 31 execution started
 progress:
   total_phases: 12
   completed_phases: 1
   total_plans: 7
-  completed_plans: 4
+  completed_plans: 5
   percent: 8
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-07-19)
 ## Current Position
 
 Phase: 31 (Trade Profile Modal & Public Trade Note) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-07-20 — Phase 31 execution started
 
@@ -48,6 +48,7 @@ Progress: [█░░░░░░░░░] 8% (1/12 phases)
 | v5 Trade Binder & Performance | 4 | 14 | 4 days |
 | Phase 27 P03 | 10min | 1 tasks | 2 files |
 | Phase 31 P02 | 5min | 2 tasks | 2 files |
+| Phase 31 P01 | 5min | 3 tasks | 6 files |
 
 ## Deferred Items
 
@@ -94,11 +95,13 @@ Progress: [█░░░░░░░░░] 8% (1/12 phases)
 
 ## Session
 
-**Last session:** 2026-07-20T09:31:38.354Z
-**Stopped at:** Completed 31-02-PLAN.md
+**Last session:** 2026-07-20T09:39:53.565Z
+**Stopped at:** Completed 31-01-PLAN.md
 **Resume file:** None
 
 ## Decisions
 
 - [Phase 31]: Dialog mirrors sheet.tsx export shape verbatim (Root/Trigger/Close/Content/Header/Footer/Title/Description) for consistency across modal shells
 - [Phase 31]: Textarea wraps a native <textarea> directly (no Base UI textarea primitive exists) styled off input.tsx's class string
+- [Phase 31]: Hand-authored drizzle/0006_trade_note.sql instead of running drizzle-kit generate, because generate is blocked by pre-existing drizzle/meta drift (missing 0005_snapshot.json) unrelated to this plan's change
+- [Phase 31]: Applied the trade_note schema change via npx drizzle-kit push (introspection-based, does not depend on drizzle/meta) and confirmed it idempotent by re-running it
