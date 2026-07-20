@@ -5,8 +5,8 @@ milestone_name: Trade Binder Improvements
 current_phase: 32
 current_phase_name: Combined Wants & Exclusions List
 status: executing
-stopped_at: Completed 31-01-PLAN.md
-last_updated: "2026-07-20T10:03:50.745Z"
+stopped_at: Phase 32 context gathered
+last_updated: "2026-07-20T11:01:59.919Z"
 last_activity: 2026-07-20
 last_activity_desc: Phase 31 complete, transitioned to Phase 32
 progress:
@@ -95,9 +95,9 @@ Progress: [█░░░░░░░░░] 8% (1/12 phases)
 
 ## Session
 
-**Last session:** 2026-07-20T09:39:53.565Z
-**Stopped at:** Completed 31-01-PLAN.md
-**Resume file:** None
+**Last session:** 2026-07-20T11:01:59.911Z
+**Stopped at:** Phase 32 context gathered
+**Resume file:** .planning/phases/32-combined-wants-exclusions-list/32-CONTEXT.md
 
 ## Decisions
 
