@@ -24,7 +24,7 @@ current_phase_name: Ashes of the Empire Spotlight Decks (complete)
 See: .planning/PROJECT.md (updated 2026-07-19)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus**: Phase 33 — Ashes of the Empire Spotlight Decks (GATED / BLOCKED)
+**Current focus**: v7 shipped & archived — planning the next milestone (`/gsd-new-milestone`)
 
 ## Current Position
 
