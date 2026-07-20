@@ -29,6 +29,8 @@ All copy, structure, and storage decisions below are locked by `.planning/phases
 
 Source: `components.json`, `src/app/globals.css`, `src/components/ui/sheet.tsx` (detected, not asked).
 
+**Visual anchor / focal point:** (a) On the manage page header area, the focal point is the new **"Trade Profile"** outline button — it is the first interactive element in the header's right-hand button group and the entry point this phase adds. (b) Inside the modal, the focal point is the **"Save Profile"** button in the footer — the only `primary`-filled element in the entire surface (Accent 10%, see Color below), drawing the eye to the terminal action after the two-field form.
+
 ---
 
 ## Spacing Scale
@@ -56,11 +58,11 @@ Exceptions: none. The header "Trade Profile" button uses the existing `buttonVar
 | Micro (character counter, public-URL helper text) | 10–12px (`text-[10px]` / `text-xs`) | Regular 400 | 1.4 |
 | Body (username/note field values, modal description, public callout text) | 14px (`text-sm`) | Regular 400 | 1.5 |
 | Label (field labels: "Username", "Trade Note") | 14px (`text-sm`) | Bold 700 | 1.4 |
-| Heading (Dialog title "Trade Profile") | 16px (`text-base`), `font-heading` (Oxanium) | Medium 500, matches `SheetTitle` exactly | 1.2 |
+| Heading (Dialog title "Trade Profile") | 16px (`text-base`), `font-heading` (Oxanium) | — (see inherited note below, not part of this scale) | 1.2 |
 
-**Weights (exactly 2 declared for this phase's new/touched UI):** Regular 400 (body text, descriptions, helper text, textarea/input values, placeholder) and Bold 700 (field labels, header button label, character-counter emphasis when at/near the 140 cap).
+**Weights (exactly 2 declared for this phase's new/touched UI):** Regular 400 (body text, descriptions, helper text, textarea/input values, placeholder) and Bold 700 (field labels, header button label, character-counter emphasis when at/near the 140 cap). This is the complete, capped type scale for everything this phase authors.
 
-**Exception (pre-existing, not introduced by this phase):** `DialogTitle` reuses `SheetTitle`'s existing `font-medium` (500) weight — this is the established title weight for all Base UI dialog-family popups in this codebase (`sheet.tsx` L108) and is not changed here.
+**Inherited UI infrastructure (out of scope, not counted in the 2-weight scale above):** `DialogTitle` reuses the pre-existing `SheetTitle` primitive verbatim, which carries `font-medium` (500) as its established title weight for every Base UI dialog-family popup already in this codebase (`sheet.tsx` L108). This weight is not authored, chosen, or changeable by this phase — it is inherited unchanged from a sibling component this phase does not modify. It is listed here for transparency only and must not be read as a third declared weight.
 
 ---
 
@@ -106,7 +108,7 @@ Accent reserved for: the modal's Save button, input/textarea focus rings. Never 
 
 ### Surface 2 — Profile modal (`src/components/binder/profile-modal.tsx`, new)
 - Centered Base UI `Dialog` (RESEARCH.md Pattern 3), `max-w-md`, `rounded-lg border bg-popover p-6 shadow-lg`, backdrop `bg-black/10` + `backdrop-blur-xs`.
-- Includes a top-right close (`X`) icon button, matching `SheetContent`'s `showCloseButton` affordance (`variant="ghost" size="icon-sm"`, `absolute top-3 right-3`) — the Dialog is dismissible via close button, `Escape`, and outside click, same as `Sheet`.
+- Includes a top-right close (`X`) icon button, matching `SheetContent`'s `showCloseButton` affordance (`variant="ghost" size="icon-sm"`, `absolute top-3 right-3`) — the Dialog is dismissible via close button, `Escape`, and outside click, same as `Sheet`. This button is icon-only (no visible label) and **must** carry `aria-label="Close"` — required, not left to executor discretion.
 - Content order top to bottom: `DialogTitle` ("Trade Profile") → `DialogDescription` (one-line description) → username `Input` + public-URL helper paragraph directly beneath it → trade-note `Textarea` (3 rows) + right-aligned character counter directly beneath it → inline error text (only when a save attempt fails) → footer with a single right-aligned **Save Profile** button.
 - All fields stacked vertically (`space-y-4`), matching the existing inline Card's `Input` styling — no side-by-side layout (D-08: "full profile in one place", single-column read order).
 
