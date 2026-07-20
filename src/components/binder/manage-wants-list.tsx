@@ -116,7 +116,7 @@ export function ManageWantsList({
         </h3>
         {wants.length === 0 ? (
           <p className="text-xs text-muted-foreground italic bg-muted/30 p-4 rounded-md border border-dashed text-center">
-            No manual wants added. Use the search to add specific cards you're looking for.
+            No manual wants added. Use the search to add specific cards you&apos;re looking for.
           </p>
         ) : (
           <div className="grid gap-2">
