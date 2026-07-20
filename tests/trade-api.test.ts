@@ -25,8 +25,19 @@ vi.mock('@/db/queries/trade', () => ({
   removeExclusion: vi.fn(),
 }));
 
+vi.mock('@/db', () => ({
+  db: {
+    select: vi.fn(),
+  },
+}));
+
+vi.mock('next/cache', () => ({
+  revalidateTag: vi.fn(),
+}));
+
 import { auth } from '@/lib/auth';
 import { upsertTradeOffering, upsertManualWant, deleteManualWant, addExclusion, removeExclusion } from '@/db/queries/trade';
+import { db } from '@/db';
 
 describe('Trade Binder APIs', () => {
   beforeEach(() => {
@@ -35,7 +46,20 @@ describe('Trade Binder APIs', () => {
   });
 
   describe('PATCH /api/trade', () => {
-    it('updates trade quantity', async () => {
+    it('updates trade quantity when the user owns the printing', async () => {
+      // First db.select call = ownership check (userPrintingCollections); second = cardDefinitionId lookup
+      const ownershipLimit = vi.fn().mockResolvedValue([{ count: 2 }]);
+      const ownershipWhere = vi.fn().mockReturnValue({ limit: ownershipLimit });
+      const ownershipFrom = vi.fn().mockReturnValue({ where: ownershipWhere });
+
+      const printingLimit = vi.fn().mockResolvedValue([{ cardDefinitionId: 9 }]);
+      const printingWhere = vi.fn().mockReturnValue({ limit: printingLimit });
+      const printingFrom = vi.fn().mockReturnValue({ where: printingWhere });
+
+      (db.select as any)
+        .mockReturnValueOnce({ from: ownershipFrom })
+        .mockReturnValueOnce({ from: printingFrom });
+
       const request = new NextRequest('http://localhost/api/trade', {
         method: 'PATCH',
         body: JSON.stringify({ cardPrintingId: 101, tradeQuantity: 5 }),
@@ -47,6 +71,73 @@ describe('Trade Binder APIs', () => {
       expect(response.status).toBe(200);
       expect(data.success).toBe(true);
       expect(upsertTradeOffering).toHaveBeenCalledWith(1, 101, 5);
+    });
+
+    it('returns 403 and does not persist an offering for an unowned printing (T-30-01)', async () => {
+      const ownershipLimit = vi.fn().mockResolvedValue([]);
+      const ownershipWhere = vi.fn().mockReturnValue({ limit: ownershipLimit });
+      const ownershipFrom = vi.fn().mockReturnValue({ where: ownershipWhere });
+
+      (db.select as any).mockReturnValueOnce({ from: ownershipFrom });
+
+      const request = new NextRequest('http://localhost/api/trade', {
+        method: 'PATCH',
+        body: JSON.stringify({ cardPrintingId: 101, tradeQuantity: 5 }),
+      });
+
+      const response = await tradePATCH(request);
+
+      expect(response.status).toBe(403);
+      expect(upsertTradeOffering).not.toHaveBeenCalled();
+    });
+
+    it('rejects a non-numeric tradeQuantity with 400 and never bypasses the ownership check (CR-01)', async () => {
+      const request = new NextRequest('http://localhost/api/trade', {
+        method: 'PATCH',
+        // A non-numeric quantity previously made Math.max(0, q) NaN, so `NaN > 0`
+        // was false and the ownership check was skipped while still persisting.
+        body: JSON.stringify({ cardPrintingId: 101, tradeQuantity: 'x' }),
+      });
+
+      const response = await tradePATCH(request);
+
+      expect(response.status).toBe(400);
+      expect(upsertTradeOffering).not.toHaveBeenCalled();
+      expect((db.select as any).mock.calls.length).toBe(0);
+    });
+
+    it('rejects a non-numeric cardPrintingId with 400 (CR-01)', async () => {
+      const request = new NextRequest('http://localhost/api/trade', {
+        method: 'PATCH',
+        body: JSON.stringify({ cardPrintingId: 'abc', tradeQuantity: 5 }),
+      });
+
+      const response = await tradePATCH(request);
+
+      expect(response.status).toBe(400);
+      expect(upsertTradeOffering).not.toHaveBeenCalled();
+    });
+
+    it('allows clearing an offering (tradeQuantity 0) without an ownership check', async () => {
+      const printingLimit = vi.fn().mockResolvedValue([{ cardDefinitionId: 9 }]);
+      const printingWhere = vi.fn().mockReturnValue({ limit: printingLimit });
+      const printingFrom = vi.fn().mockReturnValue({ where: printingWhere });
+
+      (db.select as any).mockReturnValueOnce({ from: printingFrom });
+
+      const request = new NextRequest('http://localhost/api/trade', {
+        method: 'PATCH',
+        body: JSON.stringify({ cardPrintingId: 101, tradeQuantity: 0 }),
+      });
+
+      const response = await tradePATCH(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data.success).toBe(true);
+      expect(upsertTradeOffering).toHaveBeenCalledWith(1, 101, 0);
+      // Only one db.select call (the cardDefinitionId lookup) — ownership check is skipped for quantity 0
+      expect((db.select as any).mock.calls.length).toBe(1);
     });
 
     it('returns 401 if not authenticated', async () => {
@@ -65,7 +156,7 @@ describe('Trade Binder APIs', () => {
     it('upserts manual want', async () => {
       const request = new NextRequest('http://localhost/api/binder/wants', {
         method: 'POST',
-        body: JSON.stringify({ cardDefinitionId: 202, quantity: 3 }),
+        body: JSON.stringify({ cardPrintingId: 202, quantity: 3 }),
       });
 
       const response = await wantsPOST(request);
@@ -79,7 +170,7 @@ describe('Trade Binder APIs', () => {
     it('deletes manual want if quantity is 0', async () => {
       const request = new NextRequest('http://localhost/api/binder/wants', {
         method: 'POST',
-        body: JSON.stringify({ cardDefinitionId: 202, quantity: 0 }),
+        body: JSON.stringify({ cardPrintingId: 202, quantity: 0 }),
       });
 
       const response = await wantsPOST(request);

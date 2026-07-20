@@ -11,13 +11,13 @@ interface PublicBinderPageProps {
 export default async function PublicBinderPage({ params }: PublicBinderPageProps) {
   const { username } = await params;
   
-  const userId = await getUserIdByUsername(username);
-  if (!userId) {
+  const profile = await getUserIdByUsername(username);
+  if (!profile) {
     notFound();
   }
 
   const [binderData, filterOptions] = await Promise.all([
-    getPublicBinderData(userId),
+    getPublicBinderData(profile.id),
     getFilterOptions(),
   ]);
 
@@ -60,6 +60,7 @@ export default async function PublicBinderPage({ params }: PublicBinderPageProps
       offerings={offerings}
       lookingFor={lookingFor}
       filterOptions={filterOptions}
+      tradeNote={profile.tradeNote}
     />
   );
 }

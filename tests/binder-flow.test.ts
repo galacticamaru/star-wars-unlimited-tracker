@@ -52,7 +52,7 @@ test('Full Binder Flow: Set Username -> Add to Binder -> Public View', async () 
 
   // 3. Resolve username to userId (getUserIdByUsername) & Fetch public binder data (getPublicBinderData)
   
-  const mockLimit = vi.fn().mockResolvedValue([{ id: userId }]);
+  const mockLimit = vi.fn().mockResolvedValue([{ id: userId, tradeNote: null }]);
   const mockWhereUser = vi.fn().mockReturnValue({ limit: mockLimit });
   
   const mockOffering = { id: cardId, name: 'Vader', tradeQuantity: quantity };
@@ -78,11 +78,11 @@ test('Full Binder Flow: Set Username -> Add to Binder -> Public View', async () 
   }));
 
   // Execute Step 3: Resolve
-  const resolvedUserId = await getUserIdByUsername(username);
-  expect(resolvedUserId).toBe(userId);
+  const resolvedProfile = await getUserIdByUsername(username);
+  expect(resolvedProfile).toEqual({ id: userId, tradeNote: null });
 
   // Execute Step 4: Fetch
-  const binderData = await getPublicBinderData(resolvedUserId!);
+  const binderData = await getPublicBinderData(resolvedProfile!.id);
   expect(binderData.offerings).toHaveLength(1);
   expect(binderData.offerings[0].id).toBe(cardId);
   expect(binderData.offerings[0].tradeQuantity).toBe(quantity);

@@ -15,6 +15,15 @@ export const auth = betterAuth({
             verification: schema.verification,
         }
     }),
+    user: {
+        additionalFields: {
+            tradeNote: {
+                type: "string",
+                required: false,
+                input: true,
+            },
+        },
+    },
     plugins: [
         username(),
     ],

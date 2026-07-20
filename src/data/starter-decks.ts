@@ -1007,4 +1007,70 @@ export const starterDecks: StarterDeck[] = [
       { collectorNumber: 'SEC-252', qty: 2 },
     ],
   },
+  {
+    id: 'ash-luke-skywalker',
+    name: 'Luke Skywalker (ASH Spotlight)',
+    setCode: 'ASH',
+    deckType: 'spotlight',
+    cards: [
+      { collectorNumber: 'ASH-005', qty: 1 }, //Leader
+      { collectorNumber: 'ASH-024', qty: 1 }, //Base
+      { collectorNumber: 'ASH-153', qty: 1 }, //Green Leader
+      { collectorNumber: 'ASH-031', qty: 1 }, //Hera Syndulla
+      { collectorNumber: 'ASH-060', qty: 1 }, //Cobb Vanth
+      { collectorNumber: 'LAW-047', qty: 1 }, //Baze Malbus
+      { collectorNumber: 'ASH-163', qty: 1 }, //Reckless Sacrifice
+      { collectorNumber: 'ASH-071', qty: 3 }, //Battered Haulcraft
+      { collectorNumber: 'ASH-072', qty: 2 }, //Doctor Pershing
+      { collectorNumber: 'ASH-166', qty: 3 }, //Ewok Warrior
+      { collectorNumber: 'JTL-062', qty: 2 }, //Silver Angel
+      { collectorNumber: 'ASH-059', qty: 3 }, //Leia Organa
+      { collectorNumber: 'ASH-156', qty: 2 }, //R5-D4
+      { collectorNumber: 'JTL-149', qty: 3 }, //Red Squadron X-Wing
+      { collectorNumber: 'LAW-254', qty: 3 }, //Stalwart Fleet Trooper
+      { collectorNumber: 'ASH-078', qty: 2 }, //B-Wing Rearguard
+      { collectorNumber: 'ASH-158', qty: 3 }, //Han Solo
+      { collectorNumber: 'ASH-061', qty: 3 }, //Strike Team Vanguard
+      { collectorNumber: 'ASH-159', qty: 2 }, //Alphabet Squadron U-Wing
+      { collectorNumber: 'ASH-255', qty: 3 }, //Anakin Skywalker
+      { collectorNumber: 'ASH-065', qty: 2 }, //Home One
+      { collectorNumber: 'ASH-066', qty: 3 }, //Luke's Jedi Lightsaber
+      { collectorNumber: 'ASH-088', qty: 2 }, //The Conflict Within
+      { collectorNumber: 'ASH-184', qty: 2 }, //Follow Me
+      { collectorNumber: 'ASH-162', qty: 2 }, //Rash Action
+    ],
+  },
+  {
+    id: 'ash-emperor-palpatine',
+    name: 'Emperor Palpatine (ASH Spotlight)',
+    setCode: 'ASH',
+    deckType: 'spotlight',
+    cards: [
+      { collectorNumber: 'ASH-015', qty: 1 }, //Leader
+      { collectorNumber: 'ASH-021', qty: 1 }, //Base
+      { collectorNumber: 'ASH-118', qty: 1 }, //8D8
+      { collectorNumber: 'ASH-036', qty: 1 }, //Rukh
+      { collectorNumber: 'ASH-128', qty: 1 }, //Bothan-5
+      { collectorNumber: 'ASH-101', qty: 1 }, //The Great Mothers
+      { collectorNumber: 'LOF-091', qty: 1 }, //Craving Power
+      { collectorNumber: 'ASH-116', qty: 3 }, //Ant Droid
+      { collectorNumber: 'ASH-189', qty: 3 }, //Emperor's Messenger
+      { collectorNumber: 'SEC-185', qty: 2 }, //Screeching TIE Fighter
+      { collectorNumber: 'ASH-215', qty: 3 }, //Flanking TIE Interceptor
+      { collectorNumber: 'ASH-094', qty: 3 }, //Moff JerJerror
+      { collectorNumber: 'ASH-191', qty: 2 }, //Shin Hati's Fiend Fighter
+      { collectorNumber: 'ASH-218', qty: 2 }, //Ferry Droid
+      { collectorNumber: 'ASH-096', qty: 3 }, //Forest Patroller
+      { collectorNumber: 'ASH-097', qty: 2 }, //Moff Gideon
+      { collectorNumber: 'ASH-193', qty: 3 }, //Emperor's Champion
+      { collectorNumber: 'ASH-221', qty: 2 }, //Helix Starfighter
+      { collectorNumber: 'ASH-243', qty: 3 }, //Darth Vader
+      { collectorNumber: 'ASH-099', qty: 2 }, //Gozanti Assault Carrier
+      { collectorNumber: 'ASH-197', qty: 3 }, //Executor
+      { collectorNumber: 'ASH-198', qty: 2 }, //Nowhere to Hide
+      { collectorNumber: 'ASH-199', qty: 3 }, //There Is No Conflict
+      { collectorNumber: 'ASH-103', qty: 2 }, //Long Live the Empire
+      { collectorNumber: 'ASH-139', qty: 2 }, //Hold Them Off
+    ],
+  },
 ];
