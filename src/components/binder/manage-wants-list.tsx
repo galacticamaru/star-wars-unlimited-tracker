@@ -18,9 +18,16 @@ interface AutoWantItem {
   isExcluded: boolean;
 }
 
+interface ExclusionItem {
+  cardDefinitionId: number;
+  name: string;
+  subtitle: string | null;
+}
+
 interface ManageWantsListProps {
   wants: WantItem[];
   autoWants: AutoWantItem[];
+  exclusions: ExclusionItem[];
   onUpdateWantQuantity: (id: number, quantity: number) => void;
   onRemoveWant: (id: number) => void;
   onToggleExclusion: (id: number, excluded: boolean) => void;
@@ -29,6 +36,7 @@ interface ManageWantsListProps {
 export function ManageWantsList({
   wants,
   autoWants,
+  exclusions,
   onUpdateWantQuantity,
   onRemoveWant,
   onToggleExclusion,
@@ -40,6 +48,14 @@ export function ManageWantsList({
   );
   const activeAutoWantCount = autoWants.filter((w) => !w.isExcluded).length;
 
+  // Exclusions whose card has fallen out of autoWants (deck deleted, or shortfall
+  // resolved) are otherwise unrestorable through the UI — render them as dimmed
+  // rows too, at the very bottom, so every exclusion stays manageable (BINDER-19).
+  const orphanedExclusions = exclusions.filter(
+    (e) => !autoWants.some((w) => w.cardDefinitionId === e.cardDefinitionId)
+  );
+  const dimmedRowCount = autoWants.length - activeAutoWantCount + orphanedExclusions.length;
+
   return (
     <div className="space-y-6">
       <section>
@@ -47,9 +63,12 @@ export function ManageWantsList({
           Deck Wants
           <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full font-normal">
             {activeAutoWantCount}
+            {dimmedRowCount > 0 && (
+              <span className="text-muted-foreground"> · {dimmedRowCount} excluded</span>
+            )}
           </span>
         </h3>
-        {autoWants.length === 0 ? (
+        {autoWants.length === 0 && orphanedExclusions.length === 0 ? (
           <p className="text-xs text-muted-foreground italic bg-muted/30 p-4 rounded-md border border-dashed text-center">
             No deck-driven wants. Add decks to your collection to automatically track missing cards.
           </p>
@@ -103,6 +122,30 @@ export function ManageWantsList({
                 </div>
               )
             )}
+            {orphanedExclusions.map((e) => (
+              <div
+                key={`excl-${e.cardDefinitionId}`}
+                className="flex items-center justify-between p-2 bg-muted/50 rounded-md border group opacity-50"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium truncate">{e.name}</p>
+                  {e.subtitle && (
+                    <p className="text-[10px] text-muted-foreground truncate">{e.subtitle}</p>
+                  )}
+                  <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full font-normal">
+                    Excluded
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onToggleExclusion(e.cardDefinitionId, false)}
+                  className="p-1 text-muted-foreground hover:text-destructive transition-colors ml-4"
+                  aria-label="Restore to looking for"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
           </div>
         )}
       </section>

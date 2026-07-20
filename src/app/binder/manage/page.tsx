@@ -483,6 +483,7 @@ export default function ManageBinderPage() {
           <ManageWantsList
             wants={tradeData?.manualWants || []}
             autoWants={tradeData?.autoWants || []}
+            exclusions={tradeData?.exclusions || []}
             onUpdateWantQuantity={updateWantQuantity}
             onRemoveWant={(id) => updateWantQuantity(id, 0)}
             onToggleExclusion={toggleExclusion}
