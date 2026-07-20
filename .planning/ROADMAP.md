@@ -85,7 +85,7 @@ See [milestones/v5-ROADMAP.md](milestones/v5-ROADMAP.md) for full details.
 
 - [x] **Phase 30: Unified Search-Driven Add Flow** - One search bar over the full catalog replaces the separate Add Cards/Manual Want boxes; owned variants go to the trade binder, any variant can become a want (all plans executed 2026-07-19; pending UAT) (completed 2026-07-19)
 - [x] **Phase 31: Trade Profile Modal & Public Trade Note** - Username/binder URL moves behind a profile button modal; a new public trade note is settable and shown on the public binder (completed 2026-07-20)
-- [ ] **Phase 32: Combined Wants & Exclusions List** - Deck-driven auto-wants and manually-added wants appear together in one clearly-sectioned list with exclude/restore and quantity controls
+- [x] **Phase 32: Combined Wants & Exclusions List** - Deck-driven auto-wants and manually-added wants appear together in one clearly-sectioned list with exclude/restore and quantity controls (completed 2026-07-20)
 - [ ] **Phase 33: Ashes of the Empire Spotlight Decks (GATED)** - Luke Skywalker and Emperor Palpatine ASH spotlight decks added to Quick Add — blocked on user-supplied deck lists and the ASH set syncing into the catalog DB
 
 ## Phase Details
@@ -337,14 +337,14 @@ Plans:
   2. The user can hide (exclude) an auto-generated want and later restore a previously excluded auto-want — this behaviour is preserved from before the redesign
   3. The user can change the quantity of a manual want, or remove it entirely, directly from the wants list without leaving the page
 
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 **Wave 1**
 
 - [x] 32-01-PLAN.md — Redesign ManageWantsList into one two-section list (Deck Wants + Manual Wants), remove standalone Exclusions, align parent invocation
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 32-02-PLAN.md — Human-verify the combined list (layout, exclude→restore round trip, manual quantity/remove)
+- [x] 32-02-PLAN.md — Human-verify the combined list (layout, exclude→restore round trip, manual quantity/remove)
 
 **UI hint**: yes
 
@@ -398,5 +398,5 @@ Plans:
 | 29 | v6 | 5/5 | Complete    | 2026-06-03 |
 | 30. Unified Search-Driven Add Flow | v7 | 3/3 | Complete    | 2026-07-19 |
 | 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete    | 2026-07-20 |
-| 32. Combined Wants & Exclusions List | v7 | 1/2 | In Progress|  |
+| 32. Combined Wants & Exclusions List | v7 | 2/2 | Complete   | 2026-07-20 |
 | 33. Ashes of the Empire Spotlight Decks | v7 | 0/TBD | Gated / Blocked | - |
