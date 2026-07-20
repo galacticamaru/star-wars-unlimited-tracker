@@ -101,13 +101,14 @@ See exactly which cards you own while building decks, and know instantly what yo
 - ✓ `/cards/[set]/[id]` card detail page — cached `getCardDefinition`, per-user printings, loading skeleton, `priority` prop, LCP opacity-transition fix — v6 (PERF-10, Phase 29)
 - ✓ Unified search-driven binder add flow — one "Add Cards & Wants" card over the full catalog; add-to-binder gated on ownership (server-enforced 403), add-as-want for any card; old Add Cards grid + Manual Wants box removed — v7 (Phase 30)
 - ✓ Search-first results — nothing fetched/rendered until the user types 2 chars; catalog + owned-cards fetched once (debounced, retryable) on first qualifying keystroke — v7 (Phase 30)
+- ✓ Combined Looking For list — deck-driven auto-wants and manual wants in one two-section list (Deck Wants over Manual Wants, no standalone Exclusions section); inline exclude/restore for auto-wants including orphaned exclusions; manual-want quantity stepper + remove — v7 (BINDER-18, BINDER-19, BINDER-20, Phase 32; BINDER-19 orphaned-exclusion regression closed via gap plan 32-03)
 
 ### Active (v7)
 
 <!-- Finalized with REQ-IDs in REQUIREMENTS.md during milestone definition. -->
 
 - [ ] Trade profile modal behind a profile button — username + public trade note
-- [ ] Cleaner combined wants list — auto-wants + manual wants, exclusion hides auto-wants
+- [x] Cleaner combined wants list — auto-wants + manual wants, exclusion hides auto-wants — validated in Phase 32
 - [ ] Public binder displays the trade note
 
 ### Deferred (carried from v6)
@@ -181,4 +182,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-07-19 after Phase 30 (unified search-driven add flow)*
+*Last updated: 2026-07-20 after Phase 32 (combined wants & exclusions list)*
