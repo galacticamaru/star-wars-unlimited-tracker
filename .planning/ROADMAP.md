@@ -337,7 +337,7 @@ Plans:
   2. The user can hide (exclude) an auto-generated want and later restore a previously excluded auto-want — this behaviour is preserved from before the redesign
   3. The user can change the quantity of a manual want, or remove it entirely, directly from the wants list without leaving the page
 
-**Plans:** 2/2 plans complete
+**Plans:** 3 plans (2 complete, 1 gap-closure planned)
 **Wave 1**
 
 - [x] 32-01-PLAN.md — Redesign ManageWantsList into one two-section list (Deck Wants + Manual Wants), remove standalone Exclusions, align parent invocation
@@ -345,6 +345,10 @@ Plans:
 **Wave 2** *(blocked on Wave 1 completion)*
 
 - [x] 32-02-PLAN.md — Human-verify the combined list (layout, exclude→restore round trip, manual quantity/remove)
+
+**Gap closure** *(closes 32-VERIFICATION.md BINDER-19 orphaned-exclusion regression)*
+
+- [ ] 32-03-PLAN.md — Re-thread the full exclusions array into ManageWantsList; render orphaned exclusions (card no longer in autoWants) as dimmed restorable rows in Deck Wants without reintroducing a standalone Exclusions section
 
 **UI hint**: yes
 
