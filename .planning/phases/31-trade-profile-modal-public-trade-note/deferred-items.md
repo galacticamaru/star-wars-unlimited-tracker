@@ -31,3 +31,18 @@ repo per RESEARCH Pitfall 3.
 
 **Recommendation:** If migration `generate` is needed cleanly in a future phase, run
 `drizzle-kit pull` first to reconcile `drizzle/meta/` against the live Neon schema.
+
+## Pre-existing `tsc --noEmit` errors unrelated to Phase 31 (found in 31-04 Task 3 verification)
+
+**Found during:** 31-04 Task 3 (`npx tsc --noEmit` full-project check).
+
+**Issue:** `__tests__/api-deck-validation.test.ts` (4x `params: Promise<{ id: string }>` shape
+mismatches) and `__tests__/collection-page.test.tsx` (missing `@types/jest`/Vitest globals,
+module resolution failure for `../app/collection/page`) fail `tsc --noEmit`. Neither file is
+in this plan's `files_modified` list and neither imports anything touched by Phase 31
+(`binder.ts`, `public-binder-client.tsx`, `[username]/page.tsx`). Out of scope per the
+executor's scope-boundary rule — not fixed.
+
+**Impact:** `npx tsc --noEmit` is not fully clean project-wide, but zero errors originate from
+or touch any file this plan modified (confirmed via `grep -i "binder"` on the tsc output,
+which returns no hits).
