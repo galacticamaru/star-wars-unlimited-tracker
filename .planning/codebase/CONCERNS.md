@@ -109,12 +109,13 @@
 - **Impact**: Users building decks cannot see what variant they're adding; mismatches their owned variant
 - **Fix approach**: Implement `getPrintingArtMap()` call to fetch per-printing variant art; render variant chips in card selector with images
 
-### DEBT-05: LAW Spotlight Deck Missing Cards
+### DEBT-05: LAW Spotlight Deck Collector-Number Verification — CLOSED (Phase 34)
 
-- **Issue**: LAW spotlight deck (`Spotlight - Kessel Run`) contains 9 cards not in database (absent from swu-db.com export or sync)
-- **Files**: `src/data/starter-decks.ts` — cards marked with TODO comments
-- **Impact**: Quick-add for LAW deck silently skips missing cards; user's collection is incomplete; deck validation fails
-- **Fix approach**: Audit swu-db.com API for LAW set exports; contact swu-db maintainers if cards missing; add fallback error handling in `syncAllCards()` to log missing card warnings
+- **Status**: Closed in Phase 34 (verify-and-close; disproven-cause finding, no data correction required)
+- **Issue**: Commit `8ca6265` introduced nine `LAW-???` placeholders across the two LAW spotlight decks (`law-jabba-the-hutt`, `law-leia-organa`). Commit `eeb1b6b` filled them in during an unverified pass that also rewrote fourteen other decks, without confirming the substituted collector numbers actually resolved against the catalog. The originally recorded cause — cards absent from the database — was disproven: LAW has been fully synced since 2026-07-05 (901 of 901 printings confirmed against the swu-db API). The real risk was an unverified name/subtitle **match**, not missing data.
+- **Files**: `src/data/starter-decks.ts` — `law-jabba-the-hutt` and `law-leia-organa` deck entries
+- **Impact**: An unverified collector-number substitution could silently add the wrong card to a user's collection via quick-add, with no test to catch it.
+- **Fix approach**: Phase 34 built a committed, DB-backed Vitest test (`__tests__/starter-decks-resolve.test.ts`) that resolves every collector number in every deck in `starterDecks[]` — not just the two LAW decks — against `card_printings`, applying the identical `variantType = 'Normal'` filter the quick-add route uses. Run against the live catalog, it reported zero unresolved pairs: both LAW spotlight decks' collector numbers already resolve correctly, so no correction to `starter-decks.ts` was needed. The test is now a permanent regression guard against future hand-edited decks.
 
 ### MOBILE-01/02: Deck Builder Not Mobile-Friendly
 
