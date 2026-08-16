@@ -53,12 +53,16 @@ export async function POST(request: NextRequest) {
     // Build batch items; collect distinct cardDefinitionIds for batchRecomputeTotals
     const affectedDefinitionIds = new Set<number>();
     let cardsAdded = 0;
+    let cardsRequested = 0;
     const batchItems: Array<{ cardPrintingId: number; qtyToAdd: number }> = [];
+    const skipped: string[] = [];
 
     for (const card of deck.cards) {
+      cardsRequested += card.qty;
       const printing = printingByNumber.get(card.collectorNumber);
       if (!printing) {
-        // Card not found in DB — skip silently (could be a data gap)
+        // Card not found in DB — reported to the caller via `skipped` (D-16)
+        skipped.push(card.collectorNumber);
         continue;
       }
       batchItems.push({ cardPrintingId: printing.id, qtyToAdd: card.qty });
@@ -70,7 +74,7 @@ export async function POST(request: NextRequest) {
     await batchIncrementVariantCounts(batchItems, userId);
     await batchRecomputeTotals([...affectedDefinitionIds], userId);
 
-    return Response.json({ cardsAdded });
+    return Response.json({ cardsAdded, cardsRequested, skipped });
   } catch (error) {
     console.error('Starter deck quick-add failed:', error);
     return new Response('Internal Server Error', { status: 500 });

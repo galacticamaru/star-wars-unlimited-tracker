@@ -20,7 +20,7 @@ export default function CollectionPage() {
   // Quick-add starter deck state
   const [selectedDeckId, setSelectedDeckId] = useState<string>(starterDecks[0]?.id ?? '');
   const [deckStatus, setDeckStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [deckResult, setDeckResult] = useState<{ cardsAdded: number; deckName: string } | null>(null);
+  const [deckResult, setDeckResult] = useState<{ cardsAdded: number; cardsRequested: number; skipped: string[]; deckName: string } | null>(null);
 
   // Card count state for progress feedback (PERF-04 D-05/D-06)
   const [importCardCount, setImportCardCount] = useState<number>(0);
@@ -99,7 +99,12 @@ export default function CollectionPage() {
       if (!res.ok) throw new Error('Quick-add failed');
 
       const data = await res.json();
-      setDeckResult({ cardsAdded: data.cardsAdded, deckName: deck.name });
+      setDeckResult({
+        cardsAdded: data.cardsAdded,
+        cardsRequested: data.cardsRequested,
+        skipped: data.skipped ?? [],
+        deckName: deck.name,
+      });
       setDeckStatus('success');
       router.refresh();
     } catch (err) {
@@ -222,10 +227,17 @@ export default function CollectionPage() {
           </Button>
         </div>
 
-        {deckStatus === 'success' && deckResult && (
+        {deckStatus === 'success' && deckResult && deckResult.skipped.length === 0 && (
           <div className="flex items-center gap-2 text-green-600 font-semibold bg-green-50 px-4 py-2 rounded-lg">
             <CheckCircle2 className="size-5" />
             Added {deckResult.cardsAdded} cards from {deckResult.deckName} to your collection.
+          </div>
+        )}
+
+        {deckStatus === 'success' && deckResult && deckResult.skipped.length > 0 && (
+          <div className="flex items-center gap-2 text-amber-600 font-semibold bg-amber-50 px-4 py-2 rounded-lg">
+            <AlertCircle className="size-5" />
+            Added {deckResult.cardsAdded} of {deckResult.cardsRequested} cards from {deckResult.deckName} — {deckResult.skipped.length} unavailable.
           </div>
         )}
 
