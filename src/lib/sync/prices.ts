@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { cardDefinitions } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { getNonTokenSets, type SWUSet } from './set-list';
 
 const SWU_DB_API_URL = 'https://api.swu-db.com';
 
@@ -19,7 +20,7 @@ export interface SWUDBCard {
  */
 export async function fetchSetPrices(setCode: string): Promise<SWUDBCard[]> {
   console.log(`Fetching prices for set: ${setCode} from swu-db.com...`);
-  
+
   // Use the search endpoint to ensure we get the full list in the expected format
   const response = await fetch(`${SWU_DB_API_URL}/cards/search?q=set:${setCode.toLowerCase()}&format=json`);
 
@@ -38,13 +39,13 @@ export async function fetchSetPrices(setCode: string): Promise<SWUDBCard[]> {
  */
 export function mapPriceData(card: SWUDBCard) {
   const marketPrice = card.MarketPrice ? parseFloat(card.MarketPrice) : null;
-  
+
   if (marketPrice === null || isNaN(marketPrice)) {
     return { priceEur: null, priceUsd: null };
   }
 
-  // SWU-DB prices are in USD. 
-  // We'll map to USD directly and apply a fixed 0.92 conversion for EUR as a proxy 
+  // SWU-DB prices are in USD.
+  // We'll map to USD directly and apply a fixed 0.92 conversion for EUR as a proxy
   // since this API doesn't provide native EUR data.
   const priceUsd = Math.round(marketPrice * 100);
   const priceEur = Math.round(marketPrice * 0.92 * 100);
@@ -52,17 +53,55 @@ export function mapPriceData(card: SWUDBCard) {
   return { priceEur, priceUsd };
 }
 
+export interface PriceSyncOptions {
+  /** Caller-supplied non-token set list. When absent, fetched via getNonTokenSets(). */
+  sets?: SWUSet[];
+  /** Absolute epoch-milliseconds instant. When absent, the run is unbounded. */
+  deadlineAt?: number;
+}
+
+export interface PriceSyncResult {
+  setsTotal: number;
+  setsProcessed: number; // successfully processed sets (fetch + writes did not throw)
+  totalUpdated: number;
+  failedSets: string[]; // setIds whose fetch or write threw (D-07: run continues)
+  unprocessedSets: string[]; // setIds never attempted because the deadline hit (D-08)
+  deadlineHit: boolean;
+  sets: Array<{ setCode: string; updated: number }>;
+}
+
 /**
- * Orchestrates price synchronization for all active sets using swu-db.com.
+ * Orchestrates price synchronization for all non-token sets using swu-db.com.
+ * Set list mirrors syncAllCards() — derived from getNonTokenSets() (D-10) unless
+ * a caller supplies one directly.
  */
-export async function syncPrices() {
-  const activeSets = ['SOR', 'SHD', 'TWI', 'JTL', 'SEC', 'LAW', 'IBH'];
+export async function syncPrices(options: PriceSyncOptions = {}): Promise<PriceSyncResult> {
+  const nonTokenSets = options.sets ?? (await getNonTokenSets());
+
   let totalUpdated = 0;
-  const setSummaries = [];
+  let setsProcessed = 0;
+  const failedSets: string[] = [];
+  const unprocessedSets: string[] = [];
+  let deadlineHit = false;
+  const setSummaries: Array<{ setCode: string; updated: number }> = [];
 
   console.log('Starting price synchronization via swu-db.com...');
 
-  for (const setCode of activeSets) {
+  for (let i = 0; i < nonTokenSets.length; i++) {
+    const set = nonTokenSets[i];
+    const setCode = set.setId;
+
+    // D-08: soft deadline, checked once per set boundary — never interrupts a
+    // set already in progress. Reports and stops; does not persist a resume
+    // cursor (that is SYNC-05, deferred).
+    if (options.deadlineAt !== undefined && Date.now() >= options.deadlineAt) {
+      deadlineHit = true;
+      for (let j = i; j < nonTokenSets.length; j++) {
+        unprocessedSets.push(nonTokenSets[j].setId);
+      }
+      break;
+    }
+
     try {
       const cards = await fetchSetPrices(setCode);
       let setUpdated = 0;
@@ -92,21 +131,22 @@ export async function syncPrices() {
       console.log(`Updated ${setUpdated} prices for set ${setCode}`);
       totalUpdated += setUpdated;
       setSummaries.push({ setCode, updated: setUpdated });
-
-      // swu-db.com doesn't specify strict limits, but we'll keep a small 1s delay
-      if (setCode !== activeSets[activeSets.length - 1]) {
-        console.log('Waiting 1s for rate limit...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
+      setsProcessed++;
     } catch (error) {
       console.error(`Error syncing prices for set ${setCode}:`, error);
+      failedSets.push(setCode);
     }
   }
 
   console.log(`Price sync complete. Total cards updated: ${totalUpdated}`);
 
   return {
+    setsTotal: nonTokenSets.length,
+    setsProcessed,
     totalUpdated,
+    failedSets,
+    unprocessedSets,
+    deadlineHit,
     sets: setSummaries,
   };
 }
