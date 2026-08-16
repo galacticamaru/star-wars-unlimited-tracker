@@ -29,18 +29,23 @@ export async function GET(request: NextRequest) {
       .groupBy(cardPrintings.setCode)
       .orderBy(asc(cardPrintings.setCode));
 
-    const sets = rows.map((row) => {
-      const ageHours =
-        Math.round(
-          ((Date.now() - new Date(row.lastSyncedAt).getTime()) / 3_600_000) * 100
-        ) / 100;
-      return {
-        setCode: row.setCode,
-        lastSyncedAt: row.lastSyncedAt,
-        ageHours,
-        stale: ageHours > FRESH_WINDOW_HOURS,
-      };
-    });
+    // Sorted again in application code, not just via SQL orderBy: Postgres GROUP BY
+    // output order is unspecified, so a belt-and-suspenders sort here is what actually
+    // guarantees two identical calls serialise identically, independent of driver behavior.
+    const sets = rows
+      .map((row) => {
+        const ageHours =
+          Math.round(
+            ((Date.now() - new Date(row.lastSyncedAt).getTime()) / 3_600_000) * 100
+          ) / 100;
+        return {
+          setCode: row.setCode,
+          lastSyncedAt: row.lastSyncedAt,
+          ageHours,
+          stale: ageHours > FRESH_WINDOW_HOURS,
+        };
+      })
+      .sort((a, b) => a.setCode.localeCompare(b.setCode));
 
     // sets.length > 0 is mandatory: Array.prototype.every is vacuously true on an empty
     // array, so an entirely empty card_printings table must never report fresh:true.
