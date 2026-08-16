@@ -112,46 +112,61 @@ Source: `.planning/sketches/WRAP-UP-SUMMARY.md`.
 8. Prop contract mismatch — the detail page passes no `onQuantityChange` to `VariantTradeSection` (`page.tsx:67`) while the sheet does
 9. Section membership disagreement — the detail page renders Collection + Trade; the sheet renders all three. Whether the drawer and detail page should agree is undecided
 
+Risk-to-phase assignment (Phases 34–38): risks 1, 3, 4, 5 → Phase 36 (tile/detail-page affordance,
+card-grid.tsx); risk 2 → Phase 37 (merged bottom bar); risks 7, 8, 9 → Phase 35 (7 also referenced
+in Phase 36); risk 6 stays deferred as UISTATE-04 (Future Requirements), referenced in Phase 37's
+notes.
+
 ## Sequencing Constraints
 
 - **CATALOG-08 is a blocking prerequisite for CATALOG-05/06/07.** `VariantTradeSection` gates on `ownedCount` while `VariantCollectionSection` mutates it locally. Lifting state also collapses three `router.refresh()` calls into one and gives UISTATE-03's inline error map a home — one refactor serving both
 - **CATALOG-07 subsumes the pending todo** `2026-07-20-stale-trade-availability-after-collection-add-on-binder-mana.md` (the `onOwnedCountChange` threading bug). Promoting the drawer to the catalog's primary mutation surface turns that binder edge case into the core interaction
 - **DEBT-02 may get cheaper as a side effect of SELECT-01** — the selector redesign touches exactly the tile that needs `getPrintingArtMap()`
 - **DEBT-05 is an investigation, not a sync fix.** LAW is fully synced (901 printings, matching the API). Its recorded cause is disproven; the 9 unknowns are a name/subtitle matching problem
+- **TILE-01..04 is one shared component consumed by both catalog and deck-builder selector tiles.** Removing the tile-wide `<Link>` (TILE-02) changes both modes at once, so it cannot ship in a phase that leaves either mode's replacement interaction unbuilt. Resolved by splitting the milestone's touch-interaction work into Phase 36 (tile contract + catalog drawer, with a minimal interim off-tile selector stepper so the deck builder keeps working) and Phase 37 (the full selector redesign that replaces that interim stepper), rather than shipping TILE-02 for one mode only
 
 ## Traceability
 
-Updated during roadmap creation.
+Updated during roadmap creation; revised 2026-08-16 to split the original combined touch-interaction
+phase into Phase 36 (tile + catalog drawer) and Phase 37 (deck selector), renumbering Grid State
+Vocabulary to Phase 38.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TILE-01 | TBD | Pending |
-| TILE-02 | TBD | Pending |
-| TILE-03 | TBD | Pending |
-| TILE-04 | TBD | Pending |
-| CATALOG-05 | TBD | Pending |
-| CATALOG-06 | TBD | Pending |
-| CATALOG-07 | TBD | Pending |
-| CATALOG-08 | TBD | Pending |
-| SELECT-01 | TBD | Pending |
-| SELECT-02 | TBD | Pending |
-| SELECT-03 | TBD | Pending |
-| SELECT-04 | TBD | Pending |
-| UISTATE-01 | TBD | Pending |
-| UISTATE-02 | TBD | Pending |
-| UISTATE-03 | TBD | Pending |
-| SYNC-01 | TBD | Pending |
-| SYNC-02 | TBD | Pending |
-| SYNC-03 | TBD | Pending |
-| SYNC-04 | TBD | Pending |
-| DEBT-02 | TBD | Pending |
-| DEBT-05 | TBD | Pending |
+| TILE-01 | Phase 36 | Pending |
+| TILE-02 | Phase 36 | Pending |
+| TILE-03 | Phase 36 | Pending |
+| TILE-04 | Phase 36 | Pending |
+| CATALOG-05 | Phase 36 | Pending |
+| CATALOG-06 | Phase 36 | Pending |
+| CATALOG-07 | Phase 35 | Pending |
+| CATALOG-08 | Phase 35 | Pending |
+| SELECT-01 | Phase 37 | Pending |
+| SELECT-02 | Phase 37 | Pending |
+| SELECT-03 | Phase 37 | Pending |
+| SELECT-04 | Phase 37 | Pending |
+| UISTATE-01 | Phase 38 | Pending |
+| UISTATE-02 | Phase 38 | Pending |
+| UISTATE-03 | Phase 35 | Pending |
+| SYNC-01 | Phase 34 | Pending |
+| SYNC-02 | Phase 34 | Pending |
+| SYNC-03 | Phase 34 | Pending |
+| SYNC-04 | Phase 34 | Pending |
+| DEBT-02 | Phase 37 | Pending |
+| DEBT-05 | Phase 34 | Pending |
 
 **Coverage:**
 - v8 requirements: 21 total
-- Mapped to phases: 0 ⚠️ (roadmap not yet created)
-- Unmapped: 21 ⚠️
+- Mapped to phases: 21/21 ✓
+- Unmapped: 0 ✓
+
+**Phase summary:**
+- Phase 34 — Card Sync Reliability: SYNC-01, SYNC-02, SYNC-03, SYNC-04, DEBT-05 (5)
+- Phase 35 — Shared Variant State Foundation: CATALOG-08, CATALOG-07, UISTATE-03 (3)
+- Phase 36 — Touch-Viable Tile Contract & Catalog Drawer: TILE-01, TILE-02, TILE-03, TILE-04, CATALOG-05, CATALOG-06 (6)
+- Phase 37 — Touch-Viable Deck Selector: SELECT-01, SELECT-02, SELECT-03, SELECT-04, DEBT-02 (5)
+- Phase 38 — Grid State Vocabulary: UISTATE-01, UISTATE-02 (2)
 
 ---
 *Requirements defined: 2026-08-16*
-*Last updated: 2026-08-16 after v8 milestone scoping*
+*Last updated: 2026-08-16 — roadmap revised: Phase 36 split into Phase 36 (tile + catalog drawer) and Phase 37 (deck selector); Grid State Vocabulary renumbered to Phase 38. v8 now Phases 34–38, 21/21 requirements mapped.*

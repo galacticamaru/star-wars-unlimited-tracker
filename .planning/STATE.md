@@ -3,31 +3,35 @@ gsd_state_version: 1.0
 milestone: v8
 milestone_name: Catalog Interaction & Sync Reliability
 status: planning
-last_updated: "2026-08-16T02:14:19.721Z"
+last_updated: "2026-08-16T19:15:00.000Z"
 last_activity: 2026-08-16
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
   percent: 0
+current_phase: 34
+current_phase_name: Card Sync Reliability
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-19)
+See: .planning/PROJECT.md (updated 2026-08-16)
 
 **Core value:** See exactly which cards you own while building decks, and know instantly what you're missing.
-**Current focus**: v7 shipped & archived — planning the next milestone (`/gsd-new-milestone`)
+**Current focus**: v8 roadmap approved — Phase 34 (Card Sync Reliability) ready to plan
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-08-16 — Milestone v8 started
+Phase: 34 of 38 (Card Sync Reliability) — first phase of v8, ready to plan
+Plan: — (not yet planned)
+Status: Ready to plan
+Last activity: 2026-08-16 — v8 ROADMAP.md revised per user feedback: Phase 36 (11 reqs) split into Phase 36 (tile contract + catalog drawer, 6 reqs) and Phase 37 (deck selector, 5 reqs); old Phase 37 renumbered to Phase 38. v8 is now Phases 34–38, 21/21 requirements mapped, no orphans
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -40,6 +44,8 @@ Last activity: 2026-08-16 — Milestone v8 started
 | v3 Catalog & Polish | 4 | 12 | 1 day |
 | v4 Deck Builder & Collection | 11 | 34 | 10 days |
 | v5 Trade Binder & Performance | 4 | 14 | 4 days |
+| v6 Mobile, Performance & Polish | 4 | 16 | 5 days |
+| v7 Trade Binder Improvements | 4 | 10 | 15 days |
 | Phase 27 P03 | 10min | 1 tasks | 2 files |
 | Phase 31 P02 | 5min | 2 tasks | 2 files |
 | Phase 31 P01 | 5min | 3 tasks | 6 files |
@@ -48,58 +54,55 @@ Last activity: 2026-08-16 — Milestone v8 started
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| Want List | Export / share want list (WANT-03) | v7+ | v4 planning |
-| Collection | SWUDB CSV import (COLLECT-05) | v7+ | v4 planning |
-| Collection | CSV export (COLLECT-04 v2) | v7+ | v4 planning |
-| Filters | Market price threshold filter (REQ-MARKET-05) | v7+ | v4 planning |
-| Tech Debt | DeckBuilder Add Cards tab variant art (DEBT-02) | v7+ | v6 planning |
-| Tech Debt | LAW spotlight deck 9 unknown cards (DEBT-05) | v7+ | v6 planning (pending DB sync) |
+| Want List | Export / share want list (WANT-03) | v8+ | v4 planning |
+| Collection | SWUDB CSV import (COLLECT-05) | v8+ | v4 planning |
+| Collection | CSV export (COLLECT-04 v2) | v8+ | v4 planning |
+| Filters | Market price threshold filter (REQ-MARKET-05) | v8+ | v4 planning |
+| Error Contract | Non-drawer optimistic write error vocabulary (UISTATE-04) | v8+ | v8 scoping (sketch wrap-up open risk 6) |
+| Sync | Incremental / resumable sync, per-set checkpointing (SYNC-05) | v8+ | v8 scoping |
 
 ## Accumulated Context
 
 ### Roadmap Evolution
 
 - Phase 25.1 inserted after Phase 25: Speed Insights Integration (URGENT)
-- Phase 25.1 complete: @vercel/speed-insights@2.0.0 wired in root layout; user must enable Speed Insights in Vercel dashboard post-deploy for PERF-06 to fully close
 - v6 roadmap defined 2026-05-29: Phases 26 (Mobile UX), 27 (/decks Performance), 28 (Tech Debt Sweep)
-- DEBT-02 and DEBT-05 deferred out of v6 scope: DEBT-02 needs more investigation on virtualized list interaction; DEBT-05 pending DB sync
-- v7 roadmap defined 2026-07-05: Phases 30 (Unified Search-Driven Add Flow), 31 (Trade Profile Modal & Public Trade Note), 32 (Combined Wants & Exclusions List), 33 (Ashes of the Empire Spotlight Decks — GATED)
-- Phase 33 is gated/blocked pending (a) user-supplied Luke Skywalker (ASH) and Emperor Palpatine (ASH) deck lists, and (b) the ASH set syncing into the catalog DB via swu-db.com — same blocker class as DEBT-05 (LAW spotlight deck); sequenced last so it never blocks Phases 30–32 shipping
+- DEBT-02 and DEBT-05 deferred out of v6 scope at the time; both now closed out in v8 (see below)
+- v7 roadmap defined 2026-07-05: Phases 30–33 (Unified Add Flow, Trade Profile Modal, Combined Wants, ASH Spotlight Decks)
+- **v8 roadmap defined 2026-08-16 — initial draft was Phases 34–37, 21 requirements, no research phase (design already settled by sketches 001–005):**
+  - Phase 34 (Card Sync Reliability, 5 reqs: SYNC-01..04 + DEBT-05) sequenced FIRST — fully independent of the UI phases, no shared files, and fixes a live silent production failure (six weeks of catalog drift). DEBT-05's cause is disproven (LAW fully synced); folded in as a small standalone matching-bug investigation rather than its own single-requirement phase.
+  - Phase 35 (Shared Variant State Foundation, 3 reqs: CATALOG-08, CATALOG-07, UISTATE-03) is the BLOCKING refactor the sketch wrap-up called out — lifts VariantCollectionSection/VariantTradeSection/VariantWantSection onto one shared state source, collapses three router.refresh() calls into one, and gives UISTATE-03's inline error map a home. Verified through the existing binder VariantTradeSheet + card detail page consumers (catalog drawer doesn't exist yet). Also fixes the pending todo (stale trade availability after collection add).
+  - Original draft combined TILE-01..04, CATALOG-05/06, SELECT-01..04, and DEBT-02 into one 11-requirement Phase 36, reasoning that TILE-02's `<Link>` removal affects catalog and deck-builder tiles simultaneously (one shared component) and couldn't ship for one mode without the other's replacement interaction ready.
+- **v8 roadmap REVISED 2026-08-16 per user feedback — Phase 36 was too large (11/21 requirements in one phase). Split into two, renumbering the milestone to Phases 34–38:**
+  - **Phase 36 (Touch-Viable Tile Contract & Catalog Drawer, 6 reqs: TILE-01..04, CATALOG-05/06)** now owns the shared tile component change outright and ships the catalog drawer. Resolves the "can't split TILE-02" concern explicitly rather than by combining everything: this phase gives the deck-builder selector a minimal, functional off-tile add/remove stepper as an interim (not the merged bottom bar or sidebar) so deck building never breaks, even though the polished selector surface isn't built yet. This interim is an explicit success criterion and called out in the phase's Notes.
+  - **Phase 37 (Touch-Viable Deck Selector, 5 reqs: SELECT-01..04, DEBT-02)** depends on Phase 36; deletes the interim stepper and replaces it with the merged ~64px mobile bottom bar + desktop sidebar controls. DEBT-02 (variant art) rides along since it touches the same tile.
+  - **Phase 38 (Grid State Vocabulary, 2 reqs: UISTATE-01, UISTATE-02)** — unchanged content, renumbered from Phase 37.
+  - Open risks redistributed: 1, 3, 4, 5 (corner ⓘ, long-press accessibility/cancel, useColumnCount vs estimateSize) → Phase 36; risk 2 (deck count dual-purpose) → Phase 37; risk 7 (multi-failure stacking) stayed noted in Phase 35, cross-referenced in Phase 36; UISTATE-04 out-of-scope note moved to Phase 37 (where the selector's non-drawer writes now land); "controls off tile preserves estimateSize" note stayed on Phase 36; "two mutation surfaces accepted" note moved to Phase 37 (completes the ambient-bar side of that pair).
 
-### Key Architectural Notes for v7
+### Key Architectural Notes for v8
 
-- Manage Binder page (`src/app/binder/manage/page.tsx`) today has separate "Add Cards to Binder" grid, `ManualWantsAddFlow`, `VariantTradeSheet`, and `ManageWantsList` — Phase 30 collapses the first two into one search-driven flow
-- Existing manual wants are limited to owned cards (`/api/collection/owned-cards`); Phase 30 needs a full-catalog search query/endpoint since BINDER-11/14 require unowned cards to be searchable and want-able
-- Trade note (BINDER-16/17) needs a new user-level schema field — not yet in `src/db/schema.ts`
-- Username/binder-URL section is currently inline on the manage page; Phase 31 extracts it into a profile-button modal
-- Hold v6 per-user cache-tag + two-layer invalidation pattern (`revalidateTag()` + `router.refresh()`) for any new mutation endpoints in Phases 30–32
+- `src/components/catalog/card-item.tsx` is the shared tile component consumed by both `/cards` (catalog mode) and the deck builder's card browser (selector mode) — the reason Phase 36 owns the tile-wide `<Link>` removal for both modes, with an interim off-tile stepper covering the deck builder until Phase 37 lands the real selector redesign
+- `VariantCollectionSection`, `VariantTradeSection`, `VariantWantSection` (`src/components/catalog/`) are consumed today by `variant-trade-sheet.tsx` (binder) and `/cards/[set-code]/[card-number]/page.tsx` (detail page) — Phase 35 refactors these three, Phase 36 adds the catalog drawer as a third consumer
+- `src/app/api/cron/sync-cards/route.ts` exports no `maxDuration` and awaits one round trip per card definition/printing (~8,400+) — root cause of the sync timeout Phase 34 fixes
+- Catalog sync state measured 2026-08-16: 33 sets, 8,404 printings, 2,596 definitions; only 3–4 sets carry a fresh cron timestamp, the rest frozen since the 2026-07-05 manual `db:seed`
+- Measured tile sizes: mobile 390px → 3 cols → ~118px tile; desktop `lg` deck builder → 9 cols → ~68px tile; a stepper needs ~180px — Phase 36/37 constraint, controls never live on the tile
 - No @radix-ui imports — Base UI (@base-ui/react) + shadcn/ui only, per project constraint
-
-### Key Architectural Notes for v6
-
-- Mobile sidebar: `hidden md:flex` on inline desktop sidebar; `Sheet` trigger (`md:hidden`) in toolbar; `DeckSidebar` renders inside `SheetContent` portal to `document.body` — must not be a child of the `overflow-hidden` clipping container
-- Height fix: `h-[calc(100dvh-56px)] md:h-[calc(100svh-56px)]` on deck builder root — `dvh` is keyboard-safe on mobile, `svh` stays on desktop
-- Cache tagging: `cacheTag('decks-user-{userId}')` on `getDecks`; `cacheTag('deck-{deckId}-user-{userId}')` on `getDeckWithCards`; never cache without userId in key (cross-user data leak risk)
-- Two-layer cache invalidation required: `revalidateTag()` busts Data Cache; `router.refresh()` busts Router Cache — both must fire after mutations
-- DEBT-04 (catalog invalidation): existing `useEffect` collection re-fetch on `/cards` is already the correct mechanism — verify it runs after card detail mutations, no new code needed
-- Speed Insights data is live: review Vercel dashboard for /decks FCP/LCP/INP before fixing (PERF-09 is data-driven)
-- Phase 27 depends on Phase 26 (save-flow testing surfaces missing `revalidateTag` calls)
-- Phase 28 depends on Phase 26 (DEBT-03 should land after Phase 26 merge to avoid conflicts on `deck-builder.tsx`)
-- PERF-09 PATH A complete: /decks very poor LCP fixed with streaming skeleton (loading.tsx); /decks/[id] very poor LCP fixed by strengthening card area skeleton; INP covered by Plan 02 startTransition — Base UI internals out of scope if INP persists
+- Two-layer cache invalidation (`revalidateTag()` + `router.refresh()`) remains the pattern for any new mutation endpoints in v8
+- Skill `sketch-findings-star-wars-unlimited-tracker` auto-loads validated tile/drawer/state patterns during UI implementation of Phases 35–38
 
 ## Session
 
-**Last session:** 2026-07-20T11:01:59.911Z
-**Stopped at:** Phase 32 context gathered
-**Resume file:** .planning/phases/32-combined-wants-exclusions-list/32-CONTEXT.md
+**Last session:** 2026-08-16T19:15:00.000Z
+**Stopped at:** v8 ROADMAP.md, REQUIREMENTS.md traceability, and STATE.md revised to Phases 34–38 per user-approved split of the old Phase 36; roadmap ready for execution
+**Resume file:** None
 
 ## Decisions
 
-- [Phase 31]: Dialog mirrors sheet.tsx export shape verbatim (Root/Trigger/Close/Content/Header/Footer/Title/Description) for consistency across modal shells
-- [Phase 31]: Textarea wraps a native <textarea> directly (no Base UI textarea primitive exists) styled off input.tsx's class string
-- [Phase 31]: Hand-authored drizzle/0006_trade_note.sql instead of running drizzle-kit generate, because generate is blocked by pre-existing drizzle/meta drift (missing 0005_snapshot.json) unrelated to this plan's change
-- [Phase 31]: Applied the trade_note schema change via npx drizzle-kit push (introspection-based, does not depend on drizzle/meta) and confirmed it idempotent by re-running it
+- [v8 roadmap]: SYNC-01..04 + DEBT-05 sequenced as Phase 34 (first) — independent, zero file overlap with UI phases, closes a live production data-drift issue
+- [v8 roadmap]: CATALOG-08 + CATALOG-07 + UISTATE-03 combined into Phase 35 (Shared Variant State Foundation) as the sketch wrap-up's BLOCKING refactor, ahead of the catalog drawer
+- [v8 roadmap, revised]: Original combined touch-interaction phase (11 reqs) split into Phase 36 (TILE-01..04 + CATALOG-05/06 — tile contract + catalog drawer) and Phase 37 (SELECT-01..04 + DEBT-02 — deck selector), because the phase was disproportionately large. The tile-component coupling that originally justified combining them is instead resolved explicitly: Phase 36 ships a minimal interim off-tile selector stepper so deck building isn't broken by the `<Link>` removal, and Phase 37 replaces that stepper with the full redesigned surface
+- [v8 roadmap]: UISTATE-01/02 kept separate from UISTATE-03 (different concern: grid read-state vs. row write-state) as Phase 38, sequenced last
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Roadmap approved (Phases 34–38, 21/21 requirements mapped). Start Phase 34 with `/gsd-plan-phase 34`
