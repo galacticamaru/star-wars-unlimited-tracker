@@ -21,12 +21,24 @@ vi.mock('@/lib/sync/set-list', () => ({
   getNonTokenSets: vi.fn(),
 }));
 
+// Spy on inArray while keeping the rest of drizzle-orm (sql, sql.join, sql.raw)
+// real — buildCaseUpdate() must produce genuine SQL fragments for prices.ts
+// to compile/execute, but tests need to inspect the id list passed to inArray.
+vi.mock('drizzle-orm', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('drizzle-orm')>();
+  return {
+    ...actual,
+    inArray: vi.fn(actual.inArray),
+  };
+});
+
 // Mock global fetch for API calls
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
 import { mapPriceData, syncPrices, type SWUDBCard } from './prices';
 import { getNonTokenSets } from '@/lib/sync/set-list';
+import { inArray } from 'drizzle-orm';
 
 describe('mapPriceData', () => {
   it('should map valid MarketPrice to integer cents for both USD and EUR', () => {
@@ -73,19 +85,32 @@ describe('mapPriceData', () => {
 });
 
 describe('syncPrices', () => {
-  let mockReturning: ReturnType<typeof vi.fn>;
   let mockWhere: ReturnType<typeof vi.fn>;
   let mockSet: ReturnType<typeof vi.fn>;
   let mockUpdate: ReturnType<typeof vi.fn>;
+  let returningResultFor: (ids: string[]) => { id: number }[];
 
   beforeEach(async () => {
     vi.clearAllMocks();
     mockFetch.mockReset();
     const { db } = await import('@/db');
 
-    // Single-row update chain: db.update(...).set(...).where(...).returning(...)
-    mockReturning = vi.fn().mockResolvedValue([{ id: 1 }]);
-    mockWhere = vi.fn().mockReturnValue({ returning: mockReturning });
+    // Default: every id "exists" and is returned by RETURNING.
+    returningResultFor = (ids: string[]) => ids.map((_, i) => ({ id: i + 1 }));
+
+    // Chunked update chain: db.update(...).set(...).where(inArray(...)).returning(...)
+    // .where() resolves to the returning() result directly, and is also
+    // itself awaitable/then-able via .returning() — mirror the real
+    // Drizzle builder shape by making .where() return an object whose
+    // .returning() is a function of the ids passed to the most recent
+    // inArray() call.
+    mockWhere = vi.fn().mockImplementation(() => ({
+      returning: vi.fn().mockImplementation(() => {
+        const lastCall = (inArray as ReturnType<typeof vi.fn>).mock.calls.at(-1);
+        const ids = (lastCall?.[1] as string[]) ?? [];
+        return Promise.resolve(returningResultFor(ids));
+      }),
+    }));
     mockSet = vi.fn().mockReturnValue({ where: mockWhere });
     mockUpdate = vi.fn().mockReturnValue({ set: mockSet });
     (db.update as ReturnType<typeof vi.fn>).mockImplementation(mockUpdate);
@@ -176,5 +201,67 @@ describe('syncPrices', () => {
 
     expect(result.setsTotal).toBe(0);
     expect(result.sets).toEqual([]);
+  });
+
+  // ---- D-11: chunked CASE WHEN batch writes ----
+
+  function makeNormalCard(number: string, marketPrice = '10.00'): SWUDBCard {
+    return {
+      Set: 'SOR',
+      Number: number,
+      Name: `Card ${number}`,
+      VariantType: 'Normal',
+      MarketPrice: marketPrice,
+    };
+  }
+
+  it('a 501-row Normal-variant payload produces exactly 2 db.update calls with where id-list lengths [500, 1]', async () => {
+    const cards = Array.from({ length: 501 }, (_, i) => makeNormalCard(String(i).padStart(4, '0')));
+    mockFetch.mockResolvedValue({ ok: true, json: async () => cards });
+    const injectedSets = [{ setId: 'SOR', fullName: 'Spark of Rebellion', numberCards: 501 }];
+
+    await syncPrices({ sets: injectedSets });
+
+    expect(mockUpdate).toHaveBeenCalledTimes(2);
+    const idListLengths = (inArray as ReturnType<typeof vi.fn>).mock.calls.map(
+      (c: unknown[]) => (c[1] as string[]).length
+    );
+    expect(idListLengths).toEqual([500, 1]);
+  });
+
+  it('a 500-row Normal-variant payload produces exactly 1 db.update call', async () => {
+    const cards = Array.from({ length: 500 }, (_, i) => makeNormalCard(String(i).padStart(4, '0')));
+    mockFetch.mockResolvedValue({ ok: true, json: async () => cards });
+    const injectedSets = [{ setId: 'SOR', fullName: 'Spark of Rebellion', numberCards: 500 }];
+
+    await syncPrices({ sets: injectedSets });
+
+    expect(mockUpdate).toHaveBeenCalledTimes(1);
+  });
+
+  it('a payload with zero Normal variants produces 0 db.update calls, failedSets empty, and setsProcessed === setsTotal', async () => {
+    const cards: SWUDBCard[] = [
+      { Set: 'SOR', Number: '001', Name: 'Foil Card', VariantType: 'Foil', MarketPrice: '10.00' },
+      { Set: 'SOR', Number: '002', Name: 'Hyperspace Card', VariantType: 'Hyperspace', MarketPrice: '10.00' },
+    ];
+    mockFetch.mockResolvedValue({ ok: true, json: async () => cards });
+    const injectedSets = [{ setId: 'SOR', fullName: 'Spark of Rebellion', numberCards: 2 }];
+
+    const result = await syncPrices({ sets: injectedSets });
+
+    expect(mockUpdate).not.toHaveBeenCalled();
+    expect(result.failedSets).toEqual([]);
+    expect(result.setsProcessed).toBe(result.setsTotal);
+  });
+
+  it('an empty card array produces 0 db.update calls and counts the set as processed', async () => {
+    mockFetch.mockResolvedValue({ ok: true, json: async () => [] });
+    const injectedSets = [{ setId: 'SOR', fullName: 'Spark of Rebellion', numberCards: 0 }];
+
+    const result = await syncPrices({ sets: injectedSets });
+
+    expect(mockUpdate).not.toHaveBeenCalled();
+    expect(result.setsProcessed).toBe(result.setsTotal);
+    expect(result.failedSets).toEqual([]);
   });
 });

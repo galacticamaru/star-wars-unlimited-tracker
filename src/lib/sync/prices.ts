@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { cardDefinitions } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { inArray, sql, type SQL } from 'drizzle-orm';
+import { chunk, SYNC_CHUNK_SIZE } from './chunk';
 import { getNonTokenSets, type SWUSet } from './set-list';
 
 const SWU_DB_API_URL = 'https://api.swu-db.com';
@@ -70,6 +71,32 @@ export interface PriceSyncResult {
   sets: Array<{ setCode: string; updated: number }>;
 }
 
+interface PriceUpdateRow {
+  swudbId: string;
+  priceEur: number | null;
+  priceUsd: number | null;
+}
+
+/**
+ * Builds a Drizzle CASE WHEN SQL fragment for a batched multi-row UPDATE
+ * (D-11) — the officially documented pattern for "update N rows, each with
+ * different values, in one round trip." Every swu-db-derived value
+ * (`swudbId`, the price value) is interpolated through the `sql` template so
+ * Drizzle binds it as a parameter; `sql.raw()` is used only for the fixed
+ * `case`/`end` keywords and the `sql.join` separator, never for API data —
+ * Postgres infers each branch's type from the target column, avoiding the
+ * explicit-cast pitfalls a hand-rolled VALUES list would need for the
+ * nullable priceEur/priceUsd columns.
+ */
+function buildCaseUpdate(rows: PriceUpdateRow[], valueKey: 'priceEur' | 'priceUsd'): SQL {
+  const fragments: SQL[] = [sql`(case`];
+  for (const row of rows) {
+    fragments.push(sql`when ${cardDefinitions.swudbId} = ${row.swudbId} then ${row[valueKey]}`);
+  }
+  fragments.push(sql`end)`);
+  return sql.join(fragments, sql.raw(' '));
+}
+
 /**
  * Orchestrates price synchronization for all non-token sets using swu-db.com.
  * Set list mirrors syncAllCards() — derived from getNonTokenSets() (D-10) unless
@@ -104,28 +131,34 @@ export async function syncPrices(options: PriceSyncOptions = {}): Promise<PriceS
 
     try {
       const cards = await fetchSetPrices(setCode);
-      let setUpdated = 0;
-      const now = new Date();
 
+      // Collect Normal-variant rows in memory first (to avoid inflating
+      // prices from foils/showcases), mapping through the unchanged
+      // mapPriceData(). De-duplicate by swudbId, last-write-wins, so a
+      // duplicated upstream row cannot produce two conflicting CASE
+      // branches for the same key.
+      const rowsBySwudbId = new Map<string, PriceUpdateRow>();
       for (const card of cards) {
-        // Only sync pricing for Normal variants to avoid inflation from foils/showcases
         if (card.VariantType !== 'Normal') continue;
-
         const { priceEur, priceUsd } = mapPriceData(card);
         const swudbId = `${card.Set}-${card.Number}`;
+        rowsBySwudbId.set(swudbId, { swudbId, priceEur, priceUsd });
+      }
+      const rows = Array.from(rowsBySwudbId.values());
 
-        const result = await db.update(cardDefinitions)
+      let setUpdated = 0;
+      for (const priceChunk of chunk(rows, SYNC_CHUNK_SIZE)) {
+        if (priceChunk.length === 0) continue;
+        const returned = await db
+          .update(cardDefinitions)
           .set({
-            priceEur,
-            priceUsd,
-            pricesUpdatedAt: now,
+            priceEur: buildCaseUpdate(priceChunk, 'priceEur'),
+            priceUsd: buildCaseUpdate(priceChunk, 'priceUsd'),
+            pricesUpdatedAt: sql`now()`,
           })
-          .where(eq(cardDefinitions.swudbId, swudbId))
+          .where(inArray(cardDefinitions.swudbId, priceChunk.map((r) => r.swudbId)))
           .returning({ id: cardDefinitions.id });
-
-        if (result.length > 0) {
-          setUpdated++;
-        }
+        setUpdated += returned.length;
       }
 
       console.log(`Updated ${setUpdated} prices for set ${setCode}`);
