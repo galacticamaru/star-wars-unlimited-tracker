@@ -1,8 +1,9 @@
 # Sketch Wrap-Up Summary
 
-**Date:** 2026-08-16 (initial wrap: sketches 001–002 · appended: sketch 003)
-**Sketches processed:** 3
-**Design areas:** Tile layout & touch · Bottom chrome & navigation · Responsive & containers
+**Date:** 2026-08-16 (initial wrap: 001–002 · appended: 003 · appended: 004–005)
+**Sketches processed:** 5
+**Design areas:** Tile layout & touch · Bottom chrome & navigation · Responsive & containers ·
+Catalog drawer & states
 **Skill output:** `./.claude/skills/sketch-findings-star-wars-unlimited-tracker/`
 
 ## Included Sketches
@@ -12,6 +13,8 @@
 | 001 | selector-tile-mobile | B — 3-col art-only tile + off-tile controls | Tile layout & touch |
 | 002 | bottom-zone-and-detail-affordance | C — one merged 64px bar; corner ⓘ + long-press | Bottom chrome & navigation |
 | 003 | responsive-scope | C — one model, two containers | Responsive & containers |
+| 004 | catalog-variant-drawer | A — port the binder sheet as-is | Catalog drawer & states |
+| 005 | catalog-state-vocabulary | A — inline per-row errors + one grid-state component | Catalog drawer & states |
 
 ## Excluded Sketches
 
@@ -56,10 +59,25 @@ This inverts the current design, where the tile is a `<Link>` with a hover overl
 A stepper needs ~180px. Desktop tiles are *smaller* than mobile ones, so on-tile controls fail at
 every width — which is what settled the responsive question.
 
+**Catalog drawer & feedback**
+- The catalog drawer is a straight port of the binder's `VariantTradeSheet` — three stacked sections,
+  existing components untouched. A denser unified table was rejected for 26px cells; progressive
+  disclosure was rejected for layout shift
+- Card detail pages stay as shareable URLs; the drawer removes the need to navigate to them
+- Failed optimistic writes surface **inline on the row that failed** — red row, number shakes back,
+  Retry beneath. Chosen for attribution: 12 steppers in one drawer
+- One grid-state component covers `idle / loading / empty / error`, replacing `empty-state.tsx` and
+  the inline blocks at `manage/page.tsx:385-407`. Loading uses skeleton tiles, not a spinner
+- Two mutation surfaces are acceptable — ambient bar for one number, modal drawer for twelve
+
 **Implementation constraints**
 - Keeping controls off the tile preserves the existing virtualizer `estimateSize` heuristic
   (`card-grid.tsx:80`) at every breakpoint
 - The stats trigger must stop being `fixed` (`deck-builder.tsx:710`) and join the flex column
+- **BLOCKING:** the three variant sections must share state before the drawer ships.
+  `VariantTradeSection` gates on `ownedCount` while `VariantCollectionSection` mutates it locally.
+  Lifting state into the drawer also collapses three `router.refresh()` calls into one and gives the
+  inline error map a home — one refactor serving both sketches
 
 ## Open Risks Carried Forward
 
@@ -73,16 +91,27 @@ Accepted at selection, unresolved — planning inputs, not settled guidance:
 5. `useColumnCount()` reads window width while `estimateSize` reads container width
    (`card-grid.tsx:17-27` vs `:78`). With the 320px sidebar present they disagree — the mechanism
    behind the ~68px desktop tiles. Confirm whether intentional or a latent sizing bug.
+6. **Non-drawer optimistic writes have no error vocabulary.** Inline row errors need a row to attach
+   to. Deck-builder selector writes and other binder writes still fail silently. The global-toast
+   alternative was rejected because a 4-second toast recreates the silent revert it was meant to
+   fix. Not a blocker; an open hole in the error contract.
+7. **Multi-failure error stacking is untested** — offline mid-session produces several red rows at
+   once, never seen on a real device with a real network drop.
+8. **Prop contract mismatch** — the detail page passes no `onQuantityChange` to
+   `VariantTradeSection` (`page.tsx:67`) while the sheet does.
+9. **Section membership disagreement** — the detail page renders Collection + Trade; the sheet
+   renders all three. Whether the drawer and detail page should agree is undecided.
+
+## Settled by Omission
+
+The two-surface split (ambient bar for the selector, modal drawer for the catalog) was presented as
+a coherence check during sketch 004 and not separately contested. It is recorded as acceptable
+scaling of one contract. If it later feels wrong, that is a deliberate reopen — not a discovery.
 
 ## Not Yet Sketched
 
-Frontier mode surfaced two candidates that were deferred:
-
-- **004 — catalog variant drawer.** The seed's main scope. Assumed to port cleanly from the binder's
-  `VariantTradeSheet`, but the catalog context adds ownership, deck state, and a different entry
-  gesture. Also unchecked: whether a right-side drawer (catalog) and a bottom bar (selector) read as
-  one product on visually identical tiles.
-- **005 — search-first grid states.** Zero results, loading, empty collection.
+Frontier mode's original queue is now empty. Nothing is pending; a fresh frontier pass would need to
+analyze the five-sketch landscape from scratch.
 
 ## Origin
 
