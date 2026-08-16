@@ -137,3 +137,13 @@ None - no external service configuration required.
 ---
 *Phase: 34-card-sync-reliability*
 *Completed: 2026-08-16*
+
+## Self-Check: PASSED
+
+- FOUND: src/app/api/collection/starter-deck/route.ts
+- FOUND: __tests__/starter-deck-route.test.ts
+- FOUND: src/app/collection/page.tsx
+- FOUND: src/app/collection/page.test.tsx
+- FOUND: commit d21cb1d
+- FOUND: commit c6933fa
+- FOUND: commit b24e48d
