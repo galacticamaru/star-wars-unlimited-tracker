@@ -403,15 +403,16 @@ Plans:
   5. The LAW spotlight deck's 9 previously "unresolved" cards are re-matched against catalog data by name/subtitle and the deck list is corrected — all 50 cards resolve (DEBT-05)
 
 **Notes:**
+
 - DEBT-05's previously recorded cause ("9 cards absent from DB — pending DB sync") is disproven: LAW has been fully synced since 2026-07-05 (901/901 printings, confirmed against the API). Treat this purely as a name/subtitle matching bug in `src/data/starter-decks.ts` — do not make it depend on this phase's sync fix.
 - Constrained to 1 cron job/day (Vercel Hobby tier) — multiplex within the existing cron entrypoint, do not add a second job.
 - Full incremental/resumable sync (per-set checkpointing, split cards/prices invocations) is explicitly out of scope this milestone — deferred as SYNC-05. This phase is batching + loud failure only.
 
-**Plans:** 7 plans
+**Plans:** 1/7 plans executed
 
 **Wave 1** *(tracer slice — verified before any expansion plan starts)*
 
-- [ ] 34-01-PLAN.md — TRACER: chunked multi-row card upserts, single-source non-token set list, deadline-aware `syncAllCards` (SYNC-01, SYNC-02)
+- [x] 34-01-PLAN.md — TRACER: chunked multi-row card upserts, single-source non-token set list, deadline-aware `syncAllCards` (SYNC-01, SYNC-02)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -438,6 +439,7 @@ Plans:
   4. A write that fails shows its error inline on the affected row, the value visibly reverts, and a Retry action is available (UISTATE-03)
 
 **Notes:**
+
 - Verify through the sections' EXISTING consumers — the binder's `VariantTradeSheet` (`/binder/manage`) and the card detail page (`/cards/[set]/[id]`) — since the catalog drawer itself doesn't exist until Phase 36.
 - Resolves open risk 8 (prop contract mismatch: the detail page passes no `onQuantityChange` to `VariantTradeSection` while the sheet does) as a byproduct of the shared state lift.
 - Should settle open risk 9 (whether the detail page and the sheet should render the same section membership) — both consume the same lifted state going forward; decide explicitly rather than leaving it implicit.
@@ -460,6 +462,7 @@ Plans:
   5. Deck building stays fully possible from the grid through this phase: because the tile no longer navigates or hosts hover controls, selecting a deck-builder tile reveals a minimal, functional off-tile add/remove stepper (not yet the merged mobile bottom bar or the desktop sidebar placement) — this interim control is what stands between removing the `<Link>` here and Phase 37 shipping the real redesign (TILE-02 — interim coherence, no dedicated requirement ID)
 
 **Notes:**
+
 - Interim selector behaviour, stated plainly: selecting a tile in the deck builder shows a small, functional add/remove stepper appended below the grid — off the tile itself (satisfying TILE-01's "no controls on the tile"), but not yet merged into a bottom bar or integrated into the sidebar. It exists solely so removing the tile-wide `<Link>` doesn't leave the deck builder unusable between this phase and Phase 37. Phase 37 deletes this placeholder outright and replaces it with the redesigned surface (SELECT-01..04) — the two must not coexist once Phase 37 ships.
 - Carries open risks from the sketch wrap-up concerning this phase's surfaces:
   1. The corner ⓘ affordance measures 22px, below the 44px floor — long-press is the real target and needs device testing; fallback is promoting ⓘ into the control surface.
@@ -486,6 +489,7 @@ Plans:
   5. Every interactive target in the bottom bar and sidebar controls introduced by this phase is at least 44px (extending TILE-04's floor to the surfaces this phase ships), and the selected tile renders its correct owned-variant art via `getPrintingArtMap()` instead of a generic default (DEBT-02)
 
 **Notes:**
+
 - Carries open risk 2: the deck count doubles as both a display and a button inside the merged bottom bar — discoverability is unverified.
 - UISTATE-04 (error vocabulary for non-drawer optimistic writes) is explicitly out of this milestone's scope — the bottom bar and sidebar controls built here still fail silently on a failed write; deferred as a future requirement.
 - Two mutation surfaces (ambient bar for the selector, modal drawer for the catalog) is the accepted design (settled by omission in sketch 004), not a gap — Phase 36 built the drawer side of that pair; this phase completes the ambient-bar side.
@@ -505,6 +509,7 @@ Plans:
   3. A card grid shows one consistent error-state treatment when a fetch fails, visually distinct from the empty-result state (UISTATE-01)
 
 **Notes:**
+
 - This is the one grid-state component from sketch 005 (idle/loading/empty/error) — distinct from UISTATE-03's inline per-row write-error handling, which already landed in Phase 35.
 - Open risk 7 (multi-failure error stacking) concerns write errors, not grid fetch errors, and stays out of this phase's scope.
 
@@ -544,7 +549,7 @@ Plans:
 | 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete    | 2026-07-20 |
 | 32. Combined Wants & Exclusions List | v7 | 3/3 | Complete    | 2026-07-20 |
 | 33. Ashes of the Empire Spotlight Decks | v7 | Direct | Complete    | 2026-07-20 |
-| 34. Card Sync Reliability | v8 | 0/TBD | Not started | - |
+| 34. Card Sync Reliability | v8 | 1/7 | In Progress|  |
 | 35. Shared Variant State Foundation | v8 | 0/TBD | Not started | - |
 | 36. Touch-Viable Tile Contract & Catalog Drawer | v8 | 0/TBD | Not started | - |
 | 37. Touch-Viable Deck Selector | v8 | 0/TBD | Not started | - |
