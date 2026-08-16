@@ -106,7 +106,7 @@ describe('CollectionPage progress text (PERF-04)', () => {
       })
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ cardsAdded: 55, deckName: 'Luke Skywalker (SOR)' }),
+        json: async () => ({ cardsAdded: 55, cardsRequested: 55, skipped: [] }),
       });
 
     render(<CollectionPage />);
@@ -126,6 +126,38 @@ describe('CollectionPage progress text (PERF-04)', () => {
     await waitFor(() => {
       const successText = screen.getByText(/Added \d+ cards from .+ to your collection\./i);
       expect(successText).toBeDefined();
+    });
+
+    expect(screen.queryByText(/unavailable/i)).toBeNull();
+  });
+
+  it('Quick Add partial-success status renders "Added N of M cards from {deckName} — K unavailable." when some cards are skipped', async () => {
+    global.fetch = vi.fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ['SOR'],
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ cardsAdded: 47, cardsRequested: 50, skipped: ['LAW-001', 'LAW-002', 'LAW-003'] }),
+      });
+
+    render(<CollectionPage />);
+
+    // Wait for sets to load
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith('/api/collection/sets');
+    });
+
+    const addButton = screen.getByText('Add to Collection');
+
+    await act(async () => {
+      fireEvent.click(addButton);
+    });
+
+    await waitFor(() => {
+      const shortfallText = screen.getByText(/Added 47 of 50 cards from .+ — 3 unavailable\./i);
+      expect(shortfallText).toBeDefined();
     });
   });
 
