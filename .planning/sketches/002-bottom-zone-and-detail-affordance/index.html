@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 002 — Bottom zone &amp; detail affordance</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding-top: 92px; background: var(--color-bg); font-family: var(--font-sans); color: var(--color-text); }
+
+  #variant-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
+    background: var(--color-surface); border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3) var(--space-4); display: flex; gap: var(--space-2);
+    align-items: center; flex-wrap: wrap; box-shadow: var(--shadow-sm);
+  }
+  #variant-nav .title { font-weight: 700; font-size: var(--text-sm); margin-right: var(--space-4); }
+  .variant-tab {
+    font: inherit; font-size: var(--text-sm); padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border); background: var(--color-surface);
+    border-radius: var(--radius-md); cursor: pointer; transition: all 0.15s ease; color: var(--color-text-muted);
+  }
+  .variant-tab:hover { background: var(--color-surface-2); color: var(--color-text); }
+  .variant-tab.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; font-weight: 600; }
+
+  .stage { display: flex; gap: var(--space-8); padding: var(--space-6); align-items: flex-start; flex-wrap: wrap; }
+  .notes { flex: 1; min-width: 280px; max-width: 460px; font-size: var(--text-sm); line-height: 1.6; color: var(--color-text-muted); }
+  .notes h2 { color: var(--color-text); font-size: var(--text-lg); margin: 0 0 var(--space-2); }
+  .notes h3 { color: var(--color-text); font-size: var(--text-sm); margin: var(--space-6) 0 var(--space-2); text-transform: uppercase; letter-spacing: 0.04em; }
+  .notes ul { margin: 0; padding-left: 1.1em; }
+  .notes li { margin-bottom: var(--space-2); }
+  .verdict { display: inline-block; padding: 2px 8px; border-radius: var(--radius-full); font-size: var(--text-2xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .verdict.good { background: #dcfce7; color: #15803d; }
+  .verdict.warn { background: var(--color-accent-soft); color: var(--color-accent); }
+  .verdict.bad  { background: #fee2e2; color: #b91c1c; }
+
+  .phone-wrap { flex-shrink: 0; }
+  .phone-label { font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-2); font-family: var(--font-mono); text-align: center; }
+  .phone { width: 390px; height: 720px; background: var(--color-bg); border: 10px solid #0f172a; border-radius: 32px; overflow: hidden; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; position: relative; }
+
+  .app-toolbar { background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: var(--space-3) var(--space-4); flex-shrink: 0; }
+  .deck-name { font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-2); }
+  .tabs { display: flex; background: var(--color-surface-2); border-radius: var(--radius-lg); padding: 3px; }
+  .tabs button { flex: 1; font: inherit; font-size: var(--text-sm); padding: 6px 0; border: none; background: transparent; border-radius: var(--radius-md); cursor: pointer; color: var(--color-text-muted); }
+  .tabs button.on { background: var(--color-surface); box-shadow: var(--shadow-sm); color: var(--color-text); font-weight: 600; }
+
+  .search { padding: var(--space-2) var(--space-4); background: var(--color-surface); border-bottom: 1px solid var(--color-border); flex-shrink: 0; }
+  .search input { width: 100%; font: inherit; font-size: var(--text-sm); padding: 8px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-2); }
+  .scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; position: relative; }
+
+  /* ---------- card art ---------- */
+  .art { position: relative; width: 100%; overflow: hidden; background: var(--color-surface-2); }
+  .art .nameplate { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(transparent, rgba(0,0,0,0.82)); color: #fff; padding: 14px 5px 4px; font-size: var(--text-2xs); font-weight: 700; line-height: 1.15; }
+  .art .cost { position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: var(--radius-full); background: rgba(15,23,42,0.85); color: #fff; font-size: var(--text-2xs); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); padding: var(--space-2); }
+  .tileB { position: relative; border-radius: var(--radius-md); overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.15s ease; background: var(--color-surface-2); }
+  .tileB .art { aspect-ratio: 2/3; }
+  .tileB.sel { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+  .tileB .deckbadge { position: absolute; bottom: 3px; right: 3px; background: var(--color-primary); color: #fff; font-size: var(--text-2xs); font-weight: 800; min-width: 20px; height: 20px; padding: 0 5px; border-radius: var(--radius-full); display: none; align-items: center; justify-content: center; box-shadow: var(--shadow-md); }
+  .tileB .deckbadge.on { display: flex; }
+  .tileB .deckbadge.pop { animation: pop 0.25s ease; }
+  @keyframes pop { 0% { transform: scale(1); } 45% { transform: scale(1.5); } 100% { transform: scale(1); } }
+  .shortfall { outline: 2px solid var(--color-danger); outline-offset: -2px; }
+
+  /* ---------- steppers ---------- */
+  .step-btn {
+    min-width: var(--touch-min); min-height: var(--touch-min); display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius-md);
+    font: inherit; font-size: var(--text-lg); font-weight: 600; cursor: pointer; color: var(--color-text);
+    transition: all 0.12s ease; user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  .step-btn:hover { background: var(--color-primary-soft); border-color: var(--color-primary); color: var(--color-primary); }
+  .step-btn:active { transform: scale(0.92); background: var(--color-primary); color: #fff; }
+  .step-btn[disabled] { opacity: 0.35; cursor: not-allowed; }
+  .count-box { text-align: center; font-weight: 700; font-size: var(--text-base); display: flex; flex-direction: column; justify-content: center; line-height: 1.05; min-width: 46px; }
+  .count-box .lbl { font-size: 9px; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .count-box.has { color: var(--color-primary); }
+
+  /* ---------- the contested bottom zone ---------- */
+  .bottom-zone { flex-shrink: 0; position: relative; }
+  .actionbar { background: var(--color-surface); border-top: 2px solid var(--color-primary); padding: var(--space-3); display: flex; gap: var(--space-3); align-items: center; box-shadow: 0 -4px 12px rgba(15,23,42,0.08); }
+  .actionbar .thumb { width: 38px; height: 57px; border-radius: var(--radius-sm); overflow: hidden; flex-shrink: 0; }
+  .actionbar .meta { flex: 1; min-width: 0; }
+  .actionbar .meta .nm { font-weight: 700; font-size: var(--text-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .actionbar .meta .sub { font-size: var(--text-xs); color: var(--color-text-muted); }
+  .actionbar .ctrls { display: flex; gap: var(--space-2); align-items: center; flex-shrink: 0; }
+  .actionbar.empty { border-top-color: var(--color-border); color: var(--color-text-muted); justify-content: center; font-size: var(--text-sm); padding: var(--space-4); }
+
+  .statsbar { background: var(--color-surface); border-top: 1px solid var(--color-border); padding: var(--space-3) var(--space-4); display: flex; justify-content: space-between; align-items: center; font-size: var(--text-sm); cursor: pointer; min-height: 48px; }
+  .statsbar:hover { background: var(--color-surface-2); }
+  .statsbar .chev { color: var(--color-text-muted); font-size: var(--text-xs); }
+  .statsbar .valid { color: var(--color-success); font-weight: 700; }
+  .statsbar .invalid { color: var(--color-accent); font-weight: 700; }
+
+  /* detail affordance treatments */
+  .detail-link { background: none; border: none; font: inherit; font-size: var(--text-xs); color: var(--color-primary); cursor: pointer; text-decoration: underline; padding: 0; }
+  .icon-btn { min-width: var(--touch-min); min-height: var(--touch-min); display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius-md); cursor: pointer; font-size: var(--text-base); color: var(--color-text-muted); transition: all 0.12s ease; }
+  .icon-btn:hover { background: var(--color-primary-soft); color: var(--color-primary); border-color: var(--color-primary); }
+  .corner-info { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: var(--radius-full); background: rgba(255,255,255,0.9); color: var(--color-text); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; z-index: 30; box-shadow: var(--shadow-sm); }
+  .corner-info:hover { background: var(--color-primary); color: #fff; }
+
+  /* long-press ring */
+  .tileB.pressing::after {
+    content: ''; position: absolute; inset: 0; border-radius: var(--radius-md); z-index: 25;
+    background: rgba(79,70,229,0.25); animation: fill 0.5s linear forwards;
+  }
+  @keyframes fill { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+  /* sheet */
+  .sheet-scrim { position: absolute; inset: 0; background: rgba(15,23,42,0.45); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 80; }
+  .sheet-scrim.on { opacity: 1; pointer-events: auto; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--color-surface); border-radius: 16px 16px 0 0; z-index: 90; transform: translateY(100%); transition: transform 0.25s cubic-bezier(.2,.8,.2,1); max-height: 74%; overflow-y: auto; box-shadow: 0 -8px 24px rgba(15,23,42,0.2); }
+  .sheet.on { transform: translateY(0); }
+  .sheet .grip { width: 36px; height: 4px; background: var(--color-border); border-radius: 2px; margin: 10px auto; }
+  .sheet .body { padding: 0 var(--space-4) var(--space-6); }
+  .sheet h4 { margin: var(--space-2) 0; font-size: var(--text-lg); }
+  .statrow { display: flex; justify-content: space-between; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-size: var(--text-sm); }
+
+  #toast { position: fixed; bottom: 70px; left: 50%; transform: translate(-50%, 20px); background: #0f172a; color: #fff; padding: 10px 16px; border-radius: var(--radius-lg); font-size: var(--text-sm); opacity: 0; pointer-events: none; transition: all 0.2s ease; z-index: 9999; }
+  #toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  #sketch-tools { position: fixed; bottom: 12px; right: 12px; z-index: 9999; font-family: system-ui; font-size: 12px; background: rgba(15,23,42,0.85); color: #fff; padding: 8px 12px; border-radius: 8px; opacity: 0.45; transition: opacity 0.2s; display: flex; gap: 10px; align-items: center; }
+  #sketch-tools:hover { opacity: 1; }
+  #sketch-tools select, #sketch-tools button { font: inherit; font-size: 11px; background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 5px; padding: 3px 7px; cursor: pointer; }
+  #sketch-tools button.on { background: #dc2626; border-color: #dc2626; }
+
+  body.measure .bottom-zone { outline: 2px dashed #dc2626; outline-offset: -2px; }
+  body.measure .bottom-zone::before { content: attr(data-h); position: absolute; top: -18px; right: 4px; background: #dc2626; color: #fff; font: 700 9px var(--font-mono); padding: 1px 5px; border-radius: 3px; z-index: 70; }
+
+  .variant { display: none; }
+  .variant.active { display: block; }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <span class="title">Sketch 002 — Bottom zone &amp; detail affordance</span>
+  <button class="variant-tab active" data-v="a" onclick="showVariant('a')">A: Swap on select</button>
+  <button class="variant-tab" data-v="b" onclick="showVariant('b')">B: Stack both</button>
+  <button class="variant-tab" data-v="c" onclick="showVariant('c')">C: Merge into one ★ Selected</button>
+</div>
+
+<!-- ============ VARIANT A ============ -->
+<div class="variant active" id="variant-a">
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone-label">390 × 720 — bottom zone swaps by state</div>
+      <div class="phone" id="phone-a">
+        <div class="app-toolbar">
+          <div class="deck-name">Rebel Aggro</div>
+          <div class="tabs"><button>Deck</button><button class="on">Cards</button><button>Wants</button></div>
+        </div>
+        <div class="search"><input placeholder="Search the catalog…" oninput="filterCards('a', this.value)"></div>
+        <div class="scroll"><div class="grid-3" id="grid-a"></div></div>
+        <div class="bottom-zone" id="bz-a" data-h=""></div>
+        <div class="sheet-scrim" onclick="closeSheet('a')"></div>
+        <div class="sheet" id="sheet-a">
+          <div class="grip"></div>
+          <div class="body">
+            <h4>Deck stats</h4>
+            <div class="statrow"><span>Main deck</span><strong><span id="stat-a">0</span> / 50</strong></div>
+            <div class="statrow"><span>Sideboard</span><strong>0 / 10</strong></div>
+            <div class="statrow"><span>Aspects</span><strong>Vigilance · Heroism</strong></div>
+            <div class="statrow"><span>Deck value</span><strong>€48.20</strong></div>
+            <div class="statrow"><span>Legality</span><strong style="color:var(--color-accent)">Needs 50 cards</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>A: One slot, swapped by state</h2>
+      <p>The bottom holds exactly one bar at a time. No card selected → the stats trigger, exactly as today. Card selected → the action bar takes the slot. Deselect (tap the same card, or the ✕) and stats return.</p>
+
+      <h3>Bottom zone budget</h3>
+      <p><strong>~56px</strong> at all times. <span class="verdict good">No collision</span> — the two never coexist, so nothing had to shrink.</p>
+
+      <h3>Detail affordance</h3>
+      <p>An <strong>ⓘ button in the action bar</strong>. It only exists once you've selected a card, which is exactly when "tell me more about this one" occurs. 44px, unambiguous, nowhere near the stepper.</p>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><span class="verdict good">Cheapest vertical cost</span> — grid keeps maximum height.</li>
+        <li>Stats become <em>invisible while adding</em>. You can't watch the count climb toward 50 as you build — which was one of the original complaints about losing deck context.</li>
+        <li>Mitigated by the count chip in the action bar, but that's a smaller signal than a persistent footer.</li>
+      </ul>
+      <p>Tap a card, then tap it again to deselect and watch the bar swap back.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VARIANT B ============ -->
+<div class="variant" id="variant-b">
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone-label">390 × 720 — both bars stacked</div>
+      <div class="phone" id="phone-b">
+        <div class="app-toolbar">
+          <div class="deck-name">Rebel Aggro</div>
+          <div class="tabs"><button>Deck</button><button class="on">Cards</button><button>Wants</button></div>
+        </div>
+        <div class="search"><input placeholder="Search the catalog…" oninput="filterCards('b', this.value)"></div>
+        <div class="scroll"><div class="grid-3" id="grid-b"></div></div>
+        <div class="bottom-zone" id="bz-b" data-h=""></div>
+        <div class="sheet-scrim" onclick="closeSheet('b')"></div>
+        <div class="sheet" id="sheet-b">
+          <div class="grip"></div>
+          <div class="body">
+            <h4>Deck stats</h4>
+            <div class="statrow"><span>Main deck</span><strong><span id="stat-b">0</span> / 50</strong></div>
+            <div class="statrow"><span>Sideboard</span><strong>0 / 10</strong></div>
+            <div class="statrow"><span>Aspects</span><strong>Vigilance · Heroism</strong></div>
+            <div class="statrow"><span>Deck value</span><strong>€48.20</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>B: Stack both, permanently</h2>
+      <p>Action bar sits directly above the stats trigger. Both are always present, so the deck count stays visible the entire time you're adding — you watch it climb toward 50.</p>
+
+      <h3>Bottom zone budget</h3>
+      <p><strong>~118px</strong> when a card is selected (70 + 48). <span class="verdict warn">16% of the viewport</span> — the grid loses roughly one row.</p>
+
+      <h3>Detail affordance</h3>
+      <p>Same ⓘ button in the action bar as A. The extra vertical space buys persistent context, not a different affordance.</p>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><span class="verdict good">Never lose deck context</span> — directly answers the original "can't see what I'm building" complaint.</li>
+        <li><span class="verdict warn">Costs a grid row.</span> ~6 cards visible instead of ~9 while a card is selected.</li>
+        <li>Two stacked bars with different border treatments risks looking heavy. Watch whether the bottom feels cluttered.</li>
+      </ul>
+      <p>Note the empty state: with no selection it collapses back to just the stats bar, so the cost is only paid while actively adjusting.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VARIANT C ============ -->
+<div class="variant" id="variant-c">
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone-label">390 × 720 — one merged bar</div>
+      <div class="phone" id="phone-c">
+        <div class="app-toolbar">
+          <div class="deck-name">Rebel Aggro</div>
+          <div class="tabs"><button>Deck</button><button class="on">Cards</button><button>Wants</button></div>
+        </div>
+        <div class="search"><input placeholder="Search the catalog…" oninput="filterCards('c', this.value)"></div>
+        <div class="scroll"><div class="grid-3" id="grid-c"></div></div>
+        <div class="bottom-zone" id="bz-c" data-h=""></div>
+        <div class="sheet-scrim" onclick="closeSheet('c')"></div>
+        <div class="sheet" id="sheet-c">
+          <div class="grip"></div>
+          <div class="body">
+            <h4>Deck stats</h4>
+            <div class="statrow"><span>Main deck</span><strong><span id="stat-c">0</span> / 50</strong></div>
+            <div class="statrow"><span>Sideboard</span><strong>0 / 10</strong></div>
+            <div class="statrow"><span>Aspects</span><strong>Vigilance · Heroism</strong></div>
+            <div class="statrow"><span>Deck value</span><strong>€48.20</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>C: One bar that absorbs both jobs</h2>
+      <p>A single 64px bar. Left side is the selected card's identity and stepper; the running deck count lives on the right and doubles as the stats-sheet trigger. With nothing selected the left half shows the deck summary instead.</p>
+
+      <h3>Bottom zone budget</h3>
+      <p><strong>~64px</strong> constant. <span class="verdict good">Near-A cost, near-B context</span></p>
+
+      <h3>Detail affordance</h3>
+      <p>Different approach: <strong>ⓘ in the tile's own corner</strong> plus long-press on the tile. The merged bar is too tight for another 44px button, so the affordance moves back onto the grid — visible at rest, distinct from the tap target, and available <em>before</em> you select.</p>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><span class="verdict good">Tightest use of vertical space</span> while keeping the count visible.</li>
+        <li>The count is doing two jobs — display and sheet trigger. Is that discoverable?</li>
+        <li>Corner ⓘ at 22px is <span class="verdict warn">below 44px</span>. Long-press is the real target; the corner icon is the visual hint. That's a deliberate compromise worth judging, not ignoring.</li>
+      </ul>
+      <p><strong>Try the long-press</strong> — hold a tile for half a second and watch the fill ring.</p>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<div id="sketch-tools">
+  <select onchange="document.querySelector('link[href*=themes]').href='../themes/'+this.value+'.css'">
+    <option value="default">Default theme</option>
+  </select>
+  <button id="measure-btn" onclick="toggleMeasure()">Measure</button>
+  <button onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const ASPECT = {
+  vigilance:['#3b82f6','#1e40af'], command:['#16a34a','#14532d'], aggression:['#dc2626','#7f1d1d'],
+  cunning:['#eab308','#854d0e'], heroism:['#f8fafc','#94a3b8'], villainy:['#334155','#020617'],
+};
+const CARDS = [
+  { id:1,  name:'Battlefield Marine',      type:'Ground Unit', cost:2, aspect:'command',    owned:3 },
+  { id:2,  name:'Vanquish',                type:'Event',       cost:5, aspect:'vigilance',  owned:2 },
+  { id:3,  name:'Waylay',                  type:'Event',       cost:3, aspect:'cunning',    owned:1 },
+  { id:4,  name:'Alliance X-Wing',         type:'Space Unit',  cost:4, aspect:'vigilance',  owned:3 },
+  { id:5,  name:'Wampa',                   type:'Ground Unit', cost:4, aspect:'aggression', owned:0 },
+  { id:6,  name:'Cell Block Guard',        type:'Ground Unit', cost:3, aspect:'villainy',   owned:2 },
+  { id:7,  name:'Green Squadron A-Wing',   type:'Space Unit',  cost:2, aspect:'cunning',    owned:3 },
+  { id:8,  name:'Vigilant Honor Guards',   type:'Ground Unit', cost:5, aspect:'vigilance',  owned:1 },
+  { id:9,  name:'Superlaser Blast',        type:'Event',       cost:9, aspect:'villainy',   owned:0 },
+  { id:10, name:'Fleet Lieutenant',        type:'Ground Unit', cost:2, aspect:'command',    owned:3 },
+  { id:11, name:'Consular Security Force', type:'Ground Unit', cost:4, aspect:'vigilance',  owned:2 },
+  { id:12, name:'Restock',                 type:'Event',       cost:2, aspect:'command',    owned:1 },
+  { id:13, name:'Bright Hope',             type:'Space Unit',  cost:5, aspect:'vigilance',  owned:1 },
+  { id:14, name:'Krayt Dragon',            type:'Ground Unit', cost:8, aspect:'aggression', owned:0 },
+  { id:15, name:'Admiral Ackbar',          type:'Ground Unit', cost:5, aspect:'command',    owned:2 },
+  { id:16, name:'Home One',                type:'Space Unit',  cost:7, aspect:'command',    owned:1 },
+  { id:17, name:'Death Star Stormtrooper', type:'Ground Unit', cost:1, aspect:'villainy',   owned:3 },
+  { id:18, name:'Regional Governor',       type:'Ground Unit', cost:5, aspect:'villainy',   owned:2 },
+];
+
+const SEED = { 1:3, 4:2, 5:2, 10:3 };
+const deck = { a:{...SEED}, b:{...SEED}, c:{...SEED} };
+const sel  = { a:null, b:null, c:null };
+let filters = { a:'', b:'', c:'' };
+let lastBumped = { a:null, b:null, c:null };
+
+function artHTML(card, opts = {}) {
+  const [c1, c2] = ASPECT[card.aspect];
+  return `<div class="art" style="background:linear-gradient(150deg, ${c1}, ${c2});">
+      <div class="cost">${card.cost}</div>
+      ${opts.name === false ? '' : `<div class="nameplate">${card.name}</div>`}
+    </div>`;
+}
+function total(v) { return Object.values(deck[v]).reduce((s,n) => s+n, 0); }
+function visible(v) {
+  const q = (filters[v]||'').toLowerCase();
+  return q ? CARDS.filter(c => c.name.toLowerCase().includes(q)) : CARDS;
+}
+function filterCards(v,q) { filters[v]=q; render(v); }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1500);
+}
+function change(v, id, delta) {
+  const cur = deck[v][id] || 0;
+  const next = Math.max(0, Math.min(3, cur + delta));
+  if (next === cur) { if (delta > 0) toast('Max 3 copies'); return; }
+  deck[v][id] = next;
+  if (next === 0) delete deck[v][id];
+  lastBumped[v] = id;
+  render(v);
+  setTimeout(() => { lastBumped[v] = null; }, 260);
+}
+function toggleSelect(v, id) {
+  sel[v] = (sel[v] === id) ? null : id;
+  render(v);
+}
+function openDetail(name) { toast('→ /cards/SOR/… — "' + name + '" detail page (still shareable)'); }
+function openSheet(v) {
+  document.querySelector('#phone-' + v + ' .sheet-scrim').classList.add('on');
+  document.getElementById('sheet-' + v).classList.add('on');
+  document.getElementById('stat-' + v).textContent = total(v);
+}
+function closeSheet(v) {
+  document.querySelector('#phone-' + v + ' .sheet-scrim').classList.remove('on');
+  document.getElementById('sheet-' + v).classList.remove('on');
+}
+
+/* long-press (variant C) */
+let pressTimer = null, pressEl = null;
+function pressStart(v, id, el) {
+  pressEl = el; el.classList.add('pressing');
+  pressTimer = setTimeout(() => {
+    el.classList.remove('pressing');
+    pressEl = null; pressTimer = null;
+    openDetail(CARDS.find(c => c.id === id).name);
+  }, 500);
+}
+function pressEnd(v, id) {
+  if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; toggleSelect(v, id); }
+  if (pressEl) { pressEl.classList.remove('pressing'); pressEl = null; }
+}
+
+function tiles(v, opts = {}) {
+  return visible(v).map(c => {
+    const n = deck[v][c.id] || 0;
+    const short = n > c.owned;
+    const handlers = opts.longPress
+      ? `onmousedown="pressStart('${v}',${c.id},this)" onmouseup="pressEnd('${v}',${c.id})" onmouseleave="pressEnd('${v}',${c.id})"`
+      : `onclick="toggleSelect('${v}',${c.id})"`;
+    return `<div class="tileB ${sel[v]===c.id?'sel':''} ${short?'shortfall':''}" ${handlers}>
+      ${artHTML(c)}
+      ${opts.cornerInfo ? `<div class="corner-info" onmousedown="event.stopPropagation()" onclick="event.stopPropagation();openDetail('${c.name.replace(/'/g,"\\'")}')" title="Card details">i</div>` : ''}
+      <div class="deckbadge ${n?'on':''} ${lastBumped[v]===c.id?'pop':''}">${n}</div>
+    </div>`;
+  }).join('');
+}
+
+function actionBarHTML(v, withInfo) {
+  const c = CARDS.find(x => x.id === sel[v]);
+  const n = deck[v][c.id] || 0;
+  const short = n > c.owned;
+  return `<div class="actionbar">
+    <div class="thumb">${artHTML(c, {name:false})}</div>
+    <div class="meta">
+      <div class="nm">${c.name}</div>
+      <div class="sub">owns ${c.owned}${short ? ' · <span style="color:var(--color-danger);font-weight:700">short '+(n-c.owned)+'</span>' : ''}</div>
+    </div>
+    <div class="ctrls">
+      ${withInfo ? `<button class="icon-btn" onclick="openDetail('${c.name.replace(/'/g,"\\'")}')" aria-label="Card details">i</button>` : ''}
+      <button class="step-btn" ${n===0?'disabled':''} onclick="change('${v}',${c.id},-1)" aria-label="Remove one">−</button>
+      <div class="count-box ${n?'has':''}"><span class="lbl">In deck</span><span>${n}</span></div>
+      <button class="step-btn" onclick="change('${v}',${c.id},1)" aria-label="Add one">+</button>
+    </div>
+  </div>`;
+}
+
+function statsBarHTML(v) {
+  const t = total(v);
+  return `<div class="statsbar" onclick="openSheet('${v}')">
+    <span>Main deck <strong>${t} / 50</strong></span>
+    <span class="${t===50?'valid':'invalid'}">${t===50?'✓ Legal':'Needs '+(50-t)+' more'} <span class="chev">▲</span></span>
+  </div>`;
+}
+
+/* ---- A: swap ---- */
+function renderA() {
+  document.getElementById('grid-a').innerHTML = tiles('a');
+  document.getElementById('bz-a').innerHTML = sel.a == null
+    ? statsBarHTML('a')
+    : actionBarHTML('a', true) ;
+  syncMeasure('a');
+}
+
+/* ---- B: stack ---- */
+function renderB() {
+  document.getElementById('grid-b').innerHTML = tiles('b');
+  document.getElementById('bz-b').innerHTML =
+    (sel.b == null ? '' : actionBarHTML('b', true)) + statsBarHTML('b');
+  syncMeasure('b');
+}
+
+/* ---- C: merge ---- */
+function renderC() {
+  document.getElementById('grid-c').innerHTML = tiles('c', { longPress: true, cornerInfo: true });
+  const t = total('c');
+  let left;
+  if (sel.c == null) {
+    left = `<div class="meta" style="padding-left:4px"><div class="nm">Rebel Aggro</div>
+              <div class="sub">Tap a card to adjust · hold for details</div></div>`;
+  } else {
+    const c = CARDS.find(x => x.id === sel.c);
+    const n = deck.c[c.id] || 0;
+    left = `<div class="thumb">${artHTML(c,{name:false})}</div>
+      <div class="meta"><div class="nm">${c.name}</div><div class="sub">owns ${c.owned}</div></div>
+      <div class="ctrls">
+        <button class="step-btn" ${n===0?'disabled':''} onclick="change('c',${c.id},-1)" aria-label="Remove one">−</button>
+        <div class="count-box ${n?'has':''}"><span>${n}</span></div>
+        <button class="step-btn" onclick="change('c',${c.id},1)" aria-label="Add one">+</button>
+      </div>`;
+  }
+  document.getElementById('bz-c').innerHTML = `
+    <div class="actionbar" style="${sel.c==null?'border-top-color:var(--color-border);':''}">
+      ${left}
+      <div style="width:1px;height:34px;background:var(--color-border);flex-shrink:0"></div>
+      <div class="count-box" style="cursor:pointer;flex-shrink:0;min-width:58px" onclick="openSheet('c')">
+        <span class="lbl">Deck ▲</span><span style="color:${t===50?'var(--color-success)':'var(--color-text)'}">${t}/50</span>
+      </div>
+    </div>`;
+  syncMeasure('c');
+}
+
+function syncMeasure(v) {
+  const bz = document.getElementById('bz-' + v);
+  if (bz) bz.setAttribute('data-h', Math.round(bz.getBoundingClientRect().height) + 'px bottom zone');
+}
+
+function toggleMeasure() {
+  document.body.classList.toggle('measure');
+  document.getElementById('measure-btn').classList.toggle('on');
+  renderAll();
+}
+function resetAll() {
+  ['a','b','c'].forEach(v => { deck[v] = {...SEED}; sel[v] = null; closeSheet(v); });
+  filters = { a:'', b:'', c:'' };
+  document.querySelectorAll('.search input').forEach(i => i.value = '');
+  renderAll(); toast('Reset');
+}
+function showVariant(id) {
+  document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('variant-' + id).classList.add('active');
+  document.querySelector(`.variant-tab[data-v="${id}"]`).classList.add('active');
+  renderAll();
+}
+function render(v) { ({ a:renderA, b:renderB, c:renderC }[v])(); }
+function renderAll() { ['a','b','c'].forEach(render); }
+
+renderAll();
+</script>
+</body>
+</html>
