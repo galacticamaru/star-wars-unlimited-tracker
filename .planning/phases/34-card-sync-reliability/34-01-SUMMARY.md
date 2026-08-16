@@ -179,6 +179,10 @@ None - no external service configuration required.
 - `src/app/api/cron/sync-cards/route.ts` still calls `syncAllCards()` with no arguments — unaffected by this plan (it's a later plan's file) and continues to compile and pass its own tests (`cron-route.test.ts`'s mock of `@/lib/sync/upsert-cards` is untouched by the new optional-args signature)
 - No blockers for downstream plans in this phase
 
+## Self-Check: PASSED
+
+All claimed created/modified files exist on disk (`src/lib/sync/chunk.ts`, `src/lib/sync/set-list.ts`, `src/lib/sync/upsert-cards.ts`, `__tests__/upsert-cards.test.ts`, this SUMMARY.md, `deferred-items.md`) and all three task commits (`23f79ae`, `cd8ba2a`, `ed1cacf`) are present in `git log --oneline --all`.
+
 ---
 *Phase: 34-card-sync-reliability*
 *Completed: 2026-08-16*
