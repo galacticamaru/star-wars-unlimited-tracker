@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 003 — Responsive scope of the tile + bar model</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding-top: 92px; background: var(--color-bg); font-family: var(--font-sans); color: var(--color-text); }
+
+  #variant-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 9998; background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: var(--space-3) var(--space-4); display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; box-shadow: var(--shadow-sm); }
+  #variant-nav .title { font-weight: 700; font-size: var(--text-sm); margin-right: var(--space-4); }
+  .variant-tab { font: inherit; font-size: var(--text-sm); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius-md); cursor: pointer; transition: all 0.15s ease; color: var(--color-text-muted); }
+  .variant-tab:hover { background: var(--color-surface-2); color: var(--color-text); }
+  .variant-tab.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; font-weight: 600; }
+
+  .variant { display: none; padding: var(--space-6); }
+  .variant.active { display: block; }
+
+  .frame-label { font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-2); font-family: var(--font-mono); }
+  .frame-label b { color: var(--color-danger); }
+
+  /* ---------- desktop frame ---------- */
+  .desktop { width: 1024px; height: 560px; border: 8px solid #0f172a; border-radius: 12px; overflow: hidden; background: var(--color-bg); display: flex; flex-direction: column; box-shadow: var(--shadow-lg); max-width: 100%; }
+  .desk-body { flex: 1; display: flex; overflow: hidden; }
+  .desk-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+  .desk-side { width: 320px; flex-shrink: 0; background: var(--color-surface-2); border-left: 1px solid var(--color-border); padding: var(--space-4); overflow-y: auto; font-size: var(--text-sm); }
+  .desk-side h4 { margin: 0 0 var(--space-3); font-size: var(--text-base); }
+
+  /* ---------- phone frame ---------- */
+  .phone { width: 390px; height: 620px; background: var(--color-bg); border: 10px solid #0f172a; border-radius: 32px; overflow: hidden; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; flex-shrink: 0; }
+
+  .app-toolbar { background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: var(--space-3) var(--space-4); flex-shrink: 0; display: flex; align-items: center; gap: var(--space-4); }
+  .app-toolbar .deck-name { font-size: var(--text-lg); font-weight: 700; }
+  .tabs { display: flex; background: var(--color-surface-2); border-radius: var(--radius-lg); padding: 3px; }
+  .tabs button { font: inherit; font-size: var(--text-sm); padding: 5px 12px; border: none; background: transparent; border-radius: var(--radius-md); cursor: pointer; color: var(--color-text-muted); }
+  .tabs button.on { background: var(--color-surface); box-shadow: var(--shadow-sm); color: var(--color-text); font-weight: 600; }
+  .phone .app-toolbar { flex-direction: column; align-items: stretch; gap: var(--space-2); }
+  .phone .tabs button { flex: 1; }
+
+  .scroll { flex: 1; overflow-y: auto; position: relative; }
+  .grid { display: grid; gap: 8px; padding: 16px; }
+
+  /* ---------- tiles ---------- */
+  .art { position: relative; width: 100%; aspect-ratio: 2/3; overflow: hidden; background: var(--color-surface-2); }
+  .art .nameplate { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(transparent, rgba(0,0,0,0.82)); color: #fff; padding: 12px 3px 3px; font-size: 9px; font-weight: 700; line-height: 1.1; }
+  .art .cost { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: var(--radius-full); background: rgba(15,23,42,0.85); color: #fff; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .tile { position: relative; border-radius: var(--radius-md); overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.15s ease; background: var(--color-surface-2); }
+  .tile.sel { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+  .tile .deckbadge { position: absolute; bottom: 2px; right: 2px; background: var(--color-primary); color: #fff; font-size: 9px; font-weight: 800; min-width: 17px; height: 17px; padding: 0 4px; border-radius: var(--radius-full); display: none; align-items: center; justify-content: center; box-shadow: var(--shadow-md); }
+  .tile .deckbadge.on { display: flex; }
+
+  /* legacy hover overlay — variant A desktop */
+  .hover-ctrl { position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s ease; background: rgba(0,0,0,0.45); }
+  .tile:hover .hover-ctrl { opacity: 1; }
+  .hover-ctrl .pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.95); border-radius: var(--radius-full); padding: 3px 8px; white-space: nowrap; box-shadow: var(--shadow-md); }
+  .hover-ctrl .pill button { min-width: 30px; min-height: 30px; border: none; background: transparent; font: inherit; font-size: var(--text-base); font-weight: 700; cursor: pointer; border-radius: var(--radius-full); }
+  .hover-ctrl .pill button:hover { background: var(--color-primary-soft); color: var(--color-primary); }
+  .hover-ctrl .pill .n { font-weight: 800; font-size: var(--text-sm); min-width: 12px; text-align: center; }
+
+  /* always-on tile controls — variant B */
+  .tile-ctrl { display: flex; border-top: 1px solid var(--color-border); background: var(--color-surface); }
+  .tile-ctrl button { flex: 1; min-height: 30px; border: none; background: transparent; font: inherit; font-weight: 700; cursor: pointer; }
+  .tile-ctrl button:hover { background: var(--color-primary-soft); color: var(--color-primary); }
+  .tile-ctrl .n { min-width: 20px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: var(--text-xs); border-left: 1px solid var(--color-border); border-right: 1px solid var(--color-border); }
+
+  /* ---------- bars ---------- */
+  .step-btn { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius-md); font: inherit; font-size: var(--text-lg); font-weight: 600; cursor: pointer; transition: all 0.12s ease; user-select: none; }
+  .step-btn:hover { background: var(--color-primary-soft); border-color: var(--color-primary); color: var(--color-primary); }
+  .step-btn:active { transform: scale(0.92); background: var(--color-primary); color: #fff; }
+  .step-btn[disabled] { opacity: 0.35; cursor: not-allowed; }
+  .count-box { text-align: center; font-weight: 700; display: flex; flex-direction: column; justify-content: center; line-height: 1.05; min-width: 46px; }
+  .count-box .lbl { font-size: 9px; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .count-box.has { color: var(--color-primary); }
+
+  .merged-bar { flex-shrink: 0; background: var(--color-surface); border-top: 2px solid var(--color-primary); padding: var(--space-3); display: flex; gap: var(--space-3); align-items: center; box-shadow: 0 -4px 12px rgba(15,23,42,0.08); }
+  .merged-bar.idle { border-top-color: var(--color-border); }
+  .merged-bar .thumb { width: 34px; height: 51px; border-radius: var(--radius-sm); overflow: hidden; flex-shrink: 0; }
+  .merged-bar .meta { flex: 1; min-width: 0; }
+  .merged-bar .meta .nm { font-weight: 700; font-size: var(--text-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .merged-bar .meta .sub { font-size: var(--text-xs); color: var(--color-text-muted); }
+  .merged-bar .ctrls { display: flex; gap: var(--space-2); align-items: center; flex-shrink: 0; }
+
+  /* sidebar-hosted control — variant C desktop */
+  .side-target { background: var(--color-surface); border: 2px solid var(--color-primary); border-radius: var(--radius-lg); padding: var(--space-3); margin-bottom: var(--space-4); }
+  .side-target.idle { border-color: var(--color-border); border-style: dashed; text-align: center; color: var(--color-text-muted); font-size: var(--text-sm); padding: var(--space-6) var(--space-3); }
+  .side-target .head { display: flex; gap: var(--space-3); margin-bottom: var(--space-3); }
+  .side-target .head .thumb { width: 44px; height: 66px; border-radius: var(--radius-sm); overflow: hidden; flex-shrink: 0; }
+  .side-target .head .nm { font-weight: 700; font-size: var(--text-sm); }
+  .side-target .head .sub { font-size: var(--text-xs); color: var(--color-text-muted); }
+  .side-target .ctrls { display: flex; gap: var(--space-2); align-items: center; }
+  .statrow { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--color-border); font-size: var(--text-sm); }
+
+  /* ---------- notes ---------- */
+  .row { display: flex; gap: var(--space-8); align-items: flex-start; margin-top: var(--space-6); flex-wrap: wrap; }
+  .notes { flex: 1; min-width: 300px; max-width: 560px; font-size: var(--text-sm); line-height: 1.6; color: var(--color-text-muted); }
+  .notes h2 { color: var(--color-text); font-size: var(--text-lg); margin: 0 0 var(--space-2); }
+  .notes h3 { color: var(--color-text); font-size: var(--text-sm); margin: var(--space-6) 0 var(--space-2); text-transform: uppercase; letter-spacing: 0.04em; }
+  .notes ul { margin: 0; padding-left: 1.1em; }
+  .notes li { margin-bottom: var(--space-2); }
+  .verdict { display: inline-block; padding: 2px 8px; border-radius: var(--radius-full); font-size: var(--text-2xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .verdict.good { background: #dcfce7; color: #15803d; }
+  .verdict.warn { background: var(--color-accent-soft); color: var(--color-accent); }
+  .verdict.bad  { background: #fee2e2; color: #b91c1c; }
+  .callout { background: var(--color-surface); border-left: 3px solid var(--color-danger); padding: var(--space-3) var(--space-4); margin: var(--space-4) 0; border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+  .callout strong { color: var(--color-text); }
+
+  /* ---------- measure ---------- */
+  body.measure .tile { position: relative; }
+  body.measure .tile::before { content: attr(data-w); position: absolute; top: 1px; left: 1px; z-index: 60; background: #dc2626; color: #fff; font: 700 8px var(--font-mono); padding: 0 3px; border-radius: 2px; pointer-events: none; }
+  body.measure .hover-ctrl .pill { outline: 2px dashed #dc2626; }
+
+  #toast { position: fixed; bottom: 70px; left: 50%; transform: translate(-50%, 20px); background: #0f172a; color: #fff; padding: 10px 16px; border-radius: var(--radius-lg); font-size: var(--text-sm); opacity: 0; pointer-events: none; transition: all 0.2s ease; z-index: 9999; }
+  #toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  #sketch-tools { position: fixed; bottom: 12px; right: 12px; z-index: 9999; font-family: system-ui; font-size: 12px; background: rgba(15,23,42,0.85); color: #fff; padding: 8px 12px; border-radius: 8px; opacity: 0.45; transition: opacity 0.2s; display: flex; gap: 10px; align-items: center; }
+  #sketch-tools:hover { opacity: 1; }
+  #sketch-tools select, #sketch-tools button { font: inherit; font-size: 11px; background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 5px; padding: 3px 7px; cursor: pointer; }
+  #sketch-tools button.on { background: #dc2626; border-color: #dc2626; }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <span class="title">Sketch 003 — Responsive scope</span>
+  <button class="variant-tab active" data-v="a" onclick="showVariant('a')">A: Breakpoint fork</button>
+  <button class="variant-tab" data-v="b" onclick="showVariant('b')">B: Global, controls on tile</button>
+  <button class="variant-tab" data-v="c" onclick="showVariant('c')">C: One model, two containers ★ Selected</button>
+</div>
+
+<!-- ============ A ============ -->
+<div class="variant active" id="variant-a">
+  <div class="frame-label">Desktop — 1024px window, <b>9 columns</b>, 320px sidebar → container ≈704px → tile ≈ <b id="a-dw">—</b>px · today's hover overlay retained</div>
+  <div class="desktop">
+    <div class="app-toolbar">
+      <span class="deck-name">Rebel Aggro</span>
+      <div class="tabs"><button>Deck List</button><button class="on">Add Cards</button><button>Want List</button></div>
+    </div>
+    <div class="desk-body">
+      <div class="desk-main"><div class="scroll"><div class="grid" id="grid-a-desk" style="grid-template-columns:repeat(9,1fr)"></div></div></div>
+      <div class="desk-side">
+        <h4>Rebel Aggro</h4>
+        <div class="statrow"><span>Main deck</span><strong><span id="a-total-d">0</span> / 50</strong></div>
+        <div class="statrow"><span>Sideboard</span><strong>0 / 10</strong></div>
+        <div class="statrow"><span>Deck value</span><strong>€48.20</strong></div>
+        <p style="color:var(--color-text-muted);font-size:var(--text-xs);margin-top:16px">Sidebar unchanged — stats and validation only, as today.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <div class="frame-label">Mobile — 390px, 3 columns, tile ≈ <span id="a-mw">—</span>px · new model</div>
+      <div class="phone">
+        <div class="app-toolbar">
+          <span class="deck-name">Rebel Aggro</span>
+          <div class="tabs"><button>Deck</button><button class="on">Cards</button><button>Wants</button></div>
+        </div>
+        <div class="scroll"><div class="grid" id="grid-a-mob" style="grid-template-columns:repeat(3,1fr)"></div></div>
+        <div class="merged-bar idle" id="bar-a"></div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>A: Fork at the breakpoint</h2>
+      <p>Below <code>md</code>, the new model. At <code>md</code> and above, today's desktop is left exactly as it is — hover overlay, tile-wide link, sidebar for stats.</p>
+
+      <div class="callout">
+        <strong>What the measurement shows.</strong> Desktop tiles are ≈<span id="a-dw2">—</span>px; mobile tiles are ≈<span id="a-mw2">—</span>px. <strong>Desktop tiles are smaller.</strong> The hover pill overflows its tile there too — it just doesn't hurt, because a mouse is precise and hover is real.
+      </div>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><span class="verdict good">Zero desktop risk</span> — a working surface is left untouched.</li>
+        <li><span class="verdict warn">Two interaction contracts</span> in one component. The same tile navigates on desktop and selects on mobile.</li>
+        <li>The findings skill currently states "nothing hover-dependent" and "the tile is not a Link" globally. Under A, both rules become mobile-only and the skill needs rewording.</li>
+        <li>Every future change to selector behaviour has to be reasoned about twice.</li>
+      </ul>
+      <p>Hover a desktop tile to see the legacy overlay; tap a mobile tile to see the new one.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ B ============ -->
+<div class="variant" id="variant-b">
+  <div class="frame-label">Desktop — always-visible controls attached under every tile</div>
+  <div class="desktop">
+    <div class="app-toolbar">
+      <span class="deck-name">Rebel Aggro</span>
+      <div class="tabs"><button>Deck List</button><button class="on">Add Cards</button><button>Want List</button></div>
+    </div>
+    <div class="desk-body">
+      <div class="desk-main"><div class="scroll"><div class="grid" id="grid-b-desk" style="grid-template-columns:repeat(9,1fr)"></div></div></div>
+      <div class="desk-side">
+        <h4>Rebel Aggro</h4>
+        <div class="statrow"><span>Main deck</span><strong><span id="b-total-d">0</span> / 50</strong></div>
+        <div class="statrow"><span>Sideboard</span><strong>0 / 10</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <div class="frame-label">Mobile — same idea, controls under every tile</div>
+      <div class="phone">
+        <div class="app-toolbar">
+          <span class="deck-name">Rebel Aggro</span>
+          <div class="tabs"><button>Deck</button><button class="on">Cards</button><button>Wants</button></div>
+        </div>
+        <div class="scroll"><div class="grid" id="grid-b-mob" style="grid-template-columns:repeat(3,1fr)"></div></div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>B: One rule everywhere — controls always on the tile</h2>
+      <p>The literal reading of "nothing hover-dependent": put a real, visible control on every tile at every breakpoint. Built here so the failure is visible rather than argued.</p>
+
+      <div class="callout">
+        <strong>It fails on desktop worse than on mobile.</strong> At 9 columns inside a 704px container, a tile is ≈<span id="b-dw">—</span>px. A two-button control cannot be 44px there — the buttons above are 30px, already below the floor, and still cramped. Sketch 001 rejected this at 118px; desktop is tighter.
+      </div>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><span class="verdict bad">Breaks the 44px rule</span> at both breakpoints to make it fit.</li>
+        <li>Changes row geometry everywhere, so <code>estimateSize</code> (<code>card-grid.tsx:80</code>) must change and every row needs measuring.</li>
+        <li>Art shrinks at every breakpoint to make room for chrome — directly against "card art forward".</li>
+        <li><span class="verdict good">One rule, one codepath</span> — the only thing it has going for it.</li>
+      </ul>
+      <p>Included as the honest test of the global rule. Turn on <strong>Measure</strong> and compare the control against its tile.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ C ============ -->
+<div class="variant" id="variant-c">
+  <div class="frame-label">Desktop — tap selects; controls render in the existing sidebar</div>
+  <div class="desktop">
+    <div class="app-toolbar">
+      <span class="deck-name">Rebel Aggro</span>
+      <div class="tabs"><button>Deck List</button><button class="on">Add Cards</button><button>Want List</button></div>
+    </div>
+    <div class="desk-body">
+      <div class="desk-main"><div class="scroll"><div class="grid" id="grid-c-desk" style="grid-template-columns:repeat(9,1fr)"></div></div></div>
+      <div class="desk-side" id="side-c"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <div class="frame-label">Mobile — same model; controls render in the bottom bar</div>
+      <div class="phone">
+        <div class="app-toolbar">
+          <span class="deck-name">Rebel Aggro</span>
+          <div class="tabs"><button>Deck</button><button class="on">Cards</button><button>Wants</button></div>
+        </div>
+        <div class="scroll"><div class="grid" id="grid-c-mob" style="grid-template-columns:repeat(3,1fr)"></div></div>
+        <div class="merged-bar idle" id="bar-c"></div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>C: One model, two containers</h2>
+      <p>The interaction contract is identical everywhere — <strong>tap selects, controls live off the tile</strong>. Only the container changes: a bottom bar where there's no room, the existing 320px sidebar where there is.</p>
+
+      <div class="callout" style="border-left-color:var(--color-success)">
+        <strong>The sidebar already exists and is under-used.</strong> Today it shows stats and validation only (<code>deck-sidebar.tsx</code>). Hosting the selected-card controls costs no new screen real estate and no new component category — it's the same "off-tile control surface" the mobile bar provides.
+      </div>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><span class="verdict good">One interaction contract</span> — the tile behaves identically at every width. The findings skill's global rules stay literally true.</li>
+        <li><span class="verdict good">Desktop tiles keep full art</span> at ≈<span id="c-dw">—</span>px — no chrome competing for the smallest tiles in the app.</li>
+        <li><code>estimateSize</code> stays valid at every breakpoint — nothing is added below the art.</li>
+        <li><span class="verdict warn">Desktop loses hover-to-adjust.</span> Mouse users gain a select step they don't strictly need. That's the real cost.</li>
+        <li>Hover could still be layered on desktop as an accelerator without changing the contract — but that reintroduces two paths, so it's a deliberate follow-up decision, not a freebie.</li>
+      </ul>
+      <p>Click tiles in both frames. The rhythm should feel like the same product.</p>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<div id="sketch-tools">
+  <select onchange="document.querySelector('link[href*=themes]').href='../themes/'+this.value+'.css'">
+    <option value="default">Default theme</option>
+  </select>
+  <button id="measure-btn" onclick="toggleMeasure()">Measure</button>
+  <button onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const ASPECT = {
+  vigilance:['#3b82f6','#1e40af'], command:['#16a34a','#14532d'], aggression:['#dc2626','#7f1d1d'],
+  cunning:['#eab308','#854d0e'], heroism:['#f8fafc','#94a3b8'], villainy:['#334155','#020617'],
+};
+const CARDS = [
+  { id:1,  name:'Battlefield Marine',      cost:2, aspect:'command',    owned:3 },
+  { id:2,  name:'Vanquish',                cost:5, aspect:'vigilance',  owned:2 },
+  { id:3,  name:'Waylay',                  cost:3, aspect:'cunning',    owned:1 },
+  { id:4,  name:'Alliance X-Wing',         cost:4, aspect:'vigilance',  owned:3 },
+  { id:5,  name:'Wampa',                   cost:4, aspect:'aggression', owned:0 },
+  { id:6,  name:'Cell Block Guard',        cost:3, aspect:'villainy',   owned:2 },
+  { id:7,  name:'Green Squadron A-Wing',   cost:2, aspect:'cunning',    owned:3 },
+  { id:8,  name:'Vigilant Honor Guards',   cost:5, aspect:'vigilance',  owned:1 },
+  { id:9,  name:'Superlaser Blast',        cost:9, aspect:'villainy',   owned:0 },
+  { id:10, name:'Fleet Lieutenant',        cost:2, aspect:'command',    owned:3 },
+  { id:11, name:'Consular Security Force', cost:4, aspect:'vigilance',  owned:2 },
+  { id:12, name:'Restock',                 cost:2, aspect:'command',    owned:1 },
+  { id:13, name:'Bright Hope',             cost:5, aspect:'vigilance',  owned:1 },
+  { id:14, name:'Krayt Dragon',            cost:8, aspect:'aggression', owned:0 },
+  { id:15, name:'Admiral Ackbar',          cost:5, aspect:'command',    owned:2 },
+  { id:16, name:'Home One',                cost:7, aspect:'command',    owned:1 },
+  { id:17, name:'Death Star Stormtrooper', cost:1, aspect:'villainy',   owned:3 },
+  { id:18, name:'Regional Governor',       cost:5, aspect:'villainy',   owned:2 },
+];
+const SEED = { 1:3, 4:2, 5:2, 10:3 };
+const deck = { a:{...SEED}, b:{...SEED}, c:{...SEED} };
+const sel  = { a:null, c:null };
+
+function art(c, small) {
+  const [x, y] = ASPECT[c.aspect];
+  return `<div class="art" style="background:linear-gradient(150deg,${x},${y})">
+    <div class="cost">${c.cost}</div>
+    ${small ? '' : `<div class="nameplate">${c.name}</div>`}
+  </div>`;
+}
+function total(v) { return Object.values(deck[v]).reduce((s,n)=>s+n,0); }
+function toast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('on');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('on'), 1400);
+}
+function change(v, id, d) {
+  const cur = deck[v][id] || 0;
+  const nx = Math.max(0, Math.min(3, cur + d));
+  if (nx === cur) { if (d>0) toast('Max 3 copies'); return; }
+  deck[v][id] = nx; if (!nx) delete deck[v][id];
+  render(v);
+}
+function pick(v, id) { sel[v] = (sel[v]===id ? null : id); render(v); }
+function navigate(n) { toast('→ /cards/SOR/… "' + n + '" — tile-wide link (desktop only under A)'); }
+
+/* ---- A ---- */
+function renderA() {
+  document.getElementById('grid-a-desk').innerHTML = CARDS.map(c => {
+    const n = deck.a[c.id] || 0;
+    return `<div class="tile" onclick="navigate('${c.name.replace(/'/g,"\\'")}')">
+      ${art(c, true)}
+      <div class="hover-ctrl">
+        <div class="pill">
+          <button onclick="event.stopPropagation();change('a',${c.id},-1)">−</button>
+          <span class="n">${n}</span>
+          <button onclick="event.stopPropagation();change('a',${c.id},1)">+</button>
+        </div>
+      </div>
+      <div class="deckbadge ${n?'on':''}">${n}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('grid-a-mob').innerHTML = CARDS.map(c => {
+    const n = deck.a[c.id] || 0;
+    return `<div class="tile ${sel.a===c.id?'sel':''}" onclick="pick('a',${c.id})">
+      ${art(c)}<div class="deckbadge ${n?'on':''}">${n}</div></div>`;
+  }).join('');
+
+  const bar = document.getElementById('bar-a');
+  if (sel.a == null) {
+    bar.className = 'merged-bar idle';
+    bar.innerHTML = `<div class="meta" style="padding-left:4px"><div class="nm">Rebel Aggro</div>
+      <div class="sub">Tap a card to adjust</div></div>
+      <div class="count-box" style="min-width:58px"><span class="lbl">Deck ▲</span><span>${total('a')}/50</span></div>`;
+  } else {
+    const c = CARDS.find(x=>x.id===sel.a), n = deck.a[c.id]||0;
+    bar.className = 'merged-bar';
+    bar.innerHTML = `<div class="thumb">${art(c,true)}</div>
+      <div class="meta"><div class="nm">${c.name}</div><div class="sub">owns ${c.owned}</div></div>
+      <div class="ctrls">
+        <button class="step-btn" ${n===0?'disabled':''} onclick="change('a',${c.id},-1)">−</button>
+        <div class="count-box ${n?'has':''}"><span>${n}</span></div>
+        <button class="step-btn" onclick="change('a',${c.id},1)">+</button>
+      </div>
+      <div class="count-box" style="min-width:52px;border-left:1px solid var(--color-border);padding-left:8px">
+        <span class="lbl">Deck ▲</span><span>${total('a')}/50</span></div>`;
+  }
+  document.getElementById('a-total-d').textContent = total('a');
+  syncMeasure();
+}
+
+/* ---- B ---- */
+function renderB() {
+  const tiles = CARDS.map(c => {
+    const n = deck.b[c.id] || 0;
+    return `<div class="tile" style="background:var(--color-surface)">
+      ${art(c, true)}
+      <div class="tile-ctrl">
+        <button onclick="change('b',${c.id},-1)">−</button>
+        <span class="n">${n}</span>
+        <button onclick="change('b',${c.id},1)">+</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('grid-b-desk').innerHTML = tiles;
+  document.getElementById('grid-b-mob').innerHTML = tiles;
+  document.getElementById('b-total-d').textContent = total('b');
+  syncMeasure();
+}
+
+/* ---- C ---- */
+function renderC() {
+  const tilesDesk = CARDS.map(c => {
+    const n = deck.c[c.id] || 0;
+    return `<div class="tile ${sel.c===c.id?'sel':''}" onclick="pick('c',${c.id})">
+      ${art(c, true)}<div class="deckbadge ${n?'on':''}">${n}</div></div>`;
+  }).join('');
+  document.getElementById('grid-c-desk').innerHTML = tilesDesk;
+
+  document.getElementById('grid-c-mob').innerHTML = CARDS.map(c => {
+    const n = deck.c[c.id] || 0;
+    return `<div class="tile ${sel.c===c.id?'sel':''}" onclick="pick('c',${c.id})">
+      ${art(c)}<div class="deckbadge ${n?'on':''}">${n}</div></div>`;
+  }).join('');
+
+  const side = document.getElementById('side-c');
+  let target;
+  if (sel.c == null) {
+    target = `<div class="side-target idle">Select a card to adjust its count</div>`;
+  } else {
+    const c = CARDS.find(x=>x.id===sel.c), n = deck.c[c.id]||0;
+    target = `<div class="side-target">
+      <div class="head">
+        <div class="thumb">${art(c,true)}</div>
+        <div><div class="nm">${c.name}</div><div class="sub">owns ${c.owned}</div>
+          <button style="margin-top:4px;font:inherit;font-size:var(--text-xs);color:var(--color-primary);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline"
+            onclick="navigate('${c.name.replace(/'/g,"\\'")}')">Card details</button></div>
+      </div>
+      <div class="ctrls">
+        <button class="step-btn" ${n===0?'disabled':''} onclick="change('c',${c.id},-1)">−</button>
+        <div class="count-box ${n?'has':''}"><span class="lbl">In deck</span><span>${n}</span></div>
+        <button class="step-btn" onclick="change('c',${c.id},1)">+</button>
+      </div>
+    </div>`;
+  }
+  side.innerHTML = `<h4>Rebel Aggro</h4>${target}
+    <div class="statrow"><span>Main deck</span><strong>${total('c')} / 50</strong></div>
+    <div class="statrow"><span>Sideboard</span><strong>0 / 10</strong></div>
+    <div class="statrow"><span>Deck value</span><strong>€48.20</strong></div>`;
+
+  const bar = document.getElementById('bar-c');
+  if (sel.c == null) {
+    bar.className = 'merged-bar idle';
+    bar.innerHTML = `<div class="meta" style="padding-left:4px"><div class="nm">Rebel Aggro</div>
+      <div class="sub">Tap a card · hold for details</div></div>
+      <div class="count-box" style="min-width:58px"><span class="lbl">Deck ▲</span><span>${total('c')}/50</span></div>`;
+  } else {
+    const c = CARDS.find(x=>x.id===sel.c), n = deck.c[c.id]||0;
+    bar.className = 'merged-bar';
+    bar.innerHTML = `<div class="thumb">${art(c,true)}</div>
+      <div class="meta"><div class="nm">${c.name}</div><div class="sub">owns ${c.owned}</div></div>
+      <div class="ctrls">
+        <button class="step-btn" ${n===0?'disabled':''} onclick="change('c',${c.id},-1)">−</button>
+        <div class="count-box ${n?'has':''}"><span>${n}</span></div>
+        <button class="step-btn" onclick="change('c',${c.id},1)">+</button>
+      </div>
+      <div class="count-box" style="min-width:52px;border-left:1px solid var(--color-border);padding-left:8px">
+        <span class="lbl">Deck ▲</span><span>${total('c')}/50</span></div>`;
+  }
+  syncMeasure();
+}
+
+function syncMeasure() {
+  document.querySelectorAll('.tile').forEach(t => {
+    t.setAttribute('data-w', Math.round(t.getBoundingClientRect().width) + 'px');
+  });
+  const set = (id, sel) => {
+    const el = document.querySelector(sel);
+    document.querySelectorAll('#' + id).forEach(n => {
+      if (el) n.textContent = Math.round(el.getBoundingClientRect().width);
+    });
+  };
+  const w = q => { const e = document.querySelector(q); return e ? Math.round(e.getBoundingClientRect().width) : '—'; };
+  ['a-dw','a-dw2'].forEach(i => { const e = document.getElementById(i); if (e) e.textContent = w('#grid-a-desk .tile'); });
+  ['a-mw','a-mw2'].forEach(i => { const e = document.getElementById(i); if (e) e.textContent = w('#grid-a-mob .tile'); });
+  const bd = document.getElementById('b-dw'); if (bd) bd.textContent = w('#grid-b-desk .tile');
+  const cd = document.getElementById('c-dw'); if (cd) cd.textContent = w('#grid-c-desk .tile');
+}
+
+function toggleMeasure() {
+  document.body.classList.toggle('measure');
+  document.getElementById('measure-btn').classList.toggle('on');
+  renderAll();
+}
+function resetAll() {
+  ['a','b','c'].forEach(v => deck[v] = {...SEED});
+  sel.a = sel.c = null; renderAll(); toast('Reset');
+}
+function showVariant(id) {
+  document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('variant-' + id).classList.add('active');
+  document.querySelector(`.variant-tab[data-v="${id}"]`).classList.add('active');
+  renderAll();
+}
+function render(v) { ({ a:renderA, b:renderB, c:renderC }[v])(); }
+function renderAll() { ['a','b','c'].forEach(render); }
+
+renderAll();
+window.addEventListener('resize', syncMeasure);
+</script>
+</body>
+</html>

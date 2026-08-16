@@ -24,6 +24,7 @@ gradients so mockups stay offline and still read as the real product.
 |---|------|----------------|--------|------|
 | 001 | selector-tile-mobile | What tile layout and control placement works for selector mode at 390px? | **B** — 3-col art-only tile + pinned action bar | mobile, deck-builder, catalog, touch, layout |
 | 002 | bottom-zone-and-detail-affordance | With three things competing for the bottom of the screen, how do they coexist — and where does the detail-page link go? | **C** — one merged 64px bar; detail via corner ⓘ + long-press | mobile, navigation, feedback |
+| 003 | responsive-scope | Does the tile + off-tile-controls model apply at every breakpoint, or is it mobile-only? | **C** — one model, two containers (bottom bar / sidebar) | responsive, desktop, consistency |
 
 ## Decisions So Far
 
@@ -37,6 +38,16 @@ gradients so mockups stay offline and still read as the real product.
 - **Card detail pages are reached by corner ⓘ + long-press**, not by tapping the tile. The pages
   themselves are unchanged and stay shareable.
 - **The stats trigger must stop being `fixed`** (`deck-builder.tsx:710`) and join the flex column.
+- **The model is global, not mobile-only** (sketch 003). Tap-selects and off-tile controls apply at
+  every breakpoint; only the container changes — merged bottom bar on mobile, the existing 320px
+  sidebar (`deck-sidebar.tsx`) on desktop. Desktop accepts losing hover-to-adjust.
+
+## Measured Facts
+
+- Mobile tile at 390px / 3 columns: **~118px**. A stepper needs ~180px. Controls cannot fit.
+- Desktop deck-builder tile at 1024px / 9 columns with the 320px sidebar: **~68px** — *smaller than
+  mobile*. `useColumnCount()` reads window width (`card-grid.tsx:17-27`); `estimateSize` reads
+  container width (`card-grid.tsx:78`). Confirm during planning whether that split is intentional.
 
 ## Open Risks
 
