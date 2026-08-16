@@ -11,17 +11,30 @@ A multi-user web app for Star Wars: Unlimited TCG players. Players track their c
 > **v4 gap closure complete 2026-05-23.** Per-variant trade offerings (Phase 21) and additional starter/spotlight deck lists (Phase 22) fill remaining REQ-BINDER-06 gap.
 > **v5 shipped 2026-05-27.** Binder variant completeness (BINDER-07/08/09), catalog & page load performance, bulk operation speed, and real-user Web Vitals telemetry (PERF-06) via Vercel Speed Insights.
 > **v6 shipped 2026-06-03.** Mobile deck builder UX, /decks + /cards/[set]/[id] performance driven by Speed Insights, and a tech-debt sweep (dead code, variant enum gaps, catalog invalidation).
+> **v7 shipped 2026-07-20.** Unified search-driven binder add flow, trade profile modal + public trade note, combined wants list, and Ashes of the Empire spotlight decks.
 
-## Current Milestone: v7 Trade Binder Improvements
+## Current Milestone: v8 Catalog Interaction & Sync Reliability
 
-**Goal:** Make managing a trade binder fast and intuitive — collapse the separate Add Cards, Manual Wants, variant sheet, and exclusions surfaces into one search-driven flow, with a set-once profile tucked behind a modal.
+**Goal:** Make card mutation happen where you are — tap a tile, adjust it, done — at every breakpoint; and make the nightly catalog sync actually finish and say so when it doesn't.
 
 **Target features:**
-- Unified search-driven add flow — one search bar over the full catalog; search a card, pick a variant, then choose "Add to binder" (enabled only for variants you own) or "Add as want" (any card)
-- Search-first results — nothing renders until the user types; no eager load of the whole owned collection
-- Trade profile modal — behind a profile button (set-once); username/binder URL plus a new public "trade note" (e.g. "EU only, will ship")
-- Cleaner wants list — deck-driven auto-wants and manually-added wants coexist in one clearly-sectioned list; excluding an auto-want hides it (behaviour kept, presentation clarified)
-- Public binder surfaces the trade note
+- Shared variant state refactor — the three variant sections stop owning state independently; collapses three `router.refresh()` calls into one and gives the inline error map a home (**BLOCKING** prerequisite for the drawer)
+- Catalog variant drawer — tapping a catalog tile opens the own/trade/want drawer (a port of `VariantTradeSheet`); no detail-page round trip per card
+- Touch-viable deck selector — tile-wide `<Link>` removed at every breakpoint, tap selects rather than navigates, controls move off the tile into a merged ~64px mobile bottom bar and the existing 320px desktop sidebar, 44px floor on every real target
+- Grid state vocabulary — one `idle / loading / empty / error` component replacing `empty-state.tsx` and the inline blocks at `manage/page.tsx:385-407`; failed optimistic writes surface inline on the failing row with Retry
+- Card sync completes inside budget — batched multi-row upserts replacing ~8,400 sequential round trips, plus an explicit `maxDuration`
+- Sync partial failure becomes loud — response fails when `setsProcessed < setsTotal`, plus a freshness check so silent drift can't recur
+- Carried-forward debt: stale trade availability (`onOwnedCountChange`), DEBT-05 (LAW spotlight deck), DEBT-02 (Add Cards tab variant art)
+
+## Milestone: v7 Trade Binder Improvements — COMPLETE
+
+**Shipped:** 2026-07-20 — Phases 30–33 (10 plans).
+
+**What shipped:**
+- Unified search-driven binder add flow — one "Add Cards & Wants" card over the full catalog, ownership-gated add-to-binder with server-enforced 403, add-as-want for any card (Phase 30)
+- Trade profile modal & public trade note — username/binder URL behind a profile button, user-level `trade_note` via migration 0006, rendered XSS-safe on the public binder (Phase 31)
+- Combined Looking For list — deck-driven auto-wants and manual wants in one two-section list with inline exclude/restore (Phase 32)
+- Ashes of the Empire spotlight decks in Quick Add — Luke Skywalker (ASH) and Emperor Palpatine (ASH) (Phase 33)
 
 ## Milestone: v6 Mobile, Performance & Polish — COMPLETE
 
@@ -107,9 +120,17 @@ See exactly which cards you own while building decks, and know instantly what yo
 
 ### Active
 
-<!-- v7 fully shipped 2026-07-20 — all items moved to Validated above. Next milestone's Active items are defined via /gsd-new-milestone. -->
+<!-- v8 scope. Defined 2026-08-16 via /gsd-new-milestone. REQ-IDs assigned in REQUIREMENTS.md. -->
 
-_None — v7 shipped. Start the next milestone with `/gsd-new-milestone`._
+- [ ] Shared variant state refactor — three variant sections share state; one `router.refresh()`; inline error map has a home (**BLOCKING** for the drawer)
+- [ ] Catalog variant drawer — tap a catalog tile to own/trade/want without navigating to the detail page
+- [ ] Touch-viable deck selector — no tile-wide `<Link>`, controls off-tile, merged 64px mobile bottom bar, desktop sidebar hosts selected-card controls, 44px targets
+- [ ] Grid state vocabulary — one `idle / loading / empty / error` component; inline per-row write errors with Retry
+- [ ] Card sync completes inside its Vercel budget — batched upserts, explicit `maxDuration`
+- [ ] Sync partial failure is loud — `setsProcessed < setsTotal` fails the response; freshness check
+- [ ] Stale trade availability fixed — `onOwnedCountChange` threaded (absorbed into the shared-state refactor)
+- [ ] **DEBT-05**: LAW spotlight deck unknowns resolved
+- [ ] **DEBT-02**: DeckBuilder Add Cards tab displays variant art via `getPrintingArtMap()`
 
 <details>
 <summary>v7 items (all validated 2026-07-20)</summary>
@@ -121,11 +142,6 @@ _None — v7 shipped. Start the next milestone with `/gsd-new-milestone`._
 - [x] ASH spotlight decks in Quick Add — validated in Phase 33
 
 </details>
-
-### Deferred (carried from v6)
-
-- [ ] **DEBT-02**: DeckBuilder Add Cards tab displays variant art via getPrintingArtMap() — needs virtualized-list interaction investigation
-- [ ] **DEBT-05**: LAW spotlight deck unknowns resolved (9 cards absent from DB) — pending DB sync
 
 ### Out of Scope
 
@@ -144,6 +160,20 @@ _None — v7 shipped. Start the next milestone with `/gsd-new-milestone`._
 **Phase 29 complete 2026-06-03:** Card detail page performance — `getCardDefinition` cached on `cards` tag, per-user printings cached, loading skeleton, `priority` LCP hint, and opacity-transition guard (PERF-10)
 **Auth:** Better Auth (Email, Google, Discord) with per-user data isolation
 **Card data:** swu-db.com API auto-sync; PokéWallet API for market prices
+
+**Catalog sync state (measured 2026-08-16, read-only DB query):**
+- 33 sets, 8,404 printings, 2,596 definitions. LAW is present and **complete** — 901 printings, matching the swu-db API's 901 exactly
+- Only 3–4 sets carry a `06:15` cron timestamp (LOF 2026-08-15; PSHD/SHDOP 2026-08-07). Every other set is frozen at the `01:26–01:32` manual `db:seed` of 2026-07-05 — six weeks of drift
+- Cause: `syncAllCards` walks sets sequentially and `upsertCards` awaits **one round trip per definition and per printing** (~8,400+), then runs `syncPrices()` in the same request. `src/app/api/cron/sync-cards/route.ts` exports no `maxDuration`. The run cannot finish inside any Vercel budget; `/sets` returns sets in arbitrary order, so a different handful lands each night
+- Failure is silent: a failed set `continue`s with a `console.error`, and the route returns `success: true` while `setsProcessed < setsTotal` goes unread
+- **DEBT-05 correction:** its recorded cause ("9 cards absent from DB — pending DB sync") is disproven. LAW has been fully synced since 2026-07-05, so the 9 unknowns are a name/subtitle **matching** problem in the spotlight deck list, not missing data
+
+**Design inputs for v8 (settled, not open):**
+- `.planning/notes/catalog-interaction-model.md` — root cause: the catalog tile's primary action is *navigate*, with mutation as a hover overlay bolted on top
+- `.planning/sketches/WRAP-UP-SUMMARY.md` — sketches 001–005 complete, frontier queue empty, 9 open risks carried forward as planning inputs
+- `.planning/seeds/catalog-variant-drawer.md` — consumed by this milestone
+- Skill `sketch-findings-star-wars-unlimited-tracker` auto-loads the validated patterns during UI implementation
+- Measured: mobile 390px → 3 cols → ~118px tile; desktop `lg` deck builder → 9 cols → ~68px tile; a stepper needs ~180px. Desktop tiles are *smaller* than mobile ones, so on-tile controls fail at every width
 
 **Architecture decisions held:**
 - Two-table model (card_definitions + card_printings) is non-negotiable
@@ -172,6 +202,9 @@ _None — v7 shipped. Start the next milestone with `/gsd-new-milestone`._
 | Server-side ownership gate on PATCH /api/trade (gates only on tradeQuantity > 0) | Defence-in-depth behind the client disable; clearing an offering must always succeed. Hardened with numeric-type validation (CR-01) to close a NaN-bypass | ✓ Good — Phase 30 |
 | VariantWantSection as a twin of VariantTradeSection | Wants are unrestricted by ownership (D-06); a parallel component avoids overloading the trade stepper's gating logic | ✓ Good — Phase 30 |
 | Sheet printings re-derived live from mergedCards each render | Keeps ownedCount/tradeQuantity/quantity fresh while the sheet is open instead of freezing tile-click snapshot | ✓ Good — Phase 30 |
+| Catalog tile shows art and reports state only — never hosts controls, never a `<Link>` | Desktop tiles (~68px) are smaller than mobile ones (~118px) and a stepper needs ~180px, so on-tile controls fail at every width. One contract, one codepath; also preserves the virtualizer `estimateSize` heuristic | — Pending — v8 (sketches 001–003) |
+| Two mutation surfaces — ambient bar for the selector, modal drawer for the catalog | One number vs twelve. Presented as a coherence check in sketch 004 and not contested | — Pending — v8 |
+| Failed optimistic writes surface inline on the failing row, not as a toast | Attribution: a drawer holds 12 steppers. A 4-second toast recreates the silent revert it was meant to fix | — Pending — v8 (sketch 005) |
 
 ## Constraints
 
@@ -193,4 +226,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-07-20 after v7 Trade Binder Improvements milestone (Phases 30–33, shipped)*
+*Last updated: 2026-08-16 after starting milestone v8 Catalog Interaction & Sync Reliability*
