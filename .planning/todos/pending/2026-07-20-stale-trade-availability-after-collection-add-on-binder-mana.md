@@ -2,6 +2,7 @@
 created: 2026-07-20T14:14:12.990Z
 title: Fix stale trade availability after collection add on /binder/manage
 area: ui
+resolves_phase: 35
 files:
   - src/components/catalog/variant-collection-section.tsx:30-63
   - src/components/binder/variant-trade-sheet.tsx:16-64
