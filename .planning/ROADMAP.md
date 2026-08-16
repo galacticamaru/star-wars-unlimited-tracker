@@ -98,7 +98,7 @@ Shipped via squashed code-only PR #21 into `main`. See [milestones/v7-ROADMAP.md
 
 **Milestone Goal:** Make card mutation happen where you are — tap a tile, adjust it, done — at every breakpoint; and make the nightly catalog sync actually finish and say so when it doesn't.
 
-- [ ] **Phase 34: Card Sync Reliability** — Batched upserts complete the nightly sync inside its Vercel budget, a partial run reports failure instead of silently succeeding, and the LAW spotlight deck's matching bug is corrected
+- [x] **Phase 34: Card Sync Reliability** — Batched upserts complete the nightly sync inside its Vercel budget, a partial run reports failure instead of silently succeeding, and the LAW spotlight deck's matching bug is corrected (completed 2026-08-16)
 - [ ] **Phase 35: Shared Variant State Foundation** — Collection/trade/want sections share one state source; the stale-trade-availability bug is fixed; inline write-error handling has a home (BLOCKING prerequisite for Phase 36)
 - [ ] **Phase 36: Touch-Viable Tile Contract & Catalog Drawer** — Tile tap opens the catalog variant drawer; tile-wide link removed at every breakpoint in both modes; deck-builder selector kept functional in the interim via a minimal off-tile stepper
 - [ ] **Phase 37: Touch-Viable Deck Selector** — Phase 36's interim stepper is replaced by the merged ~64px mobile bottom bar and the desktop sidebar controls; DEBT-02 variant art rides along
@@ -408,7 +408,7 @@ Plans:
 - Constrained to 1 cron job/day (Vercel Hobby tier) — multiplex within the existing cron entrypoint, do not add a second job.
 - Full incremental/resumable sync (per-set checkpointing, split cards/prices invocations) is explicitly out of scope this milestone — deferred as SYNC-05. This phase is batching + loud failure only.
 
-**Plans:** 6/7 plans executed
+**Plans:** 7/7 plans complete
 
 **Wave 1** *(tracer slice — verified before any expansion plan starts)*
 
@@ -424,7 +424,7 @@ Plans:
 
 **Wave 3** *(blocked on 34-01, 34-02, 34-06)*
 
-- [ ] 34-07-PLAN.md — Cron entrypoint: explicit `maxDuration`, one shared set list, unconditional cache invalidation, non-2xx on any shortfall (SYNC-01, SYNC-03)
+- [x] 34-07-PLAN.md — Cron entrypoint: explicit `maxDuration`, one shared set list, unconditional cache invalidation, non-2xx on any shortfall (SYNC-01, SYNC-03)
 
 ### Phase 35: Shared Variant State Foundation
 
@@ -549,7 +549,7 @@ Plans:
 | 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete    | 2026-07-20 |
 | 32. Combined Wants & Exclusions List | v7 | 3/3 | Complete    | 2026-07-20 |
 | 33. Ashes of the Empire Spotlight Decks | v7 | Direct | Complete    | 2026-07-20 |
-| 34. Card Sync Reliability | v8 | 6/7 | In Progress|  |
+| 34. Card Sync Reliability | v8 | 7/7 | Complete   | 2026-08-16 |
 | 35. Shared Variant State Foundation | v8 | 0/TBD | Not started | - |
 | 36. Touch-Viable Tile Contract & Catalog Drawer | v8 | 0/TBD | Not started | - |
 | 37. Touch-Viable Deck Selector | v8 | 0/TBD | Not started | - |
