@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 001 — Selector tile at 390px</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding-top: 92px; background: var(--color-bg);
+    font-family: var(--font-sans); color: var(--color-text);
+  }
+
+  /* ---------- variant tab bar ---------- */
+  #variant-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
+    background: var(--color-surface); border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3) var(--space-4); display: flex; gap: var(--space-2);
+    align-items: center; flex-wrap: wrap; box-shadow: var(--shadow-sm);
+  }
+  #variant-nav .title {
+    font-weight: 700; font-size: var(--text-sm); margin-right: var(--space-4);
+    letter-spacing: -0.01em;
+  }
+  .variant-tab {
+    font: inherit; font-size: var(--text-sm); padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border); background: var(--color-surface);
+    border-radius: var(--radius-md); cursor: pointer; transition: all 0.15s ease;
+    color: var(--color-text-muted);
+  }
+  .variant-tab:hover { background: var(--color-surface-2); color: var(--color-text); }
+  .variant-tab.active {
+    background: var(--color-primary); border-color: var(--color-primary);
+    color: #fff; font-weight: 600;
+  }
+
+  /* ---------- layout ---------- */
+  .stage { display: flex; gap: var(--space-8); padding: var(--space-6); align-items: flex-start; flex-wrap: wrap; }
+  .notes {
+    flex: 1; min-width: 280px; max-width: 460px; font-size: var(--text-sm);
+    line-height: 1.6; color: var(--color-text-muted);
+  }
+  .notes h2 { color: var(--color-text); font-size: var(--text-lg); margin: 0 0 var(--space-2); }
+  .notes h3 { color: var(--color-text); font-size: var(--text-sm); margin: var(--space-6) 0 var(--space-2); text-transform: uppercase; letter-spacing: 0.04em; }
+  .notes ul { margin: 0; padding-left: 1.1em; }
+  .notes li { margin-bottom: var(--space-2); }
+  .verdict { display: inline-block; padding: 2px 8px; border-radius: var(--radius-full); font-size: var(--text-2xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .verdict.good { background: #dcfce7; color: #15803d; }
+  .verdict.warn { background: var(--color-accent-soft); color: var(--color-accent); }
+  .verdict.bad  { background: #fee2e2; color: #b91c1c; }
+
+  /* ---------- phone frame ---------- */
+  .phone-wrap { flex-shrink: 0; }
+  .phone-label {
+    font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-2);
+    font-family: var(--font-mono); text-align: center;
+  }
+  .phone {
+    width: 390px; height: 720px; background: var(--color-bg);
+    border: 10px solid #0f172a; border-radius: 32px; overflow: hidden;
+    box-shadow: var(--shadow-lg); display: flex; flex-direction: column; position: relative;
+  }
+
+  /* app chrome inside the phone */
+  .app-toolbar {
+    background: var(--color-surface); border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3) var(--space-4); flex-shrink: 0;
+  }
+  .deck-name { font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-2); }
+  .tabs { display: flex; background: var(--color-surface-2); border-radius: var(--radius-lg); padding: 3px; }
+  .tabs button {
+    flex: 1; font: inherit; font-size: var(--text-sm); padding: 6px 0; border: none;
+    background: transparent; border-radius: var(--radius-md); cursor: pointer; color: var(--color-text-muted);
+  }
+  .tabs button.on { background: var(--color-surface); box-shadow: var(--shadow-sm); color: var(--color-text); font-weight: 600; }
+
+  .search { padding: var(--space-2) var(--space-4); background: var(--color-surface); border-bottom: 1px solid var(--color-border); flex-shrink: 0; }
+  .search input {
+    width: 100%; font: inherit; font-size: var(--text-sm); padding: 8px 10px;
+    border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-2);
+  }
+  .search input:focus { outline: 2px solid var(--color-primary); outline-offset: -1px; background: var(--color-surface); }
+
+  .scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; }
+
+  /* deck total footer */
+  .deck-total {
+    flex-shrink: 0; border-top: 1px solid var(--color-border); background: var(--color-surface);
+    padding: var(--space-3) var(--space-4); display: flex; justify-content: space-between;
+    align-items: center; font-size: var(--text-sm);
+  }
+  .deck-total strong { font-size: var(--text-base); }
+  .deck-total .count-pop { transition: transform 0.15s ease, color 0.15s ease; display: inline-block; }
+  .deck-total .count-pop.bump { transform: scale(1.35); color: var(--color-primary); }
+
+  /* ---------- card art stand-in ---------- */
+  .art { position: relative; width: 100%; overflow: hidden; background: var(--color-surface-2); }
+  .art .nameplate {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.82));
+    color: #fff; padding: 14px 5px 4px; font-size: var(--text-2xs);
+    font-weight: 700; line-height: 1.15; text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  }
+  .art .cost {
+    position: absolute; top: 4px; left: 4px; width: 20px; height: 20px;
+    border-radius: var(--radius-full); background: rgba(15,23,42,0.85); color: #fff;
+    font-size: var(--text-2xs); font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .art .owned {
+    position: absolute; top: 4px; right: 4px; background: rgba(255,255,255,0.92);
+    color: var(--color-text); font-size: var(--text-2xs); font-weight: 700;
+    padding: 1px 5px; border-radius: var(--radius-full);
+  }
+
+  /* ---------- shared stepper ---------- */
+  .step-btn {
+    min-width: var(--touch-min); min-height: var(--touch-min);
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--color-border); background: var(--color-surface);
+    border-radius: var(--radius-md); font: inherit; font-size: var(--text-lg);
+    font-weight: 600; cursor: pointer; color: var(--color-text);
+    transition: all 0.12s ease; user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  .step-btn:hover { background: var(--color-primary-soft); border-color: var(--color-primary); color: var(--color-primary); }
+  .step-btn:active { transform: scale(0.92); background: var(--color-primary); color: #fff; }
+  .step-btn[disabled] { opacity: 0.35; cursor: not-allowed; }
+  .step-btn.flash { animation: flash 0.3s ease; }
+  @keyframes flash {
+    0%   { background: var(--color-primary); color: #fff; }
+    100% { background: var(--color-surface); color: var(--color-text); }
+  }
+  .count-box {
+    flex: 1; text-align: center; font-weight: 700; font-size: var(--text-base);
+    display: flex; flex-direction: column; justify-content: center; line-height: 1.05;
+  }
+  .count-box .lbl { font-size: 9px; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .count-box.has { color: var(--color-primary); }
+
+  /* shortfall ring — mirrors hasShortfall in card-item.tsx */
+  .shortfall { outline: 2px solid var(--color-danger); outline-offset: -2px; }
+  .shortfall-note { color: var(--color-danger); font-size: 9px; font-weight: 700; }
+
+  /* ---------- VARIANT A: 2-col + stepper bar ---------- */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); padding: var(--space-2); }
+  .tileA { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .tileA .art { aspect-ratio: 2/3; }
+  .tileA .bar { display: flex; align-items: stretch; border-top: 1px solid var(--color-border); }
+  .tileA .bar .step-btn { border: none; border-radius: 0; flex-shrink: 0; }
+  .tileA .bar .step-btn:first-child { border-right: 1px solid var(--color-border); }
+  .tileA .bar .step-btn:last-child { border-left: 1px solid var(--color-border); }
+
+  /* ---------- VARIANT B: 3-col + pinned action bar ---------- */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); padding: var(--space-2); }
+  .tileB { position: relative; border-radius: var(--radius-md); overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.15s ease; background: var(--color-surface-2); }
+  .tileB .art { aspect-ratio: 2/3; }
+  .tileB.sel { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+  .tileB .deckbadge {
+    position: absolute; bottom: 3px; right: 3px; background: var(--color-primary); color: #fff;
+    font-size: var(--text-2xs); font-weight: 800; min-width: 20px; height: 20px; padding: 0 5px;
+    border-radius: var(--radius-full); display: none; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-md);
+  }
+  .tileB .deckbadge.on { display: flex; }
+  .actionbar {
+    flex-shrink: 0; background: var(--color-surface); border-top: 2px solid var(--color-primary);
+    padding: var(--space-3); display: flex; gap: var(--space-3); align-items: center;
+    box-shadow: 0 -4px 12px rgba(15,23,42,0.08);
+  }
+  .actionbar .thumb { width: 38px; height: 57px; border-radius: var(--radius-sm); overflow: hidden; flex-shrink: 0; }
+  .actionbar .meta { flex: 1; min-width: 0; }
+  .actionbar .meta .nm { font-weight: 700; font-size: var(--text-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .actionbar .meta .sub { font-size: var(--text-xs); color: var(--color-text-muted); }
+  .actionbar .ctrls { display: flex; gap: var(--space-2); align-items: center; flex-shrink: 0; }
+  .actionbar .ctrls .count-box { min-width: 46px; }
+  .actionbar.empty { border-top-color: var(--color-border); color: var(--color-text-muted); justify-content: center; font-size: var(--text-sm); }
+
+  /* ---------- VARIANT C: list rows ---------- */
+  .rows { padding: var(--space-2); display: flex; flex-direction: column; gap: 6px; }
+  .rowC {
+    display: flex; align-items: center; gap: var(--space-3); background: var(--color-surface);
+    border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 6px 8px 6px 6px;
+    box-shadow: var(--shadow-sm);
+  }
+  .rowC .art { width: 44px; height: 62px; border-radius: var(--radius-sm); flex-shrink: 0; }
+  .rowC .art .nameplate, .rowC .art .owned { display: none; }
+  .rowC .art .cost { width: 16px; height: 16px; font-size: 9px; top: 2px; left: 2px; }
+  .rowC .meta { flex: 1; min-width: 0; }
+  .rowC .meta .nm { font-weight: 600; font-size: var(--text-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rowC .meta .sub { font-size: var(--text-xs); color: var(--color-text-muted); }
+  .rowC .ctrls { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+  .rowC .ctrls .count-box { min-width: 34px; }
+
+  /* ---------- measure overlay ---------- */
+  body.measure .measurable { position: relative; }
+  body.measure .measurable::after {
+    content: attr(data-measure); position: absolute; top: 2px; left: 2px; z-index: 60;
+    background: #dc2626; color: #fff; font: 700 9px var(--font-mono);
+    padding: 1px 4px; border-radius: 3px; pointer-events: none; white-space: nowrap;
+  }
+  body.measure .ctrl-measure { outline: 2px dashed #dc2626 !important; outline-offset: 1px; }
+
+  /* ---------- toast ---------- */
+  #toast {
+    position: fixed; bottom: 70px; left: 50%; transform: translate(-50%, 20px);
+    background: #0f172a; color: #fff; padding: 10px 16px; border-radius: var(--radius-lg);
+    font-size: var(--text-sm); opacity: 0; pointer-events: none; transition: all 0.2s ease; z-index: 9999;
+  }
+  #toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ---------- sketch toolbar ---------- */
+  #sketch-tools {
+    position: fixed; bottom: 12px; right: 12px; z-index: 9999; font-family: system-ui; font-size: 12px;
+    background: rgba(15,23,42,0.85); color: #fff; padding: 8px 12px; border-radius: 8px;
+    opacity: 0.45; transition: opacity 0.2s; display: flex; gap: 10px; align-items: center;
+  }
+  #sketch-tools:hover { opacity: 1; }
+  #sketch-tools select, #sketch-tools button {
+    font: inherit; font-size: 11px; background: rgba(255,255,255,0.12); color: #fff;
+    border: 1px solid rgba(255,255,255,0.25); border-radius: 5px; padding: 3px 7px; cursor: pointer;
+  }
+  #sketch-tools button.on { background: #dc2626; border-color: #dc2626; }
+  .variant { display: none; }
+  .variant.active { display: block; }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <span class="title">Sketch 001 — Selector tile @ 390px</span>
+  <button class="variant-tab active" data-v="a" onclick="showVariant('a')">A: 2-col + stepper bar</button>
+  <button class="variant-tab" data-v="b" onclick="showVariant('b')">B: 3-col + pinned bar ★ Selected</button>
+  <button class="variant-tab" data-v="c" onclick="showVariant('c')">C: List rows</button>
+  <button class="variant-tab" data-v="x" onclick="showVariant('x')">✗ Today (broken)</button>
+</div>
+
+<!-- ============ VARIANT A ============ -->
+<div class="variant active" id="variant-a">
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone-label">390 × 720 — tile ≈ <span id="a-tilew">—</span>px</div>
+      <div class="phone">
+        <div class="app-toolbar">
+          <div class="deck-name">Rebel Aggro</div>
+          <div class="tabs"><button>Deck</button><button class="on">Cards</button><button>Wants</button></div>
+        </div>
+        <div class="search"><input placeholder="Search the catalog…" oninput="filterCards('a', this.value)"></div>
+        <div class="scroll"><div class="grid-2" id="grid-a"></div></div>
+        <div class="deck-total">
+          <span>Main deck</span>
+          <strong><span class="count-pop" id="total-a">0</span> / 50</strong>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>A: Two columns, stepper bar under the art</h2>
+      <p>Trades one grid column for control space. The stepper is a permanent part of the tile — no hover, no overlay, nothing invisible. This is the mobile-commerce pattern applied directly.</p>
+
+      <h3>The measurement</h3>
+      <p>At 390px with 2 columns: tile ≈ <strong>183px</strong>. The stepper needs 44 + 44 = 88px of buttons plus a count label. <span class="verdict good">Fits with room</span></p>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><strong>Rapid-fire:</strong> good — every card's <code>+</code> is one tap, always visible, no selection step.</li>
+        <li><strong>Art forward:</strong> best of the three — art is large and legible at 183px wide.</li>
+        <li><strong>Precise:</strong> good — 44px targets with real separation.</li>
+        <li><strong>Cost:</strong> roughly 4 cards visible per screen instead of 9. More scrolling to browse.</li>
+      </ul>
+
+      <h3>Build cost</h3>
+      <ul>
+        <li><code>useColumnCount()</code> base 3 → 2 (one line, <code>card-grid.tsx:27</code>)</li>
+        <li><code>estimateSize</code> must add the bar height — currently assumes <code>width × 1.5</code> (<code>card-grid.tsx:80</code>)</li>
+        <li>Delete the hover overlay in <code>card-item.tsx:118-165</code></li>
+      </ul>
+      <p>Turn on <strong>Measure</strong> in the toolbar to see real widths.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VARIANT B ============ -->
+<div class="variant" id="variant-b">
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone-label">390 × 720 — tile ≈ <span id="b-tilew">—</span>px</div>
+      <div class="phone">
+        <div class="app-toolbar">
+          <div class="deck-name">Rebel Aggro</div>
+          <div class="tabs"><button>Deck</button><button class="on">Cards</button><button>Wants</button></div>
+        </div>
+        <div class="search"><input placeholder="Search the catalog…" oninput="filterCards('b', this.value)"></div>
+        <div class="scroll"><div class="grid-3" id="grid-b"></div></div>
+        <div class="actionbar empty" id="actionbar-b">Tap a card to adjust its count</div>
+        <div class="deck-total">
+          <span>Main deck</span>
+          <strong><span class="count-pop" id="total-b">0</span> / 50</strong>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>B: Keep three columns, move controls off the tile</h2>
+      <p>Density is preserved. The tile becomes purely art plus a count badge, and tapping it selects rather than navigates. The stepper lives in a pinned bar with the full 390px to work with.</p>
+
+      <h3>The measurement</h3>
+      <p>Tile stays ≈ <strong>118px</strong> — but nothing has to fit inside it any more. The stepper gets the full width. <span class="verdict good">Constraint dissolved</span></p>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><strong>Rapid-fire:</strong> mixed — first card costs 2 taps (select, then +). But the bar persists, so adjusting the same card is fast, and tapping the next card re-targets it.</li>
+        <li><strong>Art forward:</strong> strongest — art is the entire tile, uninterrupted.</li>
+        <li><strong>Precise:</strong> strongest — the biggest targets of any variant, far from the grid.</li>
+        <li><strong>Cost:</strong> indirection. Your eyes are on the grid, the feedback is at the bottom.</li>
+      </ul>
+
+      <h3>Build cost</h3>
+      <ul>
+        <li>Column count unchanged — <code>estimateSize</code> stays valid</li>
+        <li>New selection state + pinned bar component</li>
+        <li>Bar competes for vertical space with the existing stats sheet trigger (<code>deck-builder.tsx:708</code>)</li>
+      </ul>
+      <p>Tap several cards in a row to feel the re-targeting rhythm.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VARIANT C ============ -->
+<div class="variant" id="variant-c">
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone-label">390 × 720 — uniform 74px rows</div>
+      <div class="phone">
+        <div class="app-toolbar">
+          <div class="deck-name">Rebel Aggro</div>
+          <div class="tabs"><button>Deck</button><button class="on">Cards</button><button>Wants</button></div>
+        </div>
+        <div class="search"><input placeholder="Search the catalog…" oninput="filterCards('c', this.value)"></div>
+        <div class="scroll"><div class="rows" id="grid-c"></div></div>
+        <div class="deck-total">
+          <span>Main deck</span>
+          <strong><span class="count-pop" id="total-c">0</span> / 50</strong>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>C: Abandon the grid for full-width rows</h2>
+      <p>Art becomes a thumbnail; name, type and cost carry recognition. Every row is the full 390px, so the stepper has all the space it needs and rows are uniform height.</p>
+
+      <h3>The measurement</h3>
+      <p>Row is <strong>390px</strong> wide, 74px tall. Stepper fits trivially. <span class="verdict good">No conflict</span></p>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><strong>Rapid-fire:</strong> strongest — ~9 cards per screen, every <code>+</code> immediately tappable, no selection step.</li>
+        <li><strong>Art forward:</strong> <span class="verdict bad">fails</span> — a 44px thumbnail is not card art. You'd be reading names, not recognising pictures.</li>
+        <li><strong>Precise:</strong> good — wide targets, generous separation.</li>
+      </ul>
+
+      <h3>Build cost</h3>
+      <ul>
+        <li><span class="verdict good">Cheapest</span> — uniform row heights are exactly what <code>useVirtualizer</code> wants. Removes the <code>width × 1.5</code> guess entirely.</li>
+        <li>But it's a different component, not a modified tile — least code reuse with the desktop grid.</li>
+      </ul>
+      <p>Included as the honest baseline: it wins on speed and build cost, and loses on the thing you said mattered.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TODAY (control) ============ -->
+<div class="variant" id="variant-x">
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone-label">390 × 720 — today's build, for comparison</div>
+      <div class="phone">
+        <div class="app-toolbar">
+          <div class="deck-name">Rebel Aggro</div>
+          <div class="tabs"><button>Deck</button><button class="on">Cards</button><button>Wants</button></div>
+        </div>
+        <div class="search"><input placeholder="Search the catalog…"></div>
+        <div class="scroll"><div class="grid-3" id="grid-x"></div></div>
+        <div class="deck-total">
+          <span>Main deck</span>
+          <strong><span class="count-pop" id="total-x">0</span> / 50</strong>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>✗ Today — reproducing the defect</h2>
+      <p>This is the current behaviour, built to be felt rather than described. Tap a card.</p>
+
+      <h3>What you should experience</h3>
+      <ul>
+        <li>The control pill is <strong>~180px wide inside a ~118px tile</strong>. It overflows its own tile and collides with neighbours.</li>
+        <li>It's <code>opacity: 0</code> until hover — but <strong>still hit-testable</strong>. Invisible buttons sit over the art.</li>
+        <li>The whole tile is a <code>&lt;Link&gt;</code>, so a mistap navigates to the card detail page and you lose your scroll position.</li>
+      </ul>
+
+      <h3>Where this lives</h3>
+      <ul>
+        <li><code>card-item.tsx:119</code> — <code>opacity-0 group-hover:opacity-100</code></li>
+        <li><code>card-item.tsx:79</code> — tile-wide <code>&lt;Link&gt;</code></li>
+        <li><code>card-grid.tsx:12,27</code> — <code>grid-cols-3</code> at base</li>
+      </ul>
+      <p>Toggle <strong>Measure</strong> to see the overflow drawn to scale.</p>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<div id="sketch-tools">
+  <select onchange="document.querySelector('link[href*=themes]').href='../themes/'+this.value+'.css'">
+    <option value="default">Default theme</option>
+  </select>
+  <button id="measure-btn" onclick="toggleMeasure()">Measure</button>
+  <button onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+/* ---------------- data ---------------- */
+const ASPECT = {
+  vigilance:  ['#3b82f6', '#1e40af'],
+  command:    ['#16a34a', '#14532d'],
+  aggression: ['#dc2626', '#7f1d1d'],
+  cunning:    ['#eab308', '#854d0e'],
+  heroism:    ['#f8fafc', '#94a3b8'],
+  villainy:   ['#334155', '#020617'],
+};
+
+const CARDS = [
+  { id: 1,  name: 'Battlefield Marine',      type: 'Ground Unit', cost: 2, aspect: 'command',    owned: 3 },
+  { id: 2,  name: 'Vanquish',                type: 'Event',       cost: 5, aspect: 'vigilance',  owned: 2 },
+  { id: 3,  name: 'Waylay',                  type: 'Event',       cost: 3, aspect: 'cunning',    owned: 1 },
+  { id: 4,  name: 'Alliance X-Wing',         type: 'Space Unit',  cost: 4, aspect: 'vigilance',  owned: 3 },
+  { id: 5,  name: 'Wampa',                   type: 'Ground Unit', cost: 4, aspect: 'aggression', owned: 0 },
+  { id: 6,  name: 'Cell Block Guard',        type: 'Ground Unit', cost: 3, aspect: 'villainy',   owned: 2 },
+  { id: 7,  name: 'Green Squadron A-Wing',   type: 'Space Unit',  cost: 2, aspect: 'cunning',    owned: 3 },
+  { id: 8,  name: 'Vigilant Honor Guards',   type: 'Ground Unit', cost: 5, aspect: 'vigilance',  owned: 1 },
+  { id: 9,  name: 'Superlaser Blast',        type: 'Event',       cost: 9, aspect: 'villainy',   owned: 0 },
+  { id: 10, name: 'Fleet Lieutenant',        type: 'Ground Unit', cost: 2, aspect: 'command',    owned: 3 },
+  { id: 11, name: 'Consular Security Force', type: 'Ground Unit', cost: 4, aspect: 'vigilance',  owned: 2 },
+  { id: 12, name: 'Restock',                 type: 'Event',       cost: 2, aspect: 'command',    owned: 1 },
+  { id: 13, name: 'Bright Hope',             type: 'Space Unit',  cost: 5, aspect: 'vigilance',  owned: 1 },
+  { id: 14, name: 'Krayt Dragon',            type: 'Ground Unit', cost: 8, aspect: 'aggression', owned: 0 },
+  { id: 15, name: 'Admiral Ackbar',          type: 'Ground Unit', cost: 5, aspect: 'command',    owned: 2 },
+  { id: 16, name: 'Home One',                type: 'Space Unit',  cost: 7, aspect: 'command',    owned: 1 },
+  { id: 17, name: 'Death Star Stormtrooper', type: 'Ground Unit', cost: 1, aspect: 'villainy',   owned: 3 },
+  { id: 18, name: 'Regional Governor',       type: 'Ground Unit', cost: 5, aspect: 'villainy',   owned: 2 },
+];
+
+/* per-variant deck counts, seeded so shortfall states are visible */
+const SEED = { 1: 3, 4: 2, 5: 2, 10: 3 };
+const deck = { a: {...SEED}, b: {...SEED}, c: {...SEED}, x: {...SEED} };
+let selectedB = null;
+let filters = { a: '', b: '', c: '' };
+
+/* ---------------- helpers ---------------- */
+function artHTML(card, opts = {}) {
+  const [c1, c2] = ASPECT[card.aspect];
+  const dark = card.aspect !== 'heroism' && card.aspect !== 'cunning';
+  return `
+    <div class="art" style="background:linear-gradient(150deg, ${c1}, ${c2});">
+      <div class="cost">${card.cost}</div>
+      ${opts.owned !== false ? `<div class="owned">${card.owned}◈</div>` : ''}
+      ${opts.name !== false ? `<div class="nameplate" style="color:${dark ? '#fff' : '#fff'}">${card.name}</div>` : ''}
+    </div>`;
+}
+
+function total(v) {
+  return Object.values(deck[v]).reduce((s, n) => s + n, 0);
+}
+
+function bumpTotal(v) {
+  const el = document.getElementById('total-' + v);
+  if (!el) return;
+  el.textContent = total(v);
+  el.classList.add('bump');
+  setTimeout(() => el.classList.remove('bump'), 160);
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('on'), 1400);
+}
+
+function change(v, id, delta, btn) {
+  const cur = deck[v][id] || 0;
+  const next = Math.max(0, Math.min(3, cur + delta));
+  if (next === cur) {
+    if (delta > 0) toast('Max 3 copies');
+    return;
+  }
+  deck[v][id] = next;
+  if (next === 0) delete deck[v][id];
+  if (btn) { btn.classList.remove('flash'); void btn.offsetWidth; btn.classList.add('flash'); }
+  render(v);
+  bumpTotal(v);
+}
+
+function visible(v) {
+  const q = (filters[v] || '').toLowerCase();
+  return q ? CARDS.filter(c => c.name.toLowerCase().includes(q)) : CARDS;
+}
+
+function filterCards(v, q) { filters[v] = q; render(v); }
+
+/* ---------------- renderers ---------------- */
+function renderA() {
+  const el = document.getElementById('grid-a');
+  el.innerHTML = visible('a').map(c => {
+    const n = deck.a[c.id] || 0;
+    const short = n > c.owned;
+    return `
+    <div class="tileA measurable ${short ? 'shortfall' : ''}" data-measure="">
+      ${artHTML(c)}
+      <div class="bar ctrl-measure">
+        <button class="step-btn" ${n === 0 ? 'disabled' : ''} onclick="change('a',${c.id},-1,this)" aria-label="Remove one">−</button>
+        <div class="count-box ${n ? 'has' : ''}">
+          <span class="lbl">${short ? '<span class="shortfall-note">SHORT ' + (n - c.owned) + '</span>' : 'In deck'}</span>
+          <span>${n}</span>
+        </div>
+        <button class="step-btn" onclick="change('a',${c.id},1,this)" aria-label="Add one">+</button>
+      </div>
+    </div>`;
+  }).join('');
+  measureTiles();
+}
+
+function renderB() {
+  const el = document.getElementById('grid-b');
+  el.innerHTML = visible('b').map(c => {
+    const n = deck.b[c.id] || 0;
+    const short = n > c.owned;
+    return `
+    <div class="tileB measurable ${selectedB === c.id ? 'sel' : ''} ${short ? 'shortfall' : ''}"
+         data-measure="" onclick="selectB(${c.id})">
+      ${artHTML(c)}
+      <div class="deckbadge ${n ? 'on' : ''}">${n}</div>
+    </div>`;
+  }).join('');
+
+  const bar = document.getElementById('actionbar-b');
+  if (selectedB == null) {
+    bar.className = 'actionbar empty';
+    bar.innerHTML = 'Tap a card to adjust its count';
+  } else {
+    const c = CARDS.find(x => x.id === selectedB);
+    const n = deck.b[c.id] || 0;
+    const short = n > c.owned;
+    bar.className = 'actionbar';
+    bar.innerHTML = `
+      <div class="thumb">${artHTML(c, { name: false, owned: false })}</div>
+      <div class="meta">
+        <div class="nm">${c.name}</div>
+        <div class="sub">${c.type} • ${c.cost} cost • owns ${c.owned}
+          ${short ? '<span class="shortfall-note">— SHORT ' + (n - c.owned) + '</span>' : ''}</div>
+      </div>
+      <div class="ctrls ctrl-measure">
+        <button class="step-btn" ${n === 0 ? 'disabled' : ''} onclick="change('b',${c.id},-1,this)" aria-label="Remove one">−</button>
+        <div class="count-box ${n ? 'has' : ''}"><span class="lbl">In deck</span><span>${n}</span></div>
+        <button class="step-btn" onclick="change('b',${c.id},1,this)" aria-label="Add one">+</button>
+      </div>`;
+  }
+  measureTiles();
+}
+
+function selectB(id) {
+  selectedB = id;
+  renderB();
+}
+
+function renderC() {
+  const el = document.getElementById('grid-c');
+  el.innerHTML = visible('c').map(c => {
+    const n = deck.c[c.id] || 0;
+    const short = n > c.owned;
+    return `
+    <div class="rowC ${short ? 'shortfall' : ''}">
+      ${artHTML(c, { name: false, owned: false })}
+      <div class="meta">
+        <div class="nm">${c.name}</div>
+        <div class="sub">${c.type} • ${c.cost} cost • owns ${c.owned}
+          ${short ? '<span class="shortfall-note">SHORT ' + (n - c.owned) + '</span>' : ''}</div>
+      </div>
+      <div class="ctrls ctrl-measure">
+        <button class="step-btn" ${n === 0 ? 'disabled' : ''} onclick="change('c',${c.id},-1,this)" aria-label="Remove one">−</button>
+        <div class="count-box ${n ? 'has' : ''}"><span>${n}</span></div>
+        <button class="step-btn" onclick="change('c',${c.id},1,this)" aria-label="Add one">+</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* Today's broken build — faithfully reproduced */
+function renderX() {
+  const el = document.getElementById('grid-x');
+  el.innerHTML = CARDS.map(c => {
+    const n = deck.x[c.id] || 0;
+    const short = n > c.owned;
+    return `
+    <div class="tileB measurable ${short ? 'shortfall' : ''}" data-measure=""
+         style="cursor:pointer" onclick="fakeNavigate('${c.name.replace(/'/g, "\\'")}')">
+      ${artHTML(c)}
+      <!-- the defect: opacity 0, still hit-testable, and wider than its own tile -->
+      <div class="broken-overlay" style="
+          position:absolute; inset:0; z-index:20; display:flex;
+          align-items:center; justify-content:center; opacity:0;
+          transition:opacity .15s ease; background:rgba(0,0,0,.4);"
+          onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0">
+        <div class="ctrl-measure" style="
+            display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.92);
+            border-radius:9999px; padding:4px 12px; white-space:nowrap;">
+          <button class="step-btn" style="border:none;background:transparent;min-width:44px;min-height:44px"
+                  onclick="event.stopPropagation();change('x',${c.id},-1,this)">−</button>
+          <div class="count-box" style="min-width:44px"><span class="lbl">In deck</span><span>${n}</span></div>
+          <button class="step-btn" style="border:none;background:transparent;min-width:44px;min-height:44px"
+                  onclick="event.stopPropagation();change('x',${c.id},1,this)">+</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  measureTiles();
+}
+
+function fakeNavigate(name) {
+  toast('→ Navigated to /cards/… for "' + name + '". Scroll position lost.');
+}
+
+/* ---------------- measurement overlay ---------------- */
+function measureTiles() {
+  if (!document.body.classList.contains('measure')) return;
+  document.querySelectorAll('.measurable').forEach(t => {
+    t.setAttribute('data-measure', Math.round(t.getBoundingClientRect().width) + 'px');
+  });
+  document.querySelectorAll('.ctrl-measure').forEach(c => {
+    const w = Math.round(c.getBoundingClientRect().width);
+    const parent = c.closest('.measurable');
+    if (!parent) return;
+    const pw = Math.round(parent.getBoundingClientRect().width);
+    if (w > pw) {
+      parent.setAttribute('data-measure', pw + 'px tile / ' + w + 'px ctrl ⚠ OVERFLOW');
+    }
+  });
+}
+
+function toggleMeasure() {
+  document.body.classList.toggle('measure');
+  document.getElementById('measure-btn').classList.toggle('on');
+  renderAll();
+}
+
+function resetAll() {
+  ['a','b','c','x'].forEach(v => { deck[v] = {...SEED}; });
+  selectedB = null;
+  filters = { a: '', b: '', c: '' };
+  document.querySelectorAll('.search input').forEach(i => i.value = '');
+  renderAll();
+  toast('Reset');
+}
+
+/* ---------------- variant switching ---------------- */
+function showVariant(id) {
+  document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('variant-' + id).classList.add('active');
+  document.querySelector(`.variant-tab[data-v="${id}"]`).classList.add('active');
+  renderAll();
+}
+
+function render(v) {
+  ({ a: renderA, b: renderB, c: renderC, x: renderX }[v] || (() => {}))();
+  const t = document.getElementById('total-' + v);
+  if (t) t.textContent = total(v);
+}
+
+function renderAll() {
+  ['a','b','c','x'].forEach(render);
+  // report actual tile widths in the phone labels
+  const ta = document.querySelector('#grid-a .tileA');
+  const tb = document.querySelector('#grid-b .tileB');
+  if (ta) document.getElementById('a-tilew').textContent = Math.round(ta.getBoundingClientRect().width);
+  if (tb) document.getElementById('b-tilew').textContent = Math.round(tb.getBoundingClientRect().width);
+  measureTiles();
+}
+
+renderAll();
+</script>
+</body>
+</html>

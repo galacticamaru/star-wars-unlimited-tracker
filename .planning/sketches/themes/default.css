@@ -1,0 +1,61 @@
+/* Star Wars Unlimited Tracker — sketch theme
+   Mirrors the live app's Tailwind palette so mockups read as the real product:
+   slate surfaces, indigo primary (deck), amber (sideboard), red (shortfall). */
+
+:root {
+  /* Colors */
+  --color-bg: #f8fafc;          /* slate-50 */
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f5f9;   /* slate-100 */
+  --color-border: #e2e8f0;      /* slate-200 */
+  --color-text: #0f172a;        /* slate-900 */
+  --color-text-muted: #64748b;  /* slate-500 */
+  --color-primary: #4f46e5;     /* indigo-600 — deck counts */
+  --color-primary-hover: #4338ca;
+  --color-primary-soft: #eef2ff;
+  --color-accent: #d97706;      /* amber-600 — sideboard */
+  --color-accent-soft: #fffbeb;
+  --color-danger: #ef4444;      /* red-500 — shortfall */
+  --color-success: #22c55e;
+
+  /* SWU aspect colors — used as card-art stand-ins */
+  --aspect-vigilance: #3b82f6;
+  --aspect-command:   #16a34a;
+  --aspect-aggression:#dc2626;
+  --aspect-cunning:   #eab308;
+  --aspect-heroism:   #e2e8f0;
+  --aspect-villainy:  #1e293b;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', monospace;
+  --text-2xs: 0.625rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Shapes */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(15,23,42,0.06);
+  --shadow-md: 0 4px 6px rgba(15,23,42,0.08);
+  --shadow-lg: 0 10px 20px rgba(15,23,42,0.14);
+
+  /* Touch — the constraint this whole sketch exists to test */
+  --touch-min: 44px;
+}
