@@ -173,6 +173,16 @@ None - no external service configuration required. `DATABASE_URL` already existe
 - `src/db/index.ts` now exports `pool`, available for any future DB-backed test that needs the same teardown pattern
 - No blockers for the rest of Phase 34's waves; this plan's files (`vitest.config.mts`, `__tests__/starter-decks-resolve.test.ts`, `src/data/starter-decks.ts`, `.planning/codebase/CONCERNS.md`) were listed as this plan's exclusive `files_modified` and had no overlap with sibling wave-2 plans
 
+## Self-Check: PASSED
+
+- FOUND: `__tests__/starter-decks-resolve.test.ts`
+- FOUND: `vitest.config.mts`
+- FOUND: `.planning/codebase/CONCERNS.md`
+- FOUND: `.planning/phases/34-card-sync-reliability/34-04-SUMMARY.md`
+- FOUND commit: `7faa94d`
+- FOUND commit: `d87e4c2`
+- FOUND commit: `45b3d59`
+
 ---
 *Phase: 34-card-sync-reliability*
 *Completed: 2026-08-16*
