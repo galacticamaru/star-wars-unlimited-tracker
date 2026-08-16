@@ -408,7 +408,7 @@ Plans:
 - Constrained to 1 cron job/day (Vercel Hobby tier) — multiplex within the existing cron entrypoint, do not add a second job.
 - Full incremental/resumable sync (per-set checkpointing, split cards/prices invocations) is explicitly out of scope this milestone — deferred as SYNC-05. This phase is batching + loud failure only.
 
-**Plans:** 1/7 plans executed
+**Plans:** 6/7 plans executed
 
 **Wave 1** *(tracer slice — verified before any expansion plan starts)*
 
@@ -416,11 +416,11 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 34-02-PLAN.md — Price sync: unified set list (ASH/LOF/TS26), chunked CASE WHEN batch updates, sleep removed, honest per-set totals (SYNC-01, SYNC-02, SYNC-03)
-- [ ] 34-03-PLAN.md — Secret-guarded, DB-only `/api/cron/sync-status` freshness route with per-set staleness verdict (SYNC-04, SYNC-02)
-- [ ] 34-04-PLAN.md — DEBT-05: DB-backed Vitest path + committed deck-resolution test over every deck, corrections, CONCERNS.md rewrite (DEBT-05)
-- [ ] 34-05-PLAN.md — Quick-add reports skipped collector numbers instead of dropping them; collection-page shortfall copy (DEBT-05)
-- [ ] 34-06-PLAN.md — CHECKPOINT: confirm this project's Vercel Fluid Compute status and function max duration (SYNC-01)
+- [x] 34-02-PLAN.md — Price sync: unified set list (ASH/LOF/TS26), chunked CASE WHEN batch updates, sleep removed, honest per-set totals (SYNC-01, SYNC-02, SYNC-03)
+- [x] 34-03-PLAN.md — Secret-guarded, DB-only `/api/cron/sync-status` freshness route with per-set staleness verdict (SYNC-04, SYNC-02)
+- [x] 34-04-PLAN.md — DEBT-05: DB-backed Vitest path + committed deck-resolution test over every deck, corrections, CONCERNS.md rewrite (DEBT-05)
+- [x] 34-05-PLAN.md — Quick-add reports skipped collector numbers instead of dropping them; collection-page shortfall copy (DEBT-05)
+- [x] 34-06-PLAN.md — CHECKPOINT: confirm this project's Vercel Fluid Compute status and function max duration (SYNC-01)
 
 **Wave 3** *(blocked on 34-01, 34-02, 34-06)*
 
@@ -549,7 +549,7 @@ Plans:
 | 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete    | 2026-07-20 |
 | 32. Combined Wants & Exclusions List | v7 | 3/3 | Complete    | 2026-07-20 |
 | 33. Ashes of the Empire Spotlight Decks | v7 | Direct | Complete    | 2026-07-20 |
-| 34. Card Sync Reliability | v8 | 1/7 | In Progress|  |
+| 34. Card Sync Reliability | v8 | 6/7 | In Progress|  |
 | 35. Shared Variant State Foundation | v8 | 0/TBD | Not started | - |
 | 36. Touch-Viable Tile Contract & Catalog Drawer | v8 | 0/TBD | Not started | - |
 | 37. Touch-Viable Deck Selector | v8 | 0/TBD | Not started | - |
