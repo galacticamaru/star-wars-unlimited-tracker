@@ -2,17 +2,19 @@
 gsd_state_version: 1.0
 milestone: v8
 milestone_name: Catalog Interaction & Sync Reliability
+current_phase: 34
+current_phase_name: Card Sync Reliability
 status: planning
-last_updated: "2026-08-16T19:15:00.000Z"
+stopped_at: Phase 34 context gathered
+last_updated: "2026-08-16T02:59:40.353Z"
 last_activity: 2026-08-16
+last_activity_desc: "v8 ROADMAP.md revised per user feedback: Phase 36 (11 reqs) split into Phase 36 (tile contract + catalog drawer, 6 reqs) and Phase 37 (deck selector, 5 reqs); old Phase 37 renumbered to Phase 38. v8 is now Phases 34–38, 21/21 requirements mapped, no orphans"
 progress:
-  total_phases: 5
+  total_phases: 17
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
   percent: 0
-current_phase: 34
-current_phase_name: Card Sync Reliability
 ---
 
 # Project State
@@ -92,9 +94,9 @@ Progress: [░░░░░░░░░░] 0%
 
 ## Session
 
-**Last session:** 2026-08-16T19:15:00.000Z
-**Stopped at:** v8 ROADMAP.md, REQUIREMENTS.md traceability, and STATE.md revised to Phases 34–38 per user-approved split of the old Phase 36; roadmap ready for execution
-**Resume file:** None
+**Last session:** 2026-08-16T02:59:40.344Z
+**Stopped at:** Phase 34 context gathered
+**Resume file:** .planning/phases/34-card-sync-reliability/34-CONTEXT.md
 
 ## Decisions
 
