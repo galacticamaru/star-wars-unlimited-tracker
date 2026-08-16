@@ -87,6 +87,95 @@ describe('syncAllCards', () => {
     expect(fetchCalls.some((url: string) => url.includes('/cards/SOR'))).toBe(true);
     expect(fetchCalls.some((url: string) => url.includes('/cards/SHD'))).toBe(true);
   });
+
+  it('uses an injected sets array without fetching /sets', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ data: [] }),
+    });
+
+    const injectedSets = [
+      { setId: 'SOR', fullName: 'Spark of Rebellion', numberCards: 1 },
+      { setId: 'SHD', fullName: 'Shadows of the Galaxy', numberCards: 1 },
+    ];
+
+    const result = await syncAllCards({ sets: injectedSets });
+
+    const fetchCalls = mockFetch.mock.calls.map((c: unknown[]) => c[0] as string);
+    expect(fetchCalls.some((url: string) => url.includes('api.swu-db.com/sets'))).toBe(false);
+    expect(fetchCalls.some((url: string) => url.includes('/cards/SOR'))).toBe(true);
+    expect(fetchCalls.some((url: string) => url.includes('/cards/SHD'))).toBe(true);
+    expect(result.setsTotal).toBe(2);
+    expect(result.setsProcessed).toBe(2);
+  });
+
+  it('resolves with no argument, keeping scripts/seed.ts working', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ setId: 'SOR', fullName: 'Spark of Rebellion', numberCards: 1 }],
+    });
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ data: [] }),
+    });
+
+    const result = await syncAllCards();
+    expect(result.setsTotal).toBe(1);
+  });
+
+  it('a deadlineAt already in the past leaves setsProcessed at 0 and lists every set as unprocessed', async () => {
+    const injectedSets = [
+      { setId: 'SOR', fullName: 'Spark of Rebellion', numberCards: 1 },
+      { setId: 'SHD', fullName: 'Shadows of the Galaxy', numberCards: 1 },
+    ];
+    const pastDeadline = Date.now() - 1000;
+
+    const result = await syncAllCards({ sets: injectedSets, deadlineAt: pastDeadline });
+
+    expect(result.setsProcessed).toBe(0);
+    expect(result.unprocessedSets).toEqual(['SOR', 'SHD']);
+    expect(result.deadlineHit).toBe(true);
+    expect(mockFetch).not.toHaveBeenCalled();
+    expect(
+      result.setsProcessed + result.failedSets.length + result.unprocessedSets.length
+    ).toBe(result.setsTotal);
+  });
+
+  it('a set whose cards fetch fails appears in failedSets while later sets still process', async () => {
+    const injectedSets = [
+      { setId: 'SOR', fullName: 'Spark of Rebellion', numberCards: 1 },
+      { setId: 'SHD', fullName: 'Shadows of the Galaxy', numberCards: 1 },
+    ];
+
+    mockFetch.mockImplementation((url: string) => {
+      if (url.includes('/cards/SOR')) {
+        return Promise.resolve({ ok: false, status: 500 });
+      }
+      return Promise.resolve({ ok: true, json: async () => ({ data: [] }) });
+    });
+
+    const result = await syncAllCards({ sets: injectedSets });
+
+    expect(result.failedSets).toEqual(['SOR']);
+    expect(result.setsProcessed).toBe(1);
+    expect(
+      result.setsProcessed + result.failedSets.length + result.unprocessedSets.length
+    ).toBe(result.setsTotal);
+  });
+
+  it('two consecutive calls with the same past deadlineAt return identical unprocessedSets — no state carries between runs', async () => {
+    const injectedSets = [
+      { setId: 'SOR', fullName: 'Spark of Rebellion', numberCards: 1 },
+      { setId: 'SHD', fullName: 'Shadows of the Galaxy', numberCards: 1 },
+    ];
+    const pastDeadline = Date.now() - 1000;
+
+    const first = await syncAllCards({ sets: injectedSets, deadlineAt: pastDeadline });
+    const second = await syncAllCards({ sets: injectedSets, deadlineAt: pastDeadline });
+
+    expect(first.unprocessedSets).toEqual(second.unprocessedSets);
+    expect(first.unprocessedSets).toEqual(['SOR', 'SHD']);
+  });
 });
 
 describe('upsertCards', () => {

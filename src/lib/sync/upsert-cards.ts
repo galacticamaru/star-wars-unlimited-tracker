@@ -2,6 +2,11 @@ import { db } from '@/db';
 import { cardDefinitions, cardPrintings } from '@/db/schema';
 import { sql } from 'drizzle-orm';
 import { chunk, SYNC_CHUNK_SIZE } from './chunk';
+import { getNonTokenSets, type SWUSet } from './set-list';
+
+// Re-exported so existing importers of `SWUSet` from this module are unaffected
+// by the move to set-list.ts (the single source of truth for the set list).
+export type { SWUSet };
 
 // ---- Types ----
 
@@ -30,16 +35,20 @@ export interface SWUCard {
   BackArt?: string;
 }
 
-export interface SWUSet {
-  setId: string;
-  fullName: string;
-  numberCards: number;
+export interface SyncRunOptions {
+  /** Caller-supplied non-token set list. When absent, fetched via getNonTokenSets(). */
+  sets?: SWUSet[];
+  /** Absolute epoch-milliseconds instant. When absent, the run is unbounded. */
+  deadlineAt?: number;
 }
 
-interface SyncResult {
+export interface CardSyncResult {
   setsTotal: number;
   setsProcessed: number; // successfully processed sets
   cardsUpserted: number;
+  failedSets: string[]; // setIds whose cards fetch failed (D-05: run continues)
+  unprocessedSets: string[]; // setIds never attempted because the deadline hit (D-08)
+  deadlineHit: boolean;
 }
 
 // ---- Helpers ----
@@ -261,29 +270,40 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
 // ---- Top-level sync function (used by seed script and cron route) ----
 
 /**
- * Fetches all sets from swu-db.com, skips token sets, and upserts all cards.
- * This is the entry point for both the seed script and the Vercel Cron job.
+ * Fetches (or accepts) the non-token set list and upserts all cards for every
+ * set. This is the entry point for both the seed script and the Vercel Cron job.
+ *
+ * Every set in the list ends up accounted for in exactly one of: setsProcessed,
+ * failedSets, or unprocessedSets — never silently dropped from the accounting.
  */
-export async function syncAllCards(): Promise<SyncResult> {
-  const setsResponse = await fetch('https://api.swu-db.com/sets');
-  if (!setsResponse.ok) {
-    throw new Error(`Failed to fetch sets: ${setsResponse.status}`);
-  }
-  const sets: SWUSet[] = await setsResponse.json();
-
-  // Pre-filter token sets here to avoid unnecessary API calls — upsertCards also
-  // guards against token sets (that is the canonical location), but fetching cards
-  // for token sets only to discard them is wasteful.
-  const nonTokenSets = sets.filter((s) => !(s.setId.startsWith('T') && s.setId.length > 3 && !s.setId.match(/^TS\d{2}$/)));
+export async function syncAllCards(options: SyncRunOptions = {}): Promise<CardSyncResult> {
+  const nonTokenSets = options.sets ?? (await getNonTokenSets());
 
   let totalUpserted = 0;
   let setsSucceeded = 0;
+  const failedSets: string[] = [];
+  const unprocessedSets: string[] = [];
+  let deadlineHit = false;
 
-  for (const set of nonTokenSets) {
+  for (let i = 0; i < nonTokenSets.length; i++) {
+    const set = nonTokenSets[i];
+
+    // D-08: soft deadline, checked once per set boundary — never interrupts a
+    // set already in progress. Reports and stops; does not persist a resume
+    // cursor (that is SYNC-05, deferred).
+    if (options.deadlineAt !== undefined && Date.now() >= options.deadlineAt) {
+      deadlineHit = true;
+      for (let j = i; j < nonTokenSets.length; j++) {
+        unprocessedSets.push(nonTokenSets[j].setId);
+      }
+      break;
+    }
+
     const cardsResponse = await fetch(`https://api.swu-db.com/cards/${set.setId}`);
     if (!cardsResponse.ok) {
       console.error(`Failed to fetch cards for set ${set.setId}: ${cardsResponse.status}`);
-      continue; // Skip this set, continue with others
+      failedSets.push(set.setId);
+      continue; // Skip this set, continue with others (D-05)
     }
     const { data: cards }: { data: SWUCard[] } = await cardsResponse.json();
     const count = await upsertCards(set.setId, cards);
@@ -291,5 +311,12 @@ export async function syncAllCards(): Promise<SyncResult> {
     setsSucceeded = setsSucceeded + 1;
   }
 
-  return { setsTotal: nonTokenSets.length, setsProcessed: setsSucceeded, cardsUpserted: totalUpserted };
+  return {
+    setsTotal: nonTokenSets.length,
+    setsProcessed: setsSucceeded,
+    cardsUpserted: totalUpserted,
+    failedSets,
+    unprocessedSets,
+    deadlineHit,
+  };
 }
