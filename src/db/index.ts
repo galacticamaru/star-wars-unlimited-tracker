@@ -13,5 +13,8 @@ if (!databaseUrl) {
   );
 }
 
-const pool = new Pool({ connectionString: databaseUrl });
+// Exported (additive, breaks no existing importer) so the DB-backed Vitest
+// path (__tests__/starter-decks-resolve.test.ts) can close the connection in
+// afterAll — the WebSocket Pool otherwise keeps the test worker alive.
+export const pool = new Pool({ connectionString: databaseUrl });
 export const db = drizzle({ client: pool });
