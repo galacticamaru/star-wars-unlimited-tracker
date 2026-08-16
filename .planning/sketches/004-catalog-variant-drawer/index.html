@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 004 — Catalog variant drawer</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding-top: 92px; background: var(--color-bg); font-family: var(--font-sans); color: var(--color-text); }
+
+  #variant-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 9998; background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: var(--space-3) var(--space-4); display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; box-shadow: var(--shadow-sm); }
+  #variant-nav .title { font-weight: 700; font-size: var(--text-sm); margin-right: var(--space-4); }
+  .variant-tab { font: inherit; font-size: var(--text-sm); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius-md); cursor: pointer; transition: all 0.15s ease; color: var(--color-text-muted); }
+  .variant-tab:hover { background: var(--color-surface-2); color: var(--color-text); }
+  .variant-tab.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; font-weight: 600; }
+  .variant-tab.coherence { border-style: dashed; }
+
+  .variant { display: none; padding: var(--space-6); }
+  .variant.active { display: block; }
+  .stage { display: flex; gap: var(--space-8); align-items: flex-start; flex-wrap: wrap; }
+  .frame-label { font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-2); font-family: var(--font-mono); }
+
+  /* ---------- frames ---------- */
+  .phone { width: 390px; height: 700px; background: var(--color-bg); border: 10px solid #0f172a; border-radius: 32px; overflow: hidden; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; flex-shrink: 0; position: relative; }
+  .desktop { width: 900px; height: 560px; border: 8px solid #0f172a; border-radius: 12px; overflow: hidden; background: var(--color-bg); display: flex; flex-direction: column; box-shadow: var(--shadow-lg); max-width: 100%; position: relative; flex-shrink: 0; }
+
+  .app-toolbar { background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: var(--space-3) var(--space-4); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+  .app-toolbar .brand { font-weight: 700; font-size: var(--text-base); }
+  .app-toolbar .who { font-size: var(--text-xs); color: var(--color-text-muted); }
+  .search { padding: var(--space-2) var(--space-4); background: var(--color-surface); border-bottom: 1px solid var(--color-border); flex-shrink: 0; }
+  .search input { width: 100%; font: inherit; font-size: var(--text-sm); padding: 8px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-2); }
+  .scroll { flex: 1; overflow-y: auto; position: relative; }
+  .grid { display: grid; gap: 8px; padding: 16px; }
+
+  /* ---------- tiles ---------- */
+  .art { position: relative; width: 100%; aspect-ratio: 2/3; overflow: hidden; background: var(--color-surface-2); }
+  .art .nameplate { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(transparent, rgba(0,0,0,0.82)); color: #fff; padding: 12px 3px 3px; font-size: 9px; font-weight: 700; line-height: 1.1; }
+  .art .cost { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: var(--radius-full); background: rgba(15,23,42,0.85); color: #fff; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .tile { position: relative; border-radius: var(--radius-md); overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.15s ease; background: var(--color-surface-2); }
+  .tile.sel { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+  .tile .ownbadge { position: absolute; bottom: 2px; right: 2px; background: rgba(255,255,255,0.94); color: var(--color-text); font-size: 9px; font-weight: 800; min-width: 17px; height: 17px; padding: 0 4px; border-radius: var(--radius-full); display: none; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); }
+  .tile .ownbadge.on { display: flex; }
+  .tile .tradedot { position: absolute; top: 3px; right: 3px; width: 9px; height: 9px; border-radius: 50%; background: var(--color-success); box-shadow: 0 0 0 2px #fff; display: none; }
+  .tile .tradedot.on { display: block; }
+  .corner-info { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: var(--radius-full); background: rgba(255,255,255,0.9); color: var(--color-text); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; z-index: 30; box-shadow: var(--shadow-sm); border: none; cursor: pointer; }
+  .corner-info:hover { background: var(--color-primary); color: #fff; }
+
+  /* ---------- drawer ---------- */
+  .scrim { position: absolute; inset: 0; background: rgba(15,23,42,0.45); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 80; }
+  .scrim.on { opacity: 1; pointer-events: auto; }
+  .drawer { position: absolute; top: 0; bottom: 0; right: 0; width: 360px; max-width: 100%; background: var(--color-surface); z-index: 90; transform: translateX(100%); transition: transform 0.25s cubic-bezier(.2,.8,.2,1); overflow-y: auto; box-shadow: -8px 0 24px rgba(15,23,42,0.2); display: flex; flex-direction: column; }
+  .drawer.on { transform: translateX(0); }
+  .phone .drawer { width: 100%; }
+  .drawer-head { padding: var(--space-4) var(--space-4) var(--space-3); border-bottom: 1px solid var(--color-border); display: flex; gap: var(--space-3); align-items: flex-start; flex-shrink: 0; }
+  .drawer-head .thumb { width: 52px; height: 78px; border-radius: var(--radius-sm); overflow: hidden; flex-shrink: 0; }
+  .drawer-head h3 { margin: 0; font-size: var(--text-lg); font-weight: 700; }
+  .drawer-head .sub { font-size: var(--text-xs); color: var(--color-text-muted); font-style: italic; }
+  .drawer-head .meta { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: 4px; }
+  .drawer-head .close { margin-left: auto; background: none; border: none; font-size: var(--text-xl); cursor: pointer; color: var(--color-text-muted); line-height: 1; padding: 0 4px; }
+  .drawer-body { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-4); }
+  .drawer-foot { margin-top: auto; padding: var(--space-3) var(--space-4); border-top: 1px solid var(--color-border); }
+  .detail-link { font: inherit; font-size: var(--text-sm); color: var(--color-primary); background: none; border: none; padding: 0; cursor: pointer; text-decoration: underline; }
+
+  /* section (variants A / C) */
+  .sec { background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-3); }
+  .sec .lbl { font-size: var(--text-2xs); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); margin-bottom: var(--space-2); display: flex; justify-content: space-between; align-items: center; }
+  .sec.locked { opacity: 0.55; }
+  .sec .gate { font-size: var(--text-xs); color: var(--color-accent); font-weight: 600; text-transform: none; letter-spacing: 0; }
+  .vrow { display: flex; align-items: center; gap: var(--space-2); padding: 3px 0; }
+  .vrow .vname { flex: 1; font-size: var(--text-sm); min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vrow .vname .vt { font-weight: 600; }
+  .vrow .vname .cn { color: var(--color-text-muted); font-size: var(--text-xs); }
+
+  .mini-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius-md); font: inherit; font-weight: 700; cursor: pointer; transition: all 0.12s ease; flex-shrink: 0; }
+  .mini-btn:hover:not([disabled]) { background: var(--color-primary-soft); border-color: var(--color-primary); color: var(--color-primary); }
+  .mini-btn[disabled] { opacity: 0.3; cursor: not-allowed; }
+  .num { min-width: 24px; text-align: center; font-weight: 700; font-size: var(--text-sm); }
+  .num.zero { color: var(--color-text-muted); font-weight: 500; }
+
+  /* unified table (variant B) */
+  .vtable { width: 100%; border-collapse: collapse; }
+  .vtable th { font-size: var(--text-2xs); text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 800; padding: 0 4px 6px; text-align: center; }
+  .vtable th:first-child { text-align: left; }
+  .vtable td { padding: 5px 4px; border-top: 1px solid var(--color-border); }
+  .vtable td:first-child { font-size: var(--text-sm); }
+  .vtable .cell { display: flex; align-items: center; justify-content: center; gap: 3px; }
+  .vtable .cell .mini-btn { width: 26px; height: 26px; font-size: var(--text-xs); }
+  .vtable .colhead-own   { color: var(--color-text); }
+  .vtable .colhead-trade { color: var(--color-success); }
+  .vtable .colhead-want  { color: var(--color-accent); }
+  .vtable tr.unowned td { background: var(--color-surface-2); }
+
+  /* ---------- notes ---------- */
+  .notes { flex: 1; min-width: 300px; max-width: 500px; font-size: var(--text-sm); line-height: 1.6; color: var(--color-text-muted); }
+  .notes h2 { color: var(--color-text); font-size: var(--text-lg); margin: 0 0 var(--space-2); }
+  .notes h3 { color: var(--color-text); font-size: var(--text-sm); margin: var(--space-6) 0 var(--space-2); text-transform: uppercase; letter-spacing: 0.04em; }
+  .notes ul { margin: 0; padding-left: 1.1em; }
+  .notes li { margin-bottom: var(--space-2); }
+  .verdict { display: inline-block; padding: 2px 8px; border-radius: var(--radius-full); font-size: var(--text-2xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .verdict.good { background: #dcfce7; color: #15803d; }
+  .verdict.warn { background: var(--color-accent-soft); color: var(--color-accent); }
+  .verdict.bad  { background: #fee2e2; color: #b91c1c; }
+  .callout { background: var(--color-surface); border-left: 3px solid var(--color-danger); padding: var(--space-3) var(--space-4); margin: var(--space-4) 0; border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+  .callout.ok { border-left-color: var(--color-success); }
+  .callout strong { color: var(--color-text); }
+
+  /* refresh pulse — shows router.refresh() churn */
+  .refresh-log { position: absolute; left: 8px; bottom: 8px; z-index: 95; background: rgba(15,23,42,0.88); color: #fff; font: 700 10px var(--font-mono); padding: 4px 8px; border-radius: 5px; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+  .refresh-log.on { opacity: 1; }
+
+  /* coherence panel */
+  .cohere { display: flex; gap: var(--space-6); flex-wrap: wrap; align-items: flex-start; }
+  .cohere .col { flex-shrink: 0; }
+  .cohere .cap { font-size: var(--text-xs); font-weight: 700; margin-bottom: var(--space-2); }
+  .cohere .cap span { font-weight: 400; color: var(--color-text-muted); }
+  .merged-bar { flex-shrink: 0; background: var(--color-surface); border-top: 2px solid var(--color-primary); padding: var(--space-3); display: flex; gap: var(--space-3); align-items: center; }
+  .merged-bar .thumb { width: 34px; height: 51px; border-radius: var(--radius-sm); overflow: hidden; flex-shrink: 0; }
+  .merged-bar .meta { flex: 1; min-width: 0; }
+  .merged-bar .meta .nm { font-weight: 700; font-size: var(--text-sm); }
+  .merged-bar .meta .sub { font-size: var(--text-xs); color: var(--color-text-muted); }
+  .step-btn { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius-md); font: inherit; font-size: var(--text-lg); font-weight: 600; cursor: pointer; }
+  .count-box { text-align: center; font-weight: 700; display: flex; flex-direction: column; justify-content: center; line-height: 1.05; min-width: 46px; }
+  .count-box .lbl { font-size: 9px; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; }
+
+  #toast { position: fixed; bottom: 70px; left: 50%; transform: translate(-50%, 20px); background: #0f172a; color: #fff; padding: 10px 16px; border-radius: var(--radius-lg); font-size: var(--text-sm); opacity: 0; pointer-events: none; transition: all 0.2s ease; z-index: 9999; }
+  #toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  #sketch-tools { position: fixed; bottom: 12px; right: 12px; z-index: 9999; font-family: system-ui; font-size: 12px; background: rgba(15,23,42,0.85); color: #fff; padding: 8px 12px; border-radius: 8px; opacity: 0.45; transition: opacity 0.2s; display: flex; gap: 10px; align-items: center; }
+  #sketch-tools:hover { opacity: 1; }
+  #sketch-tools select, #sketch-tools button { font: inherit; font-size: 11px; background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 5px; padding: 3px 7px; cursor: pointer; }
+  #sketch-tools button.on { background: #dc2626; border-color: #dc2626; }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <span class="title">Sketch 004 — Catalog variant drawer</span>
+  <button class="variant-tab active" data-v="a" onclick="showVariant('a')">A: Port binder sheet ★ Selected</button>
+  <button class="variant-tab" data-v="b" onclick="showVariant('b')">B: Unified variant table</button>
+  <button class="variant-tab" data-v="c" onclick="showVariant('c')">C: Ownership-first</button>
+  <button class="variant-tab coherence" data-v="x" onclick="showVariant('x')">◇ Coherence check</button>
+</div>
+
+<!-- ============ A ============ -->
+<div class="variant active" id="variant-a">
+  <div class="stage">
+    <div>
+      <div class="frame-label">/cards catalog — desktop 900px · drawer 360px · faithful port of variant-trade-sheet.tsx</div>
+      <div class="desktop" id="desk-a">
+        <div class="app-toolbar"><span class="brand">Catalog</span><span class="who">alan</span></div>
+        <div class="search"><input placeholder="Search cards…"></div>
+        <div class="scroll"><div class="grid" id="grid-a" style="grid-template-columns:repeat(7,1fr)"></div></div>
+        <div class="scrim" onclick="closeDrawer('a')"></div>
+        <div class="drawer" id="drawer-a"></div>
+        <div class="refresh-log" id="log-a"></div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>A: Port the binder sheet as-is</h2>
+      <p>Three stacked sections — Collection, Trade, Want — exactly as <code>variant-trade-sheet.tsx</code> composes them today. Path of least resistance: the components already live in <code>src/components/catalog/</code>.</p>
+
+      <div class="callout">
+        <strong>Open the drawer and change a Collection count on an unowned variant.</strong> The Trade section stays locked until a refresh lands. Each section holds its own <code>useState</code> seeded from props (<code>variant-collection-section.tsx:22</code>, <code>variant-trade-section.tsx:25</code>, <code>variant-want-section.tsx:23</code>) and Trade is gated on <code>ownedCount</code> — which Collection mutates locally without telling anyone.
+        <br><br>Watch the counter bottom-left: each section fires its own <code>router.refresh()</code>.
+      </div>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><span class="verdict good">Cheapest to build</span> — the composition already exists and is proven in the binder.</li>
+        <li><span class="verdict bad">Ships the known bug into the main surface.</span> The pending todo becomes the thing users look at, not an edge case.</li>
+        <li>Three sections × N variants is a lot of vertical scroll for a card with 4 printings.</li>
+        <li>Redundant labels — the same variant name is repeated in all three sections.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ B ============ -->
+<div class="variant" id="variant-b">
+  <div class="stage">
+    <div>
+      <div class="frame-label">/cards catalog — one row per printing, three columns</div>
+      <div class="desktop" id="desk-b">
+        <div class="app-toolbar"><span class="brand">Catalog</span><span class="who">alan</span></div>
+        <div class="search"><input placeholder="Search cards…"></div>
+        <div class="scroll"><div class="grid" id="grid-b" style="grid-template-columns:repeat(7,1fr)"></div></div>
+        <div class="scrim" onclick="closeDrawer('b')"></div>
+        <div class="drawer" id="drawer-b"></div>
+        <div class="refresh-log" id="log-b"></div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>B: One unified variant table</h2>
+      <p>Rows are printings. Columns are <strong>Owned</strong>, <strong>Trade</strong>, <strong>Want</strong>. Each variant appears exactly once, and the three numbers that describe it sit side by side.</p>
+
+      <div class="callout ok">
+        <strong>The coupling is fixed by construction.</strong> One row owns all three values for a printing, so there is one state object and no cross-section gate to go stale. Set Owned to 1 and the Trade cell in the same row unlocks immediately — no refresh, no callback threading.
+      </div>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><span class="verdict good">Densest</span> — a 4-printing card fits without scrolling. A shows the same data at roughly 3× the height.</li>
+        <li><span class="verdict good">Kills the stale-gate class of bug</span> rather than patching one instance.</li>
+        <li><span class="verdict warn">Biggest rewrite.</span> The three existing components stop being reusable as-is; their shared logic would need extracting into one row component.</li>
+        <li>Cells are 26px — below the 44px floor. Fine for a mouse, <strong>needs checking on the phone frame</strong>. This is a genuine risk, not a footnote.</li>
+        <li>Three numbers per row can read as busy. Judge whether the column headers carry it.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ C ============ -->
+<div class="variant" id="variant-c">
+  <div class="stage">
+    <div>
+      <div class="frame-label">/cards catalog — collection first, trade/want revealed by ownership</div>
+      <div class="desktop" id="desk-c">
+        <div class="app-toolbar"><span class="brand">Catalog</span><span class="who">alan</span></div>
+        <div class="search"><input placeholder="Search cards…"></div>
+        <div class="scroll"><div class="grid" id="grid-c" style="grid-template-columns:repeat(7,1fr)"></div></div>
+        <div class="scrim" onclick="closeDrawer('c')"></div>
+        <div class="drawer" id="drawer-c"></div>
+        <div class="refresh-log" id="log-c"></div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>C: Ownership-first, progressive</h2>
+      <p>Keeps the three sections but makes their dependency explicit and ordered. Collection is always there. Trade appears only once you own something and says so when you don't. Want is always available, since you can want a card you don't own.</p>
+
+      <div class="callout ok">
+        <strong>The gate becomes visible rather than mysterious.</strong> Under A, a locked Trade section looks broken. Here it states its condition — and because the sections share one state object, setting an Owned count reveals Trade immediately.
+      </div>
+
+      <h3>Trade-offs</h3>
+      <ul>
+        <li><span class="verdict good">Preserves the existing components</span> more than B does — same sections, shared state lifted up.</li>
+        <li><span class="verdict good">Teaches the model</span> — the ownership rule that gates trading is stated in the UI instead of enforced silently.</li>
+        <li><span class="verdict warn">Still tall.</span> Less than A, more than B. A 4-printing card scrolls on the phone.</li>
+        <li>Sections appearing and disappearing causes layout shift as you edit. Watch whether that feels responsive or jumpy.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ COHERENCE ============ -->
+<div class="variant" id="variant-x">
+  <h2 style="margin:0 0 8px">◇ Coherence check — two mutation surfaces, one grid</h2>
+  <p style="color:var(--color-text-muted);max-width:760px;line-height:1.6;margin-top:0">
+    Sketches 001–003 settled the <strong>selector</strong>: tap a tile, controls appear in a merged bottom bar (mobile) or the sidebar (desktop).
+    This sketch proposes a <strong>drawer</strong> for the catalog. Same-looking tiles, two different mutation surfaces.
+    Shown together below, at the same width, so the divergence is judged rather than assumed.
+  </p>
+
+  <div class="cohere" style="margin-top:24px">
+    <div class="col">
+      <div class="cap">Deck builder — selector mode <span>· tap → bottom bar</span></div>
+      <div class="phone">
+        <div class="app-toolbar"><span class="brand">Rebel Aggro</span><span class="who">Cards</span></div>
+        <div class="scroll"><div class="grid" id="grid-x1" style="grid-template-columns:repeat(3,1fr)"></div></div>
+        <div class="merged-bar">
+          <div class="thumb" id="x1-thumb"></div>
+          <div class="meta"><div class="nm">Vanquish</div><div class="sub">owns 2</div></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="step-btn">−</button>
+            <div class="count-box"><span>2</span></div>
+            <button class="step-btn">+</button>
+          </div>
+          <div class="count-box" style="min-width:52px;border-left:1px solid var(--color-border);padding-left:8px">
+            <span class="lbl">Deck ▲</span><span>34/50</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="cap">Catalog — /cards <span>· tap → drawer</span></div>
+      <div class="phone">
+        <div class="app-toolbar"><span class="brand">Catalog</span><span class="who">alan</span></div>
+        <div class="scroll"><div class="grid" id="grid-x2" style="grid-template-columns:repeat(3,1fr)"></div></div>
+        <div class="scrim on"></div>
+        <div class="drawer on" id="drawer-x"></div>
+      </div>
+    </div>
+
+    <div class="notes" style="max-width:420px">
+      <h3>What differs</h3>
+      <ul>
+        <li><strong>Container:</strong> bottom bar vs full-screen drawer.</li>
+        <li><strong>Depth:</strong> selector edits one number (deck count). Catalog edits three per printing.</li>
+        <li><strong>Dismissal:</strong> the bar is ambient and never blocks; the drawer is modal and must be closed.</li>
+        <li><strong>Persistence:</strong> the bar stays warm across cards — tap another tile and it re-targets. The drawer closes and reopens.</li>
+      </ul>
+
+      <h3>What holds</h3>
+      <ul>
+        <li>Identical tiles, identical selection ring, identical corner ⓘ.</li>
+        <li><strong>Tap selects, never navigates</strong> — in both.</li>
+        <li>Controls always off the tile — in both.</li>
+        <li>Nothing hover-dependent — in both.</li>
+      </ul>
+
+      <div class="callout ok">
+        <strong>The read:</strong> the contract is shared; only the container scales with the depth of the job. One number gets an ambient bar; twelve numbers get a modal drawer. That is arguably correct rather than inconsistent — but it is worth deciding deliberately, because a user moving between these two screens meets both within seconds.
+      </div>
+
+      <h3>The alternative</h3>
+      <p>Force one container everywhere: a drawer in the deck builder too. Rejected in sketch 001 — a drawer per card while adding 50 cards is more taps, not fewer.</p>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<div id="sketch-tools">
+  <select onchange="document.querySelector('link[href*=themes]').href='../themes/'+this.value+'.css'">
+    <option value="default">Default theme</option>
+  </select>
+  <button id="phone-btn" onclick="togglePhone()">Phone view</button>
+  <button onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const ASPECT = {
+  vigilance:['#3b82f6','#1e40af'], command:['#16a34a','#14532d'], aggression:['#dc2626','#7f1d1d'],
+  cunning:['#eab308','#854d0e'], heroism:['#f8fafc','#94a3b8'], villainy:['#334155','#020617'],
+};
+
+/* Real shapes from the codebase:
+   Printing { id, variantType, collectorNumber, ownedCount, tradeQuantity, quantity } */
+const CARDS = [
+  { id:2,  name:'Vanquish', subtitle:null, cost:5, aspect:'vigilance', printings:[
+      { id:201, variantType:'Normal',        collectorNumber:'128', ownedCount:2, tradeQuantity:1, quantity:0 },
+      { id:202, variantType:'Foil',          collectorNumber:'128', ownedCount:1, tradeQuantity:0, quantity:0 },
+      { id:203, variantType:'Hyperspace',    collectorNumber:'428', ownedCount:0, tradeQuantity:0, quantity:1 },
+      { id:204, variantType:'Showcase',      collectorNumber:'528', ownedCount:0, tradeQuantity:0, quantity:0 },
+  ]},
+  { id:1,  name:'Battlefield Marine', subtitle:null, cost:2, aspect:'command', printings:[
+      { id:101, variantType:'Normal',        collectorNumber:'098', ownedCount:3, tradeQuantity:2, quantity:0 },
+      { id:102, variantType:'Foil',          collectorNumber:'098', ownedCount:0, tradeQuantity:0, quantity:2 },
+  ]},
+  { id:15, name:'Admiral Ackbar', subtitle:'Brilliant Strategist', cost:5, aspect:'command', printings:[
+      { id:1501, variantType:'Normal',       collectorNumber:'022', ownedCount:1, tradeQuantity:0, quantity:0 },
+      { id:1502, variantType:'Hyperspace',   collectorNumber:'322', ownedCount:0, tradeQuantity:0, quantity:1 },
+      { id:1503, variantType:'Prestige Foil',collectorNumber:'622', ownedCount:0, tradeQuantity:0, quantity:0 },
+  ]},
+  { id:5,  name:'Wampa', subtitle:null, cost:4, aspect:'aggression', printings:[
+      { id:501, variantType:'Normal',        collectorNumber:'221', ownedCount:0, tradeQuantity:0, quantity:1 },
+      { id:502, variantType:'Foil',          collectorNumber:'221', ownedCount:0, tradeQuantity:0, quantity:0 },
+  ]},
+  { id:9,  name:'Superlaser Blast', subtitle:null, cost:9, aspect:'villainy', printings:[
+      { id:901, variantType:'Normal',        collectorNumber:'238', ownedCount:0, tradeQuantity:0, quantity:0 },
+      { id:902, variantType:'Showcase',      collectorNumber:'538', ownedCount:0, tradeQuantity:0, quantity:0 },
+  ]},
+  { id:4,  name:'Alliance X-Wing', subtitle:null, cost:4, aspect:'vigilance', printings:[
+      { id:401, variantType:'Normal',        collectorNumber:'044', ownedCount:3, tradeQuantity:1, quantity:0 },
+  ]},
+  { id:14, name:'Krayt Dragon', subtitle:null, cost:8, aspect:'aggression', printings:[
+      { id:1401, variantType:'Normal',       collectorNumber:'210', ownedCount:0, tradeQuantity:0, quantity:1 },
+      { id:1402, variantType:'Serialized',   collectorNumber:'—',   ownedCount:0, tradeQuantity:0, quantity:0 },
+  ]},
+];
+
+function clone() { return JSON.parse(JSON.stringify(CARDS)); }
+const state = { a: clone(), b: clone(), c: clone(), x: clone() };
+const open  = { a: null, b: null, c: null };
+
+/* Variant A alone simulates the real bug: Trade reads a SEPARATE, lagging copy of ownedCount. */
+const laggedOwned = {};
+function seedLag() {
+  state.a.forEach(c => c.printings.forEach(p => { laggedOwned[p.id] = p.ownedCount; }));
+}
+seedLag();
+
+function art(c, small) {
+  const [x,y] = ASPECT[c.aspect];
+  return `<div class="art" style="background:linear-gradient(150deg,${x},${y})">
+    <div class="cost">${c.cost}</div>${small?'':`<div class="nameplate">${c.name}</div>`}</div>`;
+}
+function toast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('on');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('on'), 1600);
+}
+let refreshCount = { a:0, b:0, c:0 };
+function logRefresh(v, which) {
+  refreshCount[v]++;
+  const el = document.getElementById('log-' + v);
+  if (!el) return;
+  el.textContent = `router.refresh() ×${refreshCount[v]} — from ${which}`;
+  el.classList.add('on');
+  clearTimeout(el._h); el._h = setTimeout(()=>el.classList.remove('on'), 2200);
+}
+
+function card(v, id) { return state[v].find(c => c.id === id); }
+function totals(c) {
+  return {
+    owned: c.printings.reduce((s,p)=>s+p.ownedCount,0),
+    trade: c.printings.reduce((s,p)=>s+p.tradeQuantity,0),
+    want:  c.printings.reduce((s,p)=>s+p.quantity,0),
+  };
+}
+
+function bump(v, cardId, printingId, field, delta) {
+  const p = card(v, cardId).printings.find(x => x.id === printingId);
+  const next = Math.max(0, p[field] + delta);
+  if (field === 'tradeQuantity') {
+    const cap = (v === 'a') ? laggedOwned[printingId] : p.ownedCount;
+    if (next > cap) { toast('Cannot offer more than you own'); return; }
+  }
+  p[field] = next;
+
+  // Variant A: collection edits do NOT propagate to the trade gate until a "refresh" lands.
+  if (v === 'a') {
+    logRefresh('a', field === 'ownedCount' ? 'Collection' : field === 'tradeQuantity' ? 'Trade' : 'Want');
+    if (field === 'ownedCount') {
+      setTimeout(() => { laggedOwned[printingId] = p.ownedCount; render(v); }, 2000);
+    }
+  } else {
+    logRefresh(v, 'shared state');
+  }
+  render(v);
+}
+
+/* ---------- tiles ---------- */
+function tiles(v, cols) {
+  return state[v].map(c => {
+    const t = totals(c);
+    return `<div class="tile ${open[v]===c.id?'sel':''}" onclick="openDrawer('${v}',${c.id})">
+      ${art(c, cols > 4)}
+      <button class="corner-info" onclick="event.stopPropagation();toast('→ /cards/SOR/${c.printings[0].collectorNumber} — shareable detail page')">i</button>
+      <div class="tradedot ${t.trade?'on':''}" style="${t.trade?'top:28px':''}"></div>
+      <div class="ownbadge ${t.owned?'on':''}">${t.owned}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- drawer heads / feet ---------- */
+function head(v, c) {
+  return `<div class="drawer-head">
+    <div class="thumb">${art(c, true)}</div>
+    <div style="min-width:0">
+      <h3>${c.name}</h3>
+      ${c.subtitle?`<div class="sub">${c.subtitle}</div>`:''}
+      <div class="meta">${c.printings.length} printing${c.printings.length>1?'s':''}</div>
+    </div>
+    <button class="close" onclick="closeDrawer('${v}')" aria-label="Close">×</button>
+  </div>`;
+}
+function foot(c) {
+  return `<div class="drawer-foot">
+    <button class="detail-link" onclick="toast('→ /cards/SOR/${c.printings[0].collectorNumber} — shareable detail page')">
+      Open full card page ↗</button>
+  </div>`;
+}
+function stepper(v, cardId, p, field, disabled) {
+  const val = p[field];
+  return `<button class="mini-btn" ${val===0||disabled?'disabled':''} onclick="bump('${v}',${cardId},${p.id},'${field}',-1)">−</button>
+    <span class="num ${val?'':'zero'}">${val}</span>
+    <button class="mini-btn" ${disabled?'disabled':''} onclick="bump('${v}',${cardId},${p.id},'${field}',1)">+</button>`;
+}
+function vlabel(p) {
+  return `<span class="vname"><span class="vt">${p.variantType}</span> <span class="cn">#${p.collectorNumber}</span></span>`;
+}
+
+/* ---------- A: three stacked sections ---------- */
+function drawerA(c) {
+  const anyOwnedLagged = c.printings.some(p => laggedOwned[p.id] > 0);
+  return head('a', c) + `<div class="drawer-body">
+    <div class="sec">
+      <div class="lbl">Your Collection</div>
+      ${c.printings.map(p=>`<div class="vrow">${vlabel(p)}${stepper('a',c.id,p,'ownedCount')}</div>`).join('')}
+    </div>
+    <div class="sec ${anyOwnedLagged?'':'locked'}">
+      <div class="lbl">Available for Trade
+        ${anyOwnedLagged?'':'<span class="gate">locked — you own none</span>'}</div>
+      ${c.printings.map(p=>`<div class="vrow">${vlabel(p)}
+        ${stepper('a',c.id,p,'tradeQuantity', !(laggedOwned[p.id]>0))}</div>`).join('')}
+    </div>
+    <div class="sec">
+      <div class="lbl">Looking For</div>
+      ${c.printings.map(p=>`<div class="vrow">${vlabel(p)}${stepper('a',c.id,p,'quantity')}</div>`).join('')}
+    </div>
+  </div>` + foot(c);
+}
+
+/* ---------- B: unified table ---------- */
+function drawerB(c) {
+  return head('b', c) + `<div class="drawer-body">
+    <table class="vtable">
+      <thead><tr>
+        <th>Variant</th>
+        <th class="colhead-own">Owned</th>
+        <th class="colhead-trade">Trade</th>
+        <th class="colhead-want">Want</th>
+      </tr></thead>
+      <tbody>
+      ${c.printings.map(p=>`<tr class="${p.ownedCount?'':'unowned'}">
+        <td><span class="vt" style="font-weight:600">${p.variantType}</span><br>
+            <span class="cn" style="color:var(--color-text-muted);font-size:var(--text-xs)">#${p.collectorNumber}</span></td>
+        <td><div class="cell">${stepper('b',c.id,p,'ownedCount')}</div></td>
+        <td><div class="cell">${stepper('b',c.id,p,'tradeQuantity', p.ownedCount===0)}</div></td>
+        <td><div class="cell">${stepper('b',c.id,p,'quantity')}</div></td>
+      </tr>`).join('')}
+      </tbody>
+    </table>
+    <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin:0">
+      Trade unlocks per row as soon as that variant's Owned count is above zero.</p>
+  </div>` + foot(c);
+}
+
+/* ---------- C: ownership-first ---------- */
+function drawerC(c) {
+  const anyOwned = c.printings.some(p => p.ownedCount > 0);
+  return head('c', c) + `<div class="drawer-body">
+    <div class="sec">
+      <div class="lbl">Your Collection</div>
+      ${c.printings.map(p=>`<div class="vrow">${vlabel(p)}${stepper('c',c.id,p,'ownedCount')}</div>`).join('')}
+    </div>
+    ${anyOwned ? `
+    <div class="sec">
+      <div class="lbl">Available for Trade
+        <span class="gate" style="color:var(--color-text-muted);font-weight:400">owned variants only</span></div>
+      ${c.printings.filter(p=>p.ownedCount>0).map(p=>`<div class="vrow">${vlabel(p)}
+        ${stepper('c',c.id,p,'tradeQuantity')}</div>`).join('')}
+    </div>` : `
+    <div class="sec locked" style="text-align:center;padding:var(--space-4)">
+      <div style="font-size:var(--text-sm);color:var(--color-text-muted)">
+        Add a copy above to offer this card for trade.</div>
+    </div>`}
+    <div class="sec">
+      <div class="lbl">Looking For <span class="gate" style="color:var(--color-text-muted);font-weight:400">any variant</span></div>
+      ${c.printings.map(p=>`<div class="vrow">${vlabel(p)}${stepper('c',c.id,p,'quantity')}</div>`).join('')}
+    </div>
+  </div>` + foot(c);
+}
+
+/* ---------- open/close ---------- */
+function openDrawer(v, id) {
+  open[v] = id; render(v);
+  document.querySelector('#desk-' + v + ' .scrim').classList.add('on');
+  document.getElementById('drawer-' + v).classList.add('on');
+}
+function closeDrawer(v) {
+  open[v] = null;
+  document.querySelector('#desk-' + v + ' .scrim').classList.remove('on');
+  document.getElementById('drawer-' + v).classList.remove('on');
+  render(v);
+}
+
+/* ---------- render ---------- */
+function render(v) {
+  if (v === 'x') return;
+  const cols = document.getElementById('grid-' + v)?.style.gridTemplateColumns.match(/\d+/)?.[0] || 7;
+  document.getElementById('grid-' + v).innerHTML = tiles(v, +cols);
+  const d = document.getElementById('drawer-' + v);
+  if (open[v] == null) { d.innerHTML = ''; return; }
+  const c = card(v, open[v]);
+  d.innerHTML = ({ a:drawerA, b:drawerB, c:drawerC }[v])(c);
+}
+
+function renderX() {
+  document.getElementById('grid-x1').innerHTML = state.x.map(c =>
+    `<div class="tile ${c.id===2?'sel':''}">${art(c)}<div class="ownbadge on">${totals(c).owned}</div></div>`).join('');
+  document.getElementById('grid-x2').innerHTML = state.x.map(c =>
+    `<div class="tile ${c.id===2?'sel':''}">${art(c)}<div class="ownbadge on">${totals(c).owned}</div></div>`).join('');
+  const v = state.x.find(c=>c.id===2);
+  document.getElementById('x1-thumb').innerHTML = art(v, true);
+  document.getElementById('drawer-x').innerHTML = head('x', v) + `<div class="drawer-body">
+    <table class="vtable">
+      <thead><tr><th>Variant</th><th class="colhead-own">Owned</th><th class="colhead-trade">Trade</th><th class="colhead-want">Want</th></tr></thead>
+      <tbody>${v.printings.map(p=>`<tr class="${p.ownedCount?'':'unowned'}">
+        <td><span style="font-weight:600">${p.variantType}</span><br><span style="color:var(--color-text-muted);font-size:var(--text-xs)">#${p.collectorNumber}</span></td>
+        <td><div class="cell"><button class="mini-btn">−</button><span class="num ${p.ownedCount?'':'zero'}">${p.ownedCount}</span><button class="mini-btn">+</button></div></td>
+        <td><div class="cell"><button class="mini-btn" ${p.ownedCount?'':'disabled'}>−</button><span class="num ${p.tradeQuantity?'':'zero'}">${p.tradeQuantity}</span><button class="mini-btn" ${p.ownedCount?'':'disabled'}>+</button></div></td>
+        <td><div class="cell"><button class="mini-btn">−</button><span class="num ${p.quantity?'':'zero'}">${p.quantity}</span><button class="mini-btn">+</button></div></td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>` + foot(v);
+}
+
+function togglePhone() {
+  document.body.classList.toggle('phone-mode');
+  const on = document.body.classList.contains('phone-mode');
+  document.getElementById('phone-btn').classList.toggle('on', on);
+  document.querySelectorAll('.desktop').forEach(d => {
+    d.style.width = on ? '390px' : '900px';
+    d.style.height = on ? '700px' : '560px';
+    d.style.borderRadius = on ? '28px' : '12px';
+  });
+  document.querySelectorAll('.desktop .grid').forEach(g => {
+    g.style.gridTemplateColumns = `repeat(${on ? 3 : 7}, 1fr)`;
+  });
+  document.querySelectorAll('.desktop .drawer').forEach(d => { d.style.width = on ? '100%' : '360px'; });
+  renderAll();
+  toast(on ? 'Phone width — check the 26px table cells in B' : 'Desktop width');
+}
+
+function resetAll() {
+  ['a','b','c','x'].forEach(v => state[v] = clone());
+  open.a = open.b = open.c = null;
+  refreshCount = { a:0, b:0, c:0 };
+  seedLag();
+  ['a','b','c'].forEach(closeDrawer);
+  renderAll(); toast('Reset');
+}
+function showVariant(id) {
+  document.querySelectorAll('.variant').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('variant-' + id).classList.add('active');
+  document.querySelector(`.variant-tab[data-v="${id}"]`).classList.add('active');
+  renderAll();
+}
+function renderAll() { ['a','b','c'].forEach(render); renderX(); }
+
+renderAll();
+</script>
+</body>
+</html>

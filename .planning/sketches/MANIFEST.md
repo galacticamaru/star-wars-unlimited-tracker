@@ -25,6 +25,7 @@ gradients so mockups stay offline and still read as the real product.
 | 001 | selector-tile-mobile | What tile layout and control placement works for selector mode at 390px? | **B** — 3-col art-only tile + pinned action bar | mobile, deck-builder, catalog, touch, layout |
 | 002 | bottom-zone-and-detail-affordance | With three things competing for the bottom of the screen, how do they coexist — and where does the detail-page link go? | **C** — one merged 64px bar; detail via corner ⓘ + long-press | mobile, navigation, feedback |
 | 003 | responsive-scope | Does the tile + off-tile-controls model apply at every breakpoint, or is it mobile-only? | **C** — one model, two containers (bottom bar / sidebar) | responsive, desktop, consistency |
+| 004 | catalog-variant-drawer | What's in the catalog variant drawer, and how do its sections relate? | **A** — port the binder sheet as-is; coupling fixed by wiring | catalog, drawer, state, variants, coherence |
 
 ## Decisions So Far
 
@@ -41,6 +42,10 @@ gradients so mockups stay offline and still read as the real product.
 - **The model is global, not mobile-only** (sketch 003). Tap-selects and off-tile controls apply at
   every breakpoint; only the container changes — merged bottom bar on mobile, the existing 320px
   sidebar (`deck-sidebar.tsx`) on desktop. Desktop accepts losing hover-to-adjust.
+- **The catalog drawer is a straight port of the binder sheet** (sketch 004) — three stacked
+  sections, existing components untouched. The state coupling is fixed by wiring, not by redesign.
+- **Two mutation surfaces are acceptable** — an ambient bar for the selector's one number, a modal
+  drawer for the catalog's three-per-printing. Same contract, container scaled to the job.
 
 ## Measured Facts
 
@@ -58,6 +63,15 @@ Accepted at selection, unresolved — handle during planning:
 - The deck count is **both a display and a button** — discoverability unverified.
 - Long-press needs an **accessible equivalent** and a **movement threshold** so it doesn't fire
   during scroll.
+- **BLOCKING — the stale trade gate must be fixed before the catalog drawer ships** (sketch 004).
+  `VariantTradeSection` gates on `ownedCount` while `VariantCollectionSection` mutates it in local
+  state. Deferred in the binder; unavoidable in a drawer showing all three sections at once. Fix by
+  lifting state into the drawer (also collapses three `router.refresh()` calls into one) or by
+  threading `onOwnedCountChange`.
+- `VariantTradeSection` receives `onQuantityChange` from the sheet but not from the detail page
+  (`page.tsx:67`) — prop contract needs reconciling.
+- The detail page renders Collection + Trade only; the sheet renders all three. Decide whether the
+  catalog drawer and detail page should match.
 
 ## Context
 
