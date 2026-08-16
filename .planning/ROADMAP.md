@@ -98,7 +98,7 @@ Shipped via squashed code-only PR #21 into `main`. See [milestones/v7-ROADMAP.md
 
 **Milestone Goal:** Make card mutation happen where you are — tap a tile, adjust it, done — at every breakpoint; and make the nightly catalog sync actually finish and say so when it doesn't.
 
-- [x] **Phase 34: Card Sync Reliability** — Batched upserts complete the nightly sync inside its Vercel budget, a partial run reports failure instead of silently succeeding, and the LAW spotlight deck's matching bug is corrected (completed 2026-08-16)
+- [ ] **Phase 34: Card Sync Reliability** — Batched upserts complete the nightly sync inside its Vercel budget, a partial run reports failure instead of silently succeeding, and the LAW spotlight deck's matching bug is corrected (all 7 plans executed; verification gaps_found 2026-08-16 — see 34-VERIFICATION.md)
 - [ ] **Phase 35: Shared Variant State Foundation** — Collection/trade/want sections share one state source; the stale-trade-availability bug is fixed; inline write-error handling has a home (BLOCKING prerequisite for Phase 36)
 - [ ] **Phase 36: Touch-Viable Tile Contract & Catalog Drawer** — Tile tap opens the catalog variant drawer; tile-wide link removed at every breakpoint in both modes; deck-builder selector kept functional in the interim via a minimal off-tile stepper
 - [ ] **Phase 37: Touch-Viable Deck Selector** — Phase 36's interim stepper is replaced by the merged ~64px mobile bottom bar and the desktop sidebar controls; DEBT-02 variant art rides along
