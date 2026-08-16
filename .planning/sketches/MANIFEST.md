@@ -26,6 +26,7 @@ gradients so mockups stay offline and still read as the real product.
 | 002 | bottom-zone-and-detail-affordance | With three things competing for the bottom of the screen, how do they coexist — and where does the detail-page link go? | **C** — one merged 64px bar; detail via corner ⓘ + long-press | mobile, navigation, feedback |
 | 003 | responsive-scope | Does the tile + off-tile-controls model apply at every breakpoint, or is it mobile-only? | **C** — one model, two containers (bottom bar / sidebar) | responsive, desktop, consistency |
 | 004 | catalog-variant-drawer | What's in the catalog variant drawer, and how do its sections relate? | **A** — port the binder sheet as-is; coupling fixed by wiring | catalog, drawer, state, variants, coherence |
+| 005 | catalog-state-vocabulary | What's the catalog's state vocabulary as a mutation surface, and what does a failed write look like? | **A** — inline per-row errors + one converged grid-state component | states, errors, empty-state, consistency |
 
 ## Decisions So Far
 
@@ -46,6 +47,12 @@ gradients so mockups stay offline and still read as the real product.
   sections, existing components untouched. The state coupling is fixed by wiring, not by redesign.
 - **Two mutation surfaces are acceptable** — an ambient bar for the selector's one number, a modal
   drawer for the catalog's three-per-printing. Same contract, container scaled to the job.
+- **Failed optimistic writes surface inline, on the row that failed** (sketch 005) — red row, number
+  shakes back, one-line message with Retry beneath. Chosen for attribution: 12 steppers in one
+  drawer means a generic message can't say which failed.
+- **One grid-state component** covering `idle / loading / empty / error`, replacing `empty-state.tsx`
+  and the inline blocks at `manage/page.tsx:385-407`. Catalog uses `empty`/`error`; the binder also
+  uses `idle`/`loading`.
 
 ## Measured Facts
 
@@ -72,6 +79,12 @@ Accepted at selection, unresolved — handle during planning:
   (`page.tsx:67`) — prop contract needs reconciling.
 - The detail page renders Collection + Trade only; the sheet renders all three. Decide whether the
   catalog drawer and detail page should match.
+- **Non-drawer optimistic writes have no error vocabulary** (sketch 005). Inline row errors only work
+  where there is a row. Deck-builder selector writes and other binder writes still fail silently.
+  The global-toast variant that would have covered them was rejected because a 4-second toast
+  recreates the silent-revert problem. Not a blocker; a known hole.
+- Multi-failure stacking (offline mid-session produces several red rows at once) is untested on a
+  real device with a real network drop.
 
 ## Context
 
