@@ -3,12 +3,12 @@ status: diagnosed
 phase: 34-card-sync-reliability
 source: [34-VERIFICATION.md]
 started: 2026-08-20T06:45:00Z
-updated: 2026-08-20T07:26:00Z
+updated: 2026-08-20T07:55:00Z
 ---
 
 ## Current Test
 
-[testing paused — 4 items outstanding; blocker gap G-34-1 found while running test 1 must be fixed before the deployed budget run is meaningful]
+[testing paused — 4 items outstanding. Blocker gap G-34-1 is RESOLVED by plan 34-09 (merged at b4712c1); all four tests still require a deploy to close.]
 
 ## Tests
 
@@ -41,8 +41,12 @@ blocked: 0
 ## Gaps
 
 - gap_id: G-34-1
-  truth: "A cron run reports success only when every non-token set landed; price sync updates prices for every non-token set"
-  status: failed
+  status: resolved
+  resolved_by: 34-09-PLAN.md
+  resolved_at: 2026-08-20
+  resolution: "::integer cast on every CASE branch. Verified independently of the executor: guard test passes at HEAD, and with the cast removed it fails 3/3 at SQLSTATE 42804 — a genuine regression guard, not a vacuous one. Live DB now shows all 10 real card sets fully priced and timestamped 2026-08-20 07:46-07:47 (ASH 0/264 -> 264/264, LOF 6/264 -> 264/264)."
+  original_truth: "A cron run reports success only when every non-token set landed; price sync updates prices for every non-token set"
+  original_status: failed
   reason: "Local deployed-shape run (152s, 35/35 cards, 8404 upserted) returned success:false with prices setsProcessed 25/35, totalUpdated 0. All 10 real card sets (LOF, SOR, LAW, IBH, TWI, SEC, SHD, TS26, JTL, ASH) in failedSets; the 25 'processed' sets are empty promo/OP sets that legitimately return 0 cards upstream. Price sync has never written a single price."
   severity: blocker
   test: 1
