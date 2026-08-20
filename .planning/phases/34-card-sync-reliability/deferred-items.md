@@ -44,3 +44,27 @@ below is one of those gaps, so each is a conscious deferral, not a fix performed
 
 These six items are recorded here for a future phase or an `/gsd-audit-fix` pass and were consciously
 deferred, not forgotten.
+
+## Phase 34 close-out: pre-existing suite failures outside phase scope
+
+Recorded by the `execute-phase` post-merge test gate after wave 4 merged. The full suite reports
+`8 failed | 302 passed | 33 todo (343)` across 5 files. The identical 8 failures reproduce at the
+pre-merge base `15ac805` (verified in a detached worktree at that commit), so the phase-34 delta is
+zero regressions. None of the 5 files is touched by any plan in this phase.
+
+- `tests/data-isolation.test.ts` — two failures. `only returns collection items belonging to the
+  current user` fails with `TypeError: db.select(...).from(...).leftJoin is not a function`: the
+  Drizzle test double does not implement `leftJoin`, which `getUserCollection`
+  (`src/db/queries/collection.ts:190`) now calls. `only returns decks belonging to the current user`
+  fails with ``cacheTag() is only available with the `cacheComponents` config`` — `getDecks`
+  (`src/db/queries/decks.ts:8`) uses `'use cache'` + `cacheTag()`, which the vitest config does not
+  enable.
+- `__tests__/api-deck-validation.test.ts` — four failures across the `PATCH /api/decks/[id]`
+  validation cases.
+- `__tests__/collection-page.test.tsx` — file-level failure (suite does not load).
+- `tests/binder-queries.test.ts` — `getPublicBinderData > calculates looking for quantity correctly`.
+- `tests/catalog-variant.test.ts` — `selectBestVariantArtUrl > count wins over precedence`.
+
+Deferred rather than fixed: all five sit outside phase 34's requirements (SYNC-01..04, DEBT-05) and
+the two `cacheComponents` / Drizzle-mock root causes are test-harness concerns, not sync-reliability
+ones. Candidates for a dedicated test-infrastructure phase or an `/gsd-audit-fix` pass.
