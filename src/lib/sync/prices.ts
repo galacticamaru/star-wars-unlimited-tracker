@@ -88,7 +88,7 @@ interface PriceUpdateRow {
  * explicit-cast pitfalls a hand-rolled VALUES list would need for the
  * nullable priceEur/priceUsd columns.
  */
-function buildCaseUpdate(rows: PriceUpdateRow[], valueKey: 'priceEur' | 'priceUsd'): SQL {
+export function buildCaseUpdate(rows: PriceUpdateRow[], valueKey: 'priceEur' | 'priceUsd'): SQL {
   const fragments: SQL[] = [sql`(case`];
   for (const row of rows) {
     fragments.push(sql`when ${cardDefinitions.swudbId} = ${row.swudbId} then ${row[valueKey]}`);
