@@ -408,7 +408,7 @@ Plans:
 - Constrained to 1 cron job/day (Vercel Hobby tier) — multiplex within the existing cron entrypoint, do not add a second job.
 - Full incremental/resumable sync (per-set checkpointing, split cards/prices invocations) is explicitly out of scope this milestone — deferred as SYNC-05. This phase is batching + loud failure only.
 
-**Plans:** 7/8 plans complete — 34-08 added by gap closure after `34-VERIFICATION.md` recorded 2 failed truths (both CR-01)
+**Plans:** 8/8 plans executed — 34-08 added by gap closure after `34-VERIFICATION.md` recorded 2 failed truths (both CR-01)
 
 **Wave 1** *(tracer slice — verified before any expansion plan starts)*
 
@@ -428,7 +428,7 @@ Plans:
 
 **Wave 4** *(gap closure — blocked on 34-01, 34-07)*
 
-- [ ] 34-08-PLAN.md — GAP CLOSURE: per-set try/catch isolation in `syncAllCards()` mirroring `syncPrices()`, so a rejected fetch / malformed body / DB error / unresolved-swudbId throw lands in `failedSets` instead of collapsing the run into a bodyless 500 (SYNC-01, SYNC-03)
+- [x] 34-08-PLAN.md — GAP CLOSURE: per-set try/catch isolation in `syncAllCards()` mirroring `syncPrices()`, so a rejected fetch / malformed body / DB error / unresolved-swudbId throw lands in `failedSets` instead of collapsing the run into a bodyless 500 (SYNC-01, SYNC-03)
 
 ### Phase 35: Shared Variant State Foundation
 
@@ -553,7 +553,7 @@ Plans:
 | 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete    | 2026-07-20 |
 | 32. Combined Wants & Exclusions List | v7 | 3/3 | Complete    | 2026-07-20 |
 | 33. Ashes of the Empire Spotlight Decks | v7 | Direct | Complete    | 2026-07-20 |
-| 34. Card Sync Reliability | v8 | 7/7 | Complete   | 2026-08-16 |
+| 34. Card Sync Reliability | v8 | 8/8 | In Progress|  |
 | 35. Shared Variant State Foundation | v8 | 0/TBD | Not started | - |
 | 36. Touch-Viable Tile Contract & Catalog Drawer | v8 | 0/TBD | Not started | - |
 | 37. Touch-Viable Deck Selector | v8 | 0/TBD | Not started | - |
