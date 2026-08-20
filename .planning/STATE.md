@@ -5,15 +5,16 @@ milestone_name: Catalog Interaction & Sync Reliability
 current_phase: 34
 current_phase_name: card-sync-reliability
 status: executing
-stopped_at: Phase 34 context gathered
-last_updated: "2026-08-20T06:09:25.204Z"
+stopped_at: Completed 34-09-PLAN.md — G-34-1 gap closure
+last_updated: "2026-08-20T07:51:00.261Z"
 last_activity: 2026-08-20
 last_activity_desc: Phase 34 execution started
+state_head: 215c05e560894c7360be05f55d271a047bae7e94
 progress:
   total_phases: 17
   completed_phases: 0
-  total_plans: 8
-  completed_plans: 7
+  total_plans: 9
+  completed_plans: 9
   percent: 0
 ---
 
@@ -29,8 +30,8 @@ See: .planning/PROJECT.md (updated 2026-08-16)
 ## Current Position
 
 Phase: 34 (card-sync-reliability) — EXECUTING
-Plan: 1 of 8
-Status: Executing Phase 34
+Plan: 2 of 8
+Status: Ready to execute
 Last activity: 2026-08-20 — Phase 34 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -51,6 +52,11 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 27 P03 | 10min | 1 tasks | 2 files |
 | Phase 31 P02 | 5min | 2 tasks | 2 files |
 | Phase 31 P01 | 5min | 3 tasks | 6 files |
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 34 P09 | 20min | 3 tasks | 3 files |
 
 ## Deferred Items
 
@@ -94,9 +100,9 @@ Progress: [░░░░░░░░░░] 0%
 
 ## Session
 
-**Last session:** 2026-08-16T02:59:40.344Z
-**Stopped at:** Phase 34 context gathered
-**Resume file:** .planning/phases/34-card-sync-reliability/34-CONTEXT.md
+**Last session:** 2026-08-20T07:51:00.223Z
+**Stopped at:** Completed 34-09-PLAN.md — G-34-1 gap closure
+**Resume file:** None
 
 ## Decisions
 
@@ -104,6 +110,8 @@ Progress: [░░░░░░░░░░] 0%
 - [v8 roadmap]: CATALOG-08 + CATALOG-07 + UISTATE-03 combined into Phase 35 (Shared Variant State Foundation) as the sketch wrap-up's BLOCKING refactor, ahead of the catalog drawer
 - [v8 roadmap, revised]: Original combined touch-interaction phase (11 reqs) split into Phase 36 (TILE-01..04 + CATALOG-05/06 — tile contract + catalog drawer) and Phase 37 (SELECT-01..04 + DEBT-02 — deck selector), because the phase was disproportionately large. The tile-component coupling that originally justified combining them is instead resolved explicitly: Phase 36 ships a minimal interim off-tile selector stepper so deck building isn't broken by the `<Link>` removal, and Phase 37 replaces that stepper with the full redesigned surface
 - [v8 roadmap]: UISTATE-01/02 kept separate from UISTATE-03 (different concern: grid read-state vs. row write-state) as Phase 38, sequenced last
+- [Phase 34]: 34-09: Cast CASE branch values to ::integer as a static suffix on the bound parameter (not sql.raw() on the value) — closes SQLSTATE 42804 while preserving 34-02's parameter-binding discipline
+- [Phase 34]: 34-09: sync-prices-now.ts exit code now derives from failedSets/unprocessedSets/totalUpdated===0 rather than absence of a throw, mirroring the cron route's strict setsProcessed===setsTotal verdict
 
 ## Operator Next Steps
 

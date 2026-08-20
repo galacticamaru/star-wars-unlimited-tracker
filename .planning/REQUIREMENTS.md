@@ -49,9 +49,9 @@ failure. Settled by sketch 005.
 
 ### Card Sync Reliability
 
-- [ ] **SYNC-01**: The nightly card sync processes every non-token set within its execution budget
-- [ ] **SYNC-02**: Every set in the catalog reflects upstream data within 24 hours of a successful sync run
-- [ ] **SYNC-03**: A sync run that does not process every set reports failure rather than success
+- [x] **SYNC-01**: The nightly card sync processes every non-token set within its execution budget
+- [x] **SYNC-02**: Every set in the catalog reflects upstream data within 24 hours of a successful sync run
+- [x] **SYNC-03**: A sync run that does not process every set reports failure rather than success
 - [ ] **SYNC-04**: Operator can determine catalog freshness — which sets last synced and when — without querying the database by hand
 
 ### Carried Debt
@@ -148,19 +148,21 @@ Vocabulary to Phase 38.
 | UISTATE-01 | Phase 38 | Pending |
 | UISTATE-02 | Phase 38 | Pending |
 | UISTATE-03 | Phase 35 | Pending |
-| SYNC-01 | Phase 34 | Pending |
-| SYNC-02 | Phase 34 | Pending |
-| SYNC-03 | Phase 34 | Pending |
+| SYNC-01 | Phase 34 | Complete |
+| SYNC-02 | Phase 34 | Complete |
+| SYNC-03 | Phase 34 | Complete |
 | SYNC-04 | Phase 34 | Pending |
 | DEBT-02 | Phase 37 | Pending |
 | DEBT-05 | Phase 34 | Pending |
 
 **Coverage:**
+
 - v8 requirements: 21 total
 - Mapped to phases: 21/21 ✓
 - Unmapped: 0 ✓
 
 **Phase summary:**
+
 - Phase 34 — Card Sync Reliability: SYNC-01, SYNC-02, SYNC-03, SYNC-04, DEBT-05 (5)
 - Phase 35 — Shared Variant State Foundation: CATALOG-08, CATALOG-07, UISTATE-03 (3)
 - Phase 36 — Touch-Viable Tile Contract & Catalog Drawer: TILE-01, TILE-02, TILE-03, TILE-04, CATALOG-05, CATALOG-06 (6)

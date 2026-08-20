@@ -83,15 +83,27 @@ interface PriceUpdateRow {
  * different values, in one round trip." Every swu-db-derived value
  * (`swudbId`, the price value) is interpolated through the `sql` template so
  * Drizzle binds it as a parameter; `sql.raw()` is used only for the fixed
- * `case`/`end` keywords and the `sql.join` separator, never for API data —
- * Postgres infers each branch's type from the target column, avoiding the
- * explicit-cast pitfalls a hand-rolled VALUES list would need for the
- * nullable priceEur/priceUsd columns.
+ * `case`/`end` keywords and the `sql.join` separator, never for API data.
+ *
+ * Each branch value carries an explicit `::integer` cast (G-34-1). A CASE
+ * expression's result type is resolved from its own branch expressions, not
+ * from the column it will be assigned to; an untyped bind parameter defaults
+ * to `text`, and that resolution happens during parse analysis, before the
+ * result type is checked against the assignment target. Without the cast,
+ * Postgres rejects the UPDATE with SQLSTATE 42804 ("column \"price_eur\" is
+ * of type integer but expression is of type text") before a single row is
+ * touched — every non-empty set failed this way until plan 34-09 added the
+ * cast. `integer` is correct for both `priceEur` and `priceUsd`, and a
+ * `NULL` parameter casts cleanly for the nullable-price branch.
+ *
+ * Exported so `__tests__/price-case-update-types.test.ts` can execute this
+ * exact expression against real Postgres — the mocked `@/db` in
+ * `prices.test.ts` never runs this SQL and so could never catch the defect.
  */
-function buildCaseUpdate(rows: PriceUpdateRow[], valueKey: 'priceEur' | 'priceUsd'): SQL {
+export function buildCaseUpdate(rows: PriceUpdateRow[], valueKey: 'priceEur' | 'priceUsd'): SQL {
   const fragments: SQL[] = [sql`(case`];
   for (const row of rows) {
-    fragments.push(sql`when ${cardDefinitions.swudbId} = ${row.swudbId} then ${row[valueKey]}`);
+    fragments.push(sql`when ${cardDefinitions.swudbId} = ${row.swudbId} then ${row[valueKey]}::integer`);
   }
   fragments.push(sql`end)`);
   return sql.join(fragments, sql.raw(' '));

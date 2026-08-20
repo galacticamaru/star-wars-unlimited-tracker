@@ -408,7 +408,7 @@ Plans:
 - Constrained to 1 cron job/day (Vercel Hobby tier) — multiplex within the existing cron entrypoint, do not add a second job.
 - Full incremental/resumable sync (per-set checkpointing, split cards/prices invocations) is explicitly out of scope this milestone — deferred as SYNC-05. This phase is batching + loud failure only.
 
-**Plans:** 8/9 plans executed — 34-08 added by gap closure after `34-VERIFICATION.md` recorded 2 failed truths (both CR-01); 34-09 added by gap closure after `34-UAT.md` recorded blocker G-34-1 (untyped CASE branches rejected with SQLSTATE 42804 — price sync had never written a single price)
+**Plans:** 9/9 plans executed — 34-08 added by gap closure after `34-VERIFICATION.md` recorded 2 failed truths (both CR-01); 34-09 added by gap closure after `34-UAT.md` recorded blocker G-34-1 (untyped CASE branches rejected with SQLSTATE 42804 — price sync had never written a single price)
 
 **Wave 1** *(tracer slice — verified before any expansion plan starts)*
 
@@ -432,7 +432,7 @@ Plans:
 
 **Wave 5** *(gap closure — blocked on 34-02)*
 
-- [ ] 34-09-PLAN.md — GAP CLOSURE (G-34-1): cast each `buildCaseUpdate()` CASE branch to `integer` so the batched price UPDATE stops failing parse analysis with 42804, correct the false D-11 docstring, and add an unmocked Postgres-backed guard the mocked suite could never provide — price sync had never written a single price (SYNC-01, SYNC-02, SYNC-03)
+- [x] 34-09-PLAN.md — GAP CLOSURE (G-34-1): cast each `buildCaseUpdate()` CASE branch to `integer` so the batched price UPDATE stops failing parse analysis with 42804, correct the false D-11 docstring, and add an unmocked Postgres-backed guard the mocked suite could never provide — price sync had never written a single price (SYNC-01, SYNC-02, SYNC-03)
 
 ### Phase 35: Shared Variant State Foundation
 
@@ -557,7 +557,7 @@ Plans:
 | 31. Trade Profile Modal & Public Trade Note | v7 | 4/4 | Complete    | 2026-07-20 |
 | 32. Combined Wants & Exclusions List | v7 | 3/3 | Complete    | 2026-07-20 |
 | 33. Ashes of the Empire Spotlight Decks | v7 | Direct | Complete    | 2026-07-20 |
-| 34. Card Sync Reliability | v8 | 8/8 | In Progress|  |
+| 34. Card Sync Reliability | v8 | 9/9 | In Progress|  |
 | 35. Shared Variant State Foundation | v8 | 0/TBD | Not started | - |
 | 36. Touch-Viable Tile Contract & Catalog Drawer | v8 | 0/TBD | Not started | - |
 | 37. Touch-Viable Deck Selector | v8 | 0/TBD | Not started | - |
