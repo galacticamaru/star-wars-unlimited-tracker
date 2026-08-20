@@ -408,7 +408,7 @@ Plans:
 - Constrained to 1 cron job/day (Vercel Hobby tier) — multiplex within the existing cron entrypoint, do not add a second job.
 - Full incremental/resumable sync (per-set checkpointing, split cards/prices invocations) is explicitly out of scope this milestone — deferred as SYNC-05. This phase is batching + loud failure only.
 
-**Plans:** 7/7 plans complete
+**Plans:** 7/8 plans complete — 34-08 added by gap closure after `34-VERIFICATION.md` recorded 2 failed truths (both CR-01)
 
 **Wave 1** *(tracer slice — verified before any expansion plan starts)*
 
@@ -425,6 +425,10 @@ Plans:
 **Wave 3** *(blocked on 34-01, 34-02, 34-06)*
 
 - [x] 34-07-PLAN.md — Cron entrypoint: explicit `maxDuration`, one shared set list, unconditional cache invalidation, non-2xx on any shortfall (SYNC-01, SYNC-03)
+
+**Wave 4** *(gap closure — blocked on 34-01, 34-07)*
+
+- [ ] 34-08-PLAN.md — GAP CLOSURE: per-set try/catch isolation in `syncAllCards()` mirroring `syncPrices()`, so a rejected fetch / malformed body / DB error / unresolved-swudbId throw lands in `failedSets` instead of collapsing the run into a bodyless 500 (SYNC-01, SYNC-03)
 
 ### Phase 35: Shared Variant State Foundation
 
