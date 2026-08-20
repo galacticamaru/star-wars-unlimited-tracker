@@ -257,4 +257,52 @@ describe('GET /api/cron/sync-cards', () => {
     expect(cardsArgs?.sets).toBe(DEFAULT_SETS);
     expect(pricesArgs?.sets).toBe(DEFAULT_SETS);
   });
+
+  it('a per-set card failure still reaches syncPrices, still invalidates the cache, and returns a JSON body naming cards.failedSets', async () => {
+    process.env.CRON_SECRET = 'test-secret-abc123';
+    // The exact shape Task 1's new per-set catch in syncAllCards() now
+    // produces for a set whose fetch()/upsertCards() threw — resolves
+    // rather than rejects, with the failing setId recorded in failedSets.
+    vi.mocked(syncAllCards).mockResolvedValue(
+      fullCardResult({ setsProcessed: 4, failedSets: ['JTL'] })
+    );
+    const req = new NextRequest('http://localhost/api/cron/sync-cards', {
+      headers: { Authorization: 'Bearer test-secret-abc123' },
+    });
+    const res = await handler(req);
+
+    // Closes 34-VERIFICATION gap 2 / SYNC-03: the honest cardsOk/pricesOk
+    // verdict fires — not the outer catch's bodyless text 500.
+    expect(res.status).toBe(500);
+    expect(res.headers.get('content-type')).toContain('application/json');
+    const body = await res.json();
+    expect(body.cards.failedSets).toContain('JTL');
+
+    // Closes gap 2 / D-07: syncPrices() still runs and the cache is still
+    // invalidated — a card-set failure no longer cancels the price half or
+    // discards the sets that did land.
+    expect(vi.mocked(syncPrices)).toHaveBeenCalledTimes(1);
+    const pricesArgs = vi.mocked(syncPrices).mock.calls[0][0];
+    expect(pricesArgs?.sets).toBe(DEFAULT_SETS);
+    expect(vi.mocked(revalidateTag)).toHaveBeenCalledTimes(1);
+  });
+
+  it('CONTRAST: a syncAllCards that rejects outright still degrades to the bodyless 500 and never reaches syncPrices', async () => {
+    process.env.CRON_SECRET = 'test-secret-abc123';
+    // This is the degraded shape 34-08 makes unreachable for per-set
+    // failures (Task 1 contains every per-set throw inside syncAllCards()).
+    // It is pinned here, not deleted, so a future contributor tempted to
+    // "fix" this by widening the route's catch reads this comment first —
+    // the correct fix location is syncAllCards(), not the route.
+    vi.mocked(syncAllCards).mockRejectedValue(new Error('boom'));
+    const req = new NextRequest('http://localhost/api/cron/sync-cards', {
+      headers: { Authorization: 'Bearer test-secret-abc123' },
+    });
+    const res = await handler(req);
+
+    expect(res.status).toBe(500);
+    expect(res.headers.get('content-type')).not.toContain('application/json');
+    expect(vi.mocked(syncPrices)).not.toHaveBeenCalled();
+    expect(vi.mocked(revalidateTag)).not.toHaveBeenCalled();
+  });
 });

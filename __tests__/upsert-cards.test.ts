@@ -62,6 +62,42 @@ describe('syncAllCards', () => {
     vi.clearAllMocks();
   });
 
+  // Local helper (syncAllCards tests only — the `upsertCards` describe block's
+  // beforeEach is untouched): builds a working db.insert() chain — insert ->
+  // values -> onConflictDoUpdate -> returning — modelled on that block's setup,
+  // so individual tests below can make a DB write throw or make .returning()
+  // resolve to an empty array to exercise the two per-set-isolation DB paths.
+  function setupWorkingDbInsertChain() {
+    let lastValuesArg: Record<string, unknown>[] = [];
+    let idCounter = 1;
+    const mockReturning = vi.fn(() =>
+      Promise.resolve(
+        lastValuesArg.map((row) => ({ id: idCounter++, swudbId: row.swudbId as string }))
+      )
+    );
+    const mockOnConflict = vi.fn().mockReturnValue({
+      returning: mockReturning,
+      then: (resolve: (v: unknown) => void) => resolve([]),
+    });
+    const mockValues = vi.fn((arg: unknown) => {
+      lastValuesArg = Array.isArray(arg)
+        ? (arg as Record<string, unknown>[])
+        : [arg as Record<string, unknown>];
+      return { onConflictDoUpdate: mockOnConflict };
+    });
+    const mockInsert = vi.fn().mockReturnValue({ values: mockValues });
+    return { mockInsert, mockReturning };
+  }
+
+  // Three-set list shared by the four new per-set-isolation tests below —
+  // only SOR (index 0) fails in each case, so "later sets still process" and
+  // set-list ordering are both asserted inline against SHD and TWI.
+  const THREE_SET_LIST = [
+    { setId: 'SOR', fullName: 'Spark of Rebellion', numberCards: 1 },
+    { setId: 'SHD', fullName: 'Shadows of the Galaxy', numberCards: 1 },
+    { setId: 'TWI', fullName: 'Twilight of the Republic', numberCards: 1 },
+  ];
+
   it('skips token sets (setId starts with T)', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
@@ -175,6 +211,136 @@ describe('syncAllCards', () => {
 
     expect(first.unprocessedSets).toEqual(second.unprocessedSets);
     expect(first.unprocessedSets).toEqual(['SOR', 'SHD']);
+  });
+
+  it('a rejected cards fetch lands the set in failedSets and later sets still process', async () => {
+    mockFetch.mockImplementation((url: string) => {
+      if (url.includes('/cards/SOR')) {
+        return Promise.reject(new Error('network blip: ECONNRESET'));
+      }
+      return Promise.resolve({ ok: true, json: async () => ({ data: [] }) });
+    });
+
+    // Never a bare await — a rejecting syncAllCards() would surface here as an
+    // unhandled rejection instead of a clean assertion failure (CR-01 gap 1).
+    const resultPromise = syncAllCards({ sets: THREE_SET_LIST });
+    await expect(resultPromise).resolves.toBeDefined();
+    const result = await resultPromise;
+
+    expect(result.failedSets).toEqual(['SOR']);
+    expect(result.setsProcessed).toBe(2);
+    expect(
+      result.setsProcessed + result.failedSets.length + result.unprocessedSets.length
+    ).toBe(result.setsTotal);
+
+    const fetchCalls = mockFetch.mock.calls.map((c: unknown[]) => c[0] as string);
+    expect(fetchCalls.some((url: string) => url.includes('/cards/SHD'))).toBe(true);
+    expect(fetchCalls.some((url: string) => url.includes('/cards/TWI'))).toBe(true);
+    // No reattempt: exactly one fetch to /cards/SOR, no delay-and-retry.
+    const sorCalls = fetchCalls.filter((url: string) => url.includes('/cards/SOR'));
+    expect(sorCalls.length).toBe(1);
+  });
+
+  it('a cards response with no data key lands the set in failedSets and later sets still process', async () => {
+    mockFetch.mockImplementation((url: string) => {
+      if (url.includes('/cards/SOR')) {
+        // No `data` key — destructuring `{ data: cards }` leaves `cards`
+        // undefined, and upsertCards()'s `.filter()` call throws a TypeError.
+        return Promise.resolve({ ok: true, json: async () => ({}) });
+      }
+      return Promise.resolve({ ok: true, json: async () => ({ data: [] }) });
+    });
+
+    const resultPromise = syncAllCards({ sets: THREE_SET_LIST });
+    await expect(resultPromise).resolves.toBeDefined();
+    const result = await resultPromise;
+
+    expect(result.failedSets).toEqual(['SOR']);
+    expect(result.setsProcessed).toBe(2);
+    expect(
+      result.setsProcessed + result.failedSets.length + result.unprocessedSets.length
+    ).toBe(result.setsTotal);
+
+    const fetchCalls = mockFetch.mock.calls.map((c: unknown[]) => c[0] as string);
+    expect(fetchCalls.some((url: string) => url.includes('/cards/SHD'))).toBe(true);
+    expect(fetchCalls.some((url: string) => url.includes('/cards/TWI'))).toBe(true);
+  });
+
+  it('a DB write error inside upsertCards lands the set in failedSets and later sets still process', async () => {
+    const { db } = await import('@/db');
+    const { mockInsert, mockReturning } = setupWorkingDbInsertChain();
+    (db.insert as ReturnType<typeof vi.fn>).mockImplementation(mockInsert);
+    // Only the first .returning() call (SOR's card_definitions insert) rejects —
+    // a constraint-violation-style DB error surfacing mid-upsertCards().
+    mockReturning.mockRejectedValueOnce(
+      new Error('duplicate key value violates unique constraint "card_definitions_swudb_id_key"')
+    );
+
+    mockFetch.mockImplementation((url: string) => {
+      const setId = url.includes('/cards/SOR')
+        ? 'SOR'
+        : url.includes('/cards/SHD')
+          ? 'SHD'
+          : 'TWI';
+      return Promise.resolve({
+        ok: true,
+        json: async () => ({
+          data: [makeCard({ Set: setId, Number: '001', Name: `Card ${setId}`, Subtitle: '' })],
+        }),
+      });
+    });
+
+    const resultPromise = syncAllCards({ sets: THREE_SET_LIST });
+    await expect(resultPromise).resolves.toBeDefined();
+    const result = await resultPromise;
+
+    expect(result.failedSets).toEqual(['SOR']);
+    expect(result.setsProcessed).toBe(2);
+    expect(
+      result.setsProcessed + result.failedSets.length + result.unprocessedSets.length
+    ).toBe(result.setsTotal);
+
+    const fetchCalls = mockFetch.mock.calls.map((c: unknown[]) => c[0] as string);
+    expect(fetchCalls.some((url: string) => url.includes('/cards/SHD'))).toBe(true);
+    expect(fetchCalls.some((url: string) => url.includes('/cards/TWI'))).toBe(true);
+  });
+
+  it('the deliberate unresolved-swudbId throw inside upsertCards lands the set in failedSets, not an uncaught rejection', async () => {
+    const { db } = await import('@/db');
+    const { mockInsert, mockReturning } = setupWorkingDbInsertChain();
+    (db.insert as ReturnType<typeof vi.fn>).mockImplementation(mockInsert);
+    // SOR's definitions RETURNING resolves empty — idBySwudbId has no entry
+    // for its anchor, so Phase D's unresolved-swudbId Error fires (this
+    // phase's own deliberate throw, per upsert-cards.ts Phase D).
+    mockReturning.mockResolvedValueOnce([]);
+
+    mockFetch.mockImplementation((url: string) => {
+      const setId = url.includes('/cards/SOR')
+        ? 'SOR'
+        : url.includes('/cards/SHD')
+          ? 'SHD'
+          : 'TWI';
+      return Promise.resolve({
+        ok: true,
+        json: async () => ({
+          data: [makeCard({ Set: setId, Number: '001', Name: `Card ${setId}`, Subtitle: '' })],
+        }),
+      });
+    });
+
+    const resultPromise = syncAllCards({ sets: THREE_SET_LIST });
+    await expect(resultPromise).resolves.toBeDefined();
+    const result = await resultPromise;
+
+    expect(result.failedSets).toEqual(['SOR']);
+    expect(result.setsProcessed).toBe(2);
+    expect(
+      result.setsProcessed + result.failedSets.length + result.unprocessedSets.length
+    ).toBe(result.setsTotal);
+
+    const fetchCalls = mockFetch.mock.calls.map((c: unknown[]) => c[0] as string);
+    expect(fetchCalls.some((url: string) => url.includes('/cards/SHD'))).toBe(true);
+    expect(fetchCalls.some((url: string) => url.includes('/cards/TWI'))).toBe(true);
   });
 });
 

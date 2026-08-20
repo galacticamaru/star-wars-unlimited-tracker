@@ -299,16 +299,21 @@ export async function syncAllCards(options: SyncRunOptions = {}): Promise<CardSy
       break;
     }
 
-    const cardsResponse = await fetch(`https://api.swu-db.com/cards/${set.setId}`);
-    if (!cardsResponse.ok) {
-      console.error(`Failed to fetch cards for set ${set.setId}: ${cardsResponse.status}`);
+    try {
+      const cardsResponse = await fetch(`https://api.swu-db.com/cards/${set.setId}`);
+      if (!cardsResponse.ok) {
+        console.error(`Failed to fetch cards for set ${set.setId}: ${cardsResponse.status}`);
+        failedSets.push(set.setId);
+        continue; // Skip this set, continue with others (D-05)
+      }
+      const { data: cards }: { data: SWUCard[] } = await cardsResponse.json();
+      const count = await upsertCards(set.setId, cards);
+      totalUpserted += count;
+      setsSucceeded = setsSucceeded + 1;
+    } catch (error) {
+      console.error(`Error syncing cards for set ${set.setId}:`, error);
       failedSets.push(set.setId);
-      continue; // Skip this set, continue with others (D-05)
     }
-    const { data: cards }: { data: SWUCard[] } = await cardsResponse.json();
-    const count = await upsertCards(set.setId, cards);
-    totalUpserted += count;
-    setsSucceeded = setsSucceeded + 1;
   }
 
   return {
