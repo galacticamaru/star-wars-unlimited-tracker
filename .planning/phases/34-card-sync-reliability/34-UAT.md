@@ -1,25 +1,21 @@
 ---
-status: testing
+status: diagnosed
 phase: 34-card-sync-reliability
 source: [34-VERIFICATION.md]
 started: 2026-08-20T06:45:00Z
-updated: 2026-08-20T06:45:00Z
+updated: 2026-08-20T07:26:00Z
 ---
 
 ## Current Test
 
-number: 1
-name: A real deployed GET /api/cron/sync-cards processes every non-token set within the confirmed 300s Vercel budget
-expected: |
-  A JSON body with success/cards/prices/duration arrives inside the budget window —
-  the run returns a response (200 or 500) rather than being killed mid-run with no response.
-awaiting: user response
+[testing paused — 4 items outstanding; blocker gap G-34-1 found while running test 1 must be fixed before the deployed budget run is meaningful]
 
 ## Tests
 
 ### 1. Deployed cron run completes inside the 300s Vercel budget
 expected: A JSON body with success/cards/prices/duration arrives inside the budget window; the run returns a response (200 or 500) rather than being killed mid-run with no response
 result: [pending]
+note: "Local run 2026-08-20 returned a well-formed JSON body with an honest 500 in 152.339s (cards 35/35, prices 25/35). Response shape and SYNC-03 honesty confirmed; the 300s Vercel ceiling and real-infra data volume remain untested. Re-run against the deploy after G-34-1 lands."
 
 ### 2. Catalog freshness holds under the real daily cron schedule (SYNC-02)
 expected: sync-status's ageHours for each set stays under 24 on a normal day; ageHours only exceeds 24 following a genuine missed/failed run
@@ -43,3 +39,20 @@ skipped: 0
 blocked: 0
 
 ## Gaps
+
+- gap_id: G-34-1
+  truth: "A cron run reports success only when every non-token set landed; price sync updates prices for every non-token set"
+  status: failed
+  reason: "Local deployed-shape run (152s, 35/35 cards, 8404 upserted) returned success:false with prices setsProcessed 25/35, totalUpdated 0. All 10 real card sets (LOF, SOR, LAW, IBH, TWI, SEC, SHD, TS26, JTL, ASH) in failedSets; the 25 'processed' sets are empty promo/OP sets that legitimately return 0 cards upstream. Price sync has never written a single price."
+  severity: blocker
+  test: 1
+  root_cause: "buildCaseUpdate() in src/lib/sync/prices.ts:91-98 binds each CASE branch value as an untyped parameter. Postgres resolves a CASE expression's result type from its own branches (untyped $n defaults to text) BEFORE checking it against the target column, so the UPDATE fails with 42804: 'column \"price_eur\" is of type integer but expression is of type text'. The D-11 docstring above the function asserts the opposite ('Postgres infers each branch's type from the target column') — that premise is wrong, and the code was built on it."
+  artifacts:
+    - path: "src/lib/sync/prices.ts"
+      issue: "buildCaseUpdate() emits untyped CASE branches; every non-empty set's UPDATE throws 42804 and is swallowed into failedSets by the per-set try/catch"
+    - path: "src/lib/sync/prices.test.ts"
+      issue: "vi.mock('@/db') stubs the database entirely, so the generated SQL is never executed against Postgres — the defect is invisible to the suite and to 34-VERIFICATION.md's 9/9 pass"
+  missing:
+    - "Cast each CASE branch to the target column type (verified fix: `then ${row[valueKey]}::integer` — re-ran SOR after the change, 252 prices updated, setsProcessed 1/1)"
+    - "Add a test that executes buildCaseUpdate()'s SQL against a real Postgres (or asserts the emitted SQL carries the cast), so a mocked-DB suite cannot pass while the real UPDATE is type-invalid"
+  debug_session: ""
