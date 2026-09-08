@@ -26,7 +26,8 @@ vi.mock('@/db/schema', () => ({
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
-import { upsertCards, syncAllCards } from '@/lib/sync/upsert-cards';
+import { upsertCards, syncAllCards, normalizeStringArray } from '@/lib/sync/upsert-cards';
+import { db } from '@/db';
 
 // Helper: create a minimal valid SWUCard
 function makeCard(overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
@@ -663,5 +664,83 @@ describe('upsertCards', () => {
     );
     expect(printingInsertCalls).toHaveLength(1);
     expect((printingInsertCalls[0][0] as unknown[]).length).toBe(1);
+  });
+});
+
+// Regression: api.swu-db.com serves Aspects/Traits as single-key wrapper objects
+// (`[{"S":"Vigilance"}]`), not the bare strings the older responses returned. Those
+// columns are text[], so an object reaching the insert stringified to the literal
+// "[object Object]" and corrupted every synced row — collapsing the catalog's Aspect
+// dropdown to one junk entry, because the option list is built from
+// `new Set(cards.flatMap(c => c.aspects))` and identical bad strings dedupe to one.
+//
+// The pre-fix fixtures above encode the OLD contract by hand (`Aspects: ['Heroism']`),
+// which is exactly why the suite stayed green while production broke. These cases pin
+// the wrapper shape so a future revert cannot silently reintroduce the corruption.
+describe('normalizeStringArray — upstream shape tolerance', () => {
+  it('unwraps single-key wrapper objects to their string value', () => {
+    expect(normalizeStringArray([{ S: 'Vigilance' }])).toEqual(['Vigilance']);
+  });
+
+  it('unwraps a multi-aspect card in payload order', () => {
+    expect(normalizeStringArray([{ S: 'Vigilance' }, { S: 'Villainy' }])).toEqual([
+      'Vigilance',
+      'Villainy',
+    ]);
+  });
+
+  it('passes bare strings through unchanged, so an upstream revert is a no-op', () => {
+    expect(normalizeStringArray(['Heroism', 'Command'])).toEqual(['Heroism', 'Command']);
+  });
+
+  it('handles a mixed-shape array during an upstream transition', () => {
+    expect(normalizeStringArray(['Heroism', { S: 'Villainy' }])).toEqual([
+      'Heroism',
+      'Villainy',
+    ]);
+  });
+
+  it('returns an empty array for absent or non-array input rather than coercing', () => {
+    expect(normalizeStringArray(undefined)).toEqual([]);
+    expect(normalizeStringArray(null)).toEqual([]);
+    expect(normalizeStringArray('Heroism')).toEqual([]);
+  });
+
+  it('drops non-string members instead of letting them reach a text[] column', () => {
+    expect(normalizeStringArray([1, true, null, { S: 42 }, ['x']])).toEqual([]);
+  });
+});
+
+describe('upsertCards — wrapper-shaped aspects reach the DB as plain strings', () => {
+  it('never writes "[object Object]" into aspects or traits', async () => {
+    const mockValues = vi.fn().mockReturnValue({
+      onConflictDoUpdate: vi.fn().mockReturnValue({
+        returning: vi.fn().mockResolvedValue([{ id: 1, swudbId: 'SOR-059' }]),
+      }),
+    });
+    (db.insert as ReturnType<typeof vi.fn>).mockReturnValue({ values: mockValues });
+
+    const card = makeCard({
+      Aspects: [{ S: 'Vigilance' }, { S: 'Villainy' }],
+      Traits: [{ S: 'DROID' }],
+      Arenas: ['Ground'],
+    });
+
+    await upsertCards('SOR', [card] as never);
+
+    const definitionRow = mockValues.mock.calls
+      .map((call: unknown[]) => call[0])
+      .filter(
+        (arg): arg is Record<string, unknown>[] =>
+          Array.isArray(arg) && (arg[0] as Record<string, unknown>)?.swudbId !== undefined
+      )[0][0];
+
+    expect(definitionRow.aspects).toEqual(['Vigilance', 'Villainy']);
+    expect(definitionRow.traits).toEqual(['DROID']);
+    expect(definitionRow.arenas).toEqual(['Ground']);
+
+    // The actual production symptom, asserted directly.
+    const serialized = JSON.stringify(definitionRow);
+    expect(serialized).not.toContain('[object Object]');
   });
 });

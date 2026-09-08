@@ -16,10 +16,15 @@ export interface SWUCard {
   Name: string;
   Subtitle?: string;
   Type: string;
-  Aspects?: string[];
-  Traits?: string[];
-  Arenas?: string[];
-  Keywords?: string[];
+  // Typed `unknown[]` rather than `string[]` because the upstream shape is not stable:
+  // Aspects/Traits currently arrive as single-key wrapper objects (`[{"S":"Vigilance"}]`),
+  // Arenas/Keywords as bare strings. Declaring `string[]` here is what let objects reach a
+  // text[] column unchallenged — the type erased at runtime and nothing normalized. Every
+  // read of these four MUST go through normalizeStringArray().
+  Aspects?: unknown[];
+  Traits?: unknown[];
+  Arenas?: unknown[];
+  Keywords?: unknown[];
   Cost?: string;
   Power?: string;
   HP?: string;
@@ -57,6 +62,37 @@ function parseIntOrNull(value: string | undefined | null): number | null {
   if (value === undefined || value === null || value === '') return null;
   const parsed = parseInt(value, 10);
   return isNaN(parsed) ? null : parsed;
+}
+
+/**
+ * Normalizes an upstream string-array field to a real `string[]`.
+ *
+ * Load-bearing: api.swu-db.com serves `Aspects` and `Traits` as single-key wrapper
+ * objects (`[{"S":"Vigilance"}]`) rather than the bare strings its older responses
+ * returned, while `Arenas` and `Keywords` are still bare strings. These columns are
+ * `text[]`, so an object reaching the insert stringifies to the literal
+ * "[object Object]" — which is what silently corrupted every synced row and collapsed
+ * the catalog's Aspect dropdown to one junk entry (the option list is built from
+ * `new Set(cards.flatMap(c => c.aspects))`, so identical bad strings dedupe to one).
+ *
+ * Accepts BOTH shapes deliberately: the wrapper is an upstream presentation detail that
+ * has flipped once already and may flip back or apply to further fields, and a
+ * shape-specific unwrap would break again on the next change. Anything that is neither
+ * a string nor an object holding string values is dropped rather than coerced, so junk
+ * can never again reach a text[] column.
+ */
+export function normalizeStringArray(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((entry) => {
+    if (typeof entry === 'string') return [entry];
+    // `typeof [] === 'object'`, so arrays must be excluded explicitly: a nested array is
+    // not the wrapper shape, and treating it as one would silently flatten unrelated
+    // values into the column rather than rejecting input we do not understand.
+    if (entry && typeof entry === 'object' && !Array.isArray(entry)) {
+      return Object.values(entry).filter((v): v is string => typeof v === 'string');
+    }
+    return [];
+  });
 }
 
 // ---- Core upsert function ----
@@ -141,10 +177,10 @@ export async function upsertCards(setId: string, cards: SWUCard[]): Promise<numb
       name: anchor.Name,
       subtitle: anchor.Subtitle ?? null,
       type: anchor.Type,
-      aspects: anchor.Aspects ?? [],
-      arenas: anchor.Arenas ?? [],
-      traits: anchor.Traits ?? [],
-      keywords: anchor.Keywords ?? [],
+      aspects: normalizeStringArray(anchor.Aspects),
+      arenas: normalizeStringArray(anchor.Arenas),
+      traits: normalizeStringArray(anchor.Traits),
+      keywords: normalizeStringArray(anchor.Keywords),
       cost: parseIntOrNull(anchor.Cost),
       power: parseIntOrNull(anchor.Power),
       hp: parseIntOrNull(anchor.HP),
